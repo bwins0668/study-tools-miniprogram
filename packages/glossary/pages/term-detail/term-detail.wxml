@@ -8,7 +8,13 @@
   <block wx:if="{{term}}">
     <view class="card">
       <view class="term-header">
-        <text class="term-main">{{term.term}}</text>
+        <view class="term-title-row">
+          <text class="term-main">{{term.term}}</text>
+          <!-- R3.56 复制术语按钮 -->
+          <view class="copy-term-btn" bindtap="copyTerm">
+            <text class="copy-term-icon">📋</text>
+          </view>
+        </view>
         <text class="level">{{term.level}}</text>
       </view>
 

@@ -38,6 +38,29 @@
   margin-bottom: 20rpx;
 }
 
+/* R3.56 复制术语按钮 */
+.term-title-row {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.copy-term-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8rpx 12rpx;
+  margin-left: 12rpx;
+  background-color: #f0f0f0;
+  border-radius: 8rpx;
+  flex-shrink: 0;
+}
+
+.copy-term-icon {
+  font-size: 28rpx;
+}
+
 .term-main {
   font-size: 44rpx;
   font-weight: 700;

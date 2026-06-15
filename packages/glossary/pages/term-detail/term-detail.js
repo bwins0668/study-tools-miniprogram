@@ -217,5 +217,28 @@ Page({
     this.setData({
       note: e.detail.value || ''
     });
+  },
+
+  // R3.56 复制术语名称到剪贴板
+  copyTerm: function () {
+    var term = this.data.term;
+    if (!term) {
+      wx.showToast({ title: '术语数据为空', icon: 'none' });
+      return;
+    }
+    var copyText = term.term || '';
+    if (!copyText) {
+      wx.showToast({ title: '术语名称为空', icon: 'none' });
+      return;
+    }
+    wx.setClipboardData({
+      data: copyText,
+      success: function () {
+        wx.showToast({ title: '术语已复制', icon: 'none', duration: 1500 });
+      },
+      fail: function () {
+        wx.showToast({ title: '复制失败', icon: 'none', duration: 1500 });
+      }
+    });
   }
 });

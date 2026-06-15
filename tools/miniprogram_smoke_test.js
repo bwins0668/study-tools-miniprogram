@@ -6477,6 +6477,58 @@ if (quizJs355.indexOf('retryWrongQuestions') < 0) {
 
 if (round355Ok) pass('Round Mini 3.55 home streak share button');
 
+// ============================================================
+// Round Mini 3.56 term detail copy button
+// ============================================================
+var round356Ok = true;
+
+// A. term-detail.js 包含 copyTerm 方法
+var termDetailJs356 = readFile('packages/glossary/pages/term-detail/term-detail.js');
+if (termDetailJs356.indexOf('copyTerm') < 0) {
+  fail('R3.56: copyTerm method missing in term-detail.js');
+  round356Ok = false;
+}
+if (termDetailJs356.indexOf('setClipboardData') < 0) {
+  fail('R3.56: setClipboardData call missing in term-detail.js');
+  round356Ok = false;
+}
+
+// B. term-detail.wxml 包含复制按钮
+var termDetailWxml356 = readFile('packages/glossary/pages/term-detail/term-detail.wxml');
+if (termDetailWxml356.indexOf('copyTerm') < 0) {
+  fail('R3.56: copyTerm button missing in term-detail.wxml');
+  round356Ok = false;
+}
+if (termDetailWxml356.indexOf('📋') < 0) {
+  fail('R3.56: 📋 icon missing in term-detail.wxml');
+  round356Ok = false;
+}
+
+// C. term-detail.wxss 包含复制按钮样式
+var termDetailWxss356 = readFile('packages/glossary/pages/term-detail/term-detail.wxss');
+if (termDetailWxss356.indexOf('.copy-term-btn') < 0) {
+  fail('R3.56: .copy-term-btn style missing in term-detail.wxss');
+  round356Ok = false;
+}
+if (termDetailWxss356.indexOf('.copy-term-icon') < 0) {
+  fail('R3.56: .copy-term-icon style missing in term-detail.wxss');
+  round356Ok = false;
+}
+
+// D. 回归：R3.32~R3.55 功能未退化
+var homeJs356 = readFile('pages/home/home.js');
+if (homeJs356.indexOf('onShareAppMessage') < 0) {
+  fail('R3.56: R3.55 onShareAppMessage regressed in home.js');
+  round356Ok = false;
+}
+var glossaryJs356 = readFile('pages/glossary/glossary.js');
+if (glossaryJs356.indexOf('goToRandomTerm') < 0) {
+  fail('R3.56: R3.54 goToRandomTerm regressed in glossary.js');
+  round356Ok = false;
+}
+
+if (round356Ok) pass('Round Mini 3.56 term detail copy button');
+
 
 console.log('\n========================================');
 console.log('Study Tools Mini Smoke Test');
