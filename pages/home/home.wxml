@@ -6,6 +6,12 @@
     <text class="subtitle">中日双语 IT 学习工具</text>
   </view>
 
+  <!-- R3.42 学习 streak -->
+  <view class="streak-banner" wx:if="{{streakCount > 0}}">
+    <text class="streak-icon">🔥</text>
+    <text class="streak-text">{{streakText}}</text>
+  </view>
+
   <!-- 学习概览 -->
   <view class="overview-section">
     <text class="section-title">学习概览</text>

@@ -76,7 +76,10 @@ Page({
     sgWeak: false,
     // v0.21.0 第四批：继续练习入口增强
     lastAttemptAccuracy: 0,
-    continueSuggestion: ''
+    continueSuggestion: '',
+    // R3.42 学习 streak
+    streakCount: 0,
+    streakText: ''
   },
 
   onShow: function () {
@@ -184,6 +187,41 @@ Page({
       }
     }
 
+    // R3.42 学习 streak 计算
+    var streakCount = 0;
+    var streakText = '';
+    try {
+      var streakData = wx.getStorageSync('study-tools-mini-streak-v1');
+      if (streakData && streakData.lastDate) {
+        var lastDate = new Date(streakData.lastDate);
+        var today = new Date();
+        today.setHours(0, 0, 0, 0);
+        var lastDay = new Date(lastDate.getFullYear(), lastDate.getMonth(), lastDate.getDate());
+        var todayDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        var diffDays = Math.floor((todayDay - lastDay) / 86400000);
+        if (diffDays === 0) {
+          // 今天已练习，streak 保持
+          streakCount = streakData.count || 1;
+        } else if (diffDays === 1) {
+          // 昨天练习了，streak +1
+          streakCount = (streakData.count || 0) + 1;
+          wx.setStorageSync('study-tools-mini-streak-v1', {
+            lastDate: today.toISOString(),
+            count: streakCount
+          });
+        } else {
+          // 超过 1 天没练习，streak 重置
+          streakCount = 0;
+        }
+      }
+      if (streakCount > 0) {
+        streakText = '已连续学习 ' + streakCount + ' 天';
+      }
+    } catch (e) {
+      streakCount = 0;
+      streakText = '';
+    }
+
     this.setData({
       favoriteCount: favoriteCount,
       wrongQuestionCount: wrongQuestionCount,
@@ -210,7 +248,9 @@ Page({
       itpassWeak: itpassWeak,
       sgWeak: sgWeak,
       lastAttemptAccuracy: lastAttemptAccuracy,
-      continueSuggestion: continueSuggestion
+      continueSuggestion: continueSuggestion,
+      streakCount: streakCount,
+      streakText: streakText
     });
   },
 

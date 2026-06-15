@@ -5651,6 +5651,74 @@ if (termSearchJs341b.indexOf('toggleBatchMode') < 0) {
 if (round341Ok) pass('Round Mini 3.41 term search stability enhancement');
 
 // ============================================================
+// Round Mini 3.42 首页学习 streak
+// ============================================================
+console.log('\n--- Round Mini 3.42 home learning streak ---');
+
+var round342Ok = true;
+
+// A. home.js 包含 streak 数据字段
+var homeJs342 = readFile('pages/home/home.js');
+if (homeJs342.indexOf('streakCount') < 0) {
+  fail('R3.42: streakCount data field missing in home.js');
+  round342Ok = false;
+}
+if (homeJs342.indexOf('streakText') < 0) {
+  fail('R3.42: streakText data field missing in home.js');
+  round342Ok = false;
+}
+
+// B. home.js 包含 streak 计算逻辑
+if (homeJs342.indexOf('streakCount = 0') < 0) {
+  fail('R3.42: streak calculation logic missing in home.js');
+  round342Ok = false;
+}
+if (homeJs342.indexOf('streakData') < 0) {
+  fail('R3.42: streakData storage read missing in home.js');
+  round342Ok = false;
+}
+
+// C. home.wxml 包含 streak 显示
+var homeWxml342 = readFile('pages/home/home.wxml');
+if (homeWxml342.indexOf('streak-banner') < 0) {
+  fail('R3.42: streak-banner missing in home.wxml');
+  round342Ok = false;
+}
+if (homeWxml342.indexOf('streakText') < 0) {
+  fail('R3.42: streakText binding missing in home.wxml');
+  round342Ok = false;
+}
+
+// D. home.wxss 包含 streak 样式
+var homeWxss342 = readFile('pages/home/home.wxss');
+if (homeWxss342.indexOf('.streak-banner') < 0) {
+  fail('R3.42: .streak-banner style missing in home.wxss');
+  round342Ok = false;
+}
+if (homeWxss342.indexOf('.streak-text') < 0) {
+  fail('R3.42: .streak-text style missing in home.wxss');
+  round342Ok = false;
+}
+
+// E. 回归：R3.32~R3.41 功能未退化
+var quizJs342 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs342.indexOf('progressPercent') < 0) {
+  fail('R3.42: R3.32 progressPercent regressed in quiz.js');
+  round342Ok = false;
+}
+var termSearchJs342 = readFile('packages/glossary/pages/term-search/term-search.js');
+if (termSearchJs342.indexOf('toggleBatchMode') < 0) {
+  fail('R3.42: R3.40 toggleBatchMode regressed in term-search.js');
+  round342Ok = false;
+}
+if (termSearchJs342.indexOf('SEARCH_DEBOUNCE_MS') < 0) {
+  fail('R3.42: R3.41 SEARCH_DEBOUNCE_MS regressed in term-search.js');
+  round342Ok = false;
+}
+
+if (round342Ok) pass('Round Mini 3.42 home learning streak');
+
+// ============================================================
 // 汇总
 // ============================================================
 console.log('\n========================================');
