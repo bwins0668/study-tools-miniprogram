@@ -1016,13 +1016,13 @@ console.log('\n--- 版本号检查 ---');
 let versionOk = true;
 const appJsContent = readFile('app.js');
 const storageContent = readFile('utils/storage.js');
-if (!appJsContent.includes('v0.14.0')) {
-  fail('version: app.js does not contain v0.14.0');
+if (!appJsContent.includes('v0.15.0')) {
+  fail('version: app.js does not contain v0.15.0');
   versionOk = false;
 }
 
-if (!storageContent.includes("version: 'v0.14.0'")) {
-  fail('version: utils/storage.js exportLocalBackup does not contain v0.14.0');
+if (!storageContent.includes("version: 'v0.15.0'")) {
+  fail('version: utils/storage.js exportLocalBackup does not contain v0.15.0');
   versionOk = false;
 }
 
@@ -1039,7 +1039,7 @@ if (!profileJs.includes('globalData.version')) {
   fail('version: profile.js does not read from globalData.version');
   versionOk = false;
 }
-if (versionOk) pass('version check v0.14.0');
+if (versionOk) pass('version check v0.15.0');
 
 // ============================================================
 // 十一、Check Round 2.0 新功能
@@ -1513,13 +1513,13 @@ var profileJs32 = readFile('pages/profile/profile.js');
 var profileWxml32 = readFile('pages/profile/profile.wxml');
 var profileWxss32 = readFile('pages/profile/profile.wxss');
 
-// 1. 版本号 v0.14.0
-if (!appJsContent.includes('v0.14.0')) {
-  fail('Round 3.2: app.js missing v0.14.0');
+// 1. 版本号 v0.15.0
+if (!appJsContent.includes('v0.15.0')) {
+  fail('Round 3.2: app.js missing v0.15.0');
   round32Ok = false;
 }
-if (!storageContent.includes("version: 'v0.14.0'")) {
-  fail('Round 3.2: storage.js exportLocalBackup missing v0.14.0');
+if (!storageContent.includes("version: 'v0.15.0'")) {
+  fail('Round 3.2: storage.js exportLocalBackup missing v0.15.0');
   round32Ok = false;
 }
 
@@ -1609,6 +1609,126 @@ for (var fi = 0; fi < forbiddenStatus.length; fi++) {
 }
 
 if (round32Ok) pass('Round Mini 3.2 profile learning stats checks');
+
+// ============================================================
+// Round Mini 3.3 glossary favorites review enhancement checks
+// ============================================================
+console.log('\n--- Round Mini 3.3 glossary favorites review checks ---');
+
+var round33Ok = true;
+var favReviewJs33 = readFile('packages/glossary/pages/favorite-review/favorite-review.js');
+var favReviewWxml33 = readFile('packages/glossary/pages/favorite-review/favorite-review.wxml');
+var favReviewWxss33 = readFile('packages/glossary/pages/favorite-review/favorite-review.wxss');
+
+// 1. 版本号 v0.15.0
+if (!appJsContent.includes('v0.15.0')) {
+  fail('Round 3.3: app.js missing v0.15.0');
+  round33Ok = false;
+}
+if (!storageContent.includes("version: 'v0.15.0'")) {
+  fail('Round 3.3: storage.js exportLocalBackup missing v0.15.0');
+  round33Ok = false;
+}
+
+// 2. 收藏页存在收藏数量展示
+if (!favReviewWxml33.includes('共') || !favReviewWxml33.includes('{{totalCount}}')) {
+  fail('Round 3.3: favorite-review.wxml missing total count display');
+  round33Ok = false;
+}
+
+// 3. 收藏页存在搜索/筛选入口
+if (!favReviewWxml33.includes('searchKeyword') || !favReviewWxml33.includes('onSearchInput')) {
+  fail('Round 3.3: favorite-review.wxml missing search input');
+  round33Ok = false;
+}
+if (!favReviewJs33.includes('onSearchInput') || !favReviewJs33.includes('matchTerm')) {
+  fail('Round 3.3: favorite-review.js missing search logic');
+  round33Ok = false;
+}
+
+// 4. 收藏页存在空状态文案
+if (!favReviewWxml33.includes('还没有收藏术语') || !favReviewWxml33.includes('!hasFavorites')) {
+  fail('Round 3.3: favorite-review.wxml missing empty state');
+  round33Ok = false;
+}
+
+// 5. 收藏页存在去术语表入口
+if (!favReviewWxml33.includes('去术语表') || !favReviewJs33.includes('goToGlossary')) {
+  fail('Round 3.3: favorite-review missing go-to-glossary entry');
+  round33Ok = false;
+}
+
+// 6. 收藏页存在取消收藏确认逻辑
+if (!favReviewJs33.includes('unfavoriteCurrent') || !favReviewJs33.includes('showModal')) {
+  fail('Round 3.3: favorite-review.js missing unfavorite with confirmation');
+  round33Ok = false;
+}
+if (!favReviewJs33.includes('unfavoriteFromList')) {
+  fail('Round 3.3: favorite-review.js missing list-mode unfavorite');
+  round33Ok = false;
+}
+if (!favReviewWxml33.includes('unfavoriteCurrent') || !favReviewWxml33.includes('unfavoriteFromList')) {
+  fail('Round 3.3: favorite-review.wxml missing unfavorite buttons');
+  round33Ok = false;
+}
+
+// 7. 收藏复习入口或复习模式存在
+if (!favReviewWxml33.includes('mode-switch') || !favReviewWxml33.includes('复习模式')) {
+  fail('Round 3.3: favorite-review.wxml missing review mode switch');
+  round33Ok = false;
+}
+if (!favReviewJs33.includes('switchToReviewMode') || !favReviewJs33.includes('switchToListMode')) {
+  fail('Round 3.3: favorite-review.js missing mode switch functions');
+  round33Ok = false;
+}
+
+// 8. 空收藏不显示 undefined/null/NaN
+if (!favReviewJs33.includes('!timestamp') || !favReviewJs33.includes("return '已收藏'")) {
+  fail('Round 3.3: favorite-review.js formatSavedAt missing null timestamp guard');
+  round33Ok = false;
+}
+// searchKeyword 空值处理
+if (!favReviewJs33.includes('!keyword') || !favReviewJs33.includes('return true')) {
+  fail('Round 3.3: favorite-review.js matchTerm missing empty keyword guard');
+  round33Ok = false;
+}
+
+// 9. profile 收藏数量逻辑不被破坏
+var profileJs33 = readFile('pages/profile/profile.js');
+if (!profileJs33.includes('getFavoriteTermCount') || !profileJs33.includes('favoriteCount')) {
+  fail('Round 3.3: profile.js favoriteCount logic broken');
+  round33Ok = false;
+}
+
+// 10. 备份导出/恢复版本同步到 v0.15.0
+if (!storageContent.includes("version: 'v0.15.0'")) {
+  fail('Round 3.3: storage.js exportLocalBackup version not synced to v0.15.0');
+  round33Ok = false;
+}
+if (!storageContent.includes('exportLocalBackup') || !storageContent.includes('importLocalBackup')) {
+  fail('Round 3.3: storage.js backup functions missing');
+  round33Ok = false;
+}
+
+// 11. formatSavedAt 时间格式化函数存在
+if (!favReviewJs33.includes('formatSavedAt') || !favReviewJs33.includes('getFullYear')) {
+  fail('Round 3.3: favorite-review.js missing formatSavedAt time formatting');
+  round33Ok = false;
+}
+
+// 12. searchEmpty 状态存在
+if (!favReviewJs33.includes('searchEmpty') || !favReviewWxml33.includes('searchEmpty')) {
+  fail('Round 3.3: favorite-review missing search-empty state');
+  round33Ok = false;
+}
+
+// 13. 列表模式样式存在
+if (!favReviewWxss33.includes('fav-list') || !favReviewWxss33.includes('mode-switch')) {
+  fail('Round 3.3: favorite-review.wxss missing list-mode styles');
+  round33Ok = false;
+}
+
+if (round33Ok) pass('Round Mini 3.3 glossary favorites review checks');
 
 // ============================================================
 console.log('\n--- preloadRule 分包预下载检查 ---');
