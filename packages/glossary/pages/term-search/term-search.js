@@ -29,7 +29,20 @@ Page({
   // R3.41 搜索防抖定时器
   _searchTimer: null,
 
-  onLoad: function () {
+  onLoad: function (options) {
+    // R3.54 随机术语：如果传入 random=1，随机选一个术语并跳转详情
+    if (options && options.random === '1') {
+      var data = glossaryIndex;
+      if (data && data.length > 0) {
+        var randomIndex = Math.floor(Math.random() * data.length);
+        var randomTermId = data[randomIndex].id;
+        wx.redirectTo({
+          url: '/packages/glossary/pages/term-detail/term-detail?id=' + randomTermId
+        });
+        return;
+      }
+    }
+
     var data = glossaryIndex;
     // R3.37 提取所有分类
     var categorySet = {};

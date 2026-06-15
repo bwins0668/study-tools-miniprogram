@@ -10,6 +10,10 @@
     <view class="launcher-btn launcher-btn-secondary" bindtap="goToFavoriteReview">
       <text class="launcher-btn-text">复习收藏术语（{{favoriteCount}}）</text>
     </view>
+    <!-- R3.54 随机术语按钮 -->
+    <view class="launcher-btn launcher-btn-random" bindtap="goToRandomTerm">
+      <text class="launcher-btn-text">🎲 随机术语</text>
+    </view>
     <text class="launcher-hint" wx:if="{{favoriteCount > 0}}">已收藏 {{favoriteCount}} 条术语</text>
   </view>
 </view>

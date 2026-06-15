@@ -21,5 +21,12 @@ Page({
     wx.navigateTo({
       url: '/packages/glossary/pages/favorite-review/favorite-review'
     });
+  },
+
+  // R3.54 随机术语：跳转到术语搜索页，并触发随机筛选
+  goToRandomTerm: function () {
+    wx.navigateTo({
+      url: '/packages/glossary/pages/term-search/term-search?random=1'
+    });
   }
 });

@@ -6370,6 +6370,65 @@ if (quizJs353.indexOf('retryWrongQuestions') < 0) {
 
 if (round353Ok) pass('Round Mini 3.53 home practice completion celebration');
 
+// ============================================================
+// Round Mini 3.54 glossary random term button
+// ============================================================
+var round354Ok = true;
+
+// A. glossary.js 包含 goToRandomTerm 方法
+var glossaryJs354 = readFile('pages/glossary/glossary.js');
+if (glossaryJs354.indexOf('goToRandomTerm') < 0) {
+  fail('R3.54: goToRandomTerm method missing in glossary.js');
+  round354Ok = false;
+}
+if (glossaryJs354.indexOf('random=1') < 0) {
+  fail('R3.54: random=1 parameter missing in glossary.js');
+  round354Ok = false;
+}
+
+// B. glossary.wxml 包含随机术语按钮
+var glossaryWxml354 = readFile('pages/glossary/glossary.wxml');
+if (glossaryWxml354.indexOf('goToRandomTerm') < 0) {
+  fail('R3.54: goToRandomTerm button missing in glossary.wxml');
+  round354Ok = false;
+}
+if (glossaryWxml354.indexOf('🎲') < 0) {
+  fail('R3.54: 🎲 icon missing in glossary.wxml');
+  round354Ok = false;
+}
+
+// C. glossary.wxss 包含随机术语按钮样式
+var glossaryWxss354 = readFile('pages/glossary/glossary.wxss');
+if (glossaryWxss354.indexOf('.launcher-btn-random') < 0) {
+  fail('R3.54: .launcher-btn-random style missing in glossary.wxss');
+  round354Ok = false;
+}
+
+// D. term-search.js 支持 random=1 参数
+var termSearchJs354 = readFile('packages/glossary/pages/term-search/term-search.js');
+if (termSearchJs354.indexOf('options.random') < 0) {
+  fail('R3.54: random=1 handling missing in term-search.js');
+  round354Ok = false;
+}
+if (termSearchJs354.indexOf('randomIndex') < 0) {
+  fail('R3.54: random selection logic missing in term-search.js');
+  round354Ok = false;
+}
+
+// E. 回归：R3.32~R3.53 功能未退化
+var homeJs354 = readFile('pages/home/home.js');
+if (homeJs354.indexOf('generateLearningReminder') < 0) {
+  fail('R3.54: R3.52 generateLearningReminder regressed in home.js');
+  round354Ok = false;
+}
+var quizJs354 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs354.indexOf('retryWrongQuestions') < 0) {
+  fail('R3.54: R3.50 retryWrongQuestions regressed in quiz.js');
+  round354Ok = false;
+}
+
+if (round354Ok) pass('Round Mini 3.54 glossary random term button');
+
 
 console.log('\n========================================');
 console.log('Study Tools Mini Smoke Test');

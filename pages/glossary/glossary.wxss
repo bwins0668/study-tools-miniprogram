@@ -47,6 +47,12 @@
   box-shadow: 0 4rpx 16rpx rgba(232, 145, 58, 0.3);
 }
 
+/* R3.54 随机术语按钮 */
+.launcher-btn-random {
+  background-color: #9c27b0;
+  box-shadow: 0 4rpx 16rpx rgba(156, 39, 176, 0.3);
+}
+
 .launcher-btn-text {
   font-size: 30rpx;
   font-weight: 600;
