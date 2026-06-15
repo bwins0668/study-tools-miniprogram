@@ -6722,6 +6722,40 @@ if (homeJs360.indexOf('getDailyQuote') < 0) {
 
 if (round360Ok) pass('Round Mini 3.60 quiz hint button');
 
+// ============================================================
+// Round Mini 3.61 home practice reminder
+// ============================================================
+var round361Ok = true;
+
+// A. home.js contains practiceReminder field
+var homeJs361 = readFile("pages/home/home.js");
+if (homeJs361.indexOf("practiceReminder") < 0) {
+  fail("R3.61: practiceReminder field missing in home.js");
+  round361Ok = false;
+}
+if (homeJs361.indexOf("天前") < 0) {
+  fail("R3.61: days ago calculation missing in home.js");
+  round361Ok = false;
+}
+
+// B. home.wxml contains reminder display
+var homeWxml361 = readFile("pages/home/home.wxml");
+if (homeWxml361.indexOf("practice-reminder-banner") < 0) {
+  fail("R3.61: practice-reminder-banner missing in home.wxml");
+  round361Ok = false;
+}
+
+// C. home.wxss contains reminder styles
+var homeWxss361 = readFile("pages/home/home.wxss");
+if (homeWxss361.indexOf(".practice-reminder-banner") < 0) {
+  fail("R3.61: .practice-reminder-banner style missing in home.wxss");
+  round361Ok = false;
+}
+
+if (round361Ok) pass("Round Mini 3.61 home practice reminder");
+
+
+
 
 console.log('========================================');
 console.log('Passed: ' + passed);
