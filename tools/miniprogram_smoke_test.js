@@ -3123,6 +3123,255 @@ if (!favReviewJs319.includes('switchToListMode') || !favReviewJs319.includes('sw
 if (round319Ok) pass('Round Mini 3.19 favorite review enhancement checks');
 
 // ============================================================
+// Round Mini 3.20 continue practice + quiz insights checks
+// ============================================================
+console.log('\n--- Round Mini 3.20 continue practice + quiz insights checks ---');
+
+var round320Ok = true;
+var appJs320 = readFile('app.js');
+var storage320 = readFile('utils/storage.js');
+var homeJs320 = readFile('pages/home/home.js');
+var homeWxml320 = readFile('pages/home/home.wxml');
+var homeWxss320 = readFile('pages/home/home.wxss');
+var quizJs320 = readFile('packages/quiz/pages/quiz/quiz.js');
+var quizWxml320 = readFile('packages/quiz/pages/quiz/quiz.wxml');
+var quizWxss320 = readFile('packages/quiz/pages/quiz/quiz.wxss');
+
+// === 版本号 ===
+if (!appJs320.includes('v0.21.0')) {
+  fail('Round 3.20: app.js missing v0.21.0');
+  round320Ok = false;
+}
+
+// === A. 首页继续练习入口增强 ===
+
+// 1. home.js 存在 lastAttemptAccuracy 字段
+if (!homeJs320.includes('lastAttemptAccuracy')) {
+  fail('Round 3.20: home.js missing lastAttemptAccuracy');
+  round320Ok = false;
+}
+
+// 2. home.js 存在 continueSuggestion 字段
+if (!homeJs320.includes('continueSuggestion')) {
+  fail('Round 3.20: home.js missing continueSuggestion');
+  round320Ok = false;
+}
+
+// 3. home.js 计算 continueSuggestion（基于准确率级别）
+if (!homeJs320.includes('继续保持节奏') || !homeJs320.includes('建议再练一组') || !homeJs320.includes('先复盘错题')) {
+  fail('Round 3.20: home.js incomplete continueSuggestion logic');
+  round320Ok = false;
+}
+
+// 4. home.js 准确率判断使用 >= 80 / >= 60 / else 三级
+if (!homeJs320.includes('>= 80') || !homeJs320.includes('>= 60')) {
+  fail('Round 3.20: home.js missing accuracy tier thresholds');
+  round320Ok = false;
+}
+
+// 5. home.wxml 继续练习卡片有 continue-meta-row
+if (!homeWxml320.includes('continue-meta-row')) {
+  fail('Round 3.20: home.wxml continue card missing continue-meta-row');
+  round320Ok = false;
+}
+
+// 6. home.wxml 继续练习卡片有 continue-time（最后练习时间）
+if (!homeWxml320.includes('continue-time')) {
+  fail('Round 3.20: home.wxml continue card missing continue-time');
+  round320Ok = false;
+}
+
+// 7. home.wxml 有 continue-suggestion-bar
+if (!homeWxml320.includes('continue-suggestion-bar')) {
+  fail('Round 3.20: home.wxml missing continue-suggestion-bar');
+  round320Ok = false;
+}
+
+// 8. home.wxss 有 continue-meta-row 样式
+if (!homeWxss320.includes('continue-meta-row')) {
+  fail('Round 3.20: home.wxss missing continue-meta-row style');
+  round320Ok = false;
+}
+
+// 9. home.wxss 有 continue-time 样式
+if (!homeWxss320.includes('continue-time')) {
+  fail('Round 3.20: home.wxss missing continue-time style');
+  round320Ok = false;
+}
+
+// 10. home.wxss 有 continue-suggestion-bar 样式
+if (!homeWxss320.includes('continue-suggestion-bar')) {
+  fail('Round 3.20: home.wxss missing continue-suggestion-bar style');
+  round320Ok = false;
+}
+
+// 11. home 继续练习入口点击行为不变
+if (!homeJs320.includes('continueLearning')) {
+  fail('Round 3.20: home continueLearning handler broken');
+  round320Ok = false;
+}
+
+// 12. home 无记录空状态仍显示
+if (!homeWxml320.includes('快速开始') || !homeJs320.includes('quickStart')) {
+  fail('Round 3.20: home empty state quick start broken');
+  round320Ok = false;
+}
+
+// === B. 结果页轻量学习洞察 ===
+
+// 13. quiz.js 存在 accuracyLevel 字段
+if (!quizJs320.includes('accuracyLevel')) {
+  fail('Round 3.20: quiz.js missing accuracyLevel');
+  round320Ok = false;
+}
+
+// 14. quiz.js 存在 insightHint 字段
+if (!quizJs320.includes('insightHint')) {
+  fail('Round 3.20: quiz.js missing insightHint');
+  round320Ok = false;
+}
+
+// 15. quiz.js showPracticeResult 使用 3 级阈值: >= 85 / >= 60 / else
+if (!quizJs320.includes('>= 85') || !quizJs320.includes('>= 60')) {
+  fail('Round 3.20: quiz.js missing accuracy tier thresholds (85/60)');
+  round320Ok = false;
+}
+
+// 16. quiz.js 3 级标签: good / moderate / low
+if (!quizJs320.includes("'good'") || !quizJs320.includes("'moderate'") || !quizJs320.includes("'low'")) {
+  fail('Round 3.20: quiz.js missing accuracy levels (good/moderate/low)');
+  round320Ok = false;
+}
+
+// 17. quiz.js resetSession 重置 insight 字段
+if (quizJs320.includes('resetSession')) {
+  var resetFn = quizJs320.match(/resetSession[\s\S]*?^\},/m);
+  if (resetFn && resetFn[0]) {
+    if (!resetFn[0].includes('accuracyLevel') || !resetFn[0].includes('insightHint')) {
+      fail('Round 3.20: quiz.js resetSession missing insight field reset');
+      round320Ok = false;
+    }
+  }
+}
+
+// 18. quiz.wxml 有 insight-block 元素
+if (!quizWxml320.includes('insight-block')) {
+  fail('Round 3.20: quiz.wxml missing insight-block');
+  round320Ok = false;
+}
+
+// 19. quiz.wxml 有 insight-{{accuracyLevel}} 动态样式绑定
+if (!quizWxml320.includes('insight-{{accuracyLevel}}')) {
+  fail('Round 3.20: quiz.wxml missing dynamic accuracy level class');
+  round320Ok = false;
+}
+
+// 20. quiz.wxss 有 insight-good / insight-moderate / insight-low 样式
+if (!quizWxss320.includes('insight-good') || !quizWxss320.includes('insight-moderate') || !quizWxss320.includes('insight-low')) {
+  fail('Round 3.20: quiz.wxss missing insight level styles');
+  round320Ok = false;
+}
+
+// 21. quiz.wxss 有 insight-label / insight-hint 样式
+if (!quizWxss320.includes('insight-label') || !quizWxss320.includes('insight-hint')) {
+  fail('Round 3.20: quiz.wxss missing insight text styles');
+  round320Ok = false;
+}
+
+// 22. quiz 结果页原有按钮仍存在（再练一次、查看错题、返回首页）
+if (!quizWxml320.includes('再练一次') || !quizJs320.includes('restartPractice')) {
+  fail('Round 3.20: quiz restart practice broken');
+  round320Ok = false;
+}
+if (!quizWxml320.includes('查看错题') || !quizJs320.includes('goMistakes')) {
+  fail('Round 3.20: quiz mistakes entry broken');
+  round320Ok = false;
+}
+if (!quizWxml320.includes('返回首页') || !quizJs320.includes('goHome')) {
+  fail('Round 3.20: quiz home entry broken');
+  round320Ok = false;
+}
+
+// === 通用合规 ===
+
+// 23. 无新 storage keys
+var all320 = homeJs320 + quizJs320 + storage320;
+var keyPattern320 = /study-tools-mini-(?!favorite-terms-v1|wrong-questions-v1|quiz-attempts-v1)/;
+if (keyPattern320.test(storage320)) {
+  fail('Round 3.20: new storage key detected');
+  round320Ok = false;
+}
+
+// 24. exportLocalBackup 版本保持 v0.21.0
+if (!storage320.includes("version: 'v0.21.0'")) {
+  fail('Round 3.20: storage.js backup version not v0.21.0');
+  round320Ok = false;
+}
+
+// 25. 无危险 API
+var forbidden320 = ['wx.request', 'wx.cloud', 'cloud.init', 'wx.login', 'wx.getUserInfo', 'wx.requestPayment'];
+for (var a320 = 0; a320 < forbidden320.length; a320++) {
+  if (all320.includes(forbidden320[a320])) {
+    fail('Round 3.20: forbidden API found: ' + forbidden320[a320]);
+    round320Ok = false;
+  }
+}
+
+// 26. 无高风险表述
+var banned320 = ['保证通过', '包过', '押题', '必过', '100%通过', '内部资料', '官方答案', '绝对安全'];
+for (var b320 = 0; b320 < banned320.length; b320++) {
+  if (all320.includes(banned320[b320])) {
+    fail('Round 3.20: banned text found: ' + banned320[b320]);
+    round320Ok = false;
+  }
+}
+
+// 27. Round 3.17 mistakes 功能仍存在
+var mistakesJs320 = readFile('pages/mistakes/mistakes.js');
+if (!mistakesJs320.includes('getWrongQuestionStats')) {
+  fail('Round 3.20: Round 3.17 mistakes features broken');
+  round320Ok = false;
+}
+
+// 28. Round 3.17 profile 连续学习天数仍存在
+var profileJs320 = readFile('pages/profile/profile.js');
+if (!profileJs320.includes('getConsecutiveLearningDays')) {
+  fail('Round 3.20: Round 3.17 profile consecutive days broken');
+  round320Ok = false;
+}
+
+// 29. Round 3.18 home 弱项徽标仍存在
+if (!homeWxml320.includes('card-weak-badge')) {
+  fail('Round 3.20: Round 3.18 home weak badge broken');
+  round320Ok = false;
+}
+
+// 30. Round 3.19 favorite-review 增强仍存在
+var favReviewJs320 = readFile('packages/glossary/pages/favorite-review/favorite-review.js');
+if (!favReviewJs320.includes('lastSavedAtFormatted')) {
+  fail('Round 3.20: Round 3.19 favorite-review lastSavedAtFormatted broken');
+  round320Ok = false;
+}
+if (!storage320.includes('getFavoriteTermStats')) {
+  fail('Round 3.20: Round 3.19 storage getFavoriteTermStats broken');
+  round320Ok = false;
+}
+
+// 31. quiz 答题流程不变（selectAnswer、nextQuestion 仍存在）
+if (!quizJs320.includes('selectAnswer') || !quizJs320.includes('nextQuestion')) {
+  fail('Round 3.20: quiz core flow broken (selectAnswer/nextQuestion)');
+  round320Ok = false;
+}
+
+// 32. quiz 错题保存逻辑不变
+if (!quizJs320.includes('addWrongQuestion') || !quizJs320.includes('addQuizAttempt')) {
+  fail('Round 3.20: quiz wrong question saving broken');
+  round320Ok = false;
+}
+
+if (round320Ok) pass('Round Mini 3.20 continue practice + quiz insights checks');
+
+// ============================================================
 // 汇总
 // ============================================================
 console.log('\n========================================');

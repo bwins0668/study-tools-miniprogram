@@ -48,9 +48,15 @@
       <view class="continue-icon">📚</view>
       <view class="continue-info">
         <text class="continue-exam">{{lastExamLabel}} · {{lastSourceLabel}}</text>
-        <text class="continue-hint">继续上次的练习</text>
+        <view class="continue-meta-row">
+          <text class="continue-hint">继续上次的练习</text>
+          <text class="continue-time" wx:if="{{lastPracticeTimeText}}">{{lastPracticeTimeText}}</text>
+        </view>
       </view>
       <view class="continue-btn">继续练习</view>
+    </view>
+    <view class="continue-suggestion-bar" wx:if="{{continueSuggestion}}">
+      <text class="continue-suggestion-text">{{continueSuggestion}}</text>
     </view>
   </view>
 

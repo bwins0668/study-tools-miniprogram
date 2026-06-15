@@ -302,6 +302,33 @@
   color: #999999;
 }
 
+.continue-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.continue-time {
+  font-size: 20rpx;
+  color: #bbbbbb;
+}
+
+.continue-suggestion-bar {
+  display: flex;
+  align-items: center;
+  margin-top: 12rpx;
+  padding: 12rpx 24rpx;
+  background-color: #f0f7ff;
+  border-radius: 10rpx;
+  border-left: 6rpx solid #4a90d9;
+}
+
+.continue-suggestion-text {
+  font-size: 24rpx;
+  color: #4a6d8c;
+  line-height: 1.5;
+}
+
 .continue-btn {
   font-size: 26rpx;
   color: #ffffff;

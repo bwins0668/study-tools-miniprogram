@@ -72,7 +72,10 @@ Page({
     itpassLastTime: '',
     sgLastTime: '',
     itpassWeak: false,
-    sgWeak: false
+    sgWeak: false,
+    // v0.21.0 第四批：继续练习入口增强
+    lastAttemptAccuracy: 0,
+    continueSuggestion: ''
   },
 
   onShow: function () {
@@ -149,6 +152,25 @@ Page({
     // 生成建议
     var suggestion = generateSuggestion(wrongQuestionCount, favoriteCount, hasLastAttempt, stats.todayTotal || 0);
 
+    // 继续练习入口增强：上次练习方向准确率 + 建议
+    var lastAttemptAccuracy = 0;
+    var continueSuggestion = '';
+    if (lastAttempt && lastAttempt.exam && lastAttempt.sourceType !== 'wrong_only') {
+      var examStats = byExam[lastAttempt.exam];
+      if (examStats && examStats.total > 0) {
+        lastAttemptAccuracy = examStats.accuracy || 0;
+      }
+    }
+    if (lastAttemptAccuracy > 0) {
+      if (lastAttemptAccuracy >= 80) {
+        continueSuggestion = '上次表现不错，继续保持节奏';
+      } else if (lastAttemptAccuracy >= 60) {
+        continueSuggestion = '上次正确率一般，建议再练一组巩固';
+      } else {
+        continueSuggestion = '上次正确率较低，建议先复盘错题';
+      }
+    }
+
     this.setData({
       favoriteCount: favoriteCount,
       wrongQuestionCount: wrongQuestionCount,
@@ -172,7 +194,9 @@ Page({
       itpassLastTime: itpassLastTime,
       sgLastTime: sgLastTime,
       itpassWeak: itpassWeak,
-      sgWeak: sgWeak
+      sgWeak: sgWeak,
+      lastAttemptAccuracy: lastAttemptAccuracy,
+      continueSuggestion: continueSuggestion
     });
   },
 

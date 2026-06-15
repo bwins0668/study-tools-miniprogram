@@ -22,7 +22,10 @@ Page({
     sessionCorrect: 0,
     sessionWrong: 0,
     sessionAccuracy: 0,
-    encouragementText: ''
+    encouragementText: '',
+    // v0.21.0 第四批：结果页轻量洞察
+    accuracyLevel: '',
+    insightHint: ''
   },
 
   onLoad: function (options) {
@@ -139,15 +142,35 @@ Page({
     var accuracy = this.data.sessionTotal > 0
       ? Math.round(this.data.sessionCorrect / this.data.sessionTotal * 100)
       : 0;
-    var encouragement = accuracy >= 80
-      ? '表现很好，继续保持'
-      : (accuracy >= 50 ? '已经有进步，建议复习错题' : '建议先复习术语和错题');
+
+    // 3级学习洞察
+    var accuracyLevel = '';
+    var encouragement = '';
+    var insightHint = '';
+    if (this.data.sessionTotal === 0) {
+      encouragement = '本次无答题记录';
+      accuracyLevel = 'none';
+    } else if (accuracy >= 85) {
+      accuracyLevel = 'good';
+      encouragement = '掌握较好';
+      insightHint = '继续保持练习节奏，可以尝试其他考试方向';
+    } else if (accuracy >= 60) {
+      accuracyLevel = 'moderate';
+      encouragement = '建议继续巩固';
+      insightHint = '建议再练一组巩固薄弱知识点';
+    } else {
+      accuracyLevel = 'low';
+      encouragement = '建议复盘错题';
+      insightHint = '建议先到错题本复习相关题目';
+    }
 
     this.setData({
       isFinished: true,
       showResult: true,
       sessionAccuracy: accuracy,
-      encouragementText: encouragement
+      encouragementText: encouragement,
+      accuracyLevel: accuracyLevel,
+      insightHint: insightHint
     });
   },
 
@@ -164,7 +187,9 @@ Page({
       sessionCorrect: 0,
       sessionWrong: 0,
       sessionAccuracy: 0,
-      encouragementText: ''
+      encouragementText: '',
+      accuracyLevel: '',
+      insightHint: ''
     });
   },
 

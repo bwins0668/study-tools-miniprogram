@@ -429,15 +429,69 @@
   line-height: 1.4;
 }
 
-.encouragement-text {
-  display: block;
-  margin: 28rpx 0;
-  padding: 18rpx 20rpx;
-  border-radius: 12rpx;
+/* 学习洞察块 */
+.insight-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 24rpx 0 8rpx;
+  padding: 22rpx 24rpx;
+  border-radius: 14rpx;
+}
+
+.insight-good {
+  background-color: #e8f5e9;
+}
+
+.insight-moderate {
   background-color: #eef5fd;
-  font-size: 27rpx;
+}
+
+.insight-low {
+  background-color: #fff3e0;
+}
+
+.insight-none {
+  background-color: #f5f5f5;
+}
+
+.insight-header {
+  display: flex;
+  align-items: center;
+}
+
+.insight-icon {
+  font-size: 36rpx;
+  margin-right: 12rpx;
+}
+
+.insight-label {
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.insight-good .insight-label {
+  color: #2e7d32;
+}
+
+.insight-moderate .insight-label {
   color: #356a9f;
+}
+
+.insight-low .insight-label {
+  color: #e65100;
+}
+
+.insight-none .insight-label {
+  color: #999999;
+}
+
+.insight-hint {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  color: #666666;
   line-height: 1.5;
+  text-align: center;
 }
 
 .result-actions {

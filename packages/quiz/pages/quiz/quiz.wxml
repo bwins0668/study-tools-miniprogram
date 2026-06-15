@@ -99,7 +99,14 @@
         </view>
       </view>
 
-      <text class="encouragement-text">{{encouragementText}}</text>
+      <!-- 学习洞察 -->
+      <view class="insight-block insight-{{accuracyLevel}}">
+        <view class="insight-header">
+          <text class="insight-icon">{{accuracyLevel === 'good' ? '🌟' : (accuracyLevel === 'moderate' ? '📖' : (accuracyLevel === 'low' ? '🎯' : ''))}}</text>
+          <text class="insight-label">{{encouragementText}}</text>
+        </view>
+        <text class="insight-hint" wx:if="{{insightHint}}">{{insightHint}}</text>
+      </view>
 
       <view class="result-actions">
         <view class="result-btn result-btn-primary" bindtap="restartPractice">
