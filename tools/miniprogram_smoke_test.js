@@ -4852,6 +4852,173 @@ if (pageCheckOk330) { /* all pages intact */ }
 if (round330Ok) pass('Round Mini 3.30 stability enhancement');
 
 // ============================================================
+// Round Mini 3.31：最终轮稳定性收尾 + 五轮边界审计
+// ============================================================
+console.log('\n--- Round Mini 3.31 final stability audit ---');
+var round331Ok = true;
+
+// A. WXML 禁止表述扫描（R3.30 扫了 JS，本轮补扫 WXML）
+var forbiddenTexts331 = ['保证通过', '包过', '押题', '必过', '100%通过', '内部资料', '官方答案', '绝对安全', '永久保存', '云端同步', '自动备份', '保证恢复'];
+var wxmlFiles331 = [];
+function findWxml(dir) {
+  if (!fs.existsSync(dir)) return;
+  fs.readdirSync(dir, {withFileTypes: true}).forEach(function(e) {
+    var p = path.join(dir, e.name);
+    if (e.isDirectory()) findWxml(p);
+    else if (e.name.endsWith('.wxml')) wxmlFiles331.push(p);
+  });
+}
+findWxml('pages');
+findWxml('packages');
+var wxmlHits331 = [];
+for (var wi = 0; wi < wxmlFiles331.length; wi++) {
+  try {
+    var wc = fs.readFileSync(wxmlFiles331[wi], 'utf-8');
+    for (var ti = 0; ti < forbiddenTexts331.length; ti++) {
+      if (wc.indexOf(forbiddenTexts331[ti]) >= 0) {
+        wxmlHits331.push(wxmlFiles331[wi] + ' -> ' + forbiddenTexts331[ti]);
+      }
+    }
+  } catch (ex) {}
+}
+if (wxmlHits331.length > 0) {
+  fail('R3.31: WXML forbidden text hits: ' + wxmlHits331.join('; '));
+  round331Ok = false;
+}
+
+// B. 导航路径完整性：提取所有 wx.navigateTo/switchTab 目标路径，验证页面存在
+var navTargets331 = {};
+var allPagePaths331 = [];
+var appJson331b = JSON.parse(readFile('app.json'));
+(appJson331b.pages || []).forEach(function(p) { allPagePaths331.push('/' + p); });
+(appJson331b.subpackages || []).forEach(function(sp) {
+  (sp.pages || []).forEach(function(p) { allPagePaths331.push('/' + sp.root + '/' + p); });
+});
+// 扫描所有 JS 中的导航调用
+var allJsFiles331 = [];
+function findJs(dir) {
+  if (!fs.existsSync(dir)) return;
+  fs.readdirSync(dir, {withFileTypes: true}).forEach(function(e) {
+    var p = path.join(dir, e.name);
+    if (e.isDirectory()) findJs(p);
+    else if (e.name.endsWith('.js') && p.indexOf('smoke_test') < 0 && p.indexOf('generated-backup') < 0) allJsFiles331.push(p);
+  });
+}
+findJs('pages');
+findJs('packages');
+for (var ji = 0; ji < allJsFiles331.length; ji++) {
+  try {
+    var jc = fs.readFileSync(allJsFiles331[ji], 'utf-8');
+    var navMatches = jc.match(/wx\.(?:navigateTo|switchTab|redirectTo)\s*\(\s*\{[^}]*url\s*:\s*['"]([^'"]+)['"]/g);
+    if (navMatches) {
+      navMatches.forEach(function(m) {
+        var urlMatch = m.match(/url\s*:\s*['"]([^'"]+)['"]/);
+        if (urlMatch) {
+          var url = urlMatch[1];
+          // 去掉 query string
+          var pathOnly = url.split('?')[0];
+          // 处理相对路径
+          if (pathOnly.indexOf('/') !== 0) {
+            var fileDir = path.dirname(allJsFiles331[ji]);
+            var resolved = path.resolve(fileDir, pathOnly).replace(/\\/g, '/');
+            // 提取 pages/ 或 packages/ 之后的路径
+            var idx = resolved.indexOf('/pages/');
+            if (idx < 0) idx = resolved.indexOf('/packages/');
+            if (idx >= 0) pathOnly = resolved.substring(idx);
+          }
+          if (pathOnly && pathOnly.indexOf('/') === 0) {
+            navTargets331[pathOnly] = true;
+          }
+        }
+      });
+    }
+  } catch (ex) {}
+}
+var navBroken331 = [];
+for (var nk in navTargets331) {
+  if (allPagePaths331.indexOf(nk) < 0) {
+    navBroken331.push(nk);
+  }
+}
+if (navBroken331.length > 0) {
+  fail('R3.31: broken navigation targets: ' + navBroken331.join(', '));
+  round331Ok = false;
+}
+
+// C. v0.22.0 功能边界测试
+// C1: examBadge 边界（未知考试方向 fallback）
+var quizJs331 = readFile('packages/quiz/pages/quiz/quiz.js');
+var hasDefaultBadge = quizJs331.indexOf('examBadge') >= 0 &&
+  (quizJs331.match(/\|\|\s*['"]IT/g) || quizJs331.match(/\|\|\s*['"]SG/g) || quizJs331.match(/examBadge\s*=\s*['"][A-Z]/g));
+// C2: progressPercent NaN防护（0/0 除法安全）
+var hasProgressGuard = quizJs331.indexOf('progressPercent') >= 0 && (quizJs331.indexOf('|| 0') >= 0);
+// C3: nextAction 全覆盖（4种级别都有默认文案）
+var nextActionCount331 = (quizJs331.match(/nextAction/g) || []).length;
+var hasAllActions = nextActionCount331 >= 4;
+// C4: categoryLabel 未知分类 fallback
+var tdJs331 = readFile('packages/glossary/pages/term-detail/term-detail.js');
+var hasCatFallback = tdJs331.indexOf('getCategoryLabel') >= 0 &&
+  (tdJs331.indexOf('return') >= tdJs331.indexOf('getCategoryLabel') || tdJs331.indexOf('default') >= 0 || tdJs331.match(/\|\|\s*['"][^'"]+['"]/) !== null);
+// C5: buildLearningTip 为 null term 时的安全处理
+var hasTipNullGuard = tdJs331.indexOf('buildLearningTip') >= 0 &&
+  (tdJs331.indexOf('if') >= 0 && tdJs331.indexOf('buildLearningTip') < tdJs331.lastIndexOf('if'));
+
+if (!hasDefaultBadge && !hasProgressGuard) { fail('R3.31: boundary guard missing in quiz'); round331Ok = false; }
+if (!hasAllActions) { fail('R3.31: nextAction coverage incomplete'); round331Ok = false; }
+if (!hasCatFallback) { fail('R3.31: categoryLabel fallback missing'); round331Ok = false; }
+
+// D. v0.22.0 全轮共存完整性
+var v022Features = [
+  // R3.27
+  { file: 'packages/quiz/pages/quiz/quiz.js', checks: ['examBadge', 'progressPercent', 'feedbackTip', 'showFeedbackTip'] },
+  // R3.28
+  { file: 'packages/quiz/pages/quiz/quiz.js', checks: ['nextAction', 'hasWrongQuestions'] },
+  // R3.29
+  { file: 'packages/glossary/pages/term-detail/term-detail.js', checks: ['categoryLabel', 'learningTip', 'getCategoryLabel', 'buildLearningTip'] },
+  // R3.20 (quiz insights)
+  { file: 'packages/quiz/pages/quiz/quiz.js', checks: ['accuracyLevel', 'insightHint'] },
+  // R3.22 (exam-menu)
+  { file: 'packages/quiz/pages/exam-menu/exam-menu.js', checks: ['overallTotal', 'overallCorrect', 'overallAccuracy', 'suggestion', 'formatTimeAgo'] },
+  // R3.23 (term-detail navigation)
+  { file: 'packages/glossary/pages/term-detail/term-detail.js', checks: ['navigateBack', 'switchTab'] }
+];
+for (var fi = 0; fi < v022Features.length; fi++) {
+  try {
+    var fc = readFile(v022Features[fi].file);
+    for (var ci = 0; ci < v022Features[fi].checks.length; ci++) {
+      if (fc.indexOf(v022Features[fi].checks[ci]) < 0) {
+        fail('R3.31: v0.22.0 feature missing in ' + v022Features[fi].file + ': ' + v022Features[fi].checks[ci]);
+        round331Ok = false;
+      }
+    }
+  } catch (ex) {
+    fail('R3.31: cannot read ' + v022Features[fi].file + ': ' + ex.message);
+    round331Ok = false;
+  }
+}
+
+// E. Storage 最终确认：零新 key、格式一致
+var storageContent331 = readFile('utils/storage.js');
+var allKeys331 = storageContent331.match(/study-tools-mini-[a-z-]+-v1/g) || [];
+var uniqueKeys331 = {};
+allKeys331.forEach(function(k) { uniqueKeys331[k] = true; });
+var keyNames331 = Object.keys(uniqueKeys331);
+if (keyNames331.length !== 3) {
+  fail('R3.31: storage key count is ' + keyNames331.length + ', expected 3: ' + keyNames331.join(', '));
+  round331Ok = false;
+}
+// 验证是固定的3个key
+var expectedKeys331 = ['study-tools-mini-favorite-terms-v1', 'study-tools-mini-wrong-questions-v1', 'study-tools-mini-quiz-attempts-v1'];
+for (var ek = 0; ek < expectedKeys331.length; ek++) {
+  if (keyNames331.indexOf(expectedKeys331[ek]) < 0) {
+    fail('R3.31: expected storage key missing: ' + expectedKeys331[ek]);
+    round331Ok = false;
+  }
+}
+
+if (round331Ok) pass('Round Mini 3.31 final stability audit');
+
+// ============================================================
 // 汇总
 // ============================================================
 console.log('\n========================================');
