@@ -1,4 +1,10 @@
 <view class="page">
+  <!-- 返回导航 (Round 3.23) -->
+  <view class="back-nav" bindtap="onBackToSearch">
+    <text class="back-arrow">‹</text>
+    <text class="back-text">返回术语搜索</text>
+  </view>
+
   <block wx:if="{{term}}">
     <view class="card">
       <view class="term-header">
@@ -30,9 +36,13 @@
       <text class="paragraph">{{exampleText}}</text>
     </view>
 
+    <!-- 收藏按钮增强 (Round 3.23) -->
     <view class="favorite-btn {{isFavorite ? 'favorite-btn-active' : ''}}" bindtap="onFavorite">
       <text class="favorite-star">{{isFavorite ? '★' : '☆'}}</text>
-      <text class="favorite-text">{{isFavorite ? '取消收藏' : '收藏术语'}}</text>
+      <view class="favorite-info">
+        <text class="favorite-text">{{isFavorite ? '取消收藏' : '收藏术语'}}</text>
+        <text class="favorite-hint">{{isFavorite ? '已加入收藏列表，可在收藏复习中查看' : '收藏后可在我的页面查看和复习'}}</text>
+      </view>
     </view>
   </block>
 

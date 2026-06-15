@@ -3,6 +3,26 @@
   min-height: 100vh;
 }
 
+/* 返回导航 (Round 3.23) */
+.back-nav {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 30rpx;
+  margin-bottom: 8rpx;
+}
+
+.back-arrow {
+  font-size: 48rpx;
+  color: #4a90d9;
+  margin-right: 8rpx;
+  line-height: 1;
+}
+
+.back-text {
+  font-size: 28rpx;
+  color: #4a90d9;
+}
+
 .card {
   background-color: #ffffff;
   border-radius: 16rpx;
@@ -74,26 +94,42 @@
 .favorite-btn {
   display: flex;
   align-items: center;
-  justify-content: center;
   background-color: #ffffff;
-  border-radius: 40rpx;
-  margin: 40rpx 60rpx;
-  padding: 28rpx;
+  border-radius: 16rpx;
+  margin: 40rpx 30rpx;
+  padding: 28rpx 32rpx;
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
 }
 
 .favorite-btn-active {
-  background-color: #fdf4e8;
+  background-color: #fff8e1;
+  border: 1rpx solid #ffe082;
 }
 
 .favorite-star {
-  font-size: 36rpx;
+  font-size: 40rpx;
   color: #e8913a;
-  margin-right: 12rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+  width: 48rpx;
+  text-align: center;
+}
+
+.favorite-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .favorite-text {
   font-size: 30rpx;
   font-weight: 600;
   color: #4a90d9;
+  margin-bottom: 4rpx;
+}
+
+.favorite-hint {
+  font-size: 22rpx;
+  color: #999999;
+  line-height: 1.4;
 }

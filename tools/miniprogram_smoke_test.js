@@ -3891,6 +3891,202 @@ if (!examMenuJs322.includes('getQuizStatsByFilter')) {
 if (round322Ok) pass('Round Mini 3.22 exam-menu enhancement checks');
 
 // ============================================================
+// Round Mini 3.23 term-detail enhancement checks
+// ============================================================
+console.log('\n--- Round Mini 3.23 term-detail enhancement checks ---');
+
+var round323Ok = true;
+var appJs323 = readFile('app.js');
+var termDetailJs323 = readFile('packages/glossary/pages/term-detail/term-detail.js');
+var termDetailWxml323 = readFile('packages/glossary/pages/term-detail/term-detail.wxml');
+var termDetailWxss323 = readFile('packages/glossary/pages/term-detail/term-detail.wxss');
+var storage323 = readFile('utils/storage.js');
+
+// === A. term-detail.js 新增功能 ===
+// 1. 存在 onBackToSearch 方法
+if (!termDetailJs323.includes('onBackToSearch')) {
+  fail('Round 3.23: term-detail.js missing onBackToSearch method');
+  round323Ok = false;
+}
+
+// 2. onBackToSearch 包含 navigateBack
+if (!termDetailJs323.includes('wx.navigateBack')) {
+  fail('Round 3.23: term-detail.js onBackToSearch missing navigateBack');
+  round323Ok = false;
+}
+
+// 3. navigateBack 失败时有 switchTab 降级
+if (!termDetailJs323.includes('wx.switchTab')) {
+  fail('Round 3.23: term-detail.js missing switchTab fallback');
+  round323Ok = false;
+}
+
+// 4. 存在 favoriteAction 数据字段
+if (!termDetailJs323.includes('favoriteAction')) {
+  fail('Round 3.23: term-detail.js missing favoriteAction field');
+  round323Ok = false;
+}
+
+// 5. 收藏时设置 favoriteAction
+if (!termDetailJs323.includes("favoriteAction: 'added'") || !termDetailJs323.includes("favoriteAction: 'removed'")) {
+  fail('Round 3.23: term-detail.js missing favoriteAction state tracking');
+  round323Ok = false;
+}
+
+// === B. term-detail.wxml 新增 UI ===
+// 6. 存在返回导航栏
+if (!termDetailWxml323.includes('back-nav') || !termDetailWxml323.includes('onBackToSearch')) {
+  fail('Round 3.23: term-detail.wxml missing back navigation bar');
+  round323Ok = false;
+}
+
+// 7. 返回导航显示"返回术语搜索"
+if (!termDetailWxml323.includes('返回术语搜索')) {
+  fail('Round 3.23: term-detail.wxml back nav text incorrect');
+  round323Ok = false;
+}
+
+// 8. 收藏按钮有提示文字
+if (!termDetailWxml323.includes('favorite-hint')) {
+  fail('Round 3.23: term-detail.wxml missing favorite hint text');
+  round323Ok = false;
+}
+
+// 9. 收藏提示根据状态变化
+if (!termDetailWxml323.includes('已加入收藏列表') || !termDetailWxml323.includes('收藏后可在我的页面查看')) {
+  fail('Round 3.23: term-detail.wxml missing favorite state-specific hints');
+  round323Ok = false;
+}
+
+// 10. 收藏按钮使用 favorite-info 布局
+if (!termDetailWxml323.includes('favorite-info')) {
+  fail('Round 3.23: term-detail.wxml missing favorite-info layout');
+  round323Ok = false;
+}
+
+// === C. term-detail.wxss 新增样式 ===
+// 11. 存在 back-nav 样式
+if (!termDetailWxss323.includes('back-nav') || !termDetailWxss323.includes('back-arrow') || !termDetailWxss323.includes('back-text')) {
+  fail('Round 3.23: term-detail.wxss missing back nav styles');
+  round323Ok = false;
+}
+
+// 12. 存在 favorite-info / favorite-hint 样式
+if (!termDetailWxss323.includes('favorite-info') || !termDetailWxss323.includes('favorite-hint')) {
+  fail('Round 3.23: term-detail.wxss missing enhanced favorite styles');
+  round323Ok = false;
+}
+
+// 13. favorite-btn-active 有增强视觉效果
+if (!termDetailWxss323.includes('favorite-btn-active')) {
+  fail('Round 3.23: term-detail.wxss missing favorite active style');
+  round323Ok = false;
+}
+
+// === D. 术语详情原有功能保持 ===
+// 14. 术语头部卡片保持
+if (!termDetailWxml323.includes('term-header') || !termDetailWxml323.includes('term-main')) {
+  fail('Round 3.23: term-detail.wxml term header broken');
+  round323Ok = false;
+}
+
+// 15. 解释卡片保持
+if (!termDetailWxml323.includes('explanationZh') || !termDetailWxml323.includes('explanationJa')) {
+  fail('Round 3.23: term-detail.wxml explanation cards broken');
+  round323Ok = false;
+}
+
+// 16. 术语不存在降级保持
+if (!termDetailWxml323.includes('术语不存在')) {
+  fail('Round 3.23: term-detail.wxml not-found fallback broken');
+  round323Ok = false;
+}
+
+// === E. 合规检查 ===
+// 17. 版本号 v0.21.0
+if (!appJs323.includes('v0.21.0')) {
+  fail('Round 3.23: app.js version not v0.21.0');
+  round323Ok = false;
+}
+
+// 18. 无新 storage keys
+var all323 = termDetailJs323 + storage323 + termDetailWxml323;
+var keyPattern323 = /study-tools-mini-(?!favorite-terms-v1|wrong-questions-v1|quiz-attempts-v1)/;
+if (keyPattern323.test(storage323)) {
+  fail('Round 3.23: new storage key detected');
+  round323Ok = false;
+}
+
+// 19. 无危险 API
+var forbidden323 = ['wx.request', 'wx.cloud', 'cloud.init', 'wx.login', 'wx.getUserInfo', 'wx.requestPayment'];
+for (var a323 = 0; a323 < forbidden323.length; a323++) {
+  if (all323.includes(forbidden323[a323])) {
+    fail('Round 3.23: forbidden API found: ' + forbidden323[a323]);
+    round323Ok = false;
+  }
+}
+
+// 20. 无高风险表述
+var banned323 = ['保证通过', '包过', '押题', '必过', '100%通过', '内部资料', '官方答案', '绝对安全', '永久保存', '云端同步', '自动备份', '保证恢复'];
+for (var b323 = 0; b323 < banned323.length; b323++) {
+  if (all323.includes(banned323[b323])) {
+    fail('Round 3.23: banned text found: ' + banned323[b323]);
+    round323Ok = false;
+  }
+}
+
+// === F. 回归检查 ===
+// 21. Round 3.17 mistakes
+if (!readFile('pages/mistakes/mistakes.js').includes('getWrongQuestionStats')) {
+  fail('Round 3.23: Round 3.17 mistakes broken');
+  round323Ok = false;
+}
+
+// 22. Round 3.18 home 弱项徽标
+if (!readFile('pages/home/home.wxml').includes('card-weak-badge')) {
+  fail('Round 3.23: Round 3.18 home weak badge broken');
+  round323Ok = false;
+}
+
+// 23. Round 3.19 favorite-review
+if (!readFile('packages/glossary/pages/favorite-review/favorite-review.js').includes('lastSavedAtFormatted')) {
+  fail('Round 3.23: Round 3.19 favorite-review broken');
+  round323Ok = false;
+}
+
+// 24. Round 3.20 home continue suggestion
+if (!readFile('pages/home/home.js').includes('continueSuggestion')) {
+  fail('Round 3.23: Round 3.20 home continue suggestion broken');
+  round323Ok = false;
+}
+
+// 25. Round 3.20 quiz insights
+if (!readFile('packages/quiz/pages/quiz/quiz.js').includes('insightHint')) {
+  fail('Round 3.23: Round 3.20 quiz insights broken');
+  round323Ok = false;
+}
+
+// 26. Round 3.21 profile reviewHints
+if (!readFile('pages/profile/profile.js').includes('reviewHints')) {
+  fail('Round 3.23: Round 3.21 profile reviewHints broken');
+  round323Ok = false;
+}
+
+// 27. Round 3.22 exam-menu overallTotal
+if (!readFile('packages/quiz/pages/exam-menu/exam-menu.js').includes('overallTotal')) {
+  fail('Round 3.23: Round 3.22 exam-menu overallTotal broken');
+  round323Ok = false;
+}
+
+// 28. Round 3.21 glossary 搜索空状态增强
+if (!readFile('packages/glossary/pages/term-search/term-search.wxml').includes('empty-suggestions')) {
+  fail('Round 3.23: Round 3.21 glossary search empty state broken');
+  round323Ok = false;
+}
+
+if (round323Ok) pass('Round Mini 3.23 term-detail enhancement checks');
+
+// ============================================================
 // 汇总
 // ============================================================
 console.log('\n========================================');

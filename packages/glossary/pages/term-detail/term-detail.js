@@ -10,7 +10,9 @@ Page({
   data: {
     term: null,
     exampleText: '',
-    isFavorite: false
+    isFavorite: false,
+    // Round 3.23: 收藏操作反馈
+    favoriteAction: ''
   },
 
   onLoad: function (options) {
@@ -40,6 +42,18 @@ Page({
     });
   },
 
+  // Round 3.23: 返回术语搜索
+  onBackToSearch: function () {
+    wx.navigateBack({
+      fail: function () {
+        // 若无法返回（直接打开详情），跳转到术语表 tab
+        wx.switchTab({
+          url: '/pages/glossary/glossary'
+        });
+      }
+    });
+  },
+
   onFavorite: function () {
     var term = this.data.term;
     if (!term) return;
@@ -48,7 +62,7 @@ Page({
 
     if (this.data.isFavorite) {
       removeFavoriteTerm(strId);
-      this.setData({ isFavorite: false });
+      this.setData({ isFavorite: false, favoriteAction: 'removed' });
       wx.showToast({
         title: '已取消收藏',
         icon: 'none',
@@ -56,7 +70,7 @@ Page({
       });
     } else {
       addFavoriteTerm(strId);
-      this.setData({ isFavorite: true });
+      this.setData({ isFavorite: true, favoriteAction: 'added' });
       wx.showToast({
         title: '收藏成功',
         icon: 'none',
