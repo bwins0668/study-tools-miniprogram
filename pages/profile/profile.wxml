@@ -216,6 +216,11 @@
         <text class="backup-summary-label">备份版本</text>
         <text class="backup-summary-value">{{backupSummary.backupVersion}}</text>
       </view>
+      <!-- R3.66 显示最后备份时间 -->
+      <view class="backup-summary-row" wx:if="{{backupTime !== '未知'}}">
+        <text class="backup-summary-label">最后备份</text>
+        <text class="backup-summary-value">{{backupTime}}</text>
+      </view>
     </view>
     <view wx:if="{{!backupSummary.hasData}}" class="info-card empty-card">
       <text class="empty-hint">暂无本地学习数据，开始练习后会自动在此显示</text>
