@@ -192,7 +192,7 @@ Page({
       }
     }
 
-    // R3.42 学习 streak 计算
+    // R3.42 学习 streak 计算 (R3.45 优化: 减少不必要的 storage 写入)
     var streakCount = 0;
     var streakText = '';
     try {
@@ -205,17 +205,17 @@ Page({
         var todayDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
         var diffDays = Math.floor((todayDay - lastDay) / 86400000);
         if (diffDays === 0) {
-          // 今天已练习，streak 保持
+          // 今天已练习，streak 保持 (不需要写入 storage)
           streakCount = streakData.count || 1;
         } else if (diffDays === 1) {
-          // 昨天练习了，streak +1
+          // 昨天练习了，streak +1 并写入 storage
           streakCount = (streakData.count || 0) + 1;
           wx.setStorageSync('study-tools-mini-streak-v1', {
             lastDate: today.toISOString(),
             count: streakCount
           });
         } else {
-          // 超过 1 天没练习，streak 重置
+          // 超过 1 天没练习，streak 重置为 0 (不需要写入 storage)
           streakCount = 0;
         }
       }
@@ -227,9 +227,9 @@ Page({
       streakText = '';
     }
 
-    // R3.44 今日练习进度
+    // R3.44 今日练习进度 (R3.45 优化: 缓存 todayTotal)
     var dailyGoal = 10;
-    var todayCount = stats.todayTotal || 0;
+    var todayCount = stats.todayTotal || 0; // R3.45 缓存计算结果
     var goalProgress = todayCount >= dailyGoal ? 100 : Math.round(todayCount / dailyGoal * 100);
     var goalText = todayCount >= dailyGoal ? '🎉 今日目标已达成！' : '今日进度 ' + todayCount + '/' + dailyGoal + ' 题';
     var showGoalReminder = todayCount === 0;

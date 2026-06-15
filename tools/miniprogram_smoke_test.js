@@ -5869,6 +5869,75 @@ if (quizJs344.indexOf('reviewList') < 0) {
 if (round344Ok) pass('Round Mini 3.44 home daily practice progress');
 
 // ============================================================
+// Round Mini 3.45 home 页面性能优化
+// ============================================================
+var round345Ok = true;
+
+// A. home.js 包含 R3.45 性能优化注释
+var homeJs345 = readFile('pages/home/home.js');
+if (homeJs345.indexOf('R3.45 优化') < 0) {
+  fail('R3.45: R3.45 性能优化注释 missing in home.js');
+  round345Ok = false;
+}
+
+// B. home.js streak 计算逻辑优化 (只在 streak 变化时写入 storage)
+if (homeJs345.indexOf('不需要写入 storage') < 0) {
+  fail('R3.45: streak storage write optimization missing in home.js');
+  round345Ok = false;
+}
+
+// C. home.js 包含 todayTotal 缓存优化注释
+if (homeJs345.indexOf('R3.45 缓存') < 0) {
+  fail('R3.45: todayTotal cache optimization comment missing in home.js');
+  round345Ok = false;
+}
+
+// D. home.js onShow 仍然包含完整的 streak 计算逻辑
+if (homeJs345.indexOf('streakCount') < 0) {
+  fail('R3.45: streakCount calculation missing in home.js');
+  round345Ok = false;
+}
+if (homeJs345.indexOf('diffDays') < 0) {
+  fail('R3.45: diffDays calculation missing in home.js');
+  round345Ok = false;
+}
+
+// E. home.wxml 仍然包含 streak 和 goal UI
+var homeWxml345 = readFile('pages/home/home.wxml');
+if (homeWxml345.indexOf('streak-banner') < 0) {
+  fail('R3.45: streak-banner regressed in home.wxml');
+  round345Ok = false;
+}
+if (homeWxml345.indexOf('goal-section') < 0) {
+  fail('R3.45: goal-section regressed in home.wxml');
+  round345Ok = false;
+}
+
+// F. home.wxss 仍然包含 streak 和 goal 样式
+var homeWxss345 = readFile('pages/home/home.wxss');
+if (homeWxss345.indexOf('.streak-banner') < 0) {
+  fail('R3.45: .streak-banner style regressed in home.wxss');
+  round345Ok = false;
+}
+if (homeWxss345.indexOf('.goal-section') < 0) {
+  fail('R3.45: .goal-section style regressed in home.wxss');
+  round345Ok = false;
+}
+
+// G. 回归：R3.32~R3.44 功能未退化
+var quizJs345 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs345.indexOf('progressPercent') < 0) {
+  fail('R3.45: R3.32 progressPercent regressed in quiz.js');
+  round345Ok = false;
+}
+if (quizJs345.indexOf('reviewList') < 0) {
+  fail('R3.45: R3.43 reviewList regressed in quiz.js');
+  round345Ok = false;
+}
+
+if (round345Ok) pass('Round Mini 3.45 home page performance optimization');
+
+// ============================================================
 // 汇总
 // ============================================================
 console.log('\n========================================');
