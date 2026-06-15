@@ -6161,6 +6161,58 @@ if (homeJs349.indexOf('achievements') < 0) {
 
 if (round349Ok) pass('Round Mini 3.49 term favorite note functionality');
 
+// ============================================================
+// Round Mini 3.50 quiz retry wrong questions
+// ============================================================
+var round350Ok = true;
+
+// A. quiz.js 包含 wrongQuestionIds 数据字段和 retryWrongQuestions 方法
+var quizJs350 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs350.indexOf('wrongQuestionIds') < 0) {
+  fail('R3.50: wrongQuestionIds data field missing in quiz.js');
+  round350Ok = false;
+}
+if (quizJs350.indexOf('retryWrongQuestions') < 0) {
+  fail('R3.50: retryWrongQuestions method missing in quiz.js');
+  round350Ok = false;
+}
+
+// B. quiz.wxml 包含重练错题按钮
+var quizWxml350 = readFile('packages/quiz/pages/quiz/quiz.wxml');
+if (quizWxml350.indexOf('retryWrongQuestions') < 0) {
+  fail('R3.50: retryWrongQuestions button missing in quiz.wxml');
+  round350Ok = false;
+}
+if (quizWxml350.indexOf('重练错题') < 0) {
+  fail('R3.50: 重练错题 label missing in quiz.wxml');
+  round350Ok = false;
+}
+
+// C. quiz.wxss 包含重练错题按钮样式
+var quizWxss350 = readFile('packages/quiz/pages/quiz/quiz.wxss');
+if (quizWxss350.indexOf('.result-btn-retry') < 0) {
+  fail('R3.50: .result-btn-retry style missing in quiz.wxss');
+  round350Ok = false;
+}
+if (quizWxss350.indexOf('.result-btn-text-retry') < 0) {
+  fail('R3.50: .result-btn-text-retry style missing in quiz.wxss');
+  round350Ok = false;
+}
+
+// D. 回归：R3.32~R3.49 功能未退化
+var quizJs350b = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs350b.indexOf('hint') < 0) {
+  fail('R3.50: R3.48 hint regressed in quiz.js');
+  round350Ok = false;
+}
+var homeJs350 = readFile('pages/home/home.js');
+if (homeJs350.indexOf('achievements') < 0) {
+  fail('R3.50: R3.47 achievements regressed in home.js');
+  round350Ok = false;
+}
+
+if (round350Ok) pass('Round Mini 3.50 quiz retry wrong questions');
+
 
 // ============================================================
 // 汇总

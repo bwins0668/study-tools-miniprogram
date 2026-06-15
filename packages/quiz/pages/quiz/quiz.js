@@ -36,7 +36,9 @@ Page({
     hasWrongQuestions: false,
     // R3.43 答题记录追踪
     answeredList: [],
-    showReview: false
+    showReview: false,
+    // R3.50 重练错题功能
+    wrongQuestionIds: []
   },
 
   onLoad: function (options) {
@@ -135,6 +137,12 @@ Page({
       selectedAnswer: key,
       isCorrect: isCorrect
     });
+
+    // R3.50 记录错题 ID
+    var wrongQuestionIds = this.data.wrongQuestionIds.slice();
+    if (!isCorrect) {
+      wrongQuestionIds.push(this.data.currentQuestion.id);
+    }
 
     // 答题反馈提示语
     var feedbackTip = '';
@@ -370,5 +378,56 @@ Page({
       path: '/packages/quiz/pages/quiz-menu/quiz-menu',
       imageUrl: ''
     };
+  },
+
+  // R3.50 重练本次错题
+  retryWrongQuestions: function () {
+    var wrongIds = this.data.wrongQuestionIds || [];
+    if (wrongIds.length === 0) {
+      wx.showToast({ title: '本次没有错题', icon: 'none' });
+      return;
+    }
+
+    // 从当前题目中过滤出错题
+    var allQuestions = this.data.questions;
+    var wrongQuestions = [];
+    for (var i = 0; i < allQuestions.length; i++) {
+      for (var j = 0; j < wrongIds.length; j++) {
+        if (String(allQuestions[i].id) === String(wrongIds[j])) {
+          wrongQuestions.push(allQuestions[i]);
+          break;
+        }
+      }
+    }
+
+    if (wrongQuestions.length === 0) {
+      wx.showToast({ title: '未找到错题', icon: 'none' });
+      return;
+    }
+
+    // 重置会话，但保留exam和sourceType
+    this.setData({
+      questions: wrongQuestions,
+      totalQuestions: wrongQuestions.length,
+      currentIndex: 0,
+      currentQuestion: wrongQuestions[0],
+      progressPercent: Math.round(1 / wrongQuestions.length * 100) || 0,
+      selectedAnswer: '',
+      hasAnswered: false,
+      isCorrect: false,
+      isFinished: false,
+      showResult: false,
+      sessionTotal: 0,
+      sessionCorrect: 0,
+      sessionWrong: 0,
+      sessionAccuracy: 0,
+      encouragementText: '',
+      accuracyLevel: '',
+      insightHint: '',
+      wrongQuestionIds: [],
+      answeredList: [],
+      showReview: false,
+      showFeedbackTip: false
+    });
   }
 });

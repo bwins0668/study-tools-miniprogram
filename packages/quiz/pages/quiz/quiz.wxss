@@ -650,6 +650,16 @@
   color: #ffffff;
 }
 
+/* R3.50 重练错题按钮 */
+.result-btn-retry {
+  border-color: #ff9800;
+  background-color: #fff3e0;
+}
+
+.result-btn-text-retry {
+  color: #e65100;
+}
+
 /* 下一步建议卡片 */
 .next-action-card {
   display: flex;

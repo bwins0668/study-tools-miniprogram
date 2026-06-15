@@ -139,6 +139,10 @@
         <view class="result-btn result-btn-primary" bindtap="restartPractice">
           <text class="result-btn-text result-btn-text-primary">再练一次</text>
         </view>
+        <!-- R3.50 重练错题按钮 -->
+        <view class="result-btn result-btn-retry" bindtap="retryWrongQuestions" wx:if="{{wrongQuestionIds.length > 0}}">
+          <text class="result-btn-text result-btn-text-retry">🔄 重练错题 ({{wrongQuestionIds.length}}题)</text>
+        </view>
         <view class="result-btn {{hasWrongQuestions ? 'result-btn-wrong' : ''}}" bindtap="goMistakes">
           <text class="result-btn-text {{hasWrongQuestions ? 'result-btn-text-wrong' : ''}}">查看错题{{hasWrongQuestions ? ' (' + sessionWrong + '题)' : ''}}</text>
         </view>
