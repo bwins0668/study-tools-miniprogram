@@ -455,3 +455,45 @@
   text-align: center;
   margin-top: 8rpx;
 }
+
+/* R3.47 学习成就系统 */
+.achievement-section {
+  margin: 24rpx 24rpx 0;
+  padding: 24rpx;
+  background: #ffffff;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+}
+
+.achievement-list {
+  margin-top: 16rpx;
+  white-space: nowrap;
+}
+
+.achievement-item {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 140rpx;
+  height: 140rpx;
+  margin-right: 16rpx;
+  background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+  border-radius: 16rpx;
+  padding: 12rpx;
+}
+
+.achievement-icon {
+  font-size: 48rpx;
+  margin-bottom: 8rpx;
+}
+
+.achievement-name {
+  font-size: 20rpx;
+  color: #e65100;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 120rpx;
+}

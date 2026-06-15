@@ -84,7 +84,10 @@ Page({
     dailyGoal: 10,
     goalProgress: 0,
     goalText: '',
-    showGoalReminder: false
+    showGoalReminder: false,
+    // R3.47 学习成就系统
+    achievements: [],
+    showAchievements: false
   },
 
   onShow: function () {
@@ -227,6 +230,83 @@ Page({
       streakText = '';
     }
 
+    // R3.47 学习成就系统计算
+    var achievements = [];
+    try {
+      var totalAttemptsCount = totalAttempts || 0;
+      var accuracyRate = stats.accuracy || 0;
+      var streakDays = streakCount || 0;
+
+      // 成就 1: 初次答题 (累计答题数 >= 1)
+      if (totalAttemptsCount >= 1) {
+        achievements.push({
+          id: 'first_quiz',
+          name: '初次答题',
+          description: '完成第一道题',
+          icon: '🎯',
+          unlocked: true
+        });
+      }
+
+      // 成就 2: 答题达人 (累计答题数 >= 50)
+      if (totalAttemptsCount >= 50) {
+        achievements.push({
+          id: 'quiz_master',
+          name: '答题达人',
+          description: '累计答题 50 道',
+          icon: '🏆',
+          unlocked: true
+        });
+      }
+
+      // 成就 3: 刷题王者 (累计答题数 >= 200)
+      if (totalAttemptsCount >= 200) {
+        achievements.push({
+          id: 'quiz_king',
+          name: '刷题王者',
+          description: '累计答题 200 道',
+          icon: '👑',
+          unlocked: true
+        });
+      }
+
+      // 成就 4: 连续学习 3 天
+      if (streakDays >= 3) {
+        achievements.push({
+          id: 'streak_3',
+          name: '坚持学习',
+          description: '连续学习 3 天',
+          icon: '🔥',
+          unlocked: true
+        });
+      }
+
+      // 成就 5: 连续学习 7 天
+      if (streakDays >= 7) {
+        achievements.push({
+          id: 'streak_7',
+          name: '学习达人',
+          description: '连续学习 7 天',
+          icon: '⭐',
+          unlocked: true
+        });
+      }
+
+      // 成就 6: 正确率高手 (正确率 >= 80%)
+      if (accuracyRate >= 80 && totalAttemptsCount >= 10) {
+        achievements.push({
+          id: 'high_accuracy',
+          name: '正确率高手',
+          description: '正确率超过 80%',
+          icon: '💯',
+          unlocked: true
+        });
+      }
+    } catch (e) {
+      achievements = [];
+    }
+    var showAchievements = achievements.length > 0;
+
     // R3.44 今日练习进度 (R3.45 优化: 缓存 todayTotal)
     var dailyGoal = 10;
     var todayCount = stats.todayTotal || 0; // R3.45 缓存计算结果
@@ -267,7 +347,10 @@ Page({
       dailyGoal: dailyGoal,
       goalProgress: goalProgress,
       goalText: goalText,
-      showGoalReminder: showGoalReminder
+      showGoalReminder: showGoalReminder,
+      // R3.47 学习成就系统
+      achievements: achievements,
+      showAchievements: showAchievements
     });
   },
 

@@ -5995,6 +5995,68 @@ if (homeJs346.indexOf('streakCount') < 0) {
 
 if (round346Ok) pass('Round Mini 3.46 quiz result share functionality');
 
+// ============================================================
+// Round Mini 3.47 home learning achievement system
+// ============================================================
+var round347Ok = true;
+
+// A. home.js 包含成就数据字段
+var homeJs347 = readFile('pages/home/home.js');
+if (homeJs347.indexOf('achievements') < 0) {
+  fail('R3.47: achievements data field missing in home.js');
+  round347Ok = false;
+}
+if (homeJs347.indexOf('showAchievements') < 0) {
+  fail('R3.47: showAchievements data field missing in home.js');
+  round347Ok = false;
+}
+
+// B. home.js onShow 包含成就计算逻辑
+if (homeJs347.indexOf('totalAttemptsCount') < 0) {
+  fail('R3.47: achievement calculation missing in home.js onShow');
+  round347Ok = false;
+}
+if (homeJs347.indexOf('first_quiz') < 0) {
+  fail('R3.47: first_quiz achievement missing in home.js');
+  round347Ok = false;
+}
+
+// C. home.wxml 包含成就展示 UI
+var homeWxml347 = readFile('pages/home/home.wxml');
+if (homeWxml347.indexOf('achievement-section') < 0) {
+  fail('R3.47: achievement-section missing in home.wxml');
+  round347Ok = false;
+}
+if (homeWxml347.indexOf('achievements') < 0) {
+  fail('R3.47: achievements binding missing in home.wxml');
+  round347Ok = false;
+}
+
+// D. home.wxss 包含成就样式
+var homeWxss347 = readFile('pages/home/home.wxss');
+if (homeWxss347.indexOf('.achievement-section') < 0) {
+  fail('R3.47: .achievement-section style missing in home.wxss');
+  round347Ok = false;
+}
+if (homeWxss347.indexOf('.achievement-item') < 0) {
+  fail('R3.47: .achievement-item style missing in home.wxss');
+  round347Ok = false;
+}
+
+// E. 回归：R3.32~R3.46 功能未退化
+var quizJs347 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs347.indexOf('onShareAppMessage') < 0) {
+  fail('R3.47: R3.46 onShareAppMessage regressed in quiz.js');
+  round347Ok = false;
+}
+var homeJs347b = readFile('pages/home/home.js');
+if (homeJs347b.indexOf('streakCount') < 0) {
+  fail('R3.47: R3.42 streakCount regressed in home.js');
+  round347Ok = false;
+}
+
+if (round347Ok) pass('Round Mini 3.47 home learning achievement system');
+
 
 // ============================================================
 // 汇总
