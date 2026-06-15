@@ -24,17 +24,35 @@
     </view>
   </view>
 
+  <!-- 筛选标签 -->
+  <view class="filter-bar" wx:if="{{totalCount > 0}}">
+    <view
+      wx:for="{{filterOptions}}"
+      wx:key="key"
+      class="filter-tag {{activeFilter === item.key ? 'filter-tag-active' : ''}}"
+      bindtap="onFilterChange"
+      data-key="{{item.key}}"
+    >
+      <text class="filter-tag-text">{{item.label}}</text>
+    </view>
+  </view>
+
+  <!-- 错题重练入口 -->
+  <view class="section-action" wx:if="{{filteredList.length > 0}}">
+    <view class="practice-wrong-btn" bindtap="goPracticeWrong">
+      <text class="practice-wrong-text">重新练习错题</text>
+    </view>
+  </view>
+
   <!-- 错题列表 -->
-  <view class="wrong-list" wx:if="{{wrongList.length > 0}}">
-    <view class="card wrong-card" wx:for="{{wrongList}}" wx:key="id">
+  <view class="wrong-list" wx:if="{{filteredList.length > 0}}">
+    <view class="card wrong-card" wx:for="{{filteredList}}" wx:key="id">
       <view class="wrong-header">
         <view class="wrong-tags">
-          <text class="wrong-exam">{{item.exam}}</text>
+          <text class="wrong-exam">{{item.examLabel}}</text>
           <text class="wrong-source {{item.sourceType === 'past_exam_japanese' ? 'wrong-source-exam' : ''}}">{{item.sourceLabel}}</text>
         </view>
-        <view class="wrong-remove" bindtap="removeWrong" data-id="{{item.id}}">
-          <text class="wrong-remove-text">移除</text>
-        </view>
+        <text class="wrong-time" wx:if="{{item.wrongAtLabel}}">{{item.wrongAtLabel}}</text>
       </view>
 
       <text class="wrong-question-zh">{{item.questionZh}}</text>
@@ -57,7 +75,7 @@
         <text class="wrong-detail-value wrong-incorrect">{{item.lastAnswer}}</text>
       </view>
 
-      <view class="wrong-explanation">
+      <view class="wrong-explanation" wx:if="{{item.explanationZh || item.explanationJa}}">
         <view class="explanation-warning" wx:if="{{item.explanationStatus === 'shared_hint'}}">
           <text class="warning-icon">⚠</text>
           <text class="warning-text">解释为通用说明，中文解释待补充。</text>
@@ -65,23 +83,25 @@
         <text class="wrong-exp-text">{{item.explanationZh}}</text>
         <text class="wrong-exp-text wrong-exp-ja">{{item.explanationJa}}</text>
       </view>
+
+      <!-- 单条操作 -->
+      <view class="wrong-actions">
+        <view class="action-btn action-remove" bindtap="removeWrong" data-id="{{item.id}}">
+          <text class="action-btn-text">移出错题本</text>
+        </view>
+      </view>
     </view>
   </view>
 
   <!-- 空状态 -->
-  <view class="empty-state" wx:if="{{wrongList.length === 0}}">
+  <view class="empty-state" wx:if="{{filteredList.length === 0}}">
     <text class="empty-icon">📋</text>
-    <text class="empty-text">还没有错题记录</text>
-    <text class="empty-hint">开始练习后，做错的题目会自动记录在这里</text>
-  </view>
-
-  <!-- 去学习按钮 -->
-  <view class="btn-group">
-    <view class="practice-wrong-btn {{wrongList.length === 0 ? 'practice-btn-disabled' : ''}}" bindtap="goPracticeWrong" wx:if="{{wrongList.length > 0}}">
-      <text class="practice-wrong-text">重新练习错题</text>
-    </view>
-    <view class="go-study-btn" bindtap="goStudy">
-      <text class="go-study-text">去学习</text>
+    <text class="empty-text">{{activeFilter === 'all' ? '当前没有错题' : '该分类下没有错题'}}</text>
+    <text class="empty-hint">继续练习后会自动记录需要复习的题目。</text>
+    <view class="empty-action">
+      <view class="go-study-btn" bindtap="goStudy">
+        <text class="go-study-text">去练习</text>
+      </view>
     </view>
   </view>
 </view>

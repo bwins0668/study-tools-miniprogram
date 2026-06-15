@@ -1016,13 +1016,13 @@ console.log('\n--- 版本号检查 ---');
 let versionOk = true;
 const appJsContent = readFile('app.js');
 const storageContent = readFile('utils/storage.js');
-if (!appJsContent.includes('v0.12.0')) {
-  fail('version: app.js does not contain v0.12.0');
+if (!appJsContent.includes('v0.13.0')) {
+  fail('version: app.js does not contain v0.13.0');
   versionOk = false;
 }
 
-if (!storageContent.includes("version: 'v0.12.0'")) {
-  fail('version: utils/storage.js exportLocalBackup does not contain v0.12.0');
+if (!storageContent.includes("version: 'v0.13.0'")) {
+  fail('version: utils/storage.js exportLocalBackup does not contain v0.13.0');
   versionOk = false;
 }
 
@@ -1039,7 +1039,7 @@ if (!profileJs.includes('globalData.version')) {
   fail('version: profile.js does not read from globalData.version');
   versionOk = false;
 }
-if (versionOk) pass('version check v0.12.0');
+if (versionOk) pass('version check v0.13.0');
 
 // ============================================================
 // 十一、Check Round 2.0 新功能
@@ -1391,6 +1391,117 @@ for (const label of resultModeLabels) {
 }
 
 if (round25Ok) pass('Round Mini 2.5 practice result checks');
+
+// ============================================================
+// Round Mini 3.1 mistakes review enhancement checks
+// ============================================================
+console.log('\n--- Round Mini 3.1 mistakes review enhancement checks ---');
+
+let round31Ok = true;
+const mistakesJs31 = readFile('packages/quiz/pages/mistakes/mistakes.js');
+const mistakesWxml31 = readFile('packages/quiz/pages/mistakes/mistakes.wxml');
+const mistakesWxss31 = readFile('packages/quiz/pages/mistakes/mistakes.wxss');
+
+// 1. 错题列表字段兼容：包含 wrongAt / wrongAtLabel
+if (!mistakesJs31.includes('wrongAt')) {
+  fail('mistakes.js missing wrongAt field handling');
+  round31Ok = false;
+}
+if (!mistakesJs31.includes('wrongAtLabel')) {
+  fail('mistakes.js missing wrongAtLabel formatted time');
+  round31Ok = false;
+}
+
+// 2. 分类筛选存在且不会报错
+const filterKeys = ['all', 'itpass', 'sg', 'past_exam_japanese'];
+for (const fk of filterKeys) {
+  if (!mistakesJs31.includes("'" + fk + "'")) {
+    fail('mistakes.js missing filter key: ' + fk);
+    round31Ok = false;
+  }
+}
+if (!mistakesJs31.includes('onFilterChange') || !mistakesJs31.includes('applyFilter')) {
+  fail('mistakes.js missing filter handler methods');
+  round31Ok = false;
+}
+if (!mistakesWxml31.includes('filter-bar') || !mistakesWxml31.includes('onFilterChange')) {
+  fail('mistakes.wxml missing filter bar UI');
+  round31Ok = false;
+}
+if (!mistakesWxss31.includes('filter-tag') || !mistakesWxss31.includes('filter-tag-active')) {
+  fail('mistakes.wxss missing filter tag styles');
+  round31Ok = false;
+}
+
+// 3. 空错题状态存在且友好
+if (!mistakesWxml31.includes('empty-state')) {
+  fail('mistakes.wxml missing empty state');
+  round31Ok = false;
+}
+if (!mistakesWxml31.includes('当前没有错题') || !mistakesWxml31.includes('去练习')) {
+  fail('mistakes.wxml empty state text incomplete');
+  round31Ok = false;
+}
+if (!mistakesJs31.includes("'当前没有错题，继续练习后会自动记录需要复习的题目。'")) {
+  fail('mistakes.js empty hint text missing');
+  round31Ok = false;
+}
+
+// 4. wrong_only 入口仍可用
+if (!mistakesJs31.includes('goPracticeWrong')) {
+  fail('mistakes.js missing goPracticeWrong handler');
+  round31Ok = false;
+}
+if (!mistakesWxml31.includes('重新练习错题') && !mistakesWxml31.includes('开始错题重练')) {
+  fail('mistakes.wxml missing wrong practice button');
+  round31Ok = false;
+}
+if (!mistakesJs31.includes("exam=wrong_only&sourceType=wrong_only")) {
+  fail('mistakes.js wrong_only URL incorrect');
+  round31Ok = false;
+}
+
+// 5. 单条移出错题有确认弹窗，不会清空全部
+if (!mistakesJs31.includes('wx.showModal')) {
+  fail('mistakes.js missing remove confirmation modal');
+  round31Ok = false;
+}
+if (!mistakesJs31.includes('确认移除')) {
+  fail('mistakes.js remove modal title incorrect');
+  round31Ok = false;
+}
+if (!mistakesJs31.includes('storage.removeWrongQuestion')) {
+  fail('mistakes.js missing storage.removeWrongQuestion call');
+  round31Ok = false;
+}
+
+// 6. 单条操作区存在
+if (!mistakesWxml31.includes('wrong-actions') || !mistakesWxml31.includes('移出错题本')) {
+  fail('mistakes.wxml missing per-item action buttons');
+  round31Ok = false;
+}
+if (!mistakesWxss31.includes('wrong-actions') || !mistakesWxss31.includes('action-btn')) {
+  fail('mistakes.wxss missing action button styles');
+  round31Ok = false;
+}
+
+// 7. 显示上次答错时间
+if (!mistakesWxml31.includes('wrong-time') || !mistakesWxml31.includes('wrongAtLabel')) {
+  fail('mistakes.wxml missing wrong time display');
+  round31Ok = false;
+}
+if (!mistakesWxss31.includes('wrong-time')) {
+  fail('mistakes.wxss missing wrong time style');
+  round31Ok = false;
+}
+
+// 8. 空状态根据筛选变化
+if (!mistakesWxml31.includes("activeFilter === 'all'")) {
+  fail('mistakes.wxml missing filter-aware empty state');
+  round31Ok = false;
+}
+
+if (round31Ok) pass('Round Mini 3.1 mistakes review enhancement checks');
 
 // ============================================================
 console.log('\n--- preloadRule 分包预下载检查 ---');

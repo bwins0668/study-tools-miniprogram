@@ -57,6 +57,60 @@
   color: #999999;
 }
 
+/* 筛选标签 */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 16rpx 30rpx;
+  overflow-x: auto;
+}
+
+.filter-tag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12rpx 28rpx;
+  border-radius: 28rpx;
+  background-color: #f0f0f0;
+  flex-shrink: 0;
+}
+
+.filter-tag-active {
+  background-color: #4a90d9;
+}
+
+.filter-tag-text {
+  font-size: 26rpx;
+  color: #666666;
+}
+
+.filter-tag-active .filter-tag-text {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* 错题重练入口 */
+.section-action {
+  padding: 8rpx 30rpx 16rpx;
+}
+
+.practice-wrong-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e8913a;
+  border-radius: 40rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 16rpx rgba(232, 145, 58, 0.3);
+}
+
+.practice-wrong-text {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #ffffff;
+}
+
 /* 错题列表 */
 .wrong-list {
   padding: 10rpx 0;
@@ -104,17 +158,9 @@
   background-color: #fff3e0;
 }
 
-.wrong-remove {
-  font-size: 24rpx;
-  color: #f44336;
-  padding: 8rpx 20rpx;
-  border: 1rpx solid #f44336;
-  border-radius: 20rpx;
-}
-
-.wrong-remove-text {
-  font-size: 24rpx;
-  color: #f44336;
+.wrong-time {
+  font-size: 22rpx;
+  color: #999999;
 }
 
 .wrong-question-zh {
@@ -206,6 +252,38 @@
   border-radius: 8rpx;
 }
 
+/* 单条操作 */
+.wrong-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 20rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12rpx 28rpx;
+  border-radius: 24rpx;
+  border: 1rpx solid #e0e0e0;
+}
+
+.action-remove {
+  border-color: #f44336;
+}
+
+.action-btn-text {
+  font-size: 24rpx;
+  color: #666666;
+}
+
+.action-remove .action-btn-text {
+  color: #f44336;
+}
+
 /* 空状态 */
 .empty-state {
   display: flex;
@@ -229,37 +307,14 @@
   font-size: 24rpx;
   color: #999999;
   text-align: center;
+  margin-bottom: 32rpx;
 }
 
-/* 去学习按钮 */
-.btn-group {
+.empty-action {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16rpx;
-  padding: 20rpx 0 40rpx;
-}
-
-.practice-wrong-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #e8913a;
-  border-radius: 40rpx;
-  margin: 0 60rpx;
-  padding: 28rpx;
-  box-shadow: 0 4rpx 16rpx rgba(232, 145, 58, 0.3);
-  width: calc(100% - 120rpx);
-}
-
-.practice-wrong-text {
-  font-size: 32rpx;
-  font-weight: 600;
-  color: #ffffff;
-}
-
-.practice-btn-disabled {
-  opacity: 0.5;
+  width: 100%;
 }
 
 .go-study-btn {
@@ -268,7 +323,6 @@
   justify-content: center;
   background-color: #4a90d9;
   border-radius: 40rpx;
-  margin: 0 60rpx;
   padding: 28rpx;
   box-shadow: 0 4rpx 16rpx rgba(74, 144, 217, 0.3);
   width: calc(100% - 120rpx);
