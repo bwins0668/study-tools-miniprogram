@@ -5290,6 +5290,72 @@ if (favReviewJs336.indexOf('reviewCompletionHint') < 0) {
 if (round336Ok) pass('Round Mini 3.36 stability enhancement');
 
 // ============================================================
+// Round Mini 3.37：术语分类学习路径
+// ============================================================
+console.log('\n--- Round Mini 3.37 term category learning path ---');
+var round337Ok = true;
+
+// A. term-search.js 包含 categories 和 selectedCategory 字段
+var termSearchJs337 = readFile('packages/glossary/pages/term-search/term-search.js');
+if (termSearchJs337.indexOf('categories') < 0) {
+  fail('R3.37: categories field missing in term-search.js');
+  round337Ok = false;
+}
+if (termSearchJs337.indexOf('selectedCategory') < 0) {
+  fail('R3.37: selectedCategory field missing in term-search.js');
+  round337Ok = false;
+}
+if (termSearchJs337.indexOf('onCategoryTap') < 0) {
+  fail('R3.37: onCategoryTap method missing in term-search.js');
+  round337Ok = false;
+}
+
+// B. term-search.wxml 包含 category-bar 和分类标签
+var termSearchWxml337 = readFile('packages/glossary/pages/term-search/term-search.wxml');
+if (termSearchWxml337.indexOf('category-bar') < 0) {
+  fail('R3.37: category-bar missing in term-search.wxml');
+  round337Ok = false;
+}
+if (termSearchWxml337.indexOf('category-tag') < 0) {
+  fail('R3.37: category-tag missing in term-search.wxml');
+  round337Ok = false;
+}
+if (termSearchWxml337.indexOf('onCategoryTap') < 0) {
+  fail('R3.37: onCategoryTap binding missing in term-search.wxml');
+  round337Ok = false;
+}
+
+// C. term-search.wxss 包含分类标签样式
+var termSearchWxss337 = readFile('packages/glossary/pages/term-search/term-search.wxss');
+if (termSearchWxss337.indexOf('.category-bar') < 0) {
+  fail('R3.37: .category-bar style missing in term-search.wxss');
+  round337Ok = false;
+}
+if (termSearchWxss337.indexOf('.category-tag-active') < 0) {
+  fail('R3.37: .category-tag-active style missing in term-search.wxss');
+  round337Ok = false;
+}
+
+// D. 回归：R3.32~R3.36 功能未退化
+var quizJs337 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs337.indexOf('progressPercent') < 0) {
+  fail('R3.37: R3.32 progressPercent regressed in quiz.js');
+  round337Ok = false;
+}
+var mistakesJs337 = readFile('packages/quiz/pages/mistakes/mistakes.js');
+if (mistakesJs337.indexOf('itCount') < 0) {
+  fail('R3.37: R3.33 itCount regressed in mistakes.js');
+  round337Ok = false;
+}
+var homeJs337 = readFile('pages/home/home.js');
+if (homeJs337.indexOf('nextActionHint') < 0) {
+  fail('R3.37: R3.34 nextActionHint regressed in home.js');
+  round337Ok = false;
+}
+
+if (round337Ok) pass('Round Mini 3.37 term category learning path');
+
+// ============================================================
 // 汇总
 // ============================================================
 console.log('\n========================================');

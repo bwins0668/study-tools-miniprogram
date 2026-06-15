@@ -15,6 +15,21 @@
     </view>
   </view>
 
+  <!-- R3.37 分类标签 -->
+  <view class="category-bar" wx:if="{{categories.length > 0}}">
+    <scroll-view class="category-scroll" scroll-x="true">
+      <view
+        class="category-tag {{selectedCategory === item ? 'category-tag-active' : ''}}"
+        wx:for="{{categories}}"
+        wx:key="*this"
+        bindtap="onCategoryTap"
+        data-category="{{item}}"
+      >
+        <text>{{item}}</text>
+      </view>
+    </scroll-view>
+  </view>
+
   <!-- 结果数量提示 -->
   <view class="result-count">
     <text>{{resultHint}}</text>

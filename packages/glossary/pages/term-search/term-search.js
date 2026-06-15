@@ -15,17 +15,30 @@ Page({
     favoriteSet: {},
     totalCount: 0,
     showCount: 0,
-    resultHint: ''
+    resultHint: '',
+    categories: [],
+    selectedCategory: ''
   },
 
   onLoad: function () {
     var data = glossaryIndex;
+    // R3.37 提取所有分类
+    var categorySet = {};
+    var categories = [];
+    for (var i = 0; i < data.length; i++) {
+      var cat = data[i].category;
+      if (cat && !categorySet[cat]) {
+        categorySet[cat] = true;
+        categories.push(cat);
+      }
+    }
     this.setData({
       allData: data,
       filteredList: data.slice(0, MAX_DEFAULT),
       totalCount: data.length,
       showCount: Math.min(data.length, MAX_DEFAULT),
-      resultHint: '当前显示 ' + Math.min(data.length, MAX_DEFAULT) + ' 条 / 共 ' + data.length + ' 条'
+      resultHint: '当前显示 ' + Math.min(data.length, MAX_DEFAULT) + ' 条 / 共 ' + data.length + ' 条',
+      categories: categories
     });
   },
 
@@ -163,6 +176,67 @@ Page({
     var id = e.currentTarget.dataset.id;
     wx.navigateTo({
       url: '/packages/glossary/pages/term-detail/term-detail?id=' + id
+    });
+  },
+
+  // R3.37 分类筛选
+  onCategoryTap: function (e) {
+    var category = e.currentTarget.dataset.category;
+    var selected = this.data.selectedCategory === category ? '' : category;
+    var keyword = this.data.keyword;
+    var allData = this.data.allData;
+    var favSet = this.data.favoriteSet;
+
+    // 应用筛选：分类 + 关键词
+    var filtered = allData;
+    if (selected) {
+      filtered = filtered.filter(function (item) {
+        return item.category === selected;
+      });
+    }
+    if (keyword) {
+      var lower = keyword.toLowerCase();
+      filtered = filtered.filter(function (item) {
+        if (item.term.toLowerCase().indexOf(lower) !== -1) return true;
+        if (item.zh.indexOf(keyword) !== -1) return true;
+        if (item.ja.indexOf(keyword) !== -1) return true;
+        if (item.category.indexOf(keyword) !== -1) return true;
+        if (Array.isArray(item.aliases)) {
+          for (var i = 0; i < item.aliases.length; i++) {
+            if (String(item.aliases[i]).toLowerCase().indexOf(lower) !== -1) return true;
+          }
+        }
+        return false;
+      });
+    }
+
+    // 应用收藏状态
+    var result = [];
+    for (var i = 0; i < filtered.length; i++) {
+      result.push({
+        id: filtered[i].id,
+        term: filtered[i].term,
+        zh: filtered[i].zh,
+        ja: filtered[i].ja,
+        category: filtered[i].category,
+        level: filtered[i].level,
+        _isFavorite: !!favSet[String(filtered[i].id)]
+      });
+    }
+
+    var showCount = result.length;
+    var totalCount = selected
+      ? allData.filter(function (item) { return item.category === selected; }).length
+      : allData.length;
+
+    this.setData({
+      selectedCategory: selected,
+      filteredList: result.slice(0, MAX_SEARCH),
+      totalCount: totalCount,
+      showCount: showCount,
+      resultHint: keyword
+        ? '当前显示 ' + showCount + ' 条 / 共 ' + filtered.length + ' 条匹配'
+        : '分类「' + selected + '」共 ' + totalCount + ' 条'
     });
   }
 });
