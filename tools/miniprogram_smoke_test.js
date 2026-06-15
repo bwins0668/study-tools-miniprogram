@@ -6757,6 +6757,35 @@ if (round361Ok) pass("Round Mini 3.61 home practice reminder");
 
 
 
+
+// ===========================================================
+// Round Mini 3.62 quiz answer timer
+// ===========================================================
+var round362Ok = true;
+
+// A. quiz.js 包含 timerText 字段
+var quizJs362 = readFile("packages/quiz/pages/quiz/quiz.js");
+if (quizJs362.indexOf("timerText") < 0) {
+  fail("R3.62: timerText field missing in quiz.js");
+  round362Ok = false;
+}
+
+// B. quiz.wxml 包含计时器显示
+var quizWxml362 = readFile("packages/quiz/pages/quiz/quiz.wxml");
+if (quizWxml362.indexOf("timer-section") < 0) {
+  fail("R3.62: timer-section missing in quiz.wxml");
+  round362Ok = false;
+}
+
+// C. quiz.wxss 包含计时器样式  
+var quizWxss362 = readFile("packages/quiz/pages/quiz/quiz.wxss");
+if (quizWxss362.indexOf(".timer-section") < 0) {
+  fail("R3.62: .timer-section style missing in quiz.wxss");
+  round362Ok = false;
+}
+
+if (round362Ok) pass("Round Mini 3.62 quiz answer timer");
+
 console.log('========================================');
 console.log('Passed: ' + passed);
 console.log('Failed: ' + failed);
