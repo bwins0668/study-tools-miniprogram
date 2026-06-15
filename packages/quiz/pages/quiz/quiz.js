@@ -30,7 +30,10 @@ Page({
     examBadge: '',
     progressPercent: 0,
     feedbackTip: '',
-    showFeedbackTip: false
+    showFeedbackTip: false,
+    // v0.22.0 第二批：结果页复盘增强
+    nextAction: '',
+    hasWrongQuestions: false
   },
 
   onLoad: function (options) {
@@ -168,25 +171,32 @@ Page({
       ? Math.round(this.data.sessionCorrect / this.data.sessionTotal * 100)
       : 0;
 
-    // 3级学习洞察
+    // 3级学习洞察 + 下一步建议
     var accuracyLevel = '';
     var encouragement = '';
     var insightHint = '';
+    var nextAction = '';
+    var hasWrongQuestions = this.data.sessionWrong > 0;
+
     if (this.data.sessionTotal === 0) {
       encouragement = '本次无答题记录';
       accuracyLevel = 'none';
+      nextAction = '尝试开始一组新的练习';
     } else if (accuracy >= 85) {
       accuracyLevel = 'good';
       encouragement = '掌握较好';
       insightHint = '继续保持练习节奏，可以尝试其他考试方向';
+      nextAction = '建议尝试其他考试方向或日文题练习';
     } else if (accuracy >= 60) {
       accuracyLevel = 'moderate';
       encouragement = '建议继续巩固';
       insightHint = '建议再练一组巩固薄弱知识点';
+      nextAction = hasWrongQuestions ? '建议再练一次，并回顾本次错题' : '建议再来一组巩固练习';
     } else {
       accuracyLevel = 'low';
       encouragement = '建议复盘错题';
       insightHint = '建议先到错题本复习相关题目';
+      nextAction = '建议先复习本次错题，理解后再重新练习';
     }
 
     this.setData({
@@ -195,7 +205,9 @@ Page({
       sessionAccuracy: accuracy,
       encouragementText: encouragement,
       accuracyLevel: accuracyLevel,
-      insightHint: insightHint
+      insightHint: insightHint,
+      nextAction: nextAction,
+      hasWrongQuestions: hasWrongQuestions
     });
   },
 

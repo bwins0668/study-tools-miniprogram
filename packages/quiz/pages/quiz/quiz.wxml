@@ -126,12 +126,18 @@
         <text class="insight-hint" wx:if="{{insightHint}}">{{insightHint}}</text>
       </view>
 
+      <!-- 下一步建议 -->
+      <view class="next-action-card" wx:if="{{nextAction}}">
+        <text class="next-action-icon">👉</text>
+        <text class="next-action-text">{{nextAction}}</text>
+      </view>
+
       <view class="result-actions">
         <view class="result-btn result-btn-primary" bindtap="restartPractice">
           <text class="result-btn-text result-btn-text-primary">再练一次</text>
         </view>
-        <view class="result-btn" bindtap="goMistakes">
-          <text class="result-btn-text">查看错题</text>
+        <view class="result-btn {{hasWrongQuestions ? 'result-btn-wrong' : ''}}" bindtap="goMistakes">
+          <text class="result-btn-text {{hasWrongQuestions ? 'result-btn-text-wrong' : ''}}">查看错题{{hasWrongQuestions ? ' (' + sessionWrong + '题)' : ''}}</text>
         </view>
         <view class="result-btn" bindtap="goHome">
           <text class="result-btn-text">返回首页</text>

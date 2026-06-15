@@ -4481,6 +4481,96 @@ if (quizJs327.indexOf("feedbackTip: ''") < 0 && quizJs327.indexOf("'feedbackTip'
 if (round327Ok) pass('Round Mini 3.27 quiz practice enhancement');
 
 // ============================================================
+// Round Mini 3.28：quiz 结果页复盘增强
+// ============================================================
+console.log('\n--- Round Mini 3.28 quiz result enhancement checks ---');
+var round328Ok = true;
+
+var quizJs328 = readFile('packages/quiz/pages/quiz/quiz.js');
+var quizWxml328 = readFile('packages/quiz/pages/quiz/quiz.wxml');
+var quizWxss328 = readFile('packages/quiz/pages/quiz/quiz.wxss');
+
+// 1. nextAction 字段存在
+if (quizJs328.indexOf('nextAction') < 0) {
+  fail('Round 3.28: nextAction field missing in quiz.js');
+  round328Ok = false;
+}
+
+// 2. hasWrongQuestions 字段存在
+if (quizJs328.indexOf('hasWrongQuestions') < 0) {
+  fail('Round 3.28: hasWrongQuestions field missing in quiz.js');
+  round328Ok = false;
+}
+
+// 3. good 级别 nextAction 赋值
+if (quizJs328.indexOf("建议尝试其他考试方向") < 0) {
+  fail('Round 3.28: good-level nextAction not found');
+  round328Ok = false;
+}
+
+// 4. moderate 级别 nextAction 赋值
+if (quizJs328.indexOf('建议再练一次') < 0 && quizJs328.indexOf('建议再来一组') < 0) {
+  fail('Round 3.28: moderate-level nextAction not found');
+  round328Ok = false;
+}
+
+// 5. low 级别 nextAction 赋值
+if (quizJs328.indexOf('建议先复习本次错题') < 0) {
+  fail('Round 3.28: low-level nextAction not found');
+  round328Ok = false;
+}
+
+// 6. hasWrongQuestions 基于 sessionWrong 计算
+if (quizJs328.indexOf('sessionWrong > 0') < 0) {
+  fail('Round 3.28: hasWrongQuestions not based on sessionWrong');
+  round328Ok = false;
+}
+
+// 7. WXML next-action-card 显示
+if (quizWxml328.indexOf('next-action-card') < 0) {
+  fail('Round 3.28: next-action-card missing in wxml');
+  round328Ok = false;
+}
+
+// 8. WXML 错题按钮增强（显示错题数量）
+if (quizWxml328.indexOf('sessionWrong') < 0 || quizWxml328.indexOf('result-btn-wrong') < 0) {
+  fail('Round 3.28: wrong question button enhancement missing in wxml');
+  round328Ok = false;
+}
+
+// 9. WXSS next-action-card 样式
+if (quizWxss328.indexOf('next-action-card') < 0) {
+  fail('Round 3.28: next-action-card CSS missing');
+  round328Ok = false;
+}
+
+// 10. WXSS result-btn-wrong 样式
+if (quizWxss328.indexOf('result-btn-wrong') < 0) {
+  fail('Round 3.28: result-btn-wrong CSS missing');
+  round328Ok = false;
+}
+
+// 11. NaN 防护 — sessionTotal 为零时的处理
+if (quizJs328.indexOf('sessionTotal === 0') < 0) {
+  fail('Round 3.28: sessionTotal zero guard missing');
+  round328Ok = false;
+}
+
+// 12. R3.27 功能未被破坏 — examBadge 仍存在
+if (quizJs328.indexOf('examBadge') < 0) {
+  fail('Round 3.28: R3.27 examBadge broken');
+  round328Ok = false;
+}
+
+// 13. R3.27 progress bar 仍存在
+if (quizWxml328.indexOf('progress-bar-wrap') < 0) {
+  fail('Round 3.28: R3.27 progress bar broken');
+  round328Ok = false;
+}
+
+if (round328Ok) pass('Round Mini 3.28 quiz result enhancement');
+
+// ============================================================
 // 汇总
 // ============================================================
 console.log('\n========================================');
