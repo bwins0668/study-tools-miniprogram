@@ -6577,6 +6577,62 @@ if (homeJs357.indexOf('onShareAppMessage') < 0) {
 
 if (round357Ok) pass('Round Mini 3.57 profile version copy button');
 
+// ============================================================
+// Round Mini 3.58 home daily learning quote
+// ============================================================
+var round358Ok = true;
+
+// A. home.js 包含 getDailyQuote 函数和相关数据字段
+var homeJs358 = readFile('pages/home/home.js');
+if (homeJs358.indexOf('getDailyQuote') < 0) {
+  fail('R3.58: getDailyQuote function missing in home.js');
+  round358Ok = false;
+}
+if (homeJs358.indexOf('DAILY_QUOTES') < 0) {
+  fail('R3.58: DAILY_QUOTES array missing in home.js');
+  round358Ok = false;
+}
+if (homeJs358.indexOf('dailyQuote') < 0) {
+  fail('R3.58: dailyQuote data field missing in home.js');
+  round358Ok = false;
+}
+
+// B. home.wxml 包含每日格言显示
+var homeWxml358 = readFile('pages/home/home.wxml');
+if (homeWxml358.indexOf('quote-banner') < 0) {
+  fail('R3.58: quote-banner missing in home.wxml');
+  round358Ok = false;
+}
+if (homeWxml358.indexOf('dailyQuote') < 0) {
+  fail('R3.58: dailyQuote binding missing in home.wxml');
+  round358Ok = false;
+}
+
+// C. home.wxss 包含格言样式
+var homeWxss358 = readFile('pages/home/home.wxss');
+if (homeWxss358.indexOf('.quote-banner') < 0) {
+  fail('R3.58: .quote-banner style missing in home.wxss');
+  round358Ok = false;
+}
+if (homeWxss358.indexOf('.quote-text') < 0) {
+  fail('R3.58: .quote-text style missing in home.wxss');
+  round358Ok = false;
+}
+
+// D. 回归：R3.32~R3.57 功能未退化
+var profileJs358 = readFile('pages/profile/profile.js');
+if (profileJs358.indexOf('copyVersion') < 0) {
+  fail('R3.58: R3.57 copyVersion regressed in profile.js');
+  round358Ok = false;
+}
+var termDetailJs358 = readFile('packages/glossary/pages/term-detail/term-detail.js');
+if (termDetailJs358.indexOf('copyTerm') < 0) {
+  fail('R3.58: R3.56 copyTerm regressed in term-detail.js');
+  round358Ok = false;
+}
+
+if (round358Ok) pass('Round Mini 3.58 home daily learning quote');
+
 
 console.log('\n========================================');
 console.log('Study Tools Mini Smoke Test');

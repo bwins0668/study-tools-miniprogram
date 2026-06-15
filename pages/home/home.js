@@ -7,6 +7,29 @@ const {
   getLastAttemptByExam
 } = require("../../utils/storage");
 
+/**
+ * R3.58 每日学习格言
+ */
+var DAILY_QUOTES = [
+  '学习不怕根底浅，只要迈步就不晚。',
+  '每天进步一点点，终有一天会发光。',
+  '错题是最好的老师，认真对待每一道错题。',
+  '坚持学习 7 天，你会看到明显进步。',
+  '术语记忆靠重复，每天复习 5 分钟。',
+  '正确率不是唯一目标，理解才是关键。',
+  '今天的学习，是明天考试的底气。',
+  '与其担心考试，不如现在开始练习。',
+  '收藏的术语要定期复习，才能真正记住。',
+  '学习 IT 日语，术语是第一步。'
+];
+
+function getDailyQuote() {
+  var today = new Date();
+  var dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
+  var index = dayOfYear % DAILY_QUOTES.length;
+  return DAILY_QUOTES[index];
+}
+
 var EXAM_LABELS = {
   itpass: 'IT Passport',
   sg: 'SG 考试'
@@ -179,7 +202,9 @@ Page({
     achievements: [],
     showAchievements: false,
     // R3.52 学习时间智能提醒
-    learningReminder: ''
+    learningReminder: '',
+    // R3.58 每日学习格言
+    dailyQuote: ''
   },
 
   onShow: function () {
@@ -263,6 +288,9 @@ Page({
 
     // R3.52 生成学习提醒（初步，streakCount 可能在下方重新计算）
     var learningReminder = generateLearningReminder(streakCount, stats.todayTotal || 0, wrongQuestionCount, favoriteCount);
+
+    // R3.58 生成每日格言
+    var dailyQuote = getDailyQuote();
 
     // 生成下一步行动提示
     var nextActionHint = '';
@@ -458,7 +486,9 @@ Page({
       suggestionActionText: suggestionActionText,
       suggestionActionPath: suggestionActionPath,
       // R3.52 学习时间智能提醒
-      learningReminder: learningReminder
+      learningReminder: learningReminder,
+      // R3.58 每日学习格言
+      dailyQuote: dailyQuote
     });
   },
 

@@ -5,6 +5,12 @@
     <text class="reminder-text">{{learningReminder}}</text>
   </view>
 
+  <!-- R3.58 每日学习格言 -->
+  <view class="quote-banner" wx:if="{{dailyQuote}}">
+    <text class="quote-icon">💬</text>
+    <text class="quote-text">{{dailyQuote}}</text>
+  </view>
+
   <!-- 头部标题 -->
   <view class="header">
     <text class="title">Study Tools</text>
