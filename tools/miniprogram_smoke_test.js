@@ -1016,13 +1016,13 @@ console.log('\n--- 版本号检查 ---');
 let versionOk = true;
 const appJsContent = readFile('app.js');
 const storageContent = readFile('utils/storage.js');
-if (!appJsContent.includes('v0.15.0')) {
-  fail('version: app.js does not contain v0.15.0');
+if (!appJsContent.includes('v0.16.0')) {
+  fail('version: app.js does not contain v0.16.0');
   versionOk = false;
 }
 
-if (!storageContent.includes("version: 'v0.15.0'")) {
-  fail('version: utils/storage.js exportLocalBackup does not contain v0.15.0');
+if (!storageContent.includes("version: 'v0.16.0'")) {
+  fail('version: utils/storage.js exportLocalBackup does not contain v0.16.0');
   versionOk = false;
 }
 
@@ -1039,7 +1039,7 @@ if (!profileJs.includes('globalData.version')) {
   fail('version: profile.js does not read from globalData.version');
   versionOk = false;
 }
-if (versionOk) pass('version check v0.15.0');
+if (versionOk) pass('version check v0.16.0');
 
 // ============================================================
 // 十一、Check Round 2.0 新功能
@@ -1513,13 +1513,13 @@ var profileJs32 = readFile('pages/profile/profile.js');
 var profileWxml32 = readFile('pages/profile/profile.wxml');
 var profileWxss32 = readFile('pages/profile/profile.wxss');
 
-// 1. 版本号 v0.15.0
-if (!appJsContent.includes('v0.15.0')) {
-  fail('Round 3.2: app.js missing v0.15.0');
+// 1. 版本号 v0.16.0
+if (!appJsContent.includes('v0.16.0')) {
+  fail('Round 3.2: app.js missing v0.16.0');
   round32Ok = false;
 }
-if (!storageContent.includes("version: 'v0.15.0'")) {
-  fail('Round 3.2: storage.js exportLocalBackup missing v0.15.0');
+if (!storageContent.includes("version: 'v0.16.0'")) {
+  fail('Round 3.2: storage.js exportLocalBackup missing v0.16.0');
   round32Ok = false;
 }
 
@@ -1620,13 +1620,13 @@ var favReviewJs33 = readFile('packages/glossary/pages/favorite-review/favorite-r
 var favReviewWxml33 = readFile('packages/glossary/pages/favorite-review/favorite-review.wxml');
 var favReviewWxss33 = readFile('packages/glossary/pages/favorite-review/favorite-review.wxss');
 
-// 1. 版本号 v0.15.0
-if (!appJsContent.includes('v0.15.0')) {
-  fail('Round 3.3: app.js missing v0.15.0');
+// 1. 版本号 v0.16.0
+if (!appJsContent.includes('v0.16.0')) {
+  fail('Round 3.3: app.js missing v0.16.0');
   round33Ok = false;
 }
-if (!storageContent.includes("version: 'v0.15.0'")) {
-  fail('Round 3.3: storage.js exportLocalBackup missing v0.15.0');
+if (!storageContent.includes("version: 'v0.16.0'")) {
+  fail('Round 3.3: storage.js exportLocalBackup missing v0.16.0');
   round33Ok = false;
 }
 
@@ -1701,8 +1701,8 @@ if (!profileJs33.includes('getFavoriteTermCount') || !profileJs33.includes('favo
 }
 
 // 10. 备份导出/恢复版本同步到 v0.15.0
-if (!storageContent.includes("version: 'v0.15.0'")) {
-  fail('Round 3.3: storage.js exportLocalBackup version not synced to v0.15.0');
+if (!storageContent.includes("version: 'v0.16.0'")) {
+  fail('Round 3.3: storage.js exportLocalBackup version not synced to v0.16.0');
   round33Ok = false;
 }
 if (!storageContent.includes('exportLocalBackup') || !storageContent.includes('importLocalBackup')) {
@@ -1729,6 +1729,179 @@ if (!favReviewWxss33.includes('fav-list') || !favReviewWxss33.includes('mode-swi
 }
 
 if (round33Ok) pass('Round Mini 3.3 glossary favorites review checks');
+
+// ============================================================
+// Round Mini 3.4 mistakes review enhancement checks
+// ============================================================
+console.log('\n--- Round Mini 3.4 mistakes review enhancement checks ---');
+
+var round34Ok = true;
+var mistakesJs34 = readFile('packages/quiz/pages/mistakes/mistakes.js');
+var mistakesWxml34 = readFile('packages/quiz/pages/mistakes/mistakes.wxml');
+var mistakesWxss34 = readFile('packages/quiz/pages/mistakes/mistakes.wxss');
+
+// 1. 版本号 v0.16.0
+if (!appJsContent.includes('v0.16.0')) {
+  fail('Round 3.4: app.js missing v0.16.0');
+  round34Ok = false;
+}
+if (!storageContent.includes("version: 'v0.16.0'")) {
+  fail('Round 3.4: storage.js exportLocalBackup missing v0.16.0');
+  round34Ok = false;
+}
+
+// 2. 错题本页面存在搜索关键词状态
+if (!mistakesJs34.includes('searchKeyword') || !mistakesJs34.includes('onSearchInput')) {
+  fail('Round 3.4: mistakes.js missing search keyword or search input handler');
+  round34Ok = false;
+}
+if (!mistakesWxml34.includes('searchKeyword') || !mistakesWxml34.includes('onSearchInput')) {
+  fail('Round 3.4: mistakes.wxml missing search input UI');
+  round34Ok = false;
+}
+
+// 3. 错题本页面存在搜索/筛选逻辑
+if (!mistakesJs34.includes('matchItem') || !mistakesJs34.includes('matchText')) {
+  fail('Round 3.4: mistakes.js missing matchItem/matchText search functions');
+  round34Ok = false;
+}
+if (!mistakesJs34.includes('applyFilterAndSearch')) {
+  fail('Round 3.4: mistakes.js missing applyFilterAndSearch function');
+  round34Ok = false;
+}
+
+// 4. 错题本页面存在列表模式 / 复习模式切换逻辑
+if (!mistakesJs34.includes('viewMode') || !mistakesJs34.includes('switchToReviewMode')) {
+  fail('Round 3.4: mistakes.js missing viewMode or switchToReviewMode');
+  round34Ok = false;
+}
+if (!mistakesJs34.includes('switchToListMode')) {
+  fail('Round 3.4: mistakes.js missing switchToListMode');
+  round34Ok = false;
+}
+if (!mistakesWxml34.includes('viewMode') || !mistakesWxml34.includes('复习模式')) {
+  fail('Round 3.4: mistakes.wxml missing viewMode switch UI');
+  round34Ok = false;
+}
+
+// 5. 错题本页面存在错题总数或筛选数量展示
+if (!mistakesWxml34.includes('totalCount') || !mistakesJs34.includes('reviewCount')) {
+  fail('Round 3.4: mistakes missing totalCount/reviewCount display');
+  round34Ok = false;
+}
+
+// 6. 错题本页面存在移除错题逻辑
+if (!mistakesJs34.includes('removeWrong') || !mistakesJs34.includes('removeFromReview')) {
+  fail('Round 3.4: mistakes.js missing removeWrong or removeFromReview');
+  round34Ok = false;
+}
+
+// 7. 移除错题前存在 wx.showModal 确认
+if (!mistakesJs34.includes('wx.showModal')) {
+  fail('Round 3.4: mistakes.js missing wx.showModal for remove confirmation');
+  round34Ok = false;
+}
+if (!mistakesJs34.includes('确认移除')) {
+  fail('Round 3.4: mistakes.js remove modal title incorrect');
+  round34Ok = false;
+}
+
+// 8. 空错题状态不出现 NaN / undefined / null (formatTime null guard)
+if (!mistakesJs34.includes("if (!ts) return ''") && !mistakesJs34.includes("if (!ts) return")) {
+  fail('Round 3.4: mistakes.js formatTime missing null timestamp guard');
+  round34Ok = false;
+}
+
+// 9. 兼容历史错题无时间字段（formatSavedAt 显示 "已收录"）
+if (!mistakesJs34.includes('已收录') || !mistakesJs34.includes('formatSavedAt')) {
+  fail('Round 3.4: mistakes.js missing formatSavedAt for legacy data compatibility');
+  round34Ok = false;
+}
+if (!mistakesWxml34.includes('savedAtLabel') && !mistakesWxml34.includes('已收录')) {
+  fail('Round 3.4: mistakes.wxml missing savedAtLabel or "已收录" display');
+  round34Ok = false;
+}
+
+// 10. 不出现高风险表述
+var forbidden34 = ['保证通过', '包过', '押题'];
+for (var fi34 = 0; fi34 < forbidden34.length; fi34++) {
+  if (mistakesJs34.includes(forbidden34[fi34]) || mistakesWxml34.includes(forbidden34[fi34])) {
+    fail('Round 3.4: mistakes contains forbidden high-risk text: ' + forbidden34[fi34]);
+    round34Ok = false;
+  }
+}
+
+// 11. profile 错题数量统计相关函数仍存在
+if (!profileJs32.includes('wrongQuestionCount') && !profileJs32.includes('getWrongQuestionCount')) {
+  fail('Round 3.4: profile.js wrongQuestionCount logic broken');
+  round34Ok = false;
+}
+
+// 12. backup export/restore includes wrongQuestions
+if (!storageContent.includes('wrongQuestions')) {
+  fail('Round 3.4: storage.js backup missing wrongQuestions');
+  round34Ok = false;
+}
+
+// 13. 保留 v0.13.0 错题本已有功能（filter-bar, wrong-actions, wrong-time）
+if (!mistakesWxml34.includes('filter-bar') || !mistakesWxml34.includes('activeFilter')) {
+  fail('Round 3.4: mistakes.wxml filter-bar broken');
+  round34Ok = false;
+}
+if (!mistakesWxml34.includes('wrong-actions') || !mistakesWxml34.includes('移出错题本')) {
+  fail('Round 3.4: mistakes.wxml per-item actions broken');
+  round34Ok = false;
+}
+if (!mistakesWxml34.includes('wrong-time')) {
+  fail('Round 3.4: mistakes.wxml wrong-time display broken');
+  round34Ok = false;
+}
+
+// 14. 保留 goPracticeWrong 入口
+if (!mistakesJs34.includes('goPracticeWrong') || !mistakesWxml34.includes('重新练习错题')) {
+  fail('Round 3.4: mistakes missing goPracticeWrong entry');
+  round34Ok = false;
+}
+
+// 15. 保留 empty-state 空状态
+if (!mistakesWxml34.includes('empty-state') || !mistakesWxml34.includes('去练习')) {
+  fail('Round 3.4: mistakes.wxml empty-state broken');
+  round34Ok = false;
+}
+if (!mistakesJs34.includes("'当前没有错题，继续练习后会自动记录需要复习的题目。'")) {
+  fail('Round 3.4: mistakes.js empty hint text missing');
+  round34Ok = false;
+}
+
+// 16. 搜索空状态存在
+if (!mistakesWxml34.includes('searchEmpty') || !mistakesJs34.includes('searchEmpty')) {
+  fail('Round 3.4: mistakes missing search empty state');
+  round34Ok = false;
+}
+
+// 17. 复习模式导航按钮存在
+if (!mistakesJs34.includes('goPrevReview') || !mistakesJs34.includes('goNextReview')) {
+  fail('Round 3.4: mistakes.js missing review navigation functions');
+  round34Ok = false;
+}
+if (!mistakesWxml34.includes('上一题') || !mistakesWxml34.includes('下一题')) {
+  fail('Round 3.4: mistakes.wxml missing prev/next review buttons');
+  round34Ok = false;
+}
+
+// 18. 复习模式解析折叠功能
+if (!mistakesJs34.includes('toggleExplanation') || !mistakesWxml34.includes('toggleExplanation')) {
+  fail('Round 3.4: mistakes missing explanation toggle in review mode');
+  round34Ok = false;
+}
+
+// 19. 搜索清除功能
+if (!mistakesJs34.includes('onClearSearch') || !mistakesWxml34.includes('onClearSearch')) {
+  fail('Round 3.4: mistakes missing search clear function');
+  round34Ok = false;
+}
+
+if (round34Ok) pass('Round Mini 3.4 mistakes review enhancement checks');
 
 // ============================================================
 console.log('\n--- preloadRule 分包预下载检查 ---');

@@ -22,6 +22,7 @@ var FILTER_OPTIONS = [
 function formatTime(ts) {
   if (!ts) return '';
   var d = new Date(ts);
+  if (isNaN(d.getTime())) return '';
   var now = new Date();
   var diff = now.getTime() - d.getTime();
   var dayMs = 24 * 60 * 60 * 1000;
@@ -39,6 +40,36 @@ function pad(n) {
   return n < 10 ? '0' + n : n;
 }
 
+function formatSavedAt(ts) {
+  if (!ts) return '已收录';
+  var d = new Date(ts);
+  if (isNaN(d.getTime())) return '已收录';
+  return (d.getMonth() + 1) + '/' + d.getDate() + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+}
+
+// ========== 文本搜索 ==========
+
+function matchText(source, keyword) {
+  if (!keyword || keyword === '') return true;
+  if (!source) return false;
+  var k = keyword.toLowerCase().trim();
+  if (k === '') return true;
+  return source.toLowerCase().indexOf(k) !== -1;
+}
+
+function matchItem(item, keyword) {
+  if (!keyword || keyword.trim() === '') return true;
+
+  return matchText(item.questionZh, keyword) ||
+    matchText(item.questionJa, keyword) ||
+    matchText(item.correctAnswer, keyword) ||
+    matchText(item.lastAnswer, keyword) ||
+    matchText(item.explanationZh, keyword) ||
+    matchText(item.explanationJa, keyword) ||
+    matchText(item.examLabel, keyword) ||
+    matchText(item.sourceLabel, keyword);
+}
+
 Page({
   data: {
     wrongList: [],
@@ -48,7 +79,12 @@ Page({
     masteredCount: 0,
     activeFilter: 'all',
     filterOptions: FILTER_OPTIONS,
-    emptyHint: '当前没有错题，继续练习后会自动记录需要复习的题目。'
+    emptyHint: '当前没有错题，继续练习后会自动记录需要复习的题目。',
+    searchKeyword: '',
+    searchEmpty: false,
+    viewMode: 'list',
+    currentReviewIndex: 0,
+    showExplanation: true
   },
 
   onShow: function () {
@@ -73,9 +109,17 @@ Page({
         var correctText = '';
         for (var k = 0; k < question.options.length; k++) {
           if (question.options[k].key === question.answer) {
-            correctText = question.options[k].key + '. ' + question.options[k].textZh;
+            correctText = question.options[k].key + '. ' + (question.options[k].textZh || question.options[k].textJa || '');
             break;
           }
+        }
+        var optionsDisplay = [];
+        for (var oi = 0; oi < question.options.length; oi++) {
+          var opt = question.options[oi];
+          optionsDisplay.push({
+            key: opt.key,
+            text: opt.textZh || opt.textJa || ''
+          });
         }
         wrongList.push({
           id: wq.id,
@@ -85,12 +129,14 @@ Page({
           sourceLabel: SOURCE_LABELS[question.sourceType] || '课程练习',
           questionZh: question.questionZh,
           questionJa: question.questionJa,
+          options: optionsDisplay,
           correctAnswer: correctText,
           explanationZh: question.explanationZh,
           explanationJa: question.explanationJa,
           lastAnswer: wq.lastAnswer,
           wrongAt: wq.wrongAt,
           wrongAtLabel: formatTime(wq.wrongAt),
+          savedAtLabel: formatSavedAt(wq.wrongAt),
           translationStatus: question.translationStatus || 'complete',
           explanationStatus: question.explanationStatus || 'complete'
         });
@@ -101,11 +147,64 @@ Page({
       wrongList: wrongList,
       totalCount: wrongList.length,
       reviewCount: wrongList.length,
-      masteredCount: 0
+      masteredCount: 0,
+      currentReviewIndex: 0,
+      showExplanation: true
     });
 
-    this.applyFilter(this.data.activeFilter);
+    this.applyFilterAndSearch();
   },
+
+  // ========== 搜索 ==========
+
+  onSearchInput: function (e) {
+    var keyword = e.detail.value;
+    this.setData({ searchKeyword: keyword });
+    this.applyFilterAndSearch();
+  },
+
+  onClearSearch: function () {
+    this.setData({ searchKeyword: '' });
+    this.applyFilterAndSearch();
+  },
+
+  // ========== 筛选 + 搜索整合 ==========
+
+  applyFilterAndSearch: function () {
+    var filterKey = this.data.activeFilter;
+    var keyword = this.data.searchKeyword || '';
+    var list = this.data.wrongList;
+
+    // 按分类筛选
+    var filtered = list;
+    if (filterKey === 'itpass') {
+      filtered = list.filter(function (item) { return item.exam === 'itpass'; });
+    } else if (filterKey === 'sg') {
+      filtered = list.filter(function (item) { return item.exam === 'sg'; });
+    } else if (filterKey === 'past_exam_japanese') {
+      filtered = list.filter(function (item) { return item.sourceType === 'past_exam_japanese'; });
+    }
+
+    // 按关键词搜索
+    var self = this;
+    var searchResult = filtered;
+    var isEmpty = false;
+    if (keyword.trim() !== '') {
+      searchResult = filtered.filter(function (item) {
+        return matchItem(item, keyword);
+      });
+      isEmpty = searchResult.length === 0;
+    }
+
+    this.setData({
+      filteredList: searchResult,
+      searchEmpty: isEmpty,
+      reviewCount: searchResult.length,
+      currentReviewIndex: 0
+    });
+  },
+
+  // ========== 分类筛选（保持向后兼容）==========
 
   applyFilter: function (filterKey) {
     var list = this.data.wrongList;
@@ -127,8 +226,56 @@ Page({
 
   onFilterChange: function (e) {
     var key = e.currentTarget.dataset.key;
-    this.applyFilter(key);
+    this.setData({ activeFilter: key });
+    this.applyFilterAndSearch();
   },
+
+  // ========== 模式切换 ==========
+
+  switchToListMode: function () {
+    this.setData({
+      viewMode: 'list',
+      currentReviewIndex: 0,
+      showExplanation: true
+    });
+  },
+
+  switchToReviewMode: function () {
+    if (this.data.filteredList.length === 0) return;
+    this.setData({
+      viewMode: 'review',
+      currentReviewIndex: 0,
+      showExplanation: true
+    });
+  },
+
+  // ========== 复习模式导航 ==========
+
+  goPrevReview: function () {
+    if (this.data.currentReviewIndex > 0) {
+      this.setData({
+        currentReviewIndex: this.data.currentReviewIndex - 1,
+        showExplanation: true
+      });
+    }
+  },
+
+  goNextReview: function () {
+    if (this.data.currentReviewIndex < this.data.filteredList.length - 1) {
+      this.setData({
+        currentReviewIndex: this.data.currentReviewIndex + 1,
+        showExplanation: true
+      });
+    }
+  },
+
+  toggleExplanation: function () {
+    this.setData({
+      showExplanation: !this.data.showExplanation
+    });
+  },
+
+  // ========== 移出错题（保留原有逻辑）==========
 
   removeWrong: function (e) {
     var id = e.currentTarget.dataset.id;
@@ -150,6 +297,33 @@ Page({
       }
     });
   },
+
+  // 复习模式下移出当前
+  removeFromReview: function () {
+    var list = this.data.filteredList;
+    var idx = this.data.currentReviewIndex;
+    if (list.length === 0 || idx >= list.length) return;
+    var id = list[idx].id;
+    var that = this;
+    wx.showModal({
+      title: '确认移除',
+      content: '将该题目从错题本移除？移除后可以重新练习时再次记录。',
+      confirmColor: '#f44336',
+      success: function (res) {
+        if (res.confirm) {
+          storage.removeWrongQuestion(id);
+          that.loadWrongQuestions();
+          wx.showToast({
+            title: '已移除',
+            icon: 'none',
+            duration: 1000
+          });
+        }
+      }
+    });
+  },
+
+  // ========== 导航 ==========
 
   goPracticeWrong: function () {
     wx.navigateTo({
