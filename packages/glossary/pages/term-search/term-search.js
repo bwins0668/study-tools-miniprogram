@@ -6,6 +6,7 @@ const {
 
 var MAX_DEFAULT = 30;
 var MAX_SEARCH = 50;
+var SEARCH_DEBOUNCE_MS = 300;
 
 Page({
   data: {
@@ -24,6 +25,9 @@ Page({
     selectedTerms: {},
     selectedCount: 0
   },
+
+  // R3.41 搜索防抖定时器
+  _searchTimer: null,
 
   onLoad: function () {
     var data = glossaryIndex;
@@ -102,49 +106,71 @@ Page({
 
   onSearchInput: function (e) {
     var keyword = e.detail.value.trim();
+    this.setData({ keyword: keyword });
+    // R3.41 搜索防抖：延迟 300ms 执行搜索
+    if (this._searchTimer) {
+      clearTimeout(this._searchTimer);
+    }
+    var self = this;
+    this._searchTimer = setTimeout(function () {
+      self._doSearch(keyword);
+    }, SEARCH_DEBOUNCE_MS);
+  },
+
+  // R3.41 实际执行搜索（防抖后调用）
+  _doSearch: function (keyword) {
     var favSet = this.data.favoriteSet;
     var filtered;
-    if (keyword) {
-      var all = this.filterData(keyword, this.data.allData, true);
-      var sliced = all.slice(0, MAX_SEARCH);
-      // Apply favorite status
-      for (var i = 0; i < sliced.length; i++) {
-        sliced[i] = {
-          id: sliced[i].id, term: sliced[i].term, zh: sliced[i].zh, ja: sliced[i].ja,
-          category: sliced[i].category, level: sliced[i].level,
-          _isFavorite: !!favSet[String(sliced[i].id)]
-        };
-      }
-      filtered = sliced;
-      this.setData({
-        keyword: keyword,
-        filteredList: filtered,
-        totalCount: all.length,
-        showCount: filtered.length,
-        resultHint: '当前显示 ' + filtered.length + ' 条 / 共 ' + all.length + ' 条匹配'
-      });
-    } else {
-      var raw = this.data.allData.slice(0, MAX_DEFAULT);
-      var marked = [];
-      for (var i = 0; i < raw.length; i++) {
-        marked.push({
-          id: raw[i].id, term: raw[i].term, zh: raw[i].zh, ja: raw[i].ja,
-          category: raw[i].category, level: raw[i].level,
-          _isFavorite: !!favSet[String(raw[i].id)]
+    try {
+      if (keyword) {
+        var all = this.filterData(keyword, this.data.allData, true);
+        var sliced = all.slice(0, MAX_SEARCH);
+        // Apply favorite status
+        for (var i = 0; i < sliced.length; i++) {
+          sliced[i] = {
+            id: sliced[i].id, term: sliced[i].term, zh: sliced[i].zh, ja: sliced[i].ja,
+            category: sliced[i].category, level: sliced[i].level,
+            _isFavorite: !!favSet[String(sliced[i].id)]
+          };
+        }
+        filtered = sliced;
+        this.setData({
+          filteredList: filtered,
+          totalCount: all.length,
+          showCount: filtered.length,
+          resultHint: '当前显示 ' + filtered.length + ' 条 / 共 ' + all.length + ' 条匹配'
+        });
+      } else {
+        var raw = this.data.allData.slice(0, MAX_DEFAULT);
+        var marked = [];
+        for (var i = 0; i < raw.length; i++) {
+          marked.push({
+            id: raw[i].id,
+            term: raw[i].term,
+            zh: raw[i].zh,
+            ja: raw[i].ja,
+            category: raw[i].category,
+            level: raw[i].level,
+            _isFavorite: !!favSet[String(raw[i].id)]
+          });
+        }
+        filtered = marked;
+        this.setData({
+          filteredList: filtered,
+          totalCount: this.data.allData.length,
+          showCount: filtered.length,
+          resultHint: '当前显示 ' + filtered.length + ' 条 / 共 ' + this.data.allData.length + ' 条'
         });
       }
-      filtered = marked;
+    } catch (err) {
+      console.error('[Search Error]', err);
+      // 异常兜底：显示空结果
       this.setData({
-        keyword: '',
-        filteredList: filtered,
-        totalCount: this.data.allData.length,
-        showCount: filtered.length,
-        resultHint: '当前显示 ' + filtered.length + ' 条 / 共 ' + this.data.allData.length + ' 条'
+        filteredList: [],
+        totalCount: 0,
+        showCount: 0,
+        resultHint: '搜索出现异常，请重试'
       });
-    }
-    // R3.38 保存搜索历史（延时保存，避免实时输入时频繁保存）
-    if (keyword && keyword.length >= 2) {
-      this._pendingKeyword = keyword;
     }
   },
 
@@ -346,6 +372,7 @@ Page({
     });
   },
 
+  // R3.41 批量操作 - 添加存储保护
   batchAddToFavorites: function () {
     var selected = this.data.selectedTerms;
     var keys = Object.keys(selected);
@@ -353,47 +380,59 @@ Page({
       wx.showToast({ title: '请先选择术语', icon: 'none' });
       return;
     }
+    // R3.41 边界保护：限制单次批量操作数量
+    if (keys.length > 50) {
+      wx.showToast({ title: '单次最多批量收藏 50 个术语', icon: 'none' });
+      return;
+    }
     var allData = this.data.allData;
     var added = 0;
     var favSet = this.data.favoriteSet;
-    for (var i = 0; i < keys.length; i++) {
-      var id = keys[i];
-      if (favSet[id]) continue;
-      var found = null;
-      for (var j = 0; j < allData.length; j++) {
-        if (String(allData[j].id) === id) {
-          found = allData[j];
-          break;
-        }
-      }
-      if (!found) continue;
+    try {
       var favList = getFavoriteTerms();
-      favList.push({
-        id: found.id,
-        term: found.term,
-        zh: found.zh,
-        ja: found.ja,
-        category: found.category,
-        level: found.level
-      });
-      try {
-        wx.setStorageSync('study-tools-mini-favorite-terms-v1', JSON.stringify(favList));
+      for (var i = 0; i < keys.length; i++) {
+        var id = keys[i];
+        if (favSet[id]) continue;
+        var found = null;
+        for (var j = 0; j < allData.length; j++) {
+          if (String(allData[j].id) === id) {
+            found = allData[j];
+            break;
+          }
+        }
+        if (!found) continue;
+        favList.push({
+          id: found.id,
+          term: found.term,
+          zh: found.zh,
+          ja: found.ja,
+          category: found.category,
+          level: found.level
+        });
         favSet[id] = true;
         added++;
-      } catch (e) {
-        // ignore
       }
+      // R3.41 存储异常兜底
+      try {
+        wx.setStorageSync('study-tools-mini-favorite-terms-v1', JSON.stringify(favList));
+      } catch (e) {
+        wx.showToast({ title: '存储失败，请检查存储空间', icon: 'none' });
+        return;
+      }
+      this.setData({
+        favoriteSet: favSet,
+        selectedTerms: {},
+        selectedCount: 0
+      });
+      this.refreshFavoriteStatus();
+      wx.showToast({
+        title: '已添加 ' + added + ' 个术语到收藏',
+        icon: 'none',
+        duration: 2000
+      });
+    } catch (err) {
+      console.error('[Batch Favorite Error]', err);
+      wx.showToast({ title: '批量收藏失败，请重试', icon: 'none' });
     }
-    this.setData({
-      favoriteSet: favSet,
-      selectedTerms: {},
-      selectedCount: 0
-    });
-    this.refreshFavoriteStatus();
-    wx.showToast({
-      title: '已添加 ' + added + ' 个术语到收藏',
-      icon: 'none',
-      duration: 2000
-    });
   }
 });

@@ -5584,6 +5584,73 @@ if (termSearchJs340b.indexOf('onHistoryTap') < 0) {
 if (round340Ok) pass('Round Mini 3.40 term card batch operations');
 
 // ============================================================
+// Round Mini 3.41 术语搜索稳定性增强
+// ============================================================
+console.log('\n--- Round Mini 3.41 term search stability enhancement ---');
+
+var round341Ok = true;
+
+// A. term-search.js 包含防抖相关代码
+var termSearchJs341 = readFile('packages/glossary/pages/term-search/term-search.js');
+if (termSearchJs341.indexOf('SEARCH_DEBOUNCE_MS') < 0) {
+  fail('R3.41: SEARCH_DEBOUNCE_MS constant missing in term-search.js');
+  round341Ok = false;
+}
+if (termSearchJs341.indexOf('_searchTimer') < 0) {
+  fail('R3.41: _searchTimer variable missing in term-search.js');
+  round341Ok = false;
+}
+if (termSearchJs341.indexOf('_doSearch') < 0) {
+  fail('R3.41: _doSearch method missing in term-search.js');
+  round341Ok = false;
+}
+
+// B. _doSearch 包含 try-catch 异常兜底
+if (termSearchJs341.indexOf('try {') < 0 || termSearchJs341.indexOf('catch (err)') < 0) {
+  fail('R3.41: _doSearch missing try-catch error handling');
+  round341Ok = false;
+}
+if (termSearchJs341.indexOf('搜索出现异常') < 0) {
+  fail('R3.41: _doSearch missing error fallback message');
+  round341Ok = false;
+}
+
+// C. batchAddToFavorites 包含边界保护
+if (termSearchJs341.indexOf('keys.length > 50') < 0) {
+  fail('R3.41: batchAddToFavorites missing boundary check (max 50)');
+  round341Ok = false;
+}
+
+// D. batchAddToFavorites 包含存储异常处理
+var batchFunc341 = termSearchJs341.substring(termSearchJs341.indexOf('batchAddToFavorites'));
+if (batchFunc341.indexOf('Storage failed') < 0 && batchFunc341.indexOf('存储失败') < 0) {
+  fail('R3.41: batchAddToFavorites missing storage error handling');
+  round341Ok = false;
+}
+
+// E. 回归：R3.32~R3.40 功能未退化
+var quizJs341 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs341.indexOf('progressPercent') < 0) {
+  fail('R3.41: R3.32 progressPercent regressed in quiz.js');
+  round341Ok = false;
+}
+var termSearchJs341b = readFile('packages/glossary/pages/term-search/term-search.js');
+if (termSearchJs341b.indexOf('onCategoryTap') < 0) {
+  fail('R3.41: R3.37 onCategoryTap regressed in term-search.js');
+  round341Ok = false;
+}
+if (termSearchJs341b.indexOf('onHistoryTap') < 0) {
+  fail('R3.41: R3.38 onHistoryTap regressed in term-search.js');
+  round341Ok = false;
+}
+if (termSearchJs341b.indexOf('toggleBatchMode') < 0) {
+  fail('R3.41: R3.40 toggleBatchMode regressed in term-search.js');
+  round341Ok = false;
+}
+
+if (round341Ok) pass('Round Mini 3.41 term search stability enhancement');
+
+// ============================================================
 // 汇总
 // ============================================================
 console.log('\n========================================');
