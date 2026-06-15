@@ -61,6 +61,7 @@ Page({
     lastExam: '',
     lastSourceType: '',
     suggestion: '',
+    nextActionHint: '',
     lastPracticeTimeText: '',
     sectionTitle: '快速开始',
     itpassTotal: 0,
@@ -152,6 +153,18 @@ Page({
     // 生成建议
     var suggestion = generateSuggestion(wrongQuestionCount, favoriteCount, hasLastAttempt, stats.todayTotal || 0);
 
+    // 生成下一步行动提示
+    var nextActionHint = '';
+    if (wrongQuestionCount > 0) {
+      nextActionHint = '去错题本 →';
+    } else if (favoriteCount > 0) {
+      nextActionHint = '复习收藏 →';
+    } else if (hasLastAttempt) {
+      nextActionHint = '继续练习 →';
+    } else {
+      nextActionHint = '开始学习 →';
+    }
+
     // 继续练习入口增强：上次练习方向准确率 + 建议
     var lastAttemptAccuracy = 0;
     var continueSuggestion = '';
@@ -184,6 +197,7 @@ Page({
       lastSourceType: lastSourceType,
       lastPracticeTimeText: lastPracticeTimeText,
       suggestion: suggestion,
+      nextActionHint: nextActionHint,
       sectionTitle: sectionTitle,
       itpassTotal: itpassTotal,
       itpassAccuracy: itpassAccuracy,

@@ -38,7 +38,10 @@
   <!-- 今日建议 -->
   <view class="suggestion-card" wx:if="{{suggestion}}">
     <text class="suggestion-icon">💡</text>
-    <text class="suggestion-text">{{suggestion}}</text>
+    <view class="suggestion-content">
+      <text class="suggestion-text">{{suggestion}}</text>
+      <text class="next-action-hint" wx:if="{{nextActionHint}}">{{nextActionHint}}</text>
+    </view>
   </view>
 
   <!-- 继续学习 / 快速开始 -->

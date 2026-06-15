@@ -5131,6 +5131,42 @@ if (quizJs333.indexOf('nextAction') < 0) {
 if (round333Ok) pass('Round Mini 3.33 mistakes group stats enhancement');
 
 // ============================================================
+// Round Mini 3.34：首页学习路径引导增强
+// ============================================================
+console.log('\n--- Round Mini 3.34 home learning path enhancement ---');
+var round334Ok = true;
+
+// A. home.js 包含 nextActionHint 字段
+var homeJs334 = readFile('pages/home/home.js');
+if (homeJs334.indexOf('nextActionHint') < 0) {
+  fail('R3.34: nextActionHint field missing in home.js');
+  round334Ok = false;
+}
+
+// B. home.wxml 包含 next-action-hint 显示
+var homeWxml334 = readFile('pages/home/home.wxml');
+if (homeWxml334.indexOf('next-action-hint') < 0 && homeWxml334.indexOf('nextActionHint') < 0) {
+  fail('R3.34: next-action-hint missing in home.wxml');
+  round334Ok = false;
+}
+
+// C. home.wxss 包含对应样式
+var homeWxss334 = readFile('pages/home/home.wxss');
+if (homeWxss334.indexOf('.next-action-hint') < 0) {
+  fail('R3.34: .next-action-hint style missing in home.wxss');
+  round334Ok = false;
+}
+
+// D. 回归：R3.29 功能未退化
+var termDetailJs334 = readFile('packages/glossary/pages/term-detail/term-detail.js');
+if (termDetailJs334.indexOf('categoryLabel') < 0) {
+  fail('R3.34: R3.29 categoryLabel regressed');
+  round334Ok = false;
+}
+
+if (round334Ok) pass('Round Mini 3.34 home learning path enhancement');
+
+// ============================================================
 // 汇总
 // ============================================================
 console.log('\n========================================');

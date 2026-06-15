@@ -101,6 +101,20 @@
   flex: 1;
 }
 
+.suggestion-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.next-action-hint {
+  font-size: 24rpx;
+  color: #4a90d9;
+  font-weight: 600;
+  margin-top: 6rpx;
+}
+
 /* 功能入口 */
 .section-label {
   font-size: 30rpx;
