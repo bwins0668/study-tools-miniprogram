@@ -250,6 +250,8 @@
     <text class="section-title">关于本应用</text>
     <view class="info-card">
       <text class="local-notice-text">当前版本为本地学习版，不含登录和云同步。收藏、错题和学习记录仅保存在本机。请定期使用"复制备份数据"保存学习进度，剪贴板仅用于用户主动备份/恢复本地数据。</text>
+      <!-- R3.68 版本更新说明 -->
+      <text class="update-notice">功能持续更新中，可通过 Git 仓库查看最新版本和更新日志。</text>
     </view>
   </view>
 

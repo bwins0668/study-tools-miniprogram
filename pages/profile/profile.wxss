@@ -492,3 +492,12 @@
   color: #888888;
   line-height: 1.7;
 }
+
+/* R3.68 版本更新说明 */
+.update-notice {
+  font-size: 24rpx;
+  color: #999999;
+  line-height: 1.6;
+  margin-top: 16rpx;
+  display: block;
+}
