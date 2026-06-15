@@ -152,6 +152,33 @@
     </view>
   </view>
 
+  <!-- 备份数据摘要 -->
+  <view class="stats-section">
+    <text class="section-title">备份数据摘要</text>
+    <view class="info-card backup-summary-card">
+      <view class="backup-summary-row">
+        <text class="backup-summary-label">收藏术语</text>
+        <text class="backup-summary-value">{{backupSummary.favoriteCount}} 条</text>
+      </view>
+      <view class="backup-summary-row">
+        <text class="backup-summary-label">错题</text>
+        <text class="backup-summary-value">{{backupSummary.wrongQuestionCount}} 条</text>
+      </view>
+      <view class="backup-summary-row">
+        <text class="backup-summary-label">学习记录</text>
+        <text class="backup-summary-value">{{backupSummary.quizAttemptCount}} 条</text>
+      </view>
+      <view class="backup-summary-row">
+        <text class="backup-summary-label">备份版本</text>
+        <text class="backup-summary-value">{{backupSummary.backupVersion}}</text>
+      </view>
+    </view>
+    <view wx:if="{{!backupSummary.hasData}}" class="info-card empty-card">
+      <text class="empty-hint">暂无本地学习数据，开始练习后会自动在此显示</text>
+    </view>
+    <text class="backup-local-notice">数据仅保存在本机，需用户主动复制备份。请定期使用下方"复制备份数据"保存学习进度，建议粘贴保存到安全位置。</text>
+  </view>
+
   <!-- 本地数据管理 -->
   <view class="stats-section">
     <text class="section-title">本地数据管理</text>
