@@ -41,9 +41,9 @@
     <text class="suggestion-text">{{suggestion}}</text>
   </view>
 
-  <!-- 继续学习 -->
+  <!-- 继续学习 / 快速开始 -->
   <view class="continue-section" wx:if="{{hasLastAttempt}}">
-    <text class="section-title">继续学习</text>
+    <text class="section-title">{{sectionTitle}}</text>
     <view class="continue-card" bindtap="continueLearning">
       <view class="continue-icon">📚</view>
       <view class="continue-info">
@@ -54,12 +54,13 @@
     </view>
   </view>
 
-  <!-- 无学习记录 -->
+  <!-- 无学习记录 / 快速开始 -->
   <view class="continue-section" wx:if="{{!hasLastAttempt}}">
-    <text class="section-title">继续学习</text>
+    <text class="section-title">{{sectionTitle}}</text>
     <view class="continue-empty">
       <text class="continue-empty-text">还没有学习记录</text>
-      <text class="continue-empty-hint">可以从 IT Passport 或 SG 开始练习</text>
+      <text class="continue-empty-hint">从 IT Passport 课程练习开始，也可以选择其他题库</text>
+      <view class="quick-start-btn" bindtap="quickStart">快速开始 · IT Passport 课程练习</view>
     </view>
   </view>
 
@@ -103,8 +104,13 @@
     <view class="card card-entry" bindtap="goToItPassport">
       <view class="card-icon">📝</view>
       <view class="card-info">
-        <text class="card-title">IT Passport</text>
+        <text class="card-title">IT Passport · 基础考试方向</text>
         <text class="card-desc">IT パスポート試験</text>
+        <view class="card-stats">
+          <text class="card-stat-text" wx:if="{{itpassTotal > 0}}">已做 {{itpassTotal}} 题 · 正确率 {{itpassAccuracy}}%</text>
+          <text class="card-stat-text card-stat-new" wx:else>未练习</text>
+          <text class="card-stat-status">{{itpassStatusText}}</text>
+        </view>
       </view>
       <view class="card-arrow">›</view>
     </view>
@@ -113,8 +119,13 @@
     <view class="card card-entry" bindtap="goToSG">
       <view class="card-icon">🎯</view>
       <view class="card-info">
-        <text class="card-title">SG 考试</text>
+        <text class="card-title">SG · 信息安全管理方向</text>
         <text class="card-desc">システム監査技術者</text>
+        <view class="card-stats">
+          <text class="card-stat-text" wx:if="{{sgTotal > 0}}">已做 {{sgTotal}} 题 · 正确率 {{sgAccuracy}}%</text>
+          <text class="card-stat-text card-stat-new" wx:else>未练习</text>
+          <text class="card-stat-status">{{sgStatusText}}</text>
+        </view>
       </view>
       <view class="card-arrow">›</view>
     </view>

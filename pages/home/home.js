@@ -60,7 +60,14 @@ Page({
     lastExam: '',
     lastSourceType: '',
     suggestion: '',
-    lastPracticeTimeText: ''
+    lastPracticeTimeText: '',
+    sectionTitle: '快速开始',
+    itpassTotal: 0,
+    itpassAccuracy: 0,
+    sgTotal: 0,
+    sgAccuracy: 0,
+    itpassStatusText: '未练习',
+    sgStatusText: '未练习'
   },
 
   onShow: function () {
@@ -77,6 +84,7 @@ Page({
     var lastExam = '';
     var lastSourceType = '';
     var lastPracticeTimeText = '';
+    var sectionTitle = '快速开始';
 
     if (lastAttempt) {
       if (lastAttempt.sourceType === 'wrong_only') {
@@ -91,7 +99,27 @@ Page({
         lastSourceType = lastAttempt.sourceType || '';
       }
       lastPracticeTimeText = formatLastPracticeTime(lastAttempt.answeredAt);
+      sectionTitle = '继续学习';
     }
+
+    // 按考试方向统计
+    var byExam = stats.byExam || {};
+    var itpassStats = byExam.itpass || { total: 0, accuracy: 0 };
+    var sgStats = byExam.sg || { total: 0, accuracy: 0 };
+    var itpassTotal = itpassStats.total || 0;
+    var itpassAccuracy = itpassStats.accuracy || 0;
+    var sgTotal = sgStats.total || 0;
+    var sgAccuracy = sgStats.accuracy || 0;
+
+    // 练习状态文案
+    function getStatusText(total, accuracy) {
+      if (total === 0) return '未练习';
+      if (accuracy >= 80) return '继续练习';
+      if (accuracy < 60 && total > 0) return '复习错题';
+      return '继续练习';
+    }
+    var itpassStatusText = getStatusText(itpassTotal, itpassAccuracy);
+    var sgStatusText = getStatusText(sgTotal, sgAccuracy);
 
     // 生成建议
     var suggestion = generateSuggestion(wrongQuestionCount, favoriteCount, hasLastAttempt, stats.todayTotal || 0);
@@ -108,7 +136,14 @@ Page({
       lastExam: lastExam,
       lastSourceType: lastSourceType,
       lastPracticeTimeText: lastPracticeTimeText,
-      suggestion: suggestion
+      suggestion: suggestion,
+      sectionTitle: sectionTitle,
+      itpassTotal: itpassTotal,
+      itpassAccuracy: itpassAccuracy,
+      sgTotal: sgTotal,
+      sgAccuracy: sgAccuracy,
+      itpassStatusText: itpassStatusText,
+      sgStatusText: sgStatusText
     });
   },
 
@@ -149,6 +184,12 @@ Page({
   goToFavoriteReview: function () {
     wx.navigateTo({
       url: '/packages/glossary/pages/favorite-review/favorite-review'
+    });
+  },
+
+  quickStart: function () {
+    wx.navigateTo({
+      url: '/packages/quiz/pages/quiz/quiz?exam=itpass&sourceType=lesson_quiz'
     });
   },
 

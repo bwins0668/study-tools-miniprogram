@@ -299,7 +299,7 @@ function validateLocalBackup(backup) {
 function exportLocalBackup() {
   return {
     app: 'study-tools-mini',
-    version: 'v0.18.0',
+    version: 'v0.19.0',
     exportedAt: Date.now(),
     data: {
       favoriteTerms: getFavoriteTerms(),

@@ -1018,13 +1018,13 @@ console.log('\n--- 版本号检查 ---');
 let versionOk = true;
 const appJsContent = readFile('app.js');
 const storageContent = readFile('utils/storage.js');
-if (!appJsContent.includes('v0.18.0')) {
-  fail('version: app.js does not contain v0.18.0');
+if (!appJsContent.includes('v0.19.0')) {
+  fail('version: app.js does not contain v0.19.0');
   versionOk = false;
 }
 
-if (!storageContent.includes("version: 'v0.18.0'")) {
-  fail('version: utils/storage.js exportLocalBackup does not contain v0.18.0');
+if (!storageContent.includes("version: 'v0.19.0'")) {
+  fail('version: utils/storage.js exportLocalBackup does not contain v0.19.0');
   versionOk = false;
 }
 
@@ -1041,7 +1041,7 @@ if (!profileJs.includes('globalData.version')) {
   fail('version: profile.js does not read from globalData.version');
   versionOk = false;
 }
-if (versionOk) pass('version check v0.18.0');
+if (versionOk) pass('version check v0.19.0');
 
 // ============================================================
 // 十一、Check Round 2.0 新功能
@@ -1515,15 +1515,15 @@ var profileJs32 = readFile('pages/profile/profile.js');
 var profileWxml32 = readFile('pages/profile/profile.wxml');
 var profileWxss32 = readFile('pages/profile/profile.wxss');
 
-// 1. 版本号 v0.18.0
-if (!appJsContent.includes('v0.18.0')) {
-  fail('Round 3.2: app.js missing v0.18.0');
-  round32Ok = false;
-}
-if (!storageContent.includes("version: 'v0.18.0'")) {
-  fail('Round 3.2: storage.js exportLocalBackup missing v0.18.0');
-  round32Ok = false;
-}
+  // 1. 版本号 v0.19.0
+  if (!appJsContent.includes('v0.19.0')) {
+    fail('Round 3.2: app.js missing v0.19.0');
+    round32Ok = false;
+  }
+  if (!storageContent.includes("version: 'v0.19.0'")) {
+    fail('Round 3.2: storage.js exportLocalBackup missing v0.19.0');
+    round32Ok = false;
+  }
 
 // 2. profile 页面存在学习状态相关字段或文案
 if (!profileJs32.includes('learningStatus') || !profileJs32.includes('getLearningStatus')) {
@@ -1622,15 +1622,15 @@ var favReviewJs33 = readFile('packages/glossary/pages/favorite-review/favorite-r
 var favReviewWxml33 = readFile('packages/glossary/pages/favorite-review/favorite-review.wxml');
 var favReviewWxss33 = readFile('packages/glossary/pages/favorite-review/favorite-review.wxss');
 
-// 1. 版本号 v0.18.0
-if (!appJsContent.includes('v0.18.0')) {
-  fail('Round 3.3: app.js missing v0.18.0');
-  round33Ok = false;
-}
-if (!storageContent.includes("version: 'v0.18.0'")) {
-  fail('Round 3.3: storage.js exportLocalBackup missing v0.18.0');
-  round33Ok = false;
-}
+  // 1. 版本号 v0.19.0
+  if (!appJsContent.includes('v0.19.0')) {
+    fail('Round 3.3: app.js missing v0.19.0');
+    round33Ok = false;
+  }
+  if (!storageContent.includes("version: 'v0.19.0'")) {
+    fail('Round 3.3: storage.js exportLocalBackup missing v0.19.0');
+    round33Ok = false;
+  }
 
 // 2. 收藏页存在收藏数量展示
 if (!favReviewWxml33.includes('共') || !favReviewWxml33.includes('{{totalCount}}')) {
@@ -1702,11 +1702,11 @@ if (!profileJs33.includes('getFavoriteTermCount') || !profileJs33.includes('favo
   round33Ok = false;
 }
 
-// 10. 备份导出/恢复版本同步到 v0.15.0
-if (!storageContent.includes("version: 'v0.18.0'")) {
-  fail('Round 3.3: storage.js exportLocalBackup version not synced to v0.18.0');
-  round33Ok = false;
-}
+  // 10. 备份导出/恢复版本同步到 v0.19.0
+  if (!storageContent.includes("version: 'v0.19.0'")) {
+    fail('Round 3.3: storage.js exportLocalBackup version not synced to v0.19.0');
+    round33Ok = false;
+  }
 if (!storageContent.includes('exportLocalBackup') || !storageContent.includes('importLocalBackup')) {
   fail('Round 3.3: storage.js backup functions missing');
   round33Ok = false;
@@ -1742,15 +1742,15 @@ var mistakesJs34 = readFile('packages/quiz/pages/mistakes/mistakes.js');
 var mistakesWxml34 = readFile('packages/quiz/pages/mistakes/mistakes.wxml');
 var mistakesWxss34 = readFile('packages/quiz/pages/mistakes/mistakes.wxss');
 
-// 1. 版本号 v0.18.0
-if (!appJsContent.includes('v0.18.0')) {
-  fail('Round 3.4: app.js missing v0.18.0');
-  round34Ok = false;
-}
-if (!storageContent.includes("version: 'v0.18.0'")) {
-  fail('Round 3.4: storage.js exportLocalBackup missing v0.18.0');
-  round34Ok = false;
-}
+  // 1. 版本号 v0.19.0
+  if (!appJsContent.includes('v0.19.0')) {
+    fail('Round 3.4: app.js missing v0.19.0');
+    round34Ok = false;
+  }
+  if (!storageContent.includes("version: 'v0.19.0'")) {
+    fail('Round 3.4: storage.js exportLocalBackup missing v0.19.0');
+    round34Ok = false;
+  }
 
 // 2. 错题本页面存在搜索关键词状态
 if (!mistakesJs34.includes('searchKeyword') || !mistakesJs34.includes('onSearchInput')) {
@@ -1915,15 +1915,15 @@ var homeJs35 = readFile('pages/home/home.js');
 var homeWxml35 = readFile('pages/home/home.wxml');
 var homeWxss35 = readFile('pages/home/home.wxss');
 
-// 1. 版本号 v0.18.0
-if (!appJsContent.includes('v0.18.0')) {
-  fail('Round 3.5: app.js missing v0.18.0');
-  round35Ok = false;
-}
-if (!storageContent.includes("version: 'v0.18.0'")) {
-  fail('Round 3.5: storage.js exportLocalBackup missing v0.18.0');
-  round35Ok = false;
-}
+  // 1. 版本号 v0.19.0
+  if (!appJsContent.includes('v0.19.0')) {
+    fail('Round 3.5: app.js missing v0.19.0');
+    round35Ok = false;
+  }
+  if (!storageContent.includes("version: 'v0.19.0'")) {
+    fail('Round 3.5: storage.js exportLocalBackup missing v0.19.0');
+    round35Ok = false;
+  }
 
 // 2. 首页存在学习建议模块
 if (!homeJs35.includes('generateSuggestion') || !homeJs35.includes('suggestion')) {
@@ -2077,15 +2077,15 @@ var profileJs36 = readFile('pages/profile/profile.js');
 var profileWxml36 = readFile('pages/profile/profile.wxml');
 var profileWxss36 = readFile('pages/profile/profile.wxss');
 
-// 1. app.js 版本为 v0.18.0
-if (!appJs36.includes('v0.18.0')) {
-  fail('Round 3.6: app.js missing v0.18.0');
+// 1. app.js 版本为 v0.19.0
+if (!appJs36.includes('v0.19.0')) {
+  fail('Round 3.6: app.js missing v0.19.0');
   round36Ok = false;
 }
 
-// 2. exportLocalBackup 版本为 v0.18.0
-if (!storage36.includes("version: 'v0.18.0'")) {
-  fail('Round 3.6: storage.js exportLocalBackup missing v0.18.0');
+// 2. exportLocalBackup 版本为 v0.19.0
+if (!storage36.includes("version: 'v0.19.0'")) {
+  fail('Round 3.6: storage.js exportLocalBackup missing v0.19.0');
   round36Ok = false;
 }
 
@@ -2213,6 +2213,175 @@ if (!profileJs36.includes("recentAttempts: []") && !profileJs36.includes('recent
 }
 
 if (round36Ok) pass('Round Mini 3.6 recent practice timeline checks');
+
+// ============================================================
+// Round Mini 3.7 quiz entry experience enhancement checks
+// ============================================================
+console.log('\n--- Round Mini 3.7 quiz entry experience checks ---');
+
+var round37Ok = true;
+var appJs37 = readFile('app.js');
+var storage37 = readFile('utils/storage.js');
+var homeJs37 = readFile('pages/home/home.js');
+var homeWxml37 = readFile('pages/home/home.wxml');
+var homeWxss37 = readFile('pages/home/home.wxss');
+
+// 1. app.js 版本为 v0.19.0
+if (!appJs37.includes('v0.19.0')) {
+  fail('Round 3.7: app.js missing v0.19.0');
+  round37Ok = false;
+}
+
+// 2. exportLocalBackup 版本为 v0.19.0
+if (!storage37.includes("version: 'v0.19.0'")) {
+  fail('Round 3.7: storage.js exportLocalBackup missing v0.19.0');
+  round37Ok = false;
+}
+
+// 3. home 页面存在快速开始 / 继续上次练习入口
+if (!homeJs37.includes('quickStart')) {
+  fail('Round 3.7: home.js missing quickStart handler');
+  round37Ok = false;
+}
+if (!homeWxml37.includes('quick-start-btn') || !homeWxml37.includes('快速开始')) {
+  fail('Round 3.7: home.wxml missing quick start button');
+  round37Ok = false;
+}
+if (!homeJs37.includes('continueLearning')) {
+  fail('Round 3.7: home.js continueLearning handler broken');
+  round37Ok = false;
+}
+
+// 4. 存在 getLastAttempt 或 getRecentAttempts 复用逻辑
+if (!homeJs37.includes('getLastAttempt')) {
+  fail('Round 3.7: home.js missing getLastAttempt usage');
+  round37Ok = false;
+}
+if (!storage37.includes('getLastAttempt')) {
+  fail('Round 3.7: storage.js missing getLastAttempt');
+  round37Ok = false;
+}
+
+// 5. 无最近练习时有默认入口安全降级（quickStart 跳转 itpass+lesson_quiz）
+if (!homeJs37.includes("exam=itpass&sourceType=lesson_quiz")) {
+  fail('Round 3.7: home.js quickStart missing safe default URL params');
+  round37Ok = false;
+}
+
+// 6. 入口参数不直接出现 undefined/null/NaN（sectionTitle 动态计算）
+if (!homeJs37.includes("sectionTitle: '快速开始'") || !homeJs37.includes("sectionTitle = '继续学习'")) {
+  fail('Round 3.7: home.js sectionTitle missing safe default or dynamic switching');
+  round37Ok = false;
+}
+if (!homeJs37.includes("if (!timestamp) return ''")) {
+  fail('Round 3.7: home.js formatLastPracticeTime missing null guard');
+  round37Ok = false;
+}
+
+// 7. 练习入口卡片显示已答题数或练习状态
+if (!homeWxml37.includes('itpassTotal') || !homeWxml37.includes('sgTotal')) {
+  fail('Round 3.7: home.wxml missing exam total display');
+  round37Ok = false;
+}
+if (!homeWxml37.includes('card-stats') || !homeWxml37.includes('card-stat-text')) {
+  fail('Round 3.7: home.wxml missing card stats UI');
+  round37Ok = false;
+}
+
+// 8. 正确率显示存在 NaN 防护
+if (!homeJs37.includes('itpassStats.accuracy || 0') || !homeJs37.includes('sgStats.accuracy || 0')) {
+  fail('Round 3.7: home.js accuracy missing NaN guard (|| 0)');
+  round37Ok = false;
+}
+
+// 9. IT Passport / SG 入口仍存在
+if (!homeJs37.includes('goToItPassport') || !homeWxml37.includes('goToItPassport')) {
+  fail('Round 3.7: home IT Passport entry broken');
+  round37Ok = false;
+}
+if (!homeJs37.includes('goToSG') || !homeWxml37.includes('goToSG')) {
+  fail('Round 3.7: home SG entry broken');
+  round37Ok = false;
+}
+
+// 10. 课程练习 / 日文真题入口仍存在（通过 exam-menu）
+var examMenuJs37 = readFile('packages/quiz/pages/exam-menu/exam-menu.js');
+if (!examMenuJs37.includes("sourceType=lesson_quiz") || !examMenuJs37.includes("sourceType=past_exam_japanese")) {
+  fail('Round 3.7: exam-menu missing lesson_quiz/past_exam_japanese entry');
+  round37Ok = false;
+}
+
+// 11. home Round Mini 3.5 学习建议仍存在
+if (!homeJs37.includes('generateSuggestion') || !homeWxml37.includes('今日建议')) {
+  fail('Round 3.7: home Round 3.5 suggestion entry broken');
+  round37Ok = false;
+}
+
+// 12. profile Round Mini 3.6 时间线仍存在
+var profileWxml37 = readFile('pages/profile/profile.wxml');
+if (!profileWxml37.includes('练习时间线') || !profileWxml37.includes('timeline-list')) {
+  fail('Round 3.7: profile Round 3.6 timeline broken');
+  round37Ok = false;
+}
+
+// 13. mistakes Round Mini 3.4 关键功能仍存在
+var mistakesJs37 = readFile('packages/quiz/pages/mistakes/mistakes.js');
+if (!mistakesJs37.includes('searchKeyword') || !mistakesJs37.includes('viewMode')) {
+  fail('Round 3.7: mistakes Round 3.4 features broken');
+  round37Ok = false;
+}
+
+// 14. favorite-review Round Mini 3.3 关键功能仍存在
+var favReviewJs37 = readFile('packages/glossary/pages/favorite-review/favorite-review.js');
+if (!favReviewJs37.includes('searchKeyword') || !favReviewJs37.includes('viewMode')) {
+  fail('Round 3.7: favorite-review Round 3.3 features broken');
+  round37Ok = false;
+}
+
+// 15. attempts storage key 未改变
+if (!storage37.includes('"study-tools-mini-quiz-attempts-v1"')) {
+  fail('Round 3.7: attempts storage key changed');
+  round37Ok = false;
+}
+
+// 16. exportLocalBackup/importLocalBackup 仍包含 attempts
+if (!storage37.includes('quizAttempts: getQuizAttempts()')) {
+  fail('Round 3.7: storage.js backup missing quizAttempts');
+  round37Ok = false;
+}
+
+// 17. 不出现高风险表述
+var forbidden37 = ['保证通过', '包过', '押题', '必过'];
+for (var fi37 = 0; fi37 < forbidden37.length; fi37++) {
+  if (homeJs37.includes(forbidden37[fi37]) || homeWxml37.includes(forbidden37[fi37])) {
+    fail('Round 3.7: home contains forbidden high-risk text: ' + forbidden37[fi37]);
+    round37Ok = false;
+  }
+}
+
+// 18. 练习状态文案安全降级（未练习 / 继续练习 / 复习错题）
+if (!homeJs37.includes("if (total === 0) return '未练习'")) {
+  fail('Round 3.7: home.js getStatusText missing zero-count fallback');
+  round37Ok = false;
+}
+if (!homeWxml37.includes('itpassStatusText') || !homeWxml37.includes('sgStatusText')) {
+  fail('Round 3.7: home.wxml missing status text display');
+  round37Ok = false;
+}
+
+// 19. quick-start-btn 样式存在
+if (!homeWxss37.includes('quick-start-btn')) {
+  fail('Round 3.7: home.wxss missing quick-start-btn style');
+  round37Ok = false;
+}
+
+// 20. card-stats 和 card-stat-status 样式存在
+if (!homeWxss37.includes('card-stats') || !homeWxss37.includes('card-stat-status')) {
+  fail('Round 3.7: home.wxss missing card stats styles');
+  round37Ok = false;
+}
+
+if (round37Ok) pass('Round Mini 3.7 quiz entry experience checks');
 
 // ============================================================
 console.log('\n--- preloadRule 分包预下载检查 ---');
