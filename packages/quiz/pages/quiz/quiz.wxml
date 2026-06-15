@@ -146,6 +146,42 @@
           <text class="result-btn-text">返回首页</text>
         </view>
       </view>
+
+      <!-- R3.43 答题回顾按钮 -->
+      <view class="review-btn" bindtap="toggleReview" wx:if="{{reviewList.length > 0}}">
+        <text class="review-btn-text">📋 回顾本题 ({{reviewList.length}}题)</text>
+      </view>
     </view>
   </block>
+
+  <!-- R3.43 答题回顾列表 -->
+  <view class="review-section" wx:if="{{showReview && reviewList.length > 0}}">
+    <view class="review-header">
+      <text class="review-title">答题回顾</text>
+      <text class="review-close" bindtap="toggleReview">✕</text>
+    </view>
+    <view class="review-list">
+      <view
+        class="review-item {{item.isCorrect ? 'review-item-correct' : 'review-item-wrong'}}"
+        wx:for="{{reviewList}}"
+        wx:key="questionId"
+      >
+        <view class="review-item-index">{{index + 1}}</view>
+        <view class="review-item-content">
+          <text class="review-item-question">{{item.questionZh}}</text>
+          <view class="review-item-answer">
+            <text class="review-item-label">你的答案：</text>
+            <text class="review-item-selected {{item.isCorrect ? 'text-correct' : 'text-wrong'}}">{{item.selectedAnswer}}</text>
+          </view>
+          <view class="review-item-answer" wx:if="{{!item.isCorrect}}">
+            <text class="review-item-label">正确答案：</text>
+            <text class="review-item-correct-answer text-correct">{{item.correctAnswer}}</text>
+          </view>
+        </view>
+        <view class="review-item-status">
+          <text>{{item.isCorrect ? '✓' : '×'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
 </view>

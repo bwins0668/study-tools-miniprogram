@@ -674,3 +674,132 @@
   line-height: 1.5;
   flex: 1;
 }
+
+/* R3.43 答题回顾 */
+.review-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 24rpx 30rpx 0;
+  padding: 20rpx;
+  background-color: #f0f7ff;
+  border-radius: 12rpx;
+  border: 1rpx solid #cce0ff;
+}
+
+.review-btn-text {
+  font-size: 28rpx;
+  color: #4a90d9;
+  font-weight: 500;
+}
+
+.review-section {
+  margin: 20rpx 30rpx;
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  padding: 28rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.review-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.review-close {
+  font-size: 36rpx;
+  color: #cccccc;
+  padding: 8rpx;
+}
+
+.review-list {
+  max-height: 600rpx;
+  overflow-y: auto;
+}
+
+.review-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 20rpx 16rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.review-item:last-child {
+  border-bottom: none;
+}
+
+.review-item-correct {
+  background-color: #f0fff0;
+}
+
+.review-item-wrong {
+  background-color: #fff0f0;
+}
+
+.review-item-index {
+  font-size: 24rpx;
+  color: #999999;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+  width: 40rpx;
+}
+
+.review-item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.review-item-question {
+  font-size: 26rpx;
+  color: #333333;
+  line-height: 1.5;
+  margin-bottom: 8rpx;
+  display: block;
+}
+
+.review-item-answer {
+  display: flex;
+  align-items: center;
+  margin-top: 6rpx;
+}
+
+.review-item-label {
+  font-size: 22rpx;
+  color: #999999;
+  margin-right: 8rpx;
+  flex-shrink: 0;
+}
+
+.review-item-selected {
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.review-item-correct-answer {
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.text-correct {
+  color: #4caf50;
+}
+
+.text-wrong {
+  color: #f44336;
+}
+
+.review-item-status {
+  font-size: 32rpx;
+  margin-left: 16rpx;
+  flex-shrink: 0;
+}

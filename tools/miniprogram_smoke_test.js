@@ -5719,6 +5719,78 @@ if (termSearchJs342.indexOf('SEARCH_DEBOUNCE_MS') < 0) {
 if (round342Ok) pass('Round Mini 3.42 home learning streak');
 
 // ============================================================
+// Round Mini 3.43 答题结果明细增强
+// ============================================================
+console.log('\n--- Round Mini 3.43 quiz result detail enhancement ---');
+
+var round343Ok = true;
+
+// A. quiz.js 包含答题记录数据字段
+var quizJs343 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs343.indexOf('answeredList') < 0) {
+  fail('R3.43: answeredList data field missing in quiz.js');
+  round343Ok = false;
+}
+if (quizJs343.indexOf('reviewList') < 0) {
+  fail('R3.43: reviewList data field missing in quiz.js');
+  round343Ok = false;
+}
+if (quizJs343.indexOf('showReview') < 0) {
+  fail('R3.43: showReview data field missing in quiz.js');
+  round343Ok = false;
+}
+
+// B. quiz.js 包含 toggleReview 方法
+if (quizJs343.indexOf('toggleReview') < 0) {
+  fail('R3.43: toggleReview method missing in quiz.js');
+  round343Ok = false;
+}
+
+// C. quiz.wxml 包含答题回顾 UI
+var quizWxml343 = readFile('packages/quiz/pages/quiz/quiz.wxml');
+if (quizWxml343.indexOf('review-btn') < 0) {
+  fail('R3.43: review-btn missing in quiz.wxml');
+  round343Ok = false;
+}
+if (quizWxml343.indexOf('review-section') < 0) {
+  fail('R3.43: review-section missing in quiz.wxml');
+  round343Ok = false;
+}
+if (quizWxml343.indexOf('reviewList') < 0) {
+  fail('R3.43: reviewList binding missing in quiz.wxml');
+  round343Ok = false;
+}
+
+// D. quiz.wxss 包含答题回顾样式
+var quizWxss343 = readFile('packages/quiz/pages/quiz/quiz.wxss');
+if (quizWxss343.indexOf('.review-btn') < 0) {
+  fail('R3.43: .review-btn style missing in quiz.wxss');
+  round343Ok = false;
+}
+if (quizWxss343.indexOf('.review-section') < 0) {
+  fail('R3.43: .review-section style missing in quiz.wxss');
+  round343Ok = false;
+}
+if (quizWxss343.indexOf('.review-item') < 0) {
+  fail('R3.43: .review-item style missing in quiz.wxss');
+  round343Ok = false;
+}
+
+// E. 回归：R3.32~R3.42 功能未退化
+var quizJs343b = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs343b.indexOf('progressPercent') < 0) {
+  fail('R3.43: R3.32 progressPercent regressed in quiz.js');
+  round343Ok = false;
+}
+var homeJs343 = readFile('pages/home/home.js');
+if (homeJs343.indexOf('streakCount') < 0) {
+  fail('R3.43: R3.42 streakCount regressed in home.js');
+  round343Ok = false;
+}
+
+if (round343Ok) pass('Round Mini 3.43 quiz result detail enhancement');
+
+// ============================================================
 // 汇总
 // ============================================================
 console.log('\n========================================');

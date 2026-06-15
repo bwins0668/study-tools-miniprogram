@@ -33,7 +33,10 @@ Page({
     showFeedbackTip: false,
     // v0.22.0 第二批：结果页复盘增强
     nextAction: '',
-    hasWrongQuestions: false
+    hasWrongQuestions: false,
+    // R3.43 答题记录追踪
+    answeredList: [],
+    showReview: false
   },
 
   onLoad: function (options) {
@@ -125,6 +128,14 @@ Page({
     var sessionCorrect = this.data.sessionCorrect + (isCorrect ? 1 : 0);
     var sessionWrong = this.data.sessionWrong + (isCorrect ? 0 : 1);
 
+    // R3.43 追踪答题记录
+    var answeredList = this.data.answeredList.slice();
+    answeredList.push({
+      questionId: this.data.currentQuestion.id,
+      selectedAnswer: key,
+      isCorrect: isCorrect
+    });
+
     // 答题反馈提示语
     var feedbackTip = '';
     if (isCorrect) {
@@ -207,7 +218,33 @@ Page({
       accuracyLevel: accuracyLevel,
       insightHint: insightHint,
       nextAction: nextAction,
-      hasWrongQuestions: hasWrongQuestions
+      hasWrongQuestions: hasWrongQuestions,
+      // R3.43 准备答题回顾数据（包含题目文本和正确答案）
+      reviewList: (function () {
+        var questions = self.data.questions;
+        var answered = self.data.answeredList;
+        var result = [];
+        for (var i = 0; i < answered.length; i++) {
+          var item = answered[i];
+          var question = null;
+          for (var j = 0; j < questions.length; j++) {
+            if (String(questions[j].id) === String(item.questionId)) {
+              question = questions[j];
+              break;
+            }
+          }
+          if (question) {
+            result.push({
+              questionId: item.questionId,
+              selectedAnswer: item.selectedAnswer,
+              isCorrect: item.isCorrect,
+              questionZh: question.questionZh || '',
+              correctAnswer: question.answer || ''
+            });
+          }
+        }
+        return result;
+      })()
     });
   },
 
@@ -256,6 +293,13 @@ Page({
 
   finishQuiz: function () {
     wx.navigateBack();
+  },
+
+  // R3.43 切换答题回顾显示
+  toggleReview: function () {
+    this.setData({
+      showReview: !this.data.showReview
+    });
   },
 
   loadWrongQuestions: function () {
