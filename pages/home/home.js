@@ -219,6 +219,7 @@ Page({
   },
 
   onShow: function () {
+    console.log('[R3.80] Home page onShow');
     // R3.77 页面浏览次数统计
     var viewCount = wx.getStorageSync('homeViewCount') || 0;
     viewCount += 1;
