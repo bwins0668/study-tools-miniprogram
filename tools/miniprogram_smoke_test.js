@@ -5938,6 +5938,65 @@ if (quizJs345.indexOf('reviewList') < 0) {
 if (round345Ok) pass('Round Mini 3.45 home page performance optimization');
 
 // ============================================================
+// Round Mini 3.46 quiz result share functionality
+// ============================================================
+var round346Ok = true;
+
+// A. quiz.js 包含 onShareAppMessage 方法
+var quizJs346 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs346.indexOf('onShareAppMessage') < 0) {
+  fail('R3.46: onShareAppMessage method missing in quiz.js');
+  round346Ok = false;
+}
+
+// B. quiz.js onShareAppMessage 返回正确的分享配置
+if (quizJs346.indexOf('title') < 0) {
+  fail('R3.46: share title missing in onShareAppMessage');
+  round346Ok = false;
+}
+if (quizJs346.indexOf('path') < 0) {
+  fail('R3.46: share path missing in onShareAppMessage');
+  round346Ok = false;
+}
+
+// C. quiz.wxml 包含分享按钮
+var quizWxml346 = readFile('packages/quiz/pages/quiz/quiz.wxml');
+if (quizWxml346.indexOf('open-type="share"') < 0) {
+  fail('R3.46: share button missing in quiz.wxml');
+  round346Ok = false;
+}
+if (quizWxml346.indexOf('share-btn') < 0) {
+  fail('R3.46: share-btn class missing in quiz.wxml');
+  round346Ok = false;
+}
+
+// D. quiz.wxss 包含分享按钮样式
+var quizWxss346 = readFile('packages/quiz/pages/quiz/quiz.wxss');
+if (quizWxss346.indexOf('.share-btn') < 0) {
+  fail('R3.46: .share-btn style missing in quiz.wxss');
+  round346Ok = false;
+}
+if (quizWxss346.indexOf('.share-btn-text') < 0) {
+  fail('R3.46: .share-btn-text style missing in quiz.wxss');
+  round346Ok = false;
+}
+
+// E. 回归：R3.32~R3.45 功能未退化
+var quizJs346b = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs346b.indexOf('reviewList') < 0) {
+  fail('R3.46: R3.43 reviewList regressed in quiz.js');
+  round346Ok = false;
+}
+var homeJs346 = readFile('pages/home/home.js');
+if (homeJs346.indexOf('streakCount') < 0) {
+  fail('R3.46: R3.42 streakCount regressed in home.js');
+  round346Ok = false;
+}
+
+if (round346Ok) pass('Round Mini 3.46 quiz result share functionality');
+
+
+// ============================================================
 // 汇总
 // ============================================================
 console.log('\n========================================');

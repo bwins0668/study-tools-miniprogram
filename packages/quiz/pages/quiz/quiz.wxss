@@ -803,3 +803,22 @@
   margin-left: 16rpx;
   flex-shrink: 0;
 }
+
+/* R3.46 分享按钮 */
+.share-btn {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  line-height: normal !important;
+  font-size: inherit !important;
+}
+
+.share-btn::after {
+  border: none !important;
+}
+
+.share-btn-text {
+  font-size: 28rpx;
+  color: #666666;
+}

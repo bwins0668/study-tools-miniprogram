@@ -353,5 +353,20 @@ Page({
         showFeedbackTip: false
       });
     }
+  },
+
+  // R3.46 答题结果页分享功能
+  onShareAppMessage: function () {
+    var title = 'Study Tools 刷题';
+    if (this.data.showResult) {
+      var accuracy = this.data.sessionAccuracy || 0;
+      var total = this.data.sessionTotal || 0;
+      title = '我在 Study Tools 刷题，正确率 ' + accuracy + '%，共 ' + total + ' 题，来挑战吧！';
+    }
+    return {
+      title: title,
+      path: '/packages/quiz/pages/quiz-menu/quiz-menu',
+      imageUrl: ''
+    };
   }
 });

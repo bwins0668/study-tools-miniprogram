@@ -145,6 +145,10 @@
         <view class="result-btn" bindtap="goHome">
           <text class="result-btn-text">返回首页</text>
         </view>
+        <!-- R3.46 分享按钮 -->
+        <button class="result-btn share-btn" open-type="share">
+          <text class="result-btn-text share-btn-text">📤 分享成绩</text>
+        </button>
       </view>
 
       <!-- R3.43 答题回顾按钮 -->
