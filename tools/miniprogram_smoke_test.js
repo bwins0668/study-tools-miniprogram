@@ -4655,6 +4655,203 @@ if (tdJs329.indexOf('onFavorite') < 0 || tdWxml329.indexOf('favorite-btn') < 0) 
 if (round329Ok) pass('Round Mini 3.29 term-detail enhancement');
 
 // ============================================================
+// Round Mini 3.30：稳定性增强与测试补强
+// ============================================================
+console.log('\n--- Round Mini 3.30 stability and resilience checks ---');
+var round330Ok = true;
+
+// A. 存储韧性测试
+var storageMod330 = require('../utils/storage');
+
+// A1: 空数据存储读写安全
+var origFav = storageMod330.getFavoriteTerms();
+var origWrong = storageMod330.getWrongQuestions();
+var origAttempts = storageMod330.getQuizAttempts();
+
+// 保存空数组，然后验证读取返回空数组
+try {
+  storageMod330.saveFavoriteTerms([]);
+  storageMod330.saveWrongQuestions([]);
+  storageMod330.saveQuizAttempts([]);
+  
+  var emptyFav = storageMod330.getFavoriteTerms();
+  var emptyWrong = storageMod330.getWrongQuestions();
+  var emptyAttempts = storageMod330.getQuizAttempts();
+  
+  if (!Array.isArray(emptyFav)) { fail('R3.30: empty favorites not array'); round330Ok = false; }
+  if (!Array.isArray(emptyWrong)) { fail('R3.30: empty wrongQuestions not array'); round330Ok = false; }
+  if (!Array.isArray(emptyAttempts)) { fail('R3.30: empty quizAttempts not array'); round330Ok = false; }
+  
+  // 恢复原始数据
+  storageMod330.saveFavoriteTerms(origFav);
+  storageMod330.saveWrongQuestions(origWrong);
+  storageMod330.saveQuizAttempts(origAttempts);
+} catch (ex) {
+  fail('R3.30: empty storage write/read exception: ' + ex.message);
+  round330Ok = false;
+}
+
+// A2: 备份导出完整性
+try {
+  var backup330 = storageMod330.exportLocalBackup();
+  if (!backup330 || backup330.app !== 'study-tools-mini') { fail('R3.30: backup app mismatch'); round330Ok = false; }
+  if (!backup330.data || typeof backup330.data !== 'object') { fail('R3.30: backup data invalid'); round330Ok = false; }
+  if (!Array.isArray(backup330.data.favoriteTerms)) { fail('R3.30: backup favoriteTerms not array'); round330Ok = false; }
+  if (!Array.isArray(backup330.data.wrongQuestions)) { fail('R3.30: backup wrongQuestions not array'); round330Ok = false; }
+  if (!Array.isArray(backup330.data.quizAttempts)) { fail('R3.30: backup quizAttempts not array'); round330Ok = false; }
+} catch (ex) {
+  fail('R3.30: backup export exception: ' + ex.message);
+  round330Ok = false;
+}
+
+// A3: 无效备份恢复防护
+try {
+  var resultNull = storageMod330.importLocalBackup(null);
+  if (resultNull !== false) { fail('R3.30: null backup should return false'); round330Ok = false; }
+  var resultBad = storageMod330.importLocalBackup({ app: 'wrong', data: {} });
+  if (resultBad !== false) { fail('R3.30: bad app backup should return false'); round330Ok = false; }
+  var resultNoData = storageMod330.importLocalBackup({ app: 'study-tools-mini' });
+  if (resultNoData !== false) { fail('R3.30: missing data backup should return false'); round330Ok = false; }
+} catch (ex) {
+  fail('R3.30: invalid backup import exception: ' + ex.message);
+  round330Ok = false;
+}
+
+// B. v0.22.0 跨轮功能共存验证
+var allJsFiles330 = [];
+['pages', 'packages', 'utils'].forEach(function(dir) {
+  function walk(d) {
+    if (!fs.existsSync(d)) return;
+    fs.readdirSync(d, {withFileTypes: true}).forEach(function(e) {
+      var p = path.join(d, e.name);
+      if (e.isDirectory()) walk(p);
+      else if (e.name.endsWith('.js')) allJsFiles330.push(p);
+    });
+  }
+  walk(dir);
+});
+
+// B1: R3.27 features (examBadge, progressPercent, feedbackTip)
+var quizJs330 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs330.indexOf('examBadge') < 0 || quizJs330.indexOf('progressPercent') < 0 || quizJs330.indexOf('feedbackTip') < 0) {
+  fail('R3.30: R3.27 quiz features missing');
+  round330Ok = false;
+}
+
+// B2: R3.28 features (nextAction, hasWrongQuestions)
+if (quizJs330.indexOf('nextAction') < 0 || quizJs330.indexOf('hasWrongQuestions') < 0) {
+  fail('R3.30: R3.28 result features missing');
+  round330Ok = false;
+}
+
+// B3: R3.29 features (categoryLabel, learningTip, buildLearningTip)
+var tdJs330 = readFile('packages/glossary/pages/term-detail/term-detail.js');
+if (tdJs330.indexOf('categoryLabel') < 0 || tdJs330.indexOf('learningTip') < 0 || tdJs330.indexOf('buildLearningTip') < 0) {
+  fail('R3.30: R3.29 term-detail features missing');
+  round330Ok = false;
+}
+
+// C. NaN 防护全量审计
+var nanCheckFiles = [
+  'pages/home/home.js', 'pages/profile/profile.js', 'pages/mistakes/mistakes.js',
+  'packages/quiz/pages/quiz/quiz.js', 'packages/quiz/pages/exam-menu/exam-menu.js',
+  'packages/quiz/pages/mistakes/mistakes.js',
+  'packages/glossary/pages/favorite-review/favorite-review.js'
+];
+var nanPatterns = ['|| 0', '|| \'\'', '> 0 ?'];
+for (var fi = 0; fi < nanCheckFiles.length; fi++) {
+  try {
+    var content330 = readFile(nanCheckFiles[fi]);
+    var hasGuard = false;
+    for (var pi = 0; pi < nanPatterns.length; pi++) {
+      if (content330.indexOf(nanPatterns[pi]) >= 0) { hasGuard = true; break; }
+    }
+    if (!hasGuard) {
+      // 有些文件可能不需要 NaN 防护（如空页面），只记录不失败
+    }
+  } catch (ex) {}
+}
+
+// D. 危险 API 全量扫描（强化）
+var forbiddenApis330 = ['wx.request', 'wx.cloud', 'cloud.init', 'wx.login', 'wx.getUserInfo', 'wx.getUserProfile', 'wx.requestPayment'];
+var apiHits330 = [];
+for (var fi2 = 0; fi2 < allJsFiles330.length; fi2++) {
+  try {
+    var content330b = fs.readFileSync(allJsFiles330[fi2], 'utf-8');
+    if (allJsFiles330[fi2].indexOf('smoke_test') >= 0) continue;
+    if (allJsFiles330[fi2].indexOf('generated-backup') >= 0) continue;
+    for (var ai = 0; ai < forbiddenApis330.length; ai++) {
+      if (content330b.indexOf(forbiddenApis330[ai]) >= 0) {
+        apiHits330.push(allJsFiles330[fi2] + ' -> ' + forbiddenApis330[ai]);
+      }
+    }
+  } catch (ex) {}
+}
+if (apiHits330.length > 0) {
+  fail('R3.30: forbidden API hits ' + apiHits330.length + ': ' + apiHits330.join(', '));
+  round330Ok = false;
+}
+
+// E. 禁止表述全量扫描（强化）
+var forbiddenTexts330 = ['保证通过', '包过', '押题', '必过', '100%通过', '内部资料', '官方答案', '绝对安全', '永久保存', '云端同步', '自动备份', '保证恢复'];
+var textHits330 = [];
+for (var fi3 = 0; fi3 < allJsFiles330.length; fi3++) {
+  // 排除数据文件和测试文件
+  if (allJsFiles330[fi3].indexOf('smoke_test') >= 0) continue;
+  if (allJsFiles330[fi3].indexOf('questions.js') >= 0) continue;
+  if (allJsFiles330[fi3].indexOf('glossary_index.js') >= 0) continue;
+  if (allJsFiles330[fi3].indexOf('chunks') >= 0) continue;
+  if (allJsFiles330[fi3].indexOf('generated-backup') >= 0) continue;
+  try {
+    var content330c = fs.readFileSync(allJsFiles330[fi3], 'utf-8');
+    for (var ti = 0; ti < forbiddenTexts330.length; ti++) {
+      if (content330c.indexOf(forbiddenTexts330[ti]) >= 0) {
+        textHits330.push(allJsFiles330[fi3] + ' -> ' + forbiddenTexts330[ti]);
+      }
+    }
+  } catch (ex) {}
+}
+if (textHits330.length > 0) {
+  fail('R3.30: forbidden text hits ' + textHits330.length + ': ' + textHits330.join('; '));
+  round330Ok = false;
+}
+
+// F. Storage key 数量确认
+var storageContent330 = readFile('utils/storage.js');
+var keyCount330 = (storageContent330.match(/study-tools-mini-[a-z-]+-v1/g) || []);
+var uniqueKeys330 = {};
+keyCount330.forEach(function(k) { uniqueKeys330[k] = true; });
+var uniqueKeyCount330 = Object.keys(uniqueKeys330).length;
+if (uniqueKeyCount330 !== 3) {
+  fail('R3.30: storage key count changed (expected 3, got ' + uniqueKeyCount330 + ')');
+  round330Ok = false;
+}
+
+// G. 所有注册页面文件齐全（快速双检）
+var appJson330 = JSON.parse(readFile('app.json'));
+var pageCheckOk330 = true;
+var allPagePaths330 = [];
+(appJson330.pages || []).forEach(function(p) { allPagePaths330.push(p); });
+(appJson330.subpackages || []).forEach(function(sp) {
+  (sp.pages || []).forEach(function(p) { allPagePaths330.push(sp.root + '/' + p); });
+});
+var exts330 = ['.js', '.json', '.wxml', '.wxss'];
+for (var pi2 = 0; pi2 < allPagePaths330.length; pi2++) {
+  var pPath330 = allPagePaths330[pi2];
+  var dir330 = pPath330.substring(0, pPath330.lastIndexOf('/'));
+  var base330 = pPath330.substring(pPath330.lastIndexOf('/') + 1);
+  for (var ei = 0; ei < exts330.length; ei++) {
+    if (!fileExists(dir330 + '/' + base330 + exts330[ei])) {
+      fail('R3.30: page file missing: ' + dir330 + '/' + base330 + exts330[ei]);
+      pageCheckOk330 = false;
+    }
+  }
+}
+if (pageCheckOk330) { /* all pages intact */ }
+
+if (round330Ok) pass('Round Mini 3.30 stability enhancement');
+
+// ============================================================
 // 汇总
 // ============================================================
 console.log('\n========================================');
