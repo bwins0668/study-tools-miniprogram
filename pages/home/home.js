@@ -210,10 +210,17 @@ Page({
     // R3.63 练习提醒关闭
     reminderDismissed: false,
     // R3.72 返回顶部按钮
-    showBackToTop: false
+    showBackToTop: false,
+    // R3.77 页面浏览次数
+    viewCount: 0
   },
 
   onShow: function () {
+    // R3.77 页面浏览次数统计
+    var viewCount = wx.getStorageSync('homeViewCount') || 0;
+    viewCount += 1;
+    wx.setStorageSync('homeViewCount', viewCount);
+
     var favoriteCount = getFavoriteTermCount ? getFavoriteTermCount() : 0;
     var wrongQuestionCount = getWrongQuestionCount ? getWrongQuestionCount() : 0;
     var stats = getQuizStats ? getQuizStats() : { total: 0, correct: 0, wrong: 0, accuracy: 0, todayTotal: 0 };
@@ -507,7 +514,9 @@ Page({
       // R3.61 练习提醒
       practiceReminder: practiceReminder,
       // R3.58 每日学习格言
-      dailyQuote: dailyQuote
+      dailyQuote: dailyQuote,
+      // R3.77 页面浏览次数
+      viewCount: viewCount
     });
   },
 

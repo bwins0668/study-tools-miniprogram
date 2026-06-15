@@ -696,3 +696,11 @@
   color: #cccccc;
   margin-top: 8rpx;
 }
+
+/* R3.77 页面浏览次数 */
+.footer-view-count {
+  font-size: 20rpx;
+  color: #cccccc;
+  margin-top: 8rpx;
+  display: block;
+}

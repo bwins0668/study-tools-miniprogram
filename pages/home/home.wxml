@@ -227,6 +227,7 @@
   <view class="footer">
     <text class="footer-text">Study Tools Mini v{{version}}</text>
     <text class="footer-hint">下拉可以刷新页面</text>
+    <text class="footer-view-count">本页已访问 {{viewCount}} 次</text>
   </view>
 
   <!-- R3.72 返回顶部按钮 -->
