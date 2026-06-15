@@ -5356,6 +5356,75 @@ if (homeJs337.indexOf('nextActionHint') < 0) {
 if (round337Ok) pass('Round Mini 3.37 term category learning path');
 
 // ============================================================
+// Round Mini 3.38：术语搜索历史增强
+// ============================================================
+console.log('\n--- Round Mini 3.38 term search history ---');
+var round338Ok = true;
+
+// A. term-search.js 包含 searchHistory 字段和相关方法
+var termSearchJs338 = readFile('packages/glossary/pages/term-search/term-search.js');
+if (termSearchJs338.indexOf('searchHistory') < 0) {
+  fail('R3.38: searchHistory field missing in term-search.js');
+  round338Ok = false;
+}
+if (termSearchJs338.indexOf('onSearchConfirm') < 0) {
+  fail('R3.38: onSearchConfirm method missing in term-search.js');
+  round338Ok = false;
+}
+if (termSearchJs338.indexOf('onHistoryTap') < 0) {
+  fail('R3.38: onHistoryTap method missing in term-search.js');
+  round338Ok = false;
+}
+if (termSearchJs338.indexOf('clearHistory') < 0) {
+  fail('R3.38: clearHistory method missing in term-search.js');
+  round338Ok = false;
+}
+
+// B. term-search.wxml 包含搜索历史 UI
+var termSearchWxml338 = readFile('packages/glossary/pages/term-search/term-search.wxml');
+if (termSearchWxml338.indexOf('history-bar') < 0) {
+  fail('R3.38: history-bar missing in term-search.wxml');
+  round338Ok = false;
+}
+if (termSearchWxml338.indexOf('history-tag') < 0) {
+  fail('R3.38: history-tag missing in term-search.wxml');
+  round338Ok = false;
+}
+if (termSearchWxml338.indexOf('onHistoryTap') < 0) {
+  fail('R3.38: onHistoryTap binding missing in term-search.wxml');
+  round338Ok = false;
+}
+if (termSearchWxml338.indexOf('clearHistory') < 0) {
+  fail('R3.38: clearHistory binding missing in term-search.wxml');
+  round338Ok = false;
+}
+
+// C. term-search.wxss 包含搜索历史样式
+var termSearchWxss338 = readFile('packages/glossary/pages/term-search/term-search.wxss');
+if (termSearchWxss338.indexOf('.history-bar') < 0) {
+  fail('R3.38: .history-bar style missing in term-search.wxss');
+  round338Ok = false;
+}
+if (termSearchWxss338.indexOf('.history-tag') < 0) {
+  fail('R3.38: .history-tag style missing in term-search.wxss');
+  round338Ok = false;
+}
+
+// D. 回归：R3.32~R3.37 功能未退化
+var quizJs338 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs338.indexOf('progressPercent') < 0) {
+  fail('R3.38: R3.32 progressPercent regressed in quiz.js');
+  round338Ok = false;
+}
+var mistakesJs338 = readFile('packages/quiz/pages/mistakes/mistakes.js');
+if (mistakesJs338.indexOf('itCount') < 0) {
+  fail('R3.38: R3.33 itCount regressed in mistakes.js');
+  round338Ok = false;
+}
+
+if (round338Ok) pass('Round Mini 3.38 term search history');
+
+// ============================================================
 // 汇总
 // ============================================================
 console.log('\n========================================');

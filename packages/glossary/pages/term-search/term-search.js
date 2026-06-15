@@ -17,7 +17,8 @@ Page({
     showCount: 0,
     resultHint: '',
     categories: [],
-    selectedCategory: ''
+    selectedCategory: '',
+    searchHistory: []
   },
 
   onLoad: function () {
@@ -32,13 +33,21 @@ Page({
         categories.push(cat);
       }
     }
+    // R3.38 读取搜索历史
+    var history = [];
+    try {
+      history = wx.getStorageSync('term-search-history') || [];
+    } catch (e) {
+      history = [];
+    }
     this.setData({
       allData: data,
       filteredList: data.slice(0, MAX_DEFAULT),
       totalCount: data.length,
       showCount: Math.min(data.length, MAX_DEFAULT),
       resultHint: '当前显示 ' + Math.min(data.length, MAX_DEFAULT) + ' 条 / 共 ' + data.length + ' 条',
-      categories: categories
+      categories: categories,
+      searchHistory: history
     });
   },
 
@@ -129,6 +138,51 @@ Page({
         resultHint: '当前显示 ' + filtered.length + ' 条 / 共 ' + this.data.allData.length + ' 条'
       });
     }
+    // R3.38 保存搜索历史（延时保存，避免实时输入时频繁保存）
+    if (keyword && keyword.length >= 2) {
+      this._pendingKeyword = keyword;
+    }
+  },
+
+  // R3.38 搜索确认时保存历史
+  onSearchConfirm: function () {
+    var keyword = this._pendingKeyword || this.data.keyword;
+    if (!keyword || keyword.length < 2) return;
+    var history = this.data.searchHistory.slice();
+    // 移除重复项
+    history = history.filter(function (item) {
+      return item !== keyword;
+    });
+    // 添加到开头
+    history.unshift(keyword);
+    // 最多保存 10 条
+    if (history.length > 10) {
+      history = history.slice(0, 10);
+    }
+    try {
+      wx.setStorageSync('term-search-history', history);
+    } catch (e) {
+      // ignore
+    }
+    this.setData({ searchHistory: history });
+  },
+
+  // R3.38 点击历史标签
+  onHistoryTap: function (e) {
+    var keyword = e.currentTarget.dataset.keyword;
+    if (!keyword) return;
+    this.setData({ keyword: keyword });
+    this.onSearchInput({ detail: { value: keyword } });
+  },
+
+  // R3.38 清除搜索历史
+  clearHistory: function () {
+    try {
+      wx.removeStorageSync('term-search-history');
+    } catch (e) {
+      // ignore
+    }
+    this.setData({ searchHistory: [] });
   },
 
   clearSearch: function () {

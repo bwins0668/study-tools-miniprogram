@@ -250,3 +250,48 @@
   border-color: #4a90d9;
   font-weight: 600;
 }
+
+/* R3.38 搜索历史 */
+.history-bar {
+  padding: 16rpx 30rpx;
+  background-color: #f5f5f5;
+  border-bottom: 1rpx solid #eeeeee;
+}
+
+.history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.history-title {
+  font-size: 24rpx;
+  color: #999999;
+  font-weight: 500;
+}
+
+.history-clear {
+  font-size: 22rpx;
+  color: #e8913a;
+  padding: 4rpx 12rpx;
+}
+
+.history-scroll {
+  white-space: nowrap;
+  width: 100%;
+}
+
+.history-tag {
+  display: inline-block;
+  font-size: 24rpx;
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+  margin-right: 12rpx;
+  background-color: #f0f0f0;
+  color: #666666;
+}
+
+.history-tag:active {
+  background-color: #e0e0e0;
+}

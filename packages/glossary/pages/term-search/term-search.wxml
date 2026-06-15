@@ -9,10 +9,30 @@
         placeholder="搜索术语（英文/中文/日文）"
         value="{{keyword}}"
         bindinput="onSearchInput"
+        bindconfirm="onSearchConfirm"
         confirm-type="search"
       />
       <text wx:if="{{keyword}}" class="search-clear" bindtap="clearSearch">✕</text>
     </view>
+  </view>
+
+  <!-- R3.38 搜索历史 -->
+  <view class="history-bar" wx:if="{{searchHistory.length > 0 && !keyword}}">
+    <view class="history-header">
+      <text class="history-title">搜索历史</text>
+      <text class="history-clear" bindtap="clearHistory">清除</text>
+    </view>
+    <scroll-view class="history-scroll" scroll-x="true">
+      <view
+        class="history-tag"
+        wx:for="{{searchHistory}}"
+        wx:key="*this"
+        bindtap="onHistoryTap"
+        data-keyword="{{item}}"
+      >
+        <text>{{item}}</text>
+      </view>
+    </scroll-view>
   </view>
 
   <!-- R3.37 分类标签 -->
