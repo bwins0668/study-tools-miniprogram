@@ -54,6 +54,46 @@
   white-space: nowrap;
 }
 
+/* R3.62 答题计时器 */
+.timer-section {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 8rpx 20rpx;
+}
+
+.timer-icon {
+  font-size: 28rpx;
+  margin-right: 8rpx;
+}
+
+.timer-text {
+  font-size: 28rpx;
+  color: #e8913a;
+  font-weight: 600;
+  font-family: monospace;
+}
+
+.result-timer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx 0;
+  margin-bottom: 12rpx;
+}
+
+.result-timer-icon {
+  font-size: 32rpx;
+  margin-right: 10rpx;
+}
+
+.result-timer-text {
+  font-size: 30rpx;
+  color: #e8913a;
+  font-weight: 600;
+  font-family: monospace;
+}
+
 /* 进度条 + 百分比 */
 .progress-row {
   display: flex;

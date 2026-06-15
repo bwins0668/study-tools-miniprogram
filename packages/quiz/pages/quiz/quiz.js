@@ -40,12 +40,32 @@ Page({
     // R3.50 重练错题功能
     wrongQuestionIds: [],
     // R3.60 答题提示按钮
-    showHint: false
+    showHint: false,
+    // R3.62 答题计时器
+    timerText: '',
+    startTime: 0
   },
 
   onLoad: function (options) {
     var exam = options.exam || 'itpass';
     var sourceType = options.sourceType || 'lesson_quiz';
+
+    // R3.62 答题计时器：记录开始时间并启动计时器
+    var startTime = Date.now();
+    this.setData({
+      startTime: startTime
+    });
+    this._timerInterval = setInterval(function () {
+      var now = Date.now();
+      var diffMs = now - startTime;
+      var diffSec = Math.floor(diffMs / 1000);
+      var minutes = Math.floor(diffSec / 60);
+      var seconds = diffSec % 60;
+      var timerText = (minutes < 10 ? '0' + minutes : minutes) + ':' + (seconds < 10 ? '0' + seconds : seconds);
+      if (this && this.setData) {
+        this.setData({ timerText: timerText });
+      }
+    }.bind(this), 1000);
 
     if (sourceType === 'wrong_only') {
       this.loadWrongQuestions();
@@ -188,6 +208,12 @@ Page({
   },
 
   showPracticeResult: function () {
+    // R3.62 清除计时器
+    if (this._timerInterval) {
+      clearInterval(this._timerInterval);
+      this._timerInterval = null;
+    }
+
     var accuracy = this.data.sessionTotal > 0
       ? Math.round(this.data.sessionCorrect / this.data.sessionTotal * 100)
       : 0;

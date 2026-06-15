@@ -5,6 +5,11 @@
       <view class="quiz-exam-badge {{exam === 'sg' ? 'badge-sg' : (exam === 'wrong_only' ? 'badge-wrong' : 'badge-it')}}">{{examBadge}}</view>
       <text class="quiz-title">{{examTitle}}</text>
     </view>
+    <!-- R3.62 答题计时器 -->
+    <view class="timer-section" wx:if="{{!isFinished && timerText}}">
+      <text class="timer-icon">⏱️</text>
+      <text class="timer-text">{{timerText}}</text>
+    </view>
   </view>
 
   <!-- 进度条 + 百分比 -->
@@ -109,6 +114,11 @@
   <block wx:if="{{showResult && totalQuestions > 0}}">
     <view class="card result-card">
       <text class="result-kicker">本次练习完成</text>
+      <!-- R3.62 答题用时 -->
+      <view class="result-timer" wx:if="{{timerText}}">
+        <text class="result-timer-icon">⏱️</text>
+        <text class="result-timer-text">用时 {{timerText}}</text>
+      </view>
       <text class="result-mode">{{resultModeLabel}}</text>
 
       <view class="accuracy-block">
