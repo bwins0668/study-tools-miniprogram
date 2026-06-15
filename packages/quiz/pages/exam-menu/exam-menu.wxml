@@ -6,6 +6,38 @@
     <text class="page-desc">{{examDesc}}</text>
   </view>
 
+  <!-- 整体学习概览 (Round 3.22) -->
+  <view class="overview-card card" wx:if="{{overallTotal > 0}}">
+    <view class="overview-stats">
+      <view class="overview-stat">
+        <text class="overview-stat-value">{{overallTotal}}</text>
+        <text class="overview-stat-label">累计答题</text>
+      </view>
+      <view class="overview-divider"></view>
+      <view class="overview-stat">
+        <text class="overview-stat-value overview-accuracy">{{overallAccuracy}}%</text>
+        <text class="overview-stat-label">综合正确率</text>
+      </view>
+      <view class="overview-divider"></view>
+      <view class="overview-stat">
+        <text class="overview-stat-value overview-time-text">{{lastPracticeText || '暂无'}}</text>
+        <text class="overview-stat-label">最近练习</text>
+      </view>
+    </view>
+    <!-- 学习建议 -->
+    <view class="overview-suggestion suggestion-{{suggestion.level}}" wx:if="{{suggestion.text}}">
+      <text class="suggestion-icon">{{suggestion.level === 'good' ? '✅' : (suggestion.level === 'start' ? '📚' : (suggestion.level === 'moderate' ? '📖' : '🎯'))}}</text>
+      <text class="suggestion-text">{{suggestion.text}}</text>
+    </view>
+  </view>
+
+  <!-- 新用户引导 (Round 3.22) -->
+  <view class="overview-card card new-user-card" wx:if="{{overallTotal === 0}}">
+    <text class="new-user-icon">📝</text>
+    <text class="new-user-title">还没有练习记录</text>
+    <text class="new-user-desc">选择下方练习方式开始学习，建议先从课程练习入手</text>
+  </view>
+
   <!-- 练习入口 -->
   <view class="menu-list">
     <!-- 课程练习 -->

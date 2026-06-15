@@ -12,6 +12,23 @@ var EXAM_INFO = {
   }
 };
 
+// 格式化时间戳为友好文案
+function formatTimeAgo(ts) {
+  if (!ts) return '';
+  var now = Date.now();
+  var diff = now - ts;
+  if (diff < 0) return '';
+  var minutes = Math.floor(diff / 60000);
+  if (minutes < 1) return '刚刚';
+  if (minutes < 60) return minutes + ' 分钟前';
+  var hours = Math.floor(minutes / 60);
+  if (hours < 24) return hours + ' 小时前';
+  var days = Math.floor(hours / 24);
+  if (days < 7) return days + ' 天前';
+  if (days < 30) return Math.floor(days / 7) + ' 周前';
+  return Math.floor(days / 30) + ' 个月前';
+}
+
 Page({
   data: {
     exam: '',
@@ -20,7 +37,12 @@ Page({
     lessonTotal: 0,
     lessonAccuracy: 0,
     pastTotal: 0,
-    pastAccuracy: 0
+    pastAccuracy: 0,
+    // Round 3.22: 整体统计
+    overallTotal: 0,
+    overallAccuracy: 0,
+    lastPracticeText: '',
+    suggestion: { text: '', level: '' }
   },
 
   onLoad: function (options) {
@@ -37,11 +59,37 @@ Page({
     var exam = this.data.exam;
     var lessonStats = storage.getQuizStatsByFilter(exam, 'lesson_quiz');
     var pastStats = storage.getQuizStatsByFilter(exam, 'past_exam_japanese');
+
+    // Round 3.22: 整体统计（合并两源）
+    var overallTotal = (lessonStats.total || 0) + (pastStats.total || 0);
+    var overallCorrect = (lessonStats.correct || 0) + (pastStats.correct || 0);
+    var overallAccuracy = overallTotal > 0 ? Math.round(overallCorrect / overallTotal * 100) : 0;
+
+    // Round 3.22: 最近练习时间
+    var lastTs = storage.getLastAttemptByExam(exam);
+    var lastText = formatTimeAgo(lastTs);
+
+    // Round 3.22: 学习建议
+    var suggestion = { text: '', level: '' };
+    if (overallTotal === 0) {
+      suggestion = { text: '从课程练习开始，逐步了解考试内容', level: 'start' };
+    } else if (overallAccuracy >= 80) {
+      suggestion = { text: '掌握良好，可以尝试日文真题挑战', level: 'good' };
+    } else if (overallAccuracy >= 60) {
+      suggestion = { text: '建议多做课程练习巩固基础', level: 'moderate' };
+    } else {
+      suggestion = { text: '建议先复习基础知识点再继续练习', level: 'review' };
+    }
+
     this.setData({
       lessonTotal: lessonStats.total || 0,
       lessonAccuracy: lessonStats.accuracy || 0,
       pastTotal: pastStats.total || 0,
-      pastAccuracy: pastStats.accuracy || 0
+      pastAccuracy: pastStats.accuracy || 0,
+      overallTotal: overallTotal,
+      overallAccuracy: overallAccuracy,
+      lastPracticeText: lastText,
+      suggestion: suggestion
     });
   },
 

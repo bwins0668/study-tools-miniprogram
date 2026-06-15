@@ -85,3 +85,122 @@
   margin-left: 16rpx;
   flex-shrink: 0;
 }
+
+/* 整体学习概览 (Round 3.22) */
+.overview-card {
+  margin: 0 30rpx 20rpx;
+  padding: 28rpx 32rpx;
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.overview-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 8rpx 0 20rpx;
+}
+
+.overview-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.overview-stat-value {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #333333;
+  margin-bottom: 6rpx;
+}
+
+.overview-accuracy {
+  color: #4a90d9;
+}
+
+.overview-time-text {
+  font-size: 26rpx;
+  color: #888888;
+}
+
+.overview-stat-label {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+.overview-divider {
+  width: 1rpx;
+  height: 48rpx;
+  background-color: #f0f0f0;
+}
+
+/* 学习建议 */
+.overview-suggestion {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 24rpx;
+  border-radius: 12rpx;
+  margin-top: 4rpx;
+}
+
+.overview-suggestion.suggestion-good {
+  background-color: #e8f5e9;
+  border-left: 5rpx solid #4caf50;
+}
+
+.overview-suggestion.suggestion-moderate {
+  background-color: #e3f2fd;
+  border-left: 5rpx solid #4a90d9;
+}
+
+.overview-suggestion.suggestion-review {
+  background-color: #fff3e0;
+  border-left: 5rpx solid #ff9800;
+}
+
+.overview-suggestion.suggestion-start {
+  background-color: #f3e5f5;
+  border-left: 5rpx solid #9c27b0;
+}
+
+.suggestion-icon {
+  font-size: 28rpx;
+  margin-right: 12rpx;
+  flex-shrink: 0;
+}
+
+.suggestion-text {
+  font-size: 26rpx;
+  color: #555555;
+  line-height: 1.5;
+  flex: 1;
+}
+
+/* 新用户卡片 */
+.new-user-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36rpx 32rpx;
+  text-align: center;
+}
+
+.new-user-icon {
+  font-size: 56rpx;
+  margin-bottom: 16rpx;
+}
+
+.new-user-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 12rpx;
+}
+
+.new-user-desc {
+  font-size: 26rpx;
+  color: #888888;
+  line-height: 1.6;
+}

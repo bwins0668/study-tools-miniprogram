@@ -3668,6 +3668,229 @@ if (profileJs321.includes("text: '当前有 ' + wrongQuestionCount + ' 道错题
 if (round321Ok) pass('Round Mini 3.21 profile insights + glossary search checks');
 
 // ============================================================
+// Round Mini 3.22 exam-menu enhancement checks
+// ============================================================
+console.log('\n--- Round Mini 3.22 exam-menu enhancement checks ---');
+
+var round322Ok = true;
+var appJs322 = readFile('app.js');
+var examMenuJs322 = readFile('packages/quiz/pages/exam-menu/exam-menu.js');
+var examMenuWxml322 = readFile('packages/quiz/pages/exam-menu/exam-menu.wxml');
+var examMenuWxss322 = readFile('packages/quiz/pages/exam-menu/exam-menu.wxss');
+var storage322 = readFile('utils/storage.js');
+
+// === A. exam-menu.js 新增功能 ===
+// 1. 引入 getLastAttemptByExam
+if (!examMenuJs322.includes('getLastAttemptByExam')) {
+  fail('Round 3.22: exam-menu.js missing getLastAttemptByExam import');
+  round322Ok = false;
+}
+
+// 2. 存在 formatTimeAgo 辅助函数
+if (!examMenuJs322.includes('formatTimeAgo') || !examMenuJs322.includes('分钟前')) {
+  fail('Round 3.22: exam-menu.js missing formatTimeAgo helper');
+  round322Ok = false;
+}
+
+// 3. 存在整体统计计算（overallTotal / overallCorrect）
+if (!examMenuJs322.includes('overallTotal') || !examMenuJs322.includes('overallCorrect')) {
+  fail('Round 3.22: exam-menu.js missing overall stats computation');
+  round322Ok = false;
+}
+
+// 4. 存在 overallAccuracy 计算
+if (!examMenuJs322.includes('overallAccuracy')) {
+  fail('Round 3.22: exam-menu.js missing overallAccuracy');
+  round322Ok = false;
+}
+
+// 5. 存在 suggestion 四级判断
+if (!examMenuJs322.includes("suggestion = { text: '从课程练习开始") ||
+    !examMenuJs322.includes("suggestion = { text: '掌握良好") ||
+    !examMenuJs322.includes("suggestion = { text: '建议多做课程练习巩固基础") ||
+    !examMenuJs322.includes("suggestion = { text: '建议先复习基础知识点")) {
+  fail('Round 3.22: exam-menu.js missing 4-tier suggestion logic');
+  round322Ok = false;
+}
+
+// 6. 存在 lastPracticeText 计算
+if (!examMenuJs322.includes('lastPracticeText')) {
+  fail('Round 3.22: exam-menu.js missing lastPracticeText');
+  round322Ok = false;
+}
+
+// === B. exam-menu.wxml 新增 UI ===
+// 7. 存在整体学习概览卡片
+if (!examMenuWxml322.includes('overview-card') || !examMenuWxml322.includes('overview-stats')) {
+  fail('Round 3.22: exam-menu.wxml missing overview card');
+  round322Ok = false;
+}
+
+// 8. 显示综合正确率
+if (!examMenuWxml322.includes('overallAccuracy') || !examMenuWxml322.includes('综合正确率')) {
+  fail('Round 3.22: exam-menu.wxml missing overall accuracy display');
+  round322Ok = false;
+}
+
+// 9. 显示累计答题
+if (!examMenuWxml322.includes('overallTotal') || !examMenuWxml322.includes('累计答题')) {
+  fail('Round 3.22: exam-menu.wxml missing total count display');
+  round322Ok = false;
+}
+
+// 10. 显示最近练习时间
+if (!examMenuWxml322.includes('lastPracticeText') || !examMenuWxml322.includes('最近练习')) {
+  fail('Round 3.22: exam-menu.wxml missing last practice time display');
+  round322Ok = false;
+}
+
+// 11. 存在学习建议区
+if (!examMenuWxml322.includes('overview-suggestion') || !examMenuWxml322.includes('suggestion-{{suggestion.level}}')) {
+  fail('Round 3.22: exam-menu.wxml missing suggestion section');
+  round322Ok = false;
+}
+
+// 12. 建议区包含 icon
+if (!examMenuWxml322.includes('suggestion-icon')) {
+  fail('Round 3.22: exam-menu.wxml missing suggestion icon');
+  round322Ok = false;
+}
+
+// 13. 整体概览卡片有数据时才显示（wx:if="{{overallTotal > 0}}"）
+if (!examMenuWxml322.includes('overallTotal > 0')) {
+  fail('Round 3.22: exam-menu.wxml missing overallTotal > 0 guard');
+  round322Ok = false;
+}
+
+// 14. 存在新用户引导卡片（零练习记录）
+if (!examMenuWxml322.includes('new-user-card') || !examMenuWxml322.includes('还没有练习记录')) {
+  fail('Round 3.22: exam-menu.wxml missing new user card');
+  round322Ok = false;
+}
+
+// 15. 新用户卡片仅在 total === 0 时显示
+if (!examMenuWxml322.includes('overallTotal === 0')) {
+  fail('Round 3.22: exam-menu.wxml missing new user guard');
+  round322Ok = false;
+}
+
+// === C. exam-menu.wxss 新增样式 ===
+// 16. 存在概览卡片样式
+if (!examMenuWxss322.includes('overview-card') || !examMenuWxss322.includes('overview-stats')) {
+  fail('Round 3.22: exam-menu.wxss missing overview card styles');
+  round322Ok = false;
+}
+
+// 17. 存在统计值/分隔线样式
+if (!examMenuWxss322.includes('overview-stat-value') || !examMenuWxss322.includes('overview-divider')) {
+  fail('Round 3.22: exam-menu.wxss missing stat styles');
+  round322Ok = false;
+}
+
+// 18. 存在四级 suggestion 颜色样式
+if (!examMenuWxss322.includes('suggestion-good') || !examMenuWxss322.includes('suggestion-moderate') ||
+    !examMenuWxss322.includes('suggestion-review') || !examMenuWxss322.includes('suggestion-start')) {
+  fail('Round 3.22: exam-menu.wxss missing 4-tier suggestion styles');
+  round322Ok = false;
+}
+
+// 19. 存在新用户卡片样式
+if (!examMenuWxss322.includes('new-user-card') || !examMenuWxss322.includes('new-user-icon')) {
+  fail('Round 3.22: exam-menu.wxss missing new user card styles');
+  round322Ok = false;
+}
+
+// === D. 合规检查 ===
+// 20. 版本号 v0.21.0
+if (!appJs322.includes('v0.21.0')) {
+  fail('Round 3.22: app.js version not v0.21.0');
+  round322Ok = false;
+}
+
+// 21. 无新 storage keys
+var all322 = examMenuJs322 + storage322;
+var keyPattern322 = /study-tools-mini-(?!favorite-terms-v1|wrong-questions-v1|quiz-attempts-v1)/;
+if (keyPattern322.test(storage322)) {
+  fail('Round 3.22: new storage key detected');
+  round322Ok = false;
+}
+
+// 22. 无危险 API
+var forbidden322 = ['wx.request', 'wx.cloud', 'cloud.init', 'wx.login', 'wx.getUserInfo', 'wx.requestPayment'];
+for (var a322 = 0; a322 < forbidden322.length; a322++) {
+  if (all322.includes(forbidden322[a322])) {
+    fail('Round 3.22: forbidden API found: ' + forbidden322[a322]);
+    round322Ok = false;
+  }
+}
+
+// 23. 无高风险表述
+var banned322 = ['保证通过', '包过', '押题', '必过', '100%通过', '内部资料', '官方答案', '绝对安全', '永久保存', '云端同步', '自动备份', '保证恢复'];
+for (var b322 = 0; b322 < banned322.length; b322++) {
+  if (all322.includes(banned322[b322])) {
+    fail('Round 3.22: banned text found: ' + banned322[b322]);
+    round322Ok = false;
+  }
+}
+
+// === E. 回归检查 ===
+// 24. Round 3.17 mistakes 功能
+var mistakesJs322 = readFile('pages/mistakes/mistakes.js');
+if (!mistakesJs322.includes('getWrongQuestionStats')) {
+  fail('Round 3.22: Round 3.17 mistakes broken');
+  round322Ok = false;
+}
+
+// 25. Round 3.18 home 弱项徽标
+var homeWxml322 = readFile('pages/home/home.wxml');
+if (!homeWxml322.includes('card-weak-badge')) {
+  fail('Round 3.22: Round 3.18 home weak badge broken');
+  round322Ok = false;
+}
+
+// 26. Round 3.19 favorite-review
+var favReviewJs322 = readFile('packages/glossary/pages/favorite-review/favorite-review.js');
+if (!favReviewJs322.includes('lastSavedAtFormatted')) {
+  fail('Round 3.22: Round 3.19 favorite-review broken');
+  round322Ok = false;
+}
+
+// 27. Round 3.20 home continue suggestion
+var homeJs322 = readFile('pages/home/home.js');
+if (!homeJs322.includes('continueSuggestion')) {
+  fail('Round 3.22: Round 3.20 home continue suggestion broken');
+  round322Ok = false;
+}
+
+// 28. Round 3.20 quiz insights
+var quizJs322 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (!quizJs322.includes('accuracyLevel') || !quizJs322.includes('insightHint')) {
+  fail('Round 3.22: Round 3.20 quiz insights broken');
+  round322Ok = false;
+}
+
+// 29. Round 3.21 profile reviewHints
+var profileJs322 = readFile('pages/profile/profile.js');
+if (!profileJs322.includes('reviewHints')) {
+  fail('Round 3.22: Round 3.21 profile reviewHints broken');
+  round322Ok = false;
+}
+
+// 30. exam-menu 原有练习入口卡片保持
+if (!examMenuWxml322.includes('menu-card') || !examMenuWxml322.includes('课程练习') || !examMenuWxml322.includes('日文真题')) {
+  fail('Round 3.22: exam-menu original practice cards broken');
+  round322Ok = false;
+}
+
+// 31. exam-menu 原有 onShow 仍调用 getQuizStatsByFilter
+if (!examMenuJs322.includes('getQuizStatsByFilter')) {
+  fail('Round 3.22: exam-menu.js getQuizStatsByFilter removed');
+  round322Ok = false;
+}
+
+if (round322Ok) pass('Round Mini 3.22 exam-menu enhancement checks');
+
+// ============================================================
 // 汇总
 // ============================================================
 console.log('\n========================================');
