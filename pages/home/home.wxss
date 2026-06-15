@@ -644,3 +644,25 @@
   color: #999999;
 }
 .section-divider {\n  height: 2rpx;\n  background-color: #f0f0f0;\n  margin: 20rpx 30rpx;\n}
+
+/* R3.72 返回顶部按钮 */
+.back-to-top {
+  position: fixed;
+  right: 30rpx;
+  bottom: 100rpx;
+  width: 80rpx;
+  height: 80rpx;
+  background-color: #1890ff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 12rpx rgba(24, 144, 255, 0.4);
+  z-index: 100;
+}
+
+.back-to-top-icon {
+  font-size: 36rpx;
+  color: #ffffff;
+  font-weight: bold;
+}

@@ -208,7 +208,9 @@ Page({
     // R3.61 练习提醒
     practiceReminder: '',
     // R3.63 练习提醒关闭
-    reminderDismissed: false
+    reminderDismissed: false,
+    // R3.72 返回顶部按钮
+    showBackToTop: false
   },
 
   onShow: function () {
@@ -597,5 +599,23 @@ Page({
   onPullDownRefresh: function () {
     this.onShow();
     wx.stopPullDownRefresh();
+  },
+
+  // R3.72 返回顶部按钮
+  onPageScroll: function (e) {
+    var scrollTop = e.scrollTop || 0;
+    var showBackToTop = scrollTop > 500;
+    if (showBackToTop !== this.data.showBackToTop) {
+      this.setData({
+        showBackToTop: showBackToTop
+      });
+    }
+  },
+
+  scrollToTop: function () {
+    wx.pageScrollTo({
+      scrollTop: 0,
+      duration: 300
+    });
   }
 });

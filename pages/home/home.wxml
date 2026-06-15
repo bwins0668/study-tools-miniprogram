@@ -221,4 +221,9 @@
   <view class="footer">
     <text class="footer-text">Study Tools Mini v{{version}}</text>
   </view>
+
+  <!-- R3.72 返回顶部按钮 -->
+  <view class="back-to-top {{showBackToTop ? 'show' : ''}}" bindtap="scrollToTop" wx:if="{{showBackToTop}}">
+    <text class="back-to-top-icon">↑</text>
+  </view>
 </view>
