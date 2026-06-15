@@ -465,5 +465,14 @@ Page({
       showReview: false,
       showFeedbackTip: false
     });
+  },
+
+  // R3.71 进度保存提示
+  onUnload: function () {
+    wx.showToast({
+      title: '答题进度已保存',
+      icon: 'success',
+      duration: 1500
+    });
   }
 });
