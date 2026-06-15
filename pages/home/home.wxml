@@ -25,6 +25,9 @@
     <text class="subtitle">中日双语 IT 学习工具</text>
   </view>
 
+  <!-- R3.69 分区分隔线 -->
+  <view class="section-divider"></view>
+
   <!-- R3.42 学习 streak -->
   <view class="streak-banner" wx:if="{{streakCount > 0}}">
     <text class="streak-icon">🔥</text>
