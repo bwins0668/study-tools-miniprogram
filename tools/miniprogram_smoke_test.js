@@ -4571,6 +4571,90 @@ if (quizWxml328.indexOf('progress-bar-wrap') < 0) {
 if (round328Ok) pass('Round Mini 3.28 quiz result enhancement');
 
 // ============================================================
+// Round Mini 3.29：glossary 术语详情增强
+// ============================================================
+console.log('\n--- Round Mini 3.29 term-detail enhancement checks ---');
+var round329Ok = true;
+
+var tdJs329 = readFile('packages/glossary/pages/term-detail/term-detail.js');
+var tdWxml329 = readFile('packages/glossary/pages/term-detail/term-detail.wxml');
+var tdWxss329 = readFile('packages/glossary/pages/term-detail/term-detail.wxss');
+
+// 1. categoryLabel 字段存在
+if (tdJs329.indexOf('categoryLabel') < 0) {
+  fail('Round 3.29: categoryLabel field missing');
+  round329Ok = false;
+}
+
+// 2. learningTip 字段存在
+if (tdJs329.indexOf('learningTip') < 0) {
+  fail('Round 3.29: learningTip field missing');
+  round329Ok = false;
+}
+
+// 3. getCategoryLabel 函数存在
+if (tdJs329.indexOf('getCategoryLabel') < 0) {
+  fail('Round 3.29: getCategoryLabel function missing');
+  round329Ok = false;
+}
+
+// 4. buildLearningTip 函数存在
+if (tdJs329.indexOf('buildLearningTip') < 0) {
+  fail('Round 3.29: buildLearningTip function missing');
+  round329Ok = false;
+}
+
+// 5. 分类映射包含 database
+if (tdJs329.indexOf("'database':") < 0) {
+  fail('Round 3.29: category mapping missing database');
+  round329Ok = false;
+}
+
+// 6. 学习建议包含 IT Passport 引用
+if (tdJs329.indexOf('IT Passport') < 0) {
+  fail('Round 3.29: learning tips missing IT Passport reference');
+  round329Ok = false;
+}
+
+// 7. WXML category-badge 存在
+if (tdWxml329.indexOf('category-badge') < 0) {
+  fail('Round 3.29: category-badge missing in wxml');
+  round329Ok = false;
+}
+
+// 8. WXML learning-tip-card 存在
+if (tdWxml329.indexOf('learning-tip-card') < 0) {
+  fail('Round 3.29: learning-tip-card missing in wxml');
+  round329Ok = false;
+}
+
+// 9. WXSS category-badge 样式
+if (tdWxss329.indexOf('category-badge') < 0) {
+  fail('Round 3.29: category-badge CSS missing');
+  round329Ok = false;
+}
+
+// 10. WXSS learning-tip-card 样式
+if (tdWxss329.indexOf('learning-tip-card') < 0) {
+  fail('Round 3.29: learning-tip-card CSS missing');
+  round329Ok = false;
+}
+
+// 11. R3.23 返回导航功能未破坏
+if (tdJs329.indexOf('onBackToSearch') < 0 || tdWxml329.indexOf('back-nav') < 0) {
+  fail('Round 3.29: R3.23 back navigation broken');
+  round329Ok = false;
+}
+
+// 12. R3.23 收藏按钮未破坏
+if (tdJs329.indexOf('onFavorite') < 0 || tdWxml329.indexOf('favorite-btn') < 0) {
+  fail('Round 3.29: R3.23 favorite button broken');
+  round329Ok = false;
+}
+
+if (round329Ok) pass('Round Mini 3.29 term-detail enhancement');
+
+// ============================================================
 // 汇总
 // ============================================================
 console.log('\n========================================');

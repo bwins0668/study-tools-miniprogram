@@ -12,7 +12,10 @@ Page({
     exampleText: '',
     isFavorite: false,
     // Round 3.23: 收藏操作反馈
-    favoriteAction: ''
+    favoriteAction: '',
+    // v0.22.0 第三批：术语详情增强
+    categoryLabel: '',
+    learningTip: ''
   },
 
   onLoad: function (options) {
@@ -35,11 +38,51 @@ Page({
     }
     // id 已经是 'term-0001' 格式，直接用作 storage key
     var strId = String(id);
+    // 学习建议
+    var learningTip = this.buildLearningTip(found);
+    var categoryLabel = this.getCategoryLabel(found ? found.category : '');
+
     this.setData({
       term: found,
       exampleText: exampleText,
-      isFavorite: found ? isFavoriteTerm(strId) : false
+      isFavorite: found ? isFavoriteTerm(strId) : false,
+      learningTip: learningTip,
+      categoryLabel: categoryLabel
     });
+  },
+
+  getCategoryLabel: function (category) {
+    var map = {
+      'database': '数据库',
+      'network': '网络',
+      'security': '信息安全',
+      'programming': '编程',
+      'system': '系统',
+      'management': '项目管理',
+      'strategy': 'IT 战略',
+      'hardware': '硬件',
+      'software': '软件',
+      'cloud': '云计算',
+      'ai': 'AI/人工智能',
+      'data': '数据科学',
+      'other': '其他'
+    };
+    return map[category] || category || '';
+  },
+
+  buildLearningTip: function (term) {
+    if (!term) return '';
+    var tips = {
+      'database': '建议结合实际 SQL 练习加深理解，关注 IT Passport 和 SG 中的数据库设计题',
+      'network': '重点掌握 OSI 模型和 TCP/IP 协议栈，SG 考试中网络题占比较高',
+      'security': '信息安全是 IT Passport 和 SG 的共同重点，建议结合案例理解',
+      'programming': '建议动手编写相关代码片段，算法题在 SG 考试中经常出现',
+      'system': '关注操作系统和计算机组成原理的基础概念',
+      'management': '项目管理的 10 大知识领域需熟记，IT Passport 中常见',
+      'strategy': 'IT 战略与业务对齐是 IT Passport 的重要考点',
+    };
+    var tip = tips[term.category] || '建议结合 IT Passport 或 SG 的对应章节进行系统学习';
+    return tip;
   },
 
   // Round 3.23: 返回术语搜索

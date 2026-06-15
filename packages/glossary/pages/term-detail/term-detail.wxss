@@ -60,6 +60,21 @@
   line-height: 1.6;
 }
 
+.category-row {
+  display: flex;
+  margin-top: 4rpx;
+  margin-bottom: 8rpx;
+}
+
+.category-badge {
+  font-size: 24rpx;
+  color: #4a90d9;
+  background-color: #eef5fd;
+  padding: 6rpx 20rpx;
+  border-radius: 20rpx;
+  font-weight: 500;
+}
+
 .tag-row {
   display: flex;
   flex-wrap: wrap;
@@ -132,4 +147,18 @@
   font-size: 22rpx;
   color: #999999;
   line-height: 1.4;
+}
+
+/* 学习建议卡片 */
+.learning-tip-card {
+  border-left: 6rpx solid #4a90d9;
+}
+
+.learning-tip-title {
+  color: #4a90d9 !important;
+}
+
+.learning-tip-text {
+  color: #555555 !important;
+  font-size: 26rpx !important;
 }

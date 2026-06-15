@@ -14,7 +14,9 @@
 
       <text class="term-line">中文：{{term.zh}}</text>
       <text class="term-line">日文：{{term.ja}}</text>
-      <text class="term-line">分类：{{term.category}}</text>
+      <view class="category-row" wx:if="{{categoryLabel}}">
+        <text class="category-badge">{{categoryLabel}}</text>
+      </view>
 
       <view class="tag-row">
         <text class="tag" wx:for="{{term.tags}}" wx:key="*this">{{item}}</text>
@@ -34,6 +36,12 @@
     <view class="card">
       <text class="section-title">Example</text>
       <text class="paragraph">{{exampleText}}</text>
+    </view>
+
+    <!-- 学习建议 -->
+    <view class="card learning-tip-card" wx:if="{{learningTip}}">
+      <text class="section-title learning-tip-title">💡 学习建议</text>
+      <text class="paragraph learning-tip-text">{{learningTip}}</text>
     </view>
 
     <!-- 收藏按钮增强 (Round 3.23) -->
