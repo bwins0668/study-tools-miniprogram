@@ -78,7 +78,9 @@ Page({
     searchKeyword: '',
     filteredFavorites: [],
     searchEmpty: false,
-    currentSavedAt: ''
+    currentSavedAt: '',
+    // v0.21.0 新增
+    lastSavedAtFormatted: ''
   },
 
   onShow: function () {
@@ -130,6 +132,16 @@ Page({
     var searchKw = this.data.searchKeyword;
     var filtered = searchKw ? matched.filter(function (t) { return matchTerm(t, searchKw); }) : matched;
 
+    // 计算最近收藏时间
+    var lastSavedAt = 0;
+    for (var li = 0; li < favoriteItems.length; li++) {
+      var litem = favoriteItems[li];
+      if (litem && typeof litem.savedAt === 'number' && litem.savedAt > lastSavedAt) {
+        lastSavedAt = litem.savedAt;
+      }
+    }
+    var lastSavedAtFormatted = lastSavedAt > 0 ? formatSavedAt(lastSavedAt) : '';
+
     if (matched.length > 0) {
       this.setData({
         favorites: matched,
@@ -145,7 +157,8 @@ Page({
         isFirstItem: true,
         isLastItem: matched.length <= 1,
         nextBtnText: matched.length <= 1 ? '已到最后' : '下一个',
-        currentSavedAt: formatSavedAt(matched[0]._savedAt)
+        currentSavedAt: formatSavedAt(matched[0]._savedAt),
+        lastSavedAtFormatted: lastSavedAtFormatted
       });
     } else {
       this.setData({
@@ -162,7 +175,8 @@ Page({
         isFirstItem: true,
         isLastItem: false,
         nextBtnText: '下一个',
-        currentSavedAt: ''
+        currentSavedAt: '',
+        lastSavedAtFormatted: ''
       });
     }
   },

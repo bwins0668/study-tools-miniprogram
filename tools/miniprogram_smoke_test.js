@@ -2959,6 +2959,170 @@ if (!preloadRule) {
 if (preloadOk) pass('preloadRule for glossary subpackage valid');
 
 // ============================================================
+// Round Mini 3.19 favorite review enhancement checks
+// ============================================================
+console.log('\n--- Round Mini 3.19 favorite review enhancement checks ---');
+
+var round319Ok = true;
+var appJs319 = readFile('app.js');
+var storage319 = readFile('utils/storage.js');
+var favReviewJs319 = readFile('packages/glossary/pages/favorite-review/favorite-review.js');
+var favReviewWxml319 = readFile('packages/glossary/pages/favorite-review/favorite-review.wxml');
+var favReviewWxss319 = readFile('packages/glossary/pages/favorite-review/favorite-review.wxss');
+
+// 1. 版本号保持 v0.21.0
+if (!appJs319.includes('v0.21.0')) {
+  fail('Round 3.19: app.js missing v0.21.0');
+  round319Ok = false;
+}
+
+// 2. storage.js 新增 getFavoriteTermStats 函数
+if (!storage319.includes('function getFavoriteTermStats')) {
+  fail('Round 3.19: storage.js missing getFavoriteTermStats');
+  round319Ok = false;
+}
+
+// 3. storage.js exports 包含 getFavoriteTermStats
+if (!storage319.includes('getFavoriteTermStats: getFavoriteTermStats')) {
+  fail('Round 3.19: storage.js exports missing getFavoriteTermStats');
+  round319Ok = false;
+}
+
+// 4. getFavoriteTermStats 为纯读函数（不写 storage）
+if (storage319.includes('getFavoriteTermStats') && storage319.includes('wx.setStorageSync')) {
+  // Check if setStorageSync is inside getFavoriteTermStats
+  var fnMatch = storage319.match(/function getFavoriteTermStats\(\)[\s\S]*?^}/m);
+  if (fnMatch && fnMatch[0] && fnMatch[0].includes('setStorageSync')) {
+    fail('Round 3.19: getFavoriteTermStats must be pure read');
+    round319Ok = false;
+  }
+}
+
+// 5. favorite-review.js 存在 lastSavedAtFormatted 字段
+if (!favReviewJs319.includes('lastSavedAtFormatted')) {
+  fail('Round 3.19: favorite-review.js missing lastSavedAtFormatted');
+  round319Ok = false;
+}
+
+// 6. favorite-review.js 计算 lastSavedAtFormatted
+if (favReviewJs319.includes('lastSavedAtFormatted') && !favReviewJs319.includes('formatSavedAt(lastSavedAt)')) {
+  // Check if lastSavedAtFormatted is computed
+  if (!favReviewJs319.includes('lastSavedAt > 0') && !favReviewJs319.includes('lastSavedAtFormatted =')) {
+    fail('Round 3.19: favorite-review.js not computing lastSavedAtFormatted');
+    round319Ok = false;
+  }
+}
+
+// 7. favorite-review.wxml 增强统计区域显示最近收藏时间
+if (!favReviewWxml319.includes('lastSavedAtFormatted')) {
+  fail('Round 3.19: favorite-review.wxml missing lastSavedAtFormatted display');
+  round319Ok = false;
+}
+if (!favReviewWxml319.includes('stats-last-saved')) {
+  fail('Round 3.19: favorite-review.wxml missing stats-last-saved class');
+  round319Ok = false;
+}
+
+// 8. favorite-review.wxss 存在 .stats-row 和 .stats-last-saved 样式
+if (!favReviewWxss319.includes('.stats-row')) {
+  fail('Round 3.19: favorite-review.wxss missing .stats-row style');
+  round319Ok = false;
+}
+if (!favReviewWxss319.includes('.stats-last-saved')) {
+  fail('Round 3.19: favorite-review.wxss missing .stats-last-saved style');
+  round319Ok = false;
+}
+
+// 9. favorite-review.wxss 空状态图标为 120rpx
+if (!favReviewWxss319.includes('font-size: 120rpx;')) {
+  fail('Round 3.19: favorite-review.wxss empty icon should be 120rpx');
+  round319Ok = false;
+}
+
+// 10. 无新 storage keys
+var keyPattern319 = /study-tools-mini-(?!favorite-terms-v1|wrong-questions-v1|quiz-attempts-v1)/;
+if (keyPattern319.test(storage319)) {
+  fail('Round 3.19: new storage key detected');
+  round319Ok = false;
+}
+
+// 11. exportLocalBackup 版本保持 v0.21.0
+if (!storage319.includes("version: 'v0.21.0'")) {
+  fail('Round 3.19: storage.js backup version not v0.21.0');
+  round319Ok = false;
+}
+
+// 12. 无危险 API
+var all319 = favReviewJs319 + storage319;
+var forbidden319 = ['wx.request', 'wx.cloud', 'cloud.init', 'wx.login', 'wx.getUserInfo', 'wx.requestPayment'];
+for (var a319 = 0; a319 < forbidden319.length; a319++) {
+  if (all319.includes(forbidden319[a319])) {
+    fail('Round 3.19: forbidden API found: ' + forbidden319[a319]);
+    round319Ok = false;
+  }
+}
+
+// 13. 无高风险表述
+var banned319 = ['保证通过', '包过', '押题', '必过', '100%通过', '内部资料', '官方答案', '绝对安全', '永久保存', '云端同步'];
+for (var b319 = 0; b319 < banned319.length; b319++) {
+  if (all319.includes(banned319[b319])) {
+    fail('Round 3.19: banned text found: ' + banned319[b319]);
+    round319Ok = false;
+  }
+}
+
+// 14. formatSavedAt 安全处理 NaN
+if (favReviewJs319.includes('formatSavedAt') && favReviewJs319.includes('isNaN')) {
+  // Good - formatSavedAt has NaN guard
+} else if (favReviewJs319.includes('function formatSavedAt')) {
+  if (!favReviewJs319.includes('isNaN')) {
+    fail('Round 3.19: formatSavedAt missing NaN guard');
+    round319Ok = false;
+  }
+}
+
+// 15. 空状态存在（增强前已存在，确认未删除）
+if (!favReviewWxml319.includes('empty-state')) {
+  fail('Round 3.19: favorite-review.wxml missing empty-state');
+  round319Ok = false;
+}
+
+// 16. 空状态有引导和跳转按钮
+if (!favReviewWxml319.includes('goToGlossary') || !favReviewWxml319.includes('goSearch')) {
+  fail('Round 3.19: empty state missing navigation buttons');
+  round319Ok = false;
+}
+
+// 17. Round 3.17 mistakes 功能仍存在
+var mistakesJs319 = readFile('pages/mistakes/mistakes.js');
+if (!mistakesJs319.includes('getWrongQuestionStats')) {
+  fail('Round 3.19: Round 3.17 mistakes JS features broken');
+  round319Ok = false;
+}
+
+// 18. Round 3.17 profile 连续学习天数仍存在
+var profileJs319 = readFile('pages/profile/profile.js');
+if (!profileJs319.includes('getConsecutiveLearningDays')) {
+  fail('Round 3.19: Round 3.17 profile consecutive days broken');
+  round319Ok = false;
+}
+
+// 19. Round 3.18 首页弱项徽标仍存在
+var homeWxml319 = readFile('pages/home/home.wxml');
+if (!homeWxml319.includes('card-weak-badge')) {
+  fail('Round 3.19: Round 3.18 home weak badge broken');
+  round319Ok = false;
+}
+
+// 20. favorite-review 列表模式和复习模式仍存在
+if (!favReviewJs319.includes('switchToListMode') || !favReviewJs319.includes('switchToReviewMode')) {
+  fail('Round 3.19: favorite-review mode switch broken');
+  round319Ok = false;
+}
+
+if (round319Ok) pass('Round Mini 3.19 favorite review enhancement checks');
+
+// ============================================================
 // 汇总
 // ============================================================
 console.log('\n========================================');

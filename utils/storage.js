@@ -49,6 +49,24 @@ function getFavoriteTermCount() {
   return getFavoriteTerms().length;
 }
 
+/**
+ * 获取收藏术语统计
+ * 返回 { total, lastSavedAt }
+ */
+function getFavoriteTermStats() {
+  var list = getFavoriteTerms();
+  var stats = { total: list.length, lastSavedAt: null };
+  for (var i = 0; i < list.length; i++) {
+    var t = list[i];
+    if (t && typeof t.savedAt === 'number') {
+      if (t.savedAt > (stats.lastSavedAt || 0)) {
+        stats.lastSavedAt = t.savedAt;
+      }
+    }
+  }
+  return stats;
+}
+
 // ========== 错题本 ==========
 
 const WRONG_QUESTIONS_KEY = "study-tools-mini-wrong-questions-v1";
@@ -436,6 +454,7 @@ module.exports = {
   addFavoriteTerm: addFavoriteTerm,
   removeFavoriteTerm: removeFavoriteTerm,
   getFavoriteTermCount: getFavoriteTermCount,
+  getFavoriteTermStats: getFavoriteTermStats,
   // 错题本
   WRONG_QUESTIONS_KEY: WRONG_QUESTIONS_KEY,
   getWrongQuestions: getWrongQuestions,
