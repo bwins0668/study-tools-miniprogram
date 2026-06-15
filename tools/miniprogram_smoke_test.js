@@ -6670,6 +6670,58 @@ if (profileJs359.indexOf('copyVersion') < 0) {
 
 if (round359Ok) pass('Round Mini 3.59 term search history clear button');
 
+// ============================================================
+// Round Mini 3.60 quiz hint button
+// ============================================================
+var round360Ok = true;
+
+// A. quiz.js 包含 toggleHint 方法和 showHint 字段
+var quizJs360 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs360.indexOf('toggleHint') < 0) {
+  fail('R3.60: toggleHint method missing in quiz.js');
+  round360Ok = false;
+}
+if (quizJs360.indexOf('showHint') < 0) {
+  fail('R3.60: showHint data field missing in quiz.js');
+  round360Ok = false;
+}
+
+// B. quiz.wxml 包含提示按钮和显示
+var quizWxml360 = readFile('packages/quiz/pages/quiz/quiz.wxml');
+if (quizWxml360.indexOf('toggleHint') < 0) {
+  fail('R3.60: toggleHint button missing in quiz.wxml');
+  round360Ok = false;
+}
+if (quizWxml360.indexOf('hint-content') < 0) {
+  fail('R3.60: hint-content missing in quiz.wxml');
+  round360Ok = false;
+}
+
+// C. quiz.wxss 包含提示样式
+var quizWxss360 = readFile('packages/quiz/pages/quiz/quiz.wxss');
+if (quizWxss360.indexOf('.hint-section') < 0) {
+  fail('R3.60: .hint-section style missing in quiz.wxss');
+  round360Ok = false;
+}
+if (quizWxss360.indexOf('.hint-text') < 0) {
+  fail('R3.60: .hint-text style missing in quiz.wxss');
+  round360Ok = false;
+}
+
+// D. 回归：R3.32~R3.59 功能未退化
+var termSearchJs360 = readFile('packages/glossary/pages/term-search/term-search.js');
+if (termSearchJs360.indexOf('clearSearchHistory') < 0) {
+  fail('R3.60: R3.59 clearSearchHistory regressed in term-search.js');
+  round360Ok = false;
+}
+var homeJs360 = readFile('pages/home/home.js');
+if (homeJs360.indexOf('getDailyQuote') < 0) {
+  fail('R3.60: R3.58 getDailyQuote regressed in home.js');
+  round360Ok = false;
+}
+
+if (round360Ok) pass('Round Mini 3.60 quiz hint button');
+
 
 console.log('========================================');
 console.log('Passed: ' + passed);

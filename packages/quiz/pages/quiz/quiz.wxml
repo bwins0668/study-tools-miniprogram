@@ -41,6 +41,17 @@
         <text class="warning-icon">!</text>
         <text class="warning-text">日文原题，中文翻译待补充。</text>
       </view>
+
+      <!-- R3.60 提示按钮 -->
+      <view class="hint-section" wx:if="{{currentQuestion.shared_hint}}">
+        <view class="hint-btn {{showHint ? 'hint-btn-active' : ''}}" bindtap="toggleHint">
+          <text class="hint-btn-icon">{{showHint ? '📕' : '💡'}}</text>
+          <text class="hint-btn-text">{{showHint ? '隐藏提示' : '查看提示'}}</text>
+        </view>
+        <view class="hint-content" wx:if="{{showHint}}">
+          <text class="hint-text">{{currentQuestion.shared_hint}}</text>
+        </view>
+      </view>
     </view>
 
     <view class="options-list">

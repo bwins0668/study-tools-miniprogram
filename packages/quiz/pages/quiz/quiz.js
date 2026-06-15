@@ -38,7 +38,9 @@ Page({
     answeredList: [],
     showReview: false,
     // R3.50 重练错题功能
-    wrongQuestionIds: []
+    wrongQuestionIds: [],
+    // R3.60 答题提示按钮
+    showHint: false
   },
 
   onLoad: function (options) {
@@ -255,6 +257,14 @@ Page({
         }
         return result;
       })()
+    });
+  },
+
+  // R3.60 切换提示显示
+  toggleHint: function () {
+    var showHint = !this.data.showHint;
+    this.setData({
+      showHint: showHint
     });
   },
 

@@ -198,6 +198,49 @@
   color: #b45309;
 }
 
+/* R3.60 提示按钮 */
+.hint-section {
+  margin-top: 16rpx;
+  padding: 0 32rpx;
+}
+
+.hint-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 10rpx 20rpx;
+  background-color: #e8f0fe;
+  border-radius: 8rpx;
+}
+
+.hint-btn-active {
+  background-color: #dbeafe;
+}
+
+.hint-btn-icon {
+  font-size: 28rpx;
+  margin-right: 8rpx;
+}
+
+.hint-btn-text {
+  font-size: 24rpx;
+  color: #356a9f;
+  font-weight: 500;
+}
+
+.hint-content {
+  margin-top: 12rpx;
+  padding: 16rpx;
+  background-color: #f8f9fe;
+  border-radius: 8rpx;
+  border-left: 4rpx solid #4a90d9;
+}
+
+.hint-text {
+  font-size: 26rpx;
+  color: #555555;
+  line-height: 1.6;
+}
+
 /* 选项列表 */
 .options-list {
   padding: 0 30rpx;
