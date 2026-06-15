@@ -64,11 +64,41 @@
   margin-top: 20rpx;
   padding-top: 20rpx;
   border-top: 1rpx solid #f0f0f0;
-  justify-content: flex-start;
+  justify-content: space-around;
 }
 
 .overview-accuracy {
   color: #4caf50;
+}
+
+.overview-time {
+  font-size: 32rpx;
+  color: #666666;
+}
+
+/* 今日建议 */
+.suggestion-card {
+  display: flex;
+  align-items: flex-start;
+  background-color: #f0f7ff;
+  border-radius: 16rpx;
+  border-left: 8rpx solid #4a90d9;
+  margin: 0 30rpx 10rpx;
+  padding: 24rpx 28rpx;
+}
+
+.suggestion-icon {
+  font-size: 32rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+  margin-top: 2rpx;
+}
+
+.suggestion-text {
+  font-size: 26rpx;
+  color: #4a6d8c;
+  line-height: 1.6;
+  flex: 1;
 }
 
 /* 功能入口 */
@@ -108,6 +138,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .card-title {
@@ -115,22 +146,48 @@
   font-weight: 600;
   color: #333333;
   margin-bottom: 6rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .card-desc {
   font-size: 24rpx;
   color: #999999;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card-badge {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #e74c3c;
+  min-width: 40rpx;
+  height: 40rpx;
+  line-height: 40rpx;
+  text-align: center;
+  border-radius: 20rpx;
+  padding: 0 12rpx;
+  margin-right: 12rpx;
+  flex-shrink: 0;
 }
 
 .card-arrow {
   font-size: 36rpx;
   color: #cccccc;
-  margin-left: 16rpx;
   flex-shrink: 0;
 }
 
 .card-arrow-disabled {
   color: #dddddd;
+}
+
+/* 我的统计入口 */
+.card-entry-profile {
+  border: 2rpx solid #4a90d9;
+  background-color: #fafbff;
 }
 
 /* 继续学习 */
@@ -163,6 +220,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .continue-exam {
@@ -170,6 +228,9 @@
   font-weight: 600;
   color: #333333;
   margin-bottom: 4rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .continue-hint {

@@ -28,7 +28,17 @@
         <text class="overview-value overview-accuracy">{{accuracy}}%</text>
         <text class="overview-label">总正确率</text>
       </view>
+      <view class="overview-item" wx:if="{{lastPracticeTimeText}}">
+        <text class="overview-value overview-time">{{lastPracticeTimeText}}</text>
+        <text class="overview-label">最近练习</text>
+      </view>
     </view>
+  </view>
+
+  <!-- 今日建议 -->
+  <view class="suggestion-card" wx:if="{{suggestion}}">
+    <text class="suggestion-icon">💡</text>
+    <text class="suggestion-text">{{suggestion}}</text>
   </view>
 
   <!-- 继续学习 -->
@@ -53,17 +63,18 @@
     </view>
   </view>
 
-  <!-- 功能入口 -->
-  <view class="section-label">功能入口</view>
+  <!-- 快捷入口 -->
+  <view class="section-label">快捷入口</view>
 
   <view class="card-list">
-    <!-- Glossary 术语表 -->
-    <view class="card card-entry" bindtap="goToGlossary">
-      <view class="card-icon">📖</view>
+    <!-- 错题本（优先，有数据时显示徽标） -->
+    <view class="card card-entry" bindtap="goToMistakes">
+      <view class="card-icon">📋</view>
       <view class="card-info">
-        <text class="card-title">Glossary 术语表</text>
-        <text class="card-desc">IT 术语中日英对照查询</text>
+        <text class="card-title">错题本</text>
+        <text class="card-desc">查看做错的题目和复习记录</text>
       </view>
+      <view class="card-badge" wx:if="{{wrongQuestionCount > 0}}">{{wrongQuestionCount}}</view>
       <view class="card-arrow">›</view>
     </view>
 
@@ -73,6 +84,17 @@
       <view class="card-info">
         <text class="card-title">收藏术语复习</text>
         <text class="card-desc">逐张复习已收藏的术语卡片</text>
+      </view>
+      <view class="card-badge" wx:if="{{favoriteCount > 0}}">{{favoriteCount}}</view>
+      <view class="card-arrow">›</view>
+    </view>
+
+    <!-- Glossary 术语表 -->
+    <view class="card card-entry" bindtap="goToGlossary">
+      <view class="card-icon">📖</view>
+      <view class="card-info">
+        <text class="card-title">Glossary 术语表</text>
+        <text class="card-desc">IT 术语中日英对照查询</text>
       </view>
       <view class="card-arrow">›</view>
     </view>
@@ -97,12 +119,12 @@
       <view class="card-arrow">›</view>
     </view>
 
-    <!-- 错题本 -->
-    <view class="card card-entry" bindtap="goToMistakes">
-      <view class="card-icon">📋</view>
+    <!-- 我的统计（使用 switchTab） -->
+    <view class="card card-entry card-entry-profile" bindtap="goToProfile">
+      <view class="card-icon">👤</view>
       <view class="card-info">
-        <text class="card-title">错题本</text>
-        <text class="card-desc">查看做错的题目和复习记录</text>
+        <text class="card-title">我的统计</text>
+        <text class="card-desc">查看详细学习数据和备份管理</text>
       </view>
       <view class="card-arrow">›</view>
     </view>
