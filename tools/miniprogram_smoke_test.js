@@ -6633,9 +6633,44 @@ if (termDetailJs358.indexOf('copyTerm') < 0) {
 
 if (round358Ok) pass('Round Mini 3.58 home daily learning quote');
 
+// ============================================================
+// Round Mini 3.59 term search history clear button
+// ============================================================
+var round359Ok = true;
 
-console.log('\n========================================');
-console.log('Study Tools Mini Smoke Test');
+// A. term-search.js 包含 clearSearchHistory 方法
+var termSearchJs359 = readFile('packages/glossary/pages/term-search/term-search.js');
+if (termSearchJs359.indexOf('clearSearchHistory') < 0) {
+  fail('R3.59: clearSearchHistory method missing in term-search.js');
+  round359Ok = false;
+}
+if (termSearchJs359.indexOf('removeStorageSync') < 0) {
+  fail('R3.59: removeStorageSync call missing in term-search.js');
+  round359Ok = false;
+}
+
+// B. term-search.wxml 包含清空按钮
+var termSearchWxml359 = readFile('packages/glossary/pages/term-search/term-search.wxml');
+if (termSearchWxml359.indexOf('clearHistory') < 0) {
+  fail('R3.59: clearHistory button missing in term-search.wxml');
+  round359Ok = false;
+}
+
+// C. 回归：R3.32~R3.58 功能未退化
+var homeJs359 = readFile('pages/home/home.js');
+if (homeJs359.indexOf('getDailyQuote') < 0) {
+  fail('R3.59: R3.58 getDailyQuote regressed in home.js');
+  round359Ok = false;
+}
+var profileJs359 = readFile('pages/profile/profile.js');
+if (profileJs359.indexOf('copyVersion') < 0) {
+  fail('R3.59: R3.57 copyVersion regressed in profile.js');
+  round359Ok = false;
+}
+
+if (round359Ok) pass('Round Mini 3.59 term search history clear button');
+
+
 console.log('========================================');
 console.log('Passed: ' + passed);
 console.log('Failed: ' + failed);

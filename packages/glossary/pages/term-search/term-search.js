@@ -447,5 +447,42 @@ Page({
       console.error('[Batch Favorite Error]', err);
       wx.showToast({ title: '批量收藏失败，请重试', icon: 'none' });
     }
+  },
+
+  // R3.59 清空搜索历史
+  clearSearchHistory: function () {
+    var that = this;
+    wx.showModal({
+      title: '清空搜索历史',
+      content: '确定要清空所有搜索历史吗？',
+      confirmText: '清空',
+      cancelText: '取消',
+      success: function (res) {
+        if (res.confirm) {
+          try {
+            wx.removeStorageSync('term-search-history');
+            that.setData({
+              searchHistory: []
+            });
+            wx.showToast({
+              title: '搜索历史已清空',
+              icon: 'none',
+              duration: 1500
+            });
+          } catch (e) {
+            wx.showToast({
+              title: '清空失败',
+              icon: 'none',
+              duration: 1500
+            });
+          }
+        }
+      }
+    });
+  },
+
+  // R3.59 clearHistory 别名（兼容 WXML 中的 bindtap="clearHistory"）
+  clearHistory: function () {
+    this.clearSearchHistory();
   }
 });
