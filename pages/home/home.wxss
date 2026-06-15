@@ -689,3 +689,10 @@
   color: #666666;
   line-height: 1.6;
 }
+
+/* R3.76 下拉刷新提示 */
+.footer-hint {
+  font-size: 20rpx;
+  color: #cccccc;
+  margin-top: 8rpx;
+}

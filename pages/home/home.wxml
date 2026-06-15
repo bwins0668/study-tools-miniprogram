@@ -226,6 +226,7 @@
   <!-- R3.67 页脚版本号 -->
   <view class="footer">
     <text class="footer-text">Study Tools Mini v{{version}}</text>
+    <text class="footer-hint">下拉可以刷新页面</text>
   </view>
 
   <!-- R3.72 返回顶部按钮 -->
