@@ -6325,10 +6325,52 @@ if (quizJs352.indexOf('retryWrongQuestions') < 0) {
 
 if (round352Ok) pass('Round Mini 3.52 home learning reminder');
 
+// ============================================================
+// Round Mini 3.53 home practice completion celebration
+// ============================================================
+var round353Ok = true;
 
-// ============================================================
-// 汇总
-// ============================================================
+// A. home.wxml 包含庆祝图标和条件渲染
+var homeWxml353 = readFile('pages/home/home.wxml');
+if (homeWxml353.indexOf('🎉') < 0) {
+  fail('R3.53: celebration icon missing in home.wxml');
+  round353Ok = false;
+}
+if (homeWxml353.indexOf('goalProgress >= 100') < 0) {
+  fail('R3.53: goalProgress condition missing in home.wxml');
+  round353Ok = false;
+}
+
+// B. home.wxss 包含庆祝样式和动画
+var homeWxss353 = readFile('pages/home/home.wxss');
+if (homeWxss353.indexOf('.goal-celebrate') < 0) {
+  fail('R3.53: .goal-celebrate style missing in home.wxss');
+  round353Ok = false;
+}
+if (homeWxss353.indexOf('.goal-bar-complete') < 0) {
+  fail('R3.53: .goal-bar-complete style missing in home.wxss');
+  round353Ok = false;
+}
+if (homeWxss353.indexOf('celebrate-bounce') < 0) {
+  fail('R3.53: celebrate-bounce animation missing in home.wxss');
+  round353Ok = false;
+}
+
+// C. 回归：R3.32~R3.52 功能未退化
+var homeJs353 = readFile('pages/home/home.js');
+if (homeJs353.indexOf('generateLearningReminder') < 0) {
+  fail('R3.53: R3.52 generateLearningReminder regressed in home.js');
+  round353Ok = false;
+}
+var quizJs353 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs353.indexOf('retryWrongQuestions') < 0) {
+  fail('R3.53: R3.50 retryWrongQuestions regressed in quiz.js');
+  round353Ok = false;
+}
+
+if (round353Ok) pass('Round Mini 3.53 home practice completion celebration');
+
+
 console.log('\n========================================');
 console.log('Study Tools Mini Smoke Test');
 console.log('========================================');

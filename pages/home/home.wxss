@@ -492,6 +492,26 @@
   margin-top: 8rpx;
 }
 
+/* R3.53 今日练习完成庆祝 */
+.goal-celebrate {
+  font-size: 32rpx;
+  margin-left: 12rpx;
+  animation: celebrate-bounce 0.6s ease-in-out infinite alternate;
+}
+
+.goal-bar-complete {
+  background: linear-gradient(90deg, #4caf50, #81c784) !important;
+}
+
+@keyframes celebrate-bounce {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.2);
+  }
+}
+
 /* R3.47 学习成就系统 */
 .achievement-section {
   margin: 24rpx 24rpx 0;

@@ -21,10 +21,11 @@
   <view class="goal-section" wx:if="{{todayTotal >= 0}}">
     <view class="goal-header">
       <text class="goal-title">📊 今日练习</text>
+      <text class="goal-celebrate" wx:if="{{goalProgress >= 100}}">🎉</text>
       <text class="goal-text">{{goalText}}</text>
     </view>
     <view class="goal-bar-wrap">
-      <view class="goal-bar" style="width: {{goalProgress}}%"></view>
+      <view class="goal-bar {{goalProgress >= 100 ? 'goal-bar-complete' : ''}}" style="width: {{goalProgress}}%"></view>
     </view>
     <text class="goal-reminder" wx:if="{{showGoalReminder}}">今天还没有练习，开始吧！</text>
   </view>
