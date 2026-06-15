@@ -59,10 +59,49 @@
         <text class="info-value">{{todayTotal}}</text>
       </view>
     </view>
+  </view>
+
+  <!-- 最近练习摘要 -->
+  <view class="stats-section" wx:if="{{lastPracticeTime}}">
+    <text class="section-title">最近练习</text>
     <view class="info-card">
       <view class="info-row">
-        <text class="info-label">最近练习</text>
-        <text class="info-value">{{lastPracticeTime || '暂无最近练习记录'}}</text>
+        <text class="info-label">练习时间</text>
+        <text class="info-value">{{lastPracticeTime}}</text>
+      </view>
+      <view class="info-row" wx:if="{{lastPracticeSummary.examLabel}}">
+        <text class="info-label">练习类型</text>
+        <text class="info-value">{{lastPracticeSummary.examLabel}} · {{lastPracticeSummary.sourceLabel}}</text>
+      </view>
+      <view class="info-row" wx:if="{{lastPracticeSummary.total > 0}}">
+        <text class="info-label">本次答题</text>
+        <text class="info-value">{{lastPracticeSummary.total}} 题</text>
+      </view>
+      <view class="info-row" wx:if="{{lastPracticeSummary.total > 0}}">
+        <text class="info-label">本次正确率</text>
+        <text class="info-value">{{lastPracticeSummary.correct}}/{{lastPracticeSummary.total}} ({{lastPracticeSummary.accuracy}}%)</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 最近练习时间线 -->
+  <view class="stats-section">
+    <text class="section-title">练习时间线</text>
+    <view wx:if="{{!hasRecentAttempts}}">
+      <view class="info-card empty-card">
+        <text class="empty-hint">暂无练习记录，完成一次练习后会显示在这里</text>
+      </view>
+    </view>
+    <view wx:if="{{hasRecentAttempts}}" class="timeline-list">
+      <view class="timeline-item" wx:for="{{recentAttempts}}" wx:key="*this">
+        <view class="timeline-dot {{item.isCorrect ? 'timeline-dot-correct' : 'timeline-dot-wrong'}}"></view>
+        <view class="timeline-content">
+          <view class="timeline-header">
+            <text class="timeline-label">{{item.examLabel}} · {{item.sourceLabel}}</text>
+            <text class="timeline-status {{item.isCorrect ? 'status-correct' : 'status-wrong'}}">{{item.status}}</text>
+          </view>
+          <text class="timeline-time">{{item.time}}</text>
+        </view>
       </view>
     </view>
   </view>

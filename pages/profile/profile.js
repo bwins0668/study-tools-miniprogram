@@ -3,7 +3,7 @@ var app = getApp();
 var storage = require("../../utils/storage");
 
 /**
- * 格式化时间戳为可读字符串
+ * 格式化时间戳为可读字符串（用于最近练习时间）
  */
 function formatTime(timestamp) {
   if (!timestamp) return '';
@@ -15,6 +15,66 @@ function formatTime(timestamp) {
   var minute = d.getMinutes();
   if (minute < 10) minute = '0' + minute;
   return year + '年' + month + '月' + day + '日 ' + hour + ':' + minute;
+}
+
+/**
+ * 格式化时间戳为相对时间或简短日期（用于时间线条目）
+ * 今天 → "今天 HH:mm"
+ * 昨天 → "昨天 HH:mm"
+ * 更早 → "YYYY/MM/DD HH:mm"
+ * 非法时间 → "时间未记录"
+ */
+function formatTimelineTime(timestamp) {
+  if (!timestamp) return '时间未记录';
+  var d;
+  try {
+    d = new Date(timestamp);
+    if (isNaN(d.getTime())) return '时间未记录';
+  } catch (e) {
+    return '时间未记录';
+  }
+  var now = new Date();
+  var todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  var yesterdayStart = todayStart - 24 * 60 * 60 * 1000;
+  var hour = d.getHours();
+  var minute = d.getMinutes();
+  if (minute < 10) minute = '0' + minute;
+  var timeStr = hour + ':' + minute;
+  if (timestamp >= todayStart) {
+    return '今天 ' + timeStr;
+  }
+  if (timestamp >= yesterdayStart) {
+    return '昨天 ' + timeStr;
+  }
+  var year = d.getFullYear();
+  var month = d.getMonth() + 1;
+  if (month < 10) month = '0' + month;
+  var day = d.getDate();
+  if (day < 10) day = '0' + day;
+  return year + '/' + month + '/' + day + ' ' + timeStr;
+}
+
+/**
+ * exam 标签映射（安全降级）
+ */
+function getExamLabel(exam) {
+  var map = {
+    itpass: 'IT Passport',
+    sg: 'SG'
+  };
+  return map[exam] || (exam || '未知');
+}
+
+/**
+ * sourceType 标签映射（安全降级）
+ */
+function getSourceLabel(sourceType) {
+  var map = {
+    lesson_quiz: '课程练习',
+    past_exam_japanese: '日文真题',
+    wrong_only: '错题重练'
+  };
+  return map[sourceType] || (sourceType || '练习');
 }
 
 /**
@@ -42,7 +102,19 @@ Page({
     lessonAccuracy: 0,
     pastExamAccuracy: 0,
     lastPracticeTime: '',
-    learningStatus: ''
+    learningStatus: '',
+    // 最近练习时间线
+    recentAttempts: [],
+    hasRecentAttempts: false,
+    // 最近一次练习摘要
+    lastPracticeSummary: {
+      examLabel: '',
+      sourceLabel: '',
+      accuracy: 0,
+      correct: 0,
+      wrong: 0,
+      total: 0
+    }
   },
 
   onLoad: function () {
@@ -59,8 +131,50 @@ Page({
     // 最近练习时间
     var lastAttempt = storage.getLastAttempt ? storage.getLastAttempt() : null;
     var lastTime = '';
+    var lastSummary = { examLabel: '', sourceLabel: '', accuracy: 0, correct: 0, wrong: 0, total: 0 };
     if (lastAttempt && lastAttempt.answeredAt) {
       lastTime = formatTime(lastAttempt.answeredAt);
+    }
+
+    // 最近练习摘要：从最近 20 条 attempt 中推断最近一次"练习会话"
+    var recentForSummary = storage.getRecentAttempts ? storage.getRecentAttempts(20) : [];
+    if (recentForSummary.length > 0 && lastAttempt) {
+      // 找到与 lastAttempt 相近时间（30分钟内）且同一 exam 的 attempt 作为一次 session
+      var lastTs = lastAttempt.answeredAt || 0;
+      var sessionWindow = 30 * 60 * 1000; // 30分钟
+      var sessionCorrect = 0;
+      var sessionTotal = 0;
+      for (var i = 0; i < recentForSummary.length; i++) {
+        var a = recentForSummary[i];
+        var aTs = a.answeredAt || 0;
+        if (Math.abs(lastTs - aTs) <= sessionWindow && a.exam === lastAttempt.exam) {
+          sessionTotal++;
+          if (a.isCorrect) sessionCorrect++;
+        }
+      }
+      lastSummary = {
+        examLabel: getExamLabel(lastAttempt.exam),
+        sourceLabel: getSourceLabel(lastAttempt.sourceType),
+        accuracy: sessionTotal > 0 ? Math.round(sessionCorrect / sessionTotal * 100) : 0,
+        correct: sessionCorrect || 0,
+        wrong: sessionTotal - sessionCorrect || 0,
+        total: sessionTotal || 0
+      };
+    }
+
+    // 最近练习时间线（最多 10 条）
+    var recentAttempts = storage.getRecentAttempts ? storage.getRecentAttempts(10) : [];
+    var timelineItems = [];
+    for (var r = 0; r < recentAttempts.length; r++) {
+      var ra = recentAttempts[r];
+      var isCorrect = ra.isCorrect === true;
+      timelineItems.push({
+        time: formatTimelineTime(ra.answeredAt),
+        examLabel: getExamLabel(ra.exam),
+        sourceLabel: getSourceLabel(ra.sourceType),
+        isCorrect: isCorrect,
+        status: isCorrect ? '正确' : '错误'
+      });
     }
 
     // 学习状态文案
@@ -79,7 +193,10 @@ Page({
       lessonAccuracy: (stats.bySourceType && stats.bySourceType.lesson_quiz) ? stats.bySourceType.lesson_quiz.accuracy : 0,
       pastExamAccuracy: (stats.bySourceType && stats.bySourceType.past_exam_japanese) ? stats.bySourceType.past_exam_japanese.accuracy : 0,
       lastPracticeTime: lastTime,
-      learningStatus: statusText
+      learningStatus: statusText,
+      recentAttempts: timelineItems,
+      hasRecentAttempts: timelineItems.length > 0,
+      lastPracticeSummary: lastSummary
     });
   },
 
@@ -111,7 +228,10 @@ Page({
             lessonAccuracy: stats.bySourceType.lesson_quiz.accuracy,
             pastExamAccuracy: stats.bySourceType.past_exam_japanese.accuracy,
             lastPracticeTime: '',
-            learningStatus: getLearningStatus(0, 0)
+            learningStatus: getLearningStatus(0, 0),
+            recentAttempts: [],
+            hasRecentAttempts: false,
+            lastPracticeSummary: { examLabel: '', sourceLabel: '', accuracy: 0, correct: 0, wrong: 0, total: 0 }
           });
         }
       }
@@ -176,8 +296,45 @@ Page({
               var stats = storage.getQuizStats();
               var lastAttempt = storage.getLastAttempt ? storage.getLastAttempt() : null;
               var lastTime = '';
+              var lastSummary = { examLabel: '', sourceLabel: '', accuracy: 0, correct: 0, wrong: 0, total: 0 };
               if (lastAttempt && lastAttempt.answeredAt) {
                 lastTime = formatTime(lastAttempt.answeredAt);
+              }
+              // 最近练习摘要
+              var rfs = storage.getRecentAttempts ? storage.getRecentAttempts(20) : [];
+              if (rfs.length > 0 && lastAttempt) {
+                var lastTs = lastAttempt.answeredAt || 0;
+                var sessionWindow = 30 * 60 * 1000;
+                var sCorrect = 0, sTotal = 0;
+                for (var ri = 0; ri < rfs.length; ri++) {
+                  var aa = rfs[ri];
+                  if (Math.abs(lastTs - (aa.answeredAt || 0)) <= sessionWindow && aa.exam === lastAttempt.exam) {
+                    sTotal++;
+                    if (aa.isCorrect) sCorrect++;
+                  }
+                }
+                lastSummary = {
+                  examLabel: getExamLabel(lastAttempt.exam),
+                  sourceLabel: getSourceLabel(lastAttempt.sourceType),
+                  accuracy: sTotal > 0 ? Math.round(sCorrect / sTotal * 100) : 0,
+                  correct: sCorrect || 0,
+                  wrong: sTotal - sCorrect || 0,
+                  total: sTotal || 0
+                };
+              }
+              // 最近练习时间线
+              var ra = storage.getRecentAttempts ? storage.getRecentAttempts(10) : [];
+              var tlItems = [];
+              for (var tj = 0; tj < ra.length; tj++) {
+                var rb = ra[tj];
+                var ic = rb.isCorrect === true;
+                tlItems.push({
+                  time: formatTimelineTime(rb.answeredAt),
+                  examLabel: getExamLabel(rb.exam),
+                  sourceLabel: getSourceLabel(rb.sourceType),
+                  isCorrect: ic,
+                  status: ic ? '正确' : '错误'
+                });
               }
               var statusText = getLearningStatus(stats.accuracy || 0, stats.total || 0);
               that.setData({
@@ -193,7 +350,10 @@ Page({
                 lessonAccuracy: (stats.bySourceType && stats.bySourceType.lesson_quiz) ? stats.bySourceType.lesson_quiz.accuracy : 0,
                 pastExamAccuracy: (stats.bySourceType && stats.bySourceType.past_exam_japanese) ? stats.bySourceType.past_exam_japanese.accuracy : 0,
                 lastPracticeTime: lastTime,
-                learningStatus: statusText
+                learningStatus: statusText,
+                recentAttempts: tlItems,
+                hasRecentAttempts: tlItems.length > 0,
+                lastPracticeSummary: lastSummary
               });
             }
           });
@@ -231,7 +391,10 @@ Page({
             lessonAccuracy: 0,
             pastExamAccuracy: 0,
             lastPracticeTime: '',
-            learningStatus: getLearningStatus(0, 0)
+            learningStatus: getLearningStatus(0, 0),
+            recentAttempts: [],
+            hasRecentAttempts: false,
+            lastPracticeSummary: { examLabel: '', sourceLabel: '', accuracy: 0, correct: 0, wrong: 0, total: 0 }
           });
         }
       }

@@ -642,6 +642,8 @@ if (storage) {
     'getTodayQuizAttemptCount',
     'getQuizStats',
     'getQuizStatsByFilter',
+    'getLastAttempt',
+    'getRecentAttempts',
     'validateLocalBackup',
     'exportLocalBackup',
     'importLocalBackup',
@@ -1016,13 +1018,13 @@ console.log('\n--- 版本号检查 ---');
 let versionOk = true;
 const appJsContent = readFile('app.js');
 const storageContent = readFile('utils/storage.js');
-if (!appJsContent.includes('v0.17.0')) {
-  fail('version: app.js does not contain v0.17.0');
+if (!appJsContent.includes('v0.18.0')) {
+  fail('version: app.js does not contain v0.18.0');
   versionOk = false;
 }
 
-if (!storageContent.includes("version: 'v0.17.0'")) {
-  fail('version: utils/storage.js exportLocalBackup does not contain v0.17.0');
+if (!storageContent.includes("version: 'v0.18.0'")) {
+  fail('version: utils/storage.js exportLocalBackup does not contain v0.18.0');
   versionOk = false;
 }
 
@@ -1039,7 +1041,7 @@ if (!profileJs.includes('globalData.version')) {
   fail('version: profile.js does not read from globalData.version');
   versionOk = false;
 }
-if (versionOk) pass('version check v0.17.0');
+if (versionOk) pass('version check v0.18.0');
 
 // ============================================================
 // 十一、Check Round 2.0 新功能
@@ -1513,13 +1515,13 @@ var profileJs32 = readFile('pages/profile/profile.js');
 var profileWxml32 = readFile('pages/profile/profile.wxml');
 var profileWxss32 = readFile('pages/profile/profile.wxss');
 
-// 1. 版本号 v0.17.0
-if (!appJsContent.includes('v0.17.0')) {
-  fail('Round 3.2: app.js missing v0.17.0');
+// 1. 版本号 v0.18.0
+if (!appJsContent.includes('v0.18.0')) {
+  fail('Round 3.2: app.js missing v0.18.0');
   round32Ok = false;
 }
-if (!storageContent.includes("version: 'v0.17.0'")) {
-  fail('Round 3.2: storage.js exportLocalBackup missing v0.17.0');
+if (!storageContent.includes("version: 'v0.18.0'")) {
+  fail('Round 3.2: storage.js exportLocalBackup missing v0.18.0');
   round32Ok = false;
 }
 
@@ -1620,13 +1622,13 @@ var favReviewJs33 = readFile('packages/glossary/pages/favorite-review/favorite-r
 var favReviewWxml33 = readFile('packages/glossary/pages/favorite-review/favorite-review.wxml');
 var favReviewWxss33 = readFile('packages/glossary/pages/favorite-review/favorite-review.wxss');
 
-// 1. 版本号 v0.17.0
-if (!appJsContent.includes('v0.17.0')) {
-  fail('Round 3.3: app.js missing v0.17.0');
+// 1. 版本号 v0.18.0
+if (!appJsContent.includes('v0.18.0')) {
+  fail('Round 3.3: app.js missing v0.18.0');
   round33Ok = false;
 }
-if (!storageContent.includes("version: 'v0.17.0'")) {
-  fail('Round 3.3: storage.js exportLocalBackup missing v0.17.0');
+if (!storageContent.includes("version: 'v0.18.0'")) {
+  fail('Round 3.3: storage.js exportLocalBackup missing v0.18.0');
   round33Ok = false;
 }
 
@@ -1701,8 +1703,8 @@ if (!profileJs33.includes('getFavoriteTermCount') || !profileJs33.includes('favo
 }
 
 // 10. 备份导出/恢复版本同步到 v0.15.0
-if (!storageContent.includes("version: 'v0.17.0'")) {
-  fail('Round 3.3: storage.js exportLocalBackup version not synced to v0.17.0');
+if (!storageContent.includes("version: 'v0.18.0'")) {
+  fail('Round 3.3: storage.js exportLocalBackup version not synced to v0.18.0');
   round33Ok = false;
 }
 if (!storageContent.includes('exportLocalBackup') || !storageContent.includes('importLocalBackup')) {
@@ -1740,13 +1742,13 @@ var mistakesJs34 = readFile('packages/quiz/pages/mistakes/mistakes.js');
 var mistakesWxml34 = readFile('packages/quiz/pages/mistakes/mistakes.wxml');
 var mistakesWxss34 = readFile('packages/quiz/pages/mistakes/mistakes.wxss');
 
-// 1. 版本号 v0.17.0
-if (!appJsContent.includes('v0.17.0')) {
-  fail('Round 3.4: app.js missing v0.17.0');
+// 1. 版本号 v0.18.0
+if (!appJsContent.includes('v0.18.0')) {
+  fail('Round 3.4: app.js missing v0.18.0');
   round34Ok = false;
 }
-if (!storageContent.includes("version: 'v0.17.0'")) {
-  fail('Round 3.4: storage.js exportLocalBackup missing v0.17.0');
+if (!storageContent.includes("version: 'v0.18.0'")) {
+  fail('Round 3.4: storage.js exportLocalBackup missing v0.18.0');
   round34Ok = false;
 }
 
@@ -1913,13 +1915,13 @@ var homeJs35 = readFile('pages/home/home.js');
 var homeWxml35 = readFile('pages/home/home.wxml');
 var homeWxss35 = readFile('pages/home/home.wxss');
 
-// 1. 版本号 v0.17.0
-if (!appJsContent.includes('v0.17.0')) {
-  fail('Round 3.5: app.js missing v0.17.0');
+// 1. 版本号 v0.18.0
+if (!appJsContent.includes('v0.18.0')) {
+  fail('Round 3.5: app.js missing v0.18.0');
   round35Ok = false;
 }
-if (!storageContent.includes("version: 'v0.17.0'")) {
-  fail('Round 3.5: storage.js exportLocalBackup missing v0.17.0');
+if (!storageContent.includes("version: 'v0.18.0'")) {
+  fail('Round 3.5: storage.js exportLocalBackup missing v0.18.0');
   round35Ok = false;
 }
 
@@ -2062,6 +2064,155 @@ if (!homeJs35.includes('lastPracticeTimeText') || !homeWxml35.includes('lastPrac
 }
 
 if (round35Ok) pass('Round Mini 3.5 home learning shortcuts checks');
+
+// ============================================================
+// Round Mini 3.6 recent practice timeline checks
+// ============================================================
+console.log('\n--- Round Mini 3.6 recent practice timeline checks ---');
+
+var round36Ok = true;
+var appJs36 = readFile('app.js');
+var storage36 = readFile('utils/storage.js');
+var profileJs36 = readFile('pages/profile/profile.js');
+var profileWxml36 = readFile('pages/profile/profile.wxml');
+var profileWxss36 = readFile('pages/profile/profile.wxss');
+
+// 1. app.js 版本为 v0.18.0
+if (!appJs36.includes('v0.18.0')) {
+  fail('Round 3.6: app.js missing v0.18.0');
+  round36Ok = false;
+}
+
+// 2. exportLocalBackup 版本为 v0.18.0
+if (!storage36.includes("version: 'v0.18.0'")) {
+  fail('Round 3.6: storage.js exportLocalBackup missing v0.18.0');
+  round36Ok = false;
+}
+
+// 3. storage 中存在 getLastAttempt
+if (!storage36.includes('getLastAttempt')) {
+  fail('Round 3.6: storage.js missing getLastAttempt');
+  round36Ok = false;
+}
+
+// 4. storage 中存在 getRecentAttempts
+if (!storage36.includes('getRecentAttempts')) {
+  fail('Round 3.6: storage.js missing getRecentAttempts');
+  round36Ok = false;
+}
+
+// 5. profile 页面存在最近练习时间线模块
+if (!profileWxml36.includes('练习时间线') || !profileWxml36.includes('timeline-list')) {
+  fail('Round 3.6: profile.wxml missing timeline section');
+  round36Ok = false;
+}
+
+// 6. profile 页面存在空练习记录安全文案
+if (!profileWxml36.includes('暂无练习记录，完成一次练习后会显示在这里') || !profileWxml36.includes('empty-hint')) {
+  fail('Round 3.6: profile.wxml missing empty state hint');
+  round36Ok = false;
+}
+
+// 7. profile 页面存在时间格式化函数
+if (!profileJs36.includes('formatTimelineTime')) {
+  fail('Round 3.6: profile.js missing formatTimelineTime function');
+  round36Ok = false;
+}
+
+// 8. profile 页面正确率计算有 NaN 防护
+if (!profileJs36.includes('sessionTotal > 0 ? Math.round') || !profileJs36.includes('sTotal > 0 ? Math.round')) {
+  fail('Round 3.6: profile.js missing NaN protection in accuracy calculation');
+  round36Ok = false;
+}
+
+// 9. profile 页面不直接显示 undefined / null（有空值降级处理）
+if (!profileJs36.includes("if (!timestamp) return '时间未记录'") && !profileJs36.includes('时间未记录')) {
+  fail('Round 3.6: profile.js formatTimelineTime missing null timestamp guard');
+  round36Ok = false;
+}
+if (!profileJs36.includes("return map[exam] || (exam || '未知')")) {
+  fail('Round 3.6: profile.js getExamLabel missing null fallback');
+  round36Ok = false;
+}
+if (!profileJs36.includes("return map[sourceType] || (sourceType || '练习')")) {
+  fail('Round 3.6: profile.js getSourceLabel missing null fallback');
+  round36Ok = false;
+}
+
+// 10. home 页面 Round Mini 3.5 学习建议入口仍存在
+var homeJs36 = readFile('pages/home/home.js');
+var homeWxml36 = readFile('pages/home/home.wxml');
+if (!homeJs36.includes('generateSuggestion') || !homeWxml36.includes('今日建议')) {
+  fail('Round 3.6: home page Round 3.5 suggestion entry broken');
+  round36Ok = false;
+}
+
+// 11. mistakes 页面 Round Mini 3.4 关键功能仍存在
+var mistakesJs36 = readFile('packages/quiz/pages/mistakes/mistakes.js');
+if (!mistakesJs36.includes('searchKeyword') || !mistakesJs36.includes('viewMode')) {
+  fail('Round 3.6: mistakes page Round 3.4 features broken');
+  round36Ok = false;
+}
+
+// 12. favorite-review 页面 Round Mini 3.3 关键功能仍存在
+var favReviewJs36 = readFile('packages/glossary/pages/favorite-review/favorite-review.js');
+if (!favReviewJs36.includes('searchKeyword') || !favReviewJs36.includes('viewMode')) {
+  fail('Round 3.6: favorite-review page Round 3.3 features broken');
+  round36Ok = false;
+}
+
+// 13. 不改变 attempts storage key
+if (!storage36.includes('"study-tools-mini-quiz-attempts-v1"')) {
+  fail('Round 3.6: attempts storage key changed');
+  round36Ok = false;
+}
+
+// 14. exportLocalBackup/importLocalBackup 仍包含 attempts
+if (!storage36.includes('quizAttempts: getQuizAttempts()')) {
+  fail('Round 3.6: storage.js backup missing quizAttempts');
+  round36Ok = false;
+}
+
+// 15. 不出现高风险表述
+var forbidden36 = ['保证通过', '包过', '押题', '必过'];
+for (var fi36 = 0; fi36 < forbidden36.length; fi36++) {
+  if (profileJs36.includes(forbidden36[fi36]) || profileWxml36.includes(forbidden36[fi36])) {
+    fail('Round 3.6: profile contains forbidden high-risk text: ' + forbidden36[fi36]);
+    round36Ok = false;
+  }
+}
+
+// 16. 最近练习摘要卡片存在
+if (!profileWxml36.includes('最近练习摘要') && !profileWxml36.includes('最近练习') || !profileWxml36.includes('练习类型') || !profileWxml36.includes('本次答题')) {
+  fail('Round 3.6: profile.wxml missing practice summary card');
+  round36Ok = false;
+}
+
+// 17. getRecentAttempts 在 storage 的 exports 中
+if (!storage36.includes('getRecentAttempts: getRecentAttempts')) {
+  fail('Round 3.6: storage.js exports missing getRecentAttempts');
+  round36Ok = false;
+}
+
+// 18. profile.js 存在最近练习摘要逻辑
+if (!profileJs36.includes('lastPracticeSummary')) {
+  fail('Round 3.6: profile.js missing lastPracticeSummary');
+  round36Ok = false;
+}
+
+// 19. profile.js 存在 getExamLabel / getSourceLabel 安全映射
+if (!profileJs36.includes('getExamLabel') || !profileJs36.includes('getSourceLabel')) {
+  fail('Round 3.6: profile.js missing exam/source label helpers');
+  round36Ok = false;
+}
+
+// 20. profile.js clearAttempts 重置时间线和摘要
+if (!profileJs36.includes("recentAttempts: []") && !profileJs36.includes('recentAttempts')) {
+  fail('Round 3.6: profile.js clearAttempts missing recentAttempts reset');
+  round36Ok = false;
+}
+
+if (round36Ok) pass('Round Mini 3.6 recent practice timeline checks');
 
 // ============================================================
 console.log('\n--- preloadRule 分包预下载检查 ---');

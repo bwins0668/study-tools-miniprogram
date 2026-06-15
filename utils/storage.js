@@ -270,6 +270,20 @@ function getQuizStatsByFilter(exam, sourceType) {
   };
 }
 
+/**
+ * 获取最近 N 条答题记录（按时间倒序）
+ * 不改变旧数据结构，仅排序切片
+ */
+function getRecentAttempts(limit) {
+  if (!limit || limit <= 0) limit = 10;
+  var list = getQuizAttempts();
+  if (list.length === 0) return [];
+  var sorted = list.slice().sort(function (a, b) {
+    return b.answeredAt - a.answeredAt;
+  });
+  return sorted.slice(0, limit);
+}
+
 // ========== 本地数据备份 / 恢复 ==========
 
 function validateLocalBackup(backup) {
@@ -285,7 +299,7 @@ function validateLocalBackup(backup) {
 function exportLocalBackup() {
   return {
     app: 'study-tools-mini',
-    version: 'v0.17.0',
+    version: 'v0.18.0',
     exportedAt: Date.now(),
     data: {
       favoriteTerms: getFavoriteTerms(),
@@ -337,6 +351,7 @@ module.exports = {
   getQuizStats: getQuizStats,
   getQuizStatsByFilter: getQuizStatsByFilter,
   getLastAttempt: getLastAttempt,
+  getRecentAttempts: getRecentAttempts,
   // 本地数据备份 / 恢复
   validateLocalBackup: validateLocalBackup,
   exportLocalBackup: exportLocalBackup,
