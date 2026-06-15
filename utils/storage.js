@@ -114,6 +114,38 @@ function getWrongQuestionCount() {
   return getWrongQuestions().length;
 }
 
+/**
+ * 按考试类型统计错题数量
+ * 返回 { itpass: N, sg: N }
+ */
+function getWrongQuestionStats() {
+  var list = getWrongQuestions();
+  var stats = { itpass: 0, sg: 0 };
+  for (var i = 0; i < list.length; i++) {
+    var exam = list[i].exam;
+    if (stats[exam] !== undefined) {
+      stats[exam]++;
+    }
+  }
+  return stats;
+}
+
+/**
+ * 获取最近一次错题时间
+ * 返回 timestamp 或 null
+ */
+function getLastWrongTime() {
+  var list = getWrongQuestions();
+  if (list.length === 0) return null;
+  var latest = 0;
+  for (var i = 0; i < list.length; i++) {
+    if (list[i].wrongAt > latest) {
+      latest = list[i].wrongAt;
+    }
+  }
+  return latest || null;
+}
+
 // ========== 做题记录 ==========
 
 var QUIZ_ATTEMPTS_KEY = "study-tools-mini-quiz-attempts-v1";
@@ -284,6 +316,61 @@ function getRecentAttempts(limit) {
   return sorted.slice(0, limit);
 }
 
+/**
+ * 计算连续学习天数
+ * 基于 quiz attempts 的日期去重后，从今天往前数连续天数
+ * 今天未学习则从昨天开始算
+ */
+function getConsecutiveLearningDays() {
+  var list = getQuizAttempts();
+  if (list.length === 0) return 0;
+
+  // 收集所有有记录的日期（按天去重）
+  var dateSet = {};
+  for (var i = 0; i < list.length; i++) {
+    var ts = list[i].answeredAt;
+    if (!ts) continue;
+    var d = new Date(ts);
+    var dateKey = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+    dateSet[dateKey] = true;
+  }
+
+  var dates = Object.keys(dateSet);
+  if (dates.length === 0) return 0;
+
+  // 排序（降序）
+  dates.sort(function (a, b) { return b > a ? 1 : b < a ? -1 : 0; });
+
+  // 获取今天和昨天的日期字符串
+  var now = new Date();
+  var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  var todayKey = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+
+  // 如果今天有记录，从今天开始算；否则从昨天开始算
+  var hasToday = dateSet[todayKey];
+  if (!hasToday) {
+    // 检查昨天
+    var yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+    var yesterdayKey = yesterday.getFullYear() + '-' + (yesterday.getMonth() + 1) + '-' + yesterday.getDate();
+    if (!dateSet[yesterdayKey]) return 0; // 今天和昨天都没学，连续中断
+  }
+
+  // 从最近有记录的日期开始，往前数连续天数
+  var streak = 0;
+  var checkDate = hasToday ? today : new Date(today.getTime() - 24 * 60 * 60 * 1000);
+  while (true) {
+    var checkKey = checkDate.getFullYear() + '-' + (checkDate.getMonth() + 1) + '-' + checkDate.getDate();
+    if (dateSet[checkKey]) {
+      streak++;
+      checkDate = new Date(checkDate.getTime() - 24 * 60 * 60 * 1000);
+    } else {
+      break;
+    }
+  }
+
+  return streak;
+}
+
 // ========== 本地数据备份 / 恢复 ==========
 
 function validateLocalBackup(backup) {
@@ -299,7 +386,7 @@ function validateLocalBackup(backup) {
 function exportLocalBackup() {
   return {
     app: 'study-tools-mini',
-    version: 'v0.20.0',
+    version: 'v0.21.0',
     exportedAt: Date.now(),
     data: {
       favoriteTerms: getFavoriteTerms(),
@@ -340,6 +427,8 @@ module.exports = {
   removeWrongQuestion: removeWrongQuestion,
   clearWrongQuestions: clearWrongQuestions,
   getWrongQuestionCount: getWrongQuestionCount,
+  getWrongQuestionStats: getWrongQuestionStats,
+  getLastWrongTime: getLastWrongTime,
   // 做题记录
   QUIZ_ATTEMPTS_KEY: QUIZ_ATTEMPTS_KEY,
   getQuizAttempts: getQuizAttempts,
@@ -352,6 +441,7 @@ module.exports = {
   getQuizStatsByFilter: getQuizStatsByFilter,
   getLastAttempt: getLastAttempt,
   getRecentAttempts: getRecentAttempts,
+  getConsecutiveLearningDays: getConsecutiveLearningDays,
   // 本地数据备份 / 恢复
   validateLocalBackup: validateLocalBackup,
   exportLocalBackup: exportLocalBackup,

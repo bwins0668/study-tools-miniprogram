@@ -4,19 +4,48 @@
     <text class="launcher-icon">📋</text>
     <text class="launcher-title">错题本</text>
     <text class="launcher-desc">做题后，答错的题目会自动记录</text>
-    <view class="stats-row" wx:if="{{wrongCount > 0}}">
-      <text class="stats-value">{{wrongCount}}</text>
-      <text class="stats-label">道错题待复习</text>
+
+    <!-- 有错题时的统计 -->
+    <view wx:if="{{wrongCount > 0}}">
+      <view class="stats-row">
+        <text class="stats-value">{{wrongCount}}</text>
+        <text class="stats-label">道错题待复习</text>
+      </view>
+
+      <!-- 分类错题统计 -->
+      <view class="category-stats">
+        <view class="category-item" wx:if="{{itpassCount > 0}}">
+          <text class="category-label">IT Passport</text>
+          <text class="category-count">{{itpassCount}} 道</text>
+        </view>
+        <view class="category-item" wx:if="{{sgCount > 0}}">
+          <text class="category-label">SG</text>
+          <text class="category-count">{{sgCount}} 道</text>
+        </view>
+      </view>
+
+      <!-- 最近错误时间 -->
+      <view class="last-wrong" wx:if="{{lastWrongTime}}">
+        <text class="last-wrong-text">最近错误：{{lastWrongTime}}</text>
+      </view>
+
+      <view class="launcher-btn" bindtap="goToMistakesList">
+        <text class="launcher-btn-text">查看错题详情</text>
+      </view>
     </view>
-    <view class="launcher-btn" bindtap="goToMistakesList">
-      <text class="launcher-btn-text">查看错题详情</text>
+
+    <!-- 无错题时的空状态 -->
+    <view class="enhanced-empty" wx:if="{{wrongCount === 0}}">
+      <text class="empty-icon">🎯</text>
+      <text class="empty-main">暂无错题记录</text>
+      <text class="empty-sub">完成一次练习后，答错的题目会自动收录到这里</text>
+      <view class="study-btn" bindtap="goStudy">
+        <text class="study-btn-text">开始练习</text>
+      </view>
     </view>
-    <view class="study-btn" bindtap="goStudy">
+
+    <view class="study-btn" wx:if="{{wrongCount > 0}}" bindtap="goStudy">
       <text class="study-btn-text">去学习</text>
     </view>
-  </view>
-
-  <view class="empty-state" wx:if="{{wrongCount === 0}}">
-    <text class="empty-hint">还没有错题记录，开始练习吧</text>
   </view>
 </view>

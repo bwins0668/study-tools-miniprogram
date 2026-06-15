@@ -157,6 +157,7 @@ Page({
     wrongCount: 0,
     accuracy: 0,
     todayTotal: 0,
+    consecutiveDays: 0,
     itpassAccuracy: 0,
     sgAccuracy: 0,
     lessonAccuracy: 0,
@@ -255,6 +256,9 @@ Page({
     // 学习状态文案
     var statusText = getLearningStatus(stats.accuracy || 0, stats.total || 0);
 
+    // 连续学习天数
+    var consecutiveDays = storage.getConsecutiveLearningDays ? storage.getConsecutiveLearningDays() : 0;
+
     // 备份数据摘要
     var backupSummary = buildBackupSummary();
 
@@ -266,6 +270,7 @@ Page({
       wrongCount: stats.wrong || 0,
       accuracy: stats.accuracy || 0,
       todayTotal: stats.todayTotal || 0,
+      consecutiveDays: consecutiveDays,
       itpassAccuracy: (stats.byExam && stats.byExam.itpass) ? stats.byExam.itpass.accuracy : 0,
       sgAccuracy: (stats.byExam && stats.byExam.sg) ? stats.byExam.sg.accuracy : 0,
       lessonAccuracy: (stats.bySourceType && stats.bySourceType.lesson_quiz) ? stats.bySourceType.lesson_quiz.accuracy : 0,

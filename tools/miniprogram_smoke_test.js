@@ -1018,13 +1018,13 @@ console.log('\n--- 版本号检查 ---');
 let versionOk = true;
 const appJsContent = readFile('app.js');
 const storageContent = readFile('utils/storage.js');
-if (!appJsContent.includes('v0.20.0')) {
-  fail('version: app.js does not contain v0.20.0');
+if (!appJsContent.includes('v0.21.0')) {
+  fail('version: app.js does not contain v0.21.0');
   versionOk = false;
 }
 
-if (!storageContent.includes("version: 'v0.20.0'")) {
-  fail('version: utils/storage.js exportLocalBackup does not contain v0.20.0');
+if (!storageContent.includes("version: 'v0.21.0'")) {
+  fail('version: utils/storage.js exportLocalBackup does not contain v0.21.0');
   versionOk = false;
 }
 
@@ -1041,7 +1041,7 @@ if (!profileJs.includes('globalData.version')) {
   fail('version: profile.js does not read from globalData.version');
   versionOk = false;
 }
-if (versionOk) pass('version check v0.20.0');
+if (versionOk) pass('version check v0.21.0');
 
 // ============================================================
 // 十一、Check Round 2.0 新功能
@@ -1515,13 +1515,13 @@ var profileJs32 = readFile('pages/profile/profile.js');
 var profileWxml32 = readFile('pages/profile/profile.wxml');
 var profileWxss32 = readFile('pages/profile/profile.wxss');
 
-  // 1. 版本号 v0.20.0
-  if (!appJsContent.includes('v0.20.0')) {
-    fail('Round 3.2: app.js missing v0.20.0');
+  // 1. 版本号 v0.21.0
+  if (!appJsContent.includes('v0.21.0')) {
+    fail('Round 3.2: app.js missing v0.21.0');
     round32Ok = false;
   }
-  if (!storageContent.includes("version: 'v0.20.0'")) {
-    fail('Round 3.2: storage.js exportLocalBackup missing v0.20.0');
+  if (!storageContent.includes("version: 'v0.21.0'")) {
+    fail('Round 3.2: storage.js exportLocalBackup missing v0.21.0');
     round32Ok = false;
   }
 
@@ -1622,13 +1622,13 @@ var favReviewJs33 = readFile('packages/glossary/pages/favorite-review/favorite-r
 var favReviewWxml33 = readFile('packages/glossary/pages/favorite-review/favorite-review.wxml');
 var favReviewWxss33 = readFile('packages/glossary/pages/favorite-review/favorite-review.wxss');
 
-  // 1. 版本号 v0.20.0
-  if (!appJsContent.includes('v0.20.0')) {
-    fail('Round 3.3: app.js missing v0.20.0');
+  // 1. 版本号 v0.21.0
+  if (!appJsContent.includes('v0.21.0')) {
+    fail('Round 3.3: app.js missing v0.21.0');
     round33Ok = false;
   }
-  if (!storageContent.includes("version: 'v0.20.0'")) {
-    fail('Round 3.3: storage.js exportLocalBackup missing v0.20.0');
+  if (!storageContent.includes("version: 'v0.21.0'")) {
+    fail('Round 3.3: storage.js exportLocalBackup missing v0.21.0');
     round33Ok = false;
   }
 
@@ -1702,9 +1702,9 @@ if (!profileJs33.includes('getFavoriteTermCount') || !profileJs33.includes('favo
   round33Ok = false;
 }
 
-  // 10. 备份导出/恢复版本同步到 v0.20.0
-  if (!storageContent.includes("version: 'v0.20.0'")) {
-    fail('Round 3.3: storage.js exportLocalBackup version not synced to v0.20.0');
+  // 10. 备份导出/恢复版本同步到 v0.21.0
+  if (!storageContent.includes("version: 'v0.21.0'")) {
+    fail('Round 3.3: storage.js exportLocalBackup version not synced to v0.21.0');
     round33Ok = false;
   }
 if (!storageContent.includes('exportLocalBackup') || !storageContent.includes('importLocalBackup')) {
@@ -1742,13 +1742,13 @@ var mistakesJs34 = readFile('packages/quiz/pages/mistakes/mistakes.js');
 var mistakesWxml34 = readFile('packages/quiz/pages/mistakes/mistakes.wxml');
 var mistakesWxss34 = readFile('packages/quiz/pages/mistakes/mistakes.wxss');
 
-  // 1. 版本号 v0.20.0
-  if (!appJsContent.includes('v0.20.0')) {
-    fail('Round 3.4: app.js missing v0.20.0');
+  // 1. 版本号 v0.21.0
+  if (!appJsContent.includes('v0.21.0')) {
+    fail('Round 3.4: app.js missing v0.21.0');
     round34Ok = false;
   }
-  if (!storageContent.includes("version: 'v0.20.0'")) {
-    fail('Round 3.4: storage.js exportLocalBackup missing v0.20.0');
+  if (!storageContent.includes("version: 'v0.21.0'")) {
+    fail('Round 3.4: storage.js exportLocalBackup missing v0.21.0');
     round34Ok = false;
   }
 
@@ -1915,13 +1915,13 @@ var homeJs35 = readFile('pages/home/home.js');
 var homeWxml35 = readFile('pages/home/home.wxml');
 var homeWxss35 = readFile('pages/home/home.wxss');
 
-  // 1. 版本号 v0.20.0
-  if (!appJsContent.includes('v0.20.0')) {
-    fail('Round 3.5: app.js missing v0.20.0');
+  // 1. 版本号 v0.21.0
+  if (!appJsContent.includes('v0.21.0')) {
+    fail('Round 3.5: app.js missing v0.21.0');
     round35Ok = false;
   }
-  if (!storageContent.includes("version: 'v0.20.0'")) {
-    fail('Round 3.5: storage.js exportLocalBackup missing v0.20.0');
+  if (!storageContent.includes("version: 'v0.21.0'")) {
+    fail('Round 3.5: storage.js exportLocalBackup missing v0.21.0');
     round35Ok = false;
   }
 
@@ -2077,15 +2077,15 @@ var profileJs36 = readFile('pages/profile/profile.js');
 var profileWxml36 = readFile('pages/profile/profile.wxml');
 var profileWxss36 = readFile('pages/profile/profile.wxss');
 
-// 1. app.js 版本为 v0.20.0
-if (!appJs36.includes('v0.20.0')) {
-  fail('Round 3.6: app.js missing v0.20.0');
+// 1. app.js 版本为 v0.21.0
+if (!appJs36.includes('v0.21.0')) {
+  fail('Round 3.6: app.js missing v0.21.0');
   round36Ok = false;
 }
 
-// 2. exportLocalBackup 版本为 v0.20.0
-if (!storage36.includes("version: 'v0.20.0'")) {
-  fail('Round 3.6: storage.js exportLocalBackup missing v0.20.0');
+// 2. exportLocalBackup 版本为 v0.21.0
+if (!storage36.includes("version: 'v0.21.0'")) {
+  fail('Round 3.6: storage.js exportLocalBackup missing v0.21.0');
   round36Ok = false;
 }
 
@@ -2226,15 +2226,15 @@ var homeJs37 = readFile('pages/home/home.js');
 var homeWxml37 = readFile('pages/home/home.wxml');
 var homeWxss37 = readFile('pages/home/home.wxss');
 
-// 1. app.js 版本为 v0.20.0
-if (!appJs37.includes('v0.20.0')) {
-  fail('Round 3.7: app.js missing v0.20.0');
+// 1. app.js 版本为 v0.21.0
+if (!appJs37.includes('v0.21.0')) {
+  fail('Round 3.7: app.js missing v0.21.0');
   round37Ok = false;
 }
 
-// 2. exportLocalBackup 版本为 v0.20.0
-if (!storage37.includes("version: 'v0.20.0'")) {
-  fail('Round 3.7: storage.js exportLocalBackup missing v0.20.0');
+// 2. exportLocalBackup 版本为 v0.21.0
+if (!storage37.includes("version: 'v0.21.0'")) {
+  fail('Round 3.7: storage.js exportLocalBackup missing v0.21.0');
   round37Ok = false;
 }
 
@@ -2395,15 +2395,15 @@ var profileJs39 = readFile('pages/profile/profile.js');
 var profileWxml39 = readFile('pages/profile/profile.wxml');
 var profileWxss39 = readFile('pages/profile/profile.wxss');
 
-// 1. app.js 版本为 v0.20.0
-if (!appJs39.includes('v0.20.0')) {
-  fail('Round 3.9: app.js missing v0.20.0');
+// 1. app.js 版本为 v0.21.0
+if (!appJs39.includes('v0.21.0')) {
+  fail('Round 3.9: app.js missing v0.21.0');
   round39Ok = false;
 }
 
-// 2. exportLocalBackup 版本为 v0.20.0
-if (!storage39.includes("version: 'v0.20.0'")) {
-  fail('Round 3.9: storage.js exportLocalBackup missing v0.20.0');
+// 2. exportLocalBackup 版本为 v0.21.0
+if (!storage39.includes("version: 'v0.21.0'")) {
+  fail('Round 3.9: storage.js exportLocalBackup missing v0.21.0');
   round39Ok = false;
 }
 
@@ -2594,6 +2594,179 @@ if (!favReviewWxml39.includes('复习模式') || !favReviewWxml39.includes('mode
 }
 
 if (round39Ok) pass('Round Mini 3.9 backup/restore experience checks');
+
+// ============================================================
+// Round Mini 3.17 v0.21.0 第一批增量优化检查
+// ============================================================
+console.log('\n--- Round Mini 3.17 v0.21.0 incremental updates ---');
+
+var round317Ok = true;
+var appJs317 = readFile('app.js');
+var storage317 = readFile('utils/storage.js');
+var mistakesJs317 = readFile('pages/mistakes/mistakes.js');
+var mistakesWxml317 = readFile('pages/mistakes/mistakes.wxml');
+var mistakesWxss317 = readFile('pages/mistakes/mistakes.wxss');
+var profileJs317 = readFile('pages/profile/profile.js');
+var profileWxml317 = readFile('pages/profile/profile.wxml');
+var profileWxss317 = readFile('pages/profile/profile.wxss');
+
+// 1. 版本号 v0.21.0
+if (!appJs317.includes('v0.21.0')) {
+  fail('Round 3.17: app.js missing v0.21.0');
+  round317Ok = false;
+}
+
+// 2. exportLocalBackup 版本同步
+if (!storage317.includes("version: 'v0.21.0'")) {
+  fail('Round 3.17: storage.js exportLocalBackup missing v0.21.0');
+  round317Ok = false;
+}
+
+// 3. storage.js 新增 getWrongQuestionStats 函数
+if (!storage317.includes('function getWrongQuestionStats')) {
+  fail('Round 3.17: storage.js missing getWrongQuestionStats');
+  round317Ok = false;
+}
+
+// 4. storage.js 新增 getLastWrongTime 函数
+if (!storage317.includes('function getLastWrongTime')) {
+  fail('Round 3.17: storage.js missing getLastWrongTime');
+  round317Ok = false;
+}
+
+// 5. storage.js 新增 getConsecutiveLearningDays 函数
+if (!storage317.includes('function getConsecutiveLearningDays')) {
+  fail('Round 3.17: storage.js missing getConsecutiveLearningDays');
+  round317Ok = false;
+}
+
+// 6. storage.js exports 包含新函数
+if (!storage317.includes('getWrongQuestionStats: getWrongQuestionStats')) {
+  fail('Round 3.17: storage.js exports missing getWrongQuestionStats');
+  round317Ok = false;
+}
+if (!storage317.includes('getLastWrongTime: getLastWrongTime')) {
+  fail('Round 3.17: storage.js exports missing getLastWrongTime');
+  round317Ok = false;
+}
+if (!storage317.includes('getConsecutiveLearningDays: getConsecutiveLearningDays')) {
+  fail('Round 3.17: storage.js exports missing getConsecutiveLearningDays');
+  round317Ok = false;
+}
+
+// 7. mistakes.js 包含分类统计字段
+if (!mistakesJs317.includes('itpassCount') || !mistakesJs317.includes('sgCount')) {
+  fail('Round 3.17: mistakes.js missing category count fields');
+  round317Ok = false;
+}
+
+// 8. mistakes.js 包含最近错误时间字段
+if (!mistakesJs317.includes('lastWrongTime')) {
+  fail('Round 3.17: mistakes.js missing lastWrongTime field');
+  round317Ok = false;
+}
+
+// 9. mistakes.js 调用了 getWrongQuestionStats
+if (!mistakesJs317.includes('getWrongQuestionStats')) {
+  fail('Round 3.17: mistakes.js not calling getWrongQuestionStats');
+  round317Ok = false;
+}
+
+// 10. mistakes.wxml 包含分类统计区域
+if (!mistakesWxml317.includes('category-stats')) {
+  fail('Round 3.17: mistakes.wxml missing category-stats section');
+  round317Ok = false;
+}
+
+// 11. mistakes.wxml 包含增强空状态
+if (!mistakesWxml317.includes('enhanced-empty')) {
+  fail('Round 3.17: mistakes.wxml missing enhanced-empty state');
+  round317Ok = false;
+}
+
+// 12. mistakes.wxml 空状态包含引导文案
+if (!mistakesWxml317.includes('完成一次练习后，答错的题目会自动收录到这里')) {
+  fail('Round 3.17: mistakes.wxml empty state missing guidance text');
+  round317Ok = false;
+}
+
+// 13. mistakes.wxss 包含分类样式
+if (!mistakesWxss317.includes('category-stats') || !mistakesWxss317.includes('category-item')) {
+  fail('Round 3.17: mistakes.wxss missing category stats styles');
+  round317Ok = false;
+}
+
+// 14. mistakes.wxss 包含增强空状态样式
+if (!mistakesWxss317.includes('enhanced-empty')) {
+  fail('Round 3.17: mistakes.wxss missing enhanced-empty styles');
+  round317Ok = false;
+}
+
+// 15. profile.js 包含 consecutiveDays 字段
+if (!profileJs317.includes('consecutiveDays')) {
+  fail('Round 3.17: profile.js missing consecutiveDays data field');
+  round317Ok = false;
+}
+
+// 16. profile.js 调用了 getConsecutiveLearningDays
+if (!profileJs317.includes('getConsecutiveLearningDays')) {
+  fail('Round 3.17: profile.js not calling getConsecutiveLearningDays');
+  round317Ok = false;
+}
+
+// 17. profile.wxml 包含连续学习天数展示
+if (!profileWxml317.includes('连续学习') || !profileWxml317.includes('consecutiveDays')) {
+  fail('Round 3.17: profile.wxml missing consecutive learning days display');
+  round317Ok = false;
+}
+
+// 18. profile.wxss 包含 streak-value 样式
+if (!profileWxss317.includes('streak-value')) {
+  fail('Round 3.17: profile.wxss missing streak-value style');
+  round317Ok = false;
+}
+
+// 19. 旧功能不受影响：home 页面仍正常
+var homeJs317 = readFile('pages/home/home.js');
+var homeWxml317 = readFile('pages/home/home.wxml');
+if (!homeJs317.includes('quickStart') || !homeWxml317.includes('快速开始')) {
+  fail('Round 3.17: home page quick start broken');
+  round317Ok = false;
+}
+
+// 20. 旧功能不受影响：mistakes 页面导航入口仍存在
+if (!mistakesJs317.includes('goToMistakesList') || !mistakesWxml317.includes('查看错题详情')) {
+  fail('Round 3.17: mistakes page navigation broken');
+  round317Ok = false;
+}
+
+// 21. 旧功能不受影响：profile 备份功能仍存在
+if (!profileJs317.includes('copyBackup') || !profileJs317.includes('restoreFromClipboard')) {
+  fail('Round 3.17: profile backup/restore broken');
+  round317Ok = false;
+}
+
+// 22. 合规检查：无高风险承诺文案
+var all317 = mistakesJs317 + mistakesWxml317 + profileJs317 + profileWxml317 + storage317;
+var banned317 = ['保证通过', '包过', '押题', '必过', '100%通过', '内部资料', '官方答案', '绝对安全', '永久保存', '云端同步', '自动备份', '保证恢复'];
+for (var b = 0; b < banned317.length; b++) {
+  if (all317.includes(banned317[b])) {
+    fail('Round 3.17: banned text found: ' + banned317[b]);
+    round317Ok = false;
+  }
+}
+
+// 23. 无危险 API 新增
+var newFiles317 = storage317 + mistakesJs317 + profileJs317;
+var dangerous317 = ['wx.request', 'wx.cloud', 'cloud.init', 'wx.login', 'wx.getUserInfo', 'wx.getUserProfile', 'wx.requestPayment'];
+for (var d = 0; d < dangerous317.length; d++) {
+  if (newFiles317.includes(dangerous317[d])) {
+    fail('Round 3.17: dangerous API found: ' + dangerous317[d]);
+    round317Ok = false;
+  }
+}
+
+if (round317Ok) pass('Round Mini 3.17 v0.21.0 incremental updates');
 
 // ============================================================
 console.log('\n--- preloadRule 分包预下载检查 ---');

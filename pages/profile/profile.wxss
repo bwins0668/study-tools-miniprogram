@@ -88,6 +88,11 @@
   font-weight: 700;
 }
 
+.streak-value {
+  color: #4caf50;
+  font-weight: 700;
+}
+
 .info-disabled {
   color: #bbbbbb;
 }

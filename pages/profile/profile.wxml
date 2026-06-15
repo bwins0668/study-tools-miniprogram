@@ -58,6 +58,10 @@
         <text class="info-label">今日答题</text>
         <text class="info-value">{{todayTotal}}</text>
       </view>
+      <view class="info-row" wx:if="{{consecutiveDays > 0}}">
+        <text class="info-label">连续学习</text>
+        <text class="info-value streak-value">{{consecutiveDays}} 天</text>
+      </view>
     </view>
   </view>
 
