@@ -1016,13 +1016,13 @@ console.log('\n--- 版本号检查 ---');
 let versionOk = true;
 const appJsContent = readFile('app.js');
 const storageContent = readFile('utils/storage.js');
-if (!appJsContent.includes('v0.13.0')) {
-  fail('version: app.js does not contain v0.13.0');
+if (!appJsContent.includes('v0.14.0')) {
+  fail('version: app.js does not contain v0.14.0');
   versionOk = false;
 }
 
-if (!storageContent.includes("version: 'v0.13.0'")) {
-  fail('version: utils/storage.js exportLocalBackup does not contain v0.13.0');
+if (!storageContent.includes("version: 'v0.14.0'")) {
+  fail('version: utils/storage.js exportLocalBackup does not contain v0.14.0');
   versionOk = false;
 }
 
@@ -1039,7 +1039,7 @@ if (!profileJs.includes('globalData.version')) {
   fail('version: profile.js does not read from globalData.version');
   versionOk = false;
 }
-if (versionOk) pass('version check v0.13.0');
+if (versionOk) pass('version check v0.14.0');
 
 // ============================================================
 // 十一、Check Round 2.0 新功能
@@ -1502,6 +1502,113 @@ if (!mistakesWxml31.includes("activeFilter === 'all'")) {
 }
 
 if (round31Ok) pass('Round Mini 3.1 mistakes review enhancement checks');
+
+// ============================================================
+// Round Mini 3.2 profile learning stats enhancement checks
+// ============================================================
+console.log('\n--- Round Mini 3.2 profile learning stats checks ---');
+
+var round32Ok = true;
+var profileJs32 = readFile('pages/profile/profile.js');
+var profileWxml32 = readFile('pages/profile/profile.wxml');
+var profileWxss32 = readFile('pages/profile/profile.wxss');
+
+// 1. 版本号 v0.14.0
+if (!appJsContent.includes('v0.14.0')) {
+  fail('Round 3.2: app.js missing v0.14.0');
+  round32Ok = false;
+}
+if (!storageContent.includes("version: 'v0.14.0'")) {
+  fail('Round 3.2: storage.js exportLocalBackup missing v0.14.0');
+  round32Ok = false;
+}
+
+// 2. profile 页面存在学习状态相关字段或文案
+if (!profileJs32.includes('learningStatus') || !profileJs32.includes('getLearningStatus')) {
+  fail('Round 3.2: profile.js missing learningStatus field or getLearningStatus');
+  round32Ok = false;
+}
+if (!profileWxml32.includes('学习状态') || !profileWxml32.includes('learningStatus')) {
+  fail('Round 3.2: profile.wxml missing learning status section');
+  round32Ok = false;
+}
+
+// 3. profile 页面存在最近练习时间字段
+if (!profileJs32.includes('lastPracticeTime') || !profileJs32.includes('getLastAttempt')) {
+  fail('Round 3.2: profile.js missing lastPracticeTime or getLastAttempt');
+  round32Ok = false;
+}
+if (!profileWxml32.includes('最近练习') || !profileWxml32.includes('lastPracticeTime')) {
+  fail('Round 3.2: profile.wxml missing last practice time section');
+  round32Ok = false;
+}
+
+// 4. 本地学习版说明仍存在
+if (!profileWxml32.includes('本地学习版') || !profileWxml32.includes('不含登录和云同步')) {
+  fail('Round 3.2: profile.wxml missing local data notice');
+  round32Ok = false;
+}
+
+// 5. 剪贴板备份/恢复说明仍存在
+if (!profileWxml32.includes('复制备份数据') || !profileWxml32.includes('从剪贴板恢复')) {
+  fail('Round 3.2: profile.wxml missing clipboard backup/restore UI');
+  round32Ok = false;
+}
+if (!profileWxml32.includes('剪贴板仅用于用户主动备份/恢复本地数据')) {
+  fail('Round 3.2: profile.wxml missing clipboard usage notice');
+  round32Ok = false;
+}
+
+// 6. 学习状态文案覆盖各种情况（无记录、>=80%、60%-79%、<60%）
+var statusTexts = [
+  '还没有学习记录',
+  '状态很好，继续保持',
+  '基础不错，建议复盘错题',
+  '建议先从错题和术语复习开始'
+];
+for (var si = 0; si < statusTexts.length; si++) {
+  if (!profileJs32.includes(statusTexts[si])) {
+    fail('Round 3.2: profile.js missing status text: ' + statusTexts[si]);
+    round32Ok = false;
+  }
+}
+
+// 7. 空 attempts 不会产生 NaN/undefined/null（formatTime 和 getLearningStatus 处理空值）
+if (!profileJs32.includes("if (!timestamp) return ''") && !profileJs32.includes("if (!timestamp) return")) {
+  fail('Round 3.2: profile.js formatTime missing null timestamp guard');
+  round32Ok = false;
+}
+if (!profileJs32.includes('totalAttempts === 0')) {
+  fail('Round 3.2: profile.js getLearningStatus missing zero attempts guard');
+  round32Ok = false;
+}
+
+// 8. 备份导出/恢复函数仍存在
+if (!storageContent.includes('exportLocalBackup') || !storageContent.includes('importLocalBackup')) {
+  fail('Round 3.2: storage.js missing backup/restore functions');
+  round32Ok = false;
+}
+if (!storageContent.includes('validateLocalBackup')) {
+  fail('Round 3.2: storage.js missing validateLocalBackup');
+  round32Ok = false;
+}
+
+// 9. 学习状态卡片样式存在
+if (!profileWxss32.includes('status-card') || !profileWxss32.includes('status-text')) {
+  fail('Round 3.2: profile.wxss missing status card styles');
+  round32Ok = false;
+}
+
+// 10. 禁止高风险表述
+var forbiddenStatus = ['保证通过', '包过', '押题'];
+for (var fi = 0; fi < forbiddenStatus.length; fi++) {
+  if (profileJs32.includes(forbiddenStatus[fi]) || profileWxml32.includes(forbiddenStatus[fi])) {
+    fail('Round 3.2: profile contains forbidden high-risk text: ' + forbiddenStatus[fi]);
+    round32Ok = false;
+  }
+}
+
+if (round32Ok) pass('Round Mini 3.2 profile learning stats checks');
 
 // ============================================================
 console.log('\n--- preloadRule 分包预下载检查 ---');

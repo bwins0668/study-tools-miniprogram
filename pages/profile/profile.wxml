@@ -24,6 +24,14 @@
     </view>
   </view>
 
+  <!-- 学习状态 -->
+  <view class="stats-section" wx:if="{{learningStatus}}">
+    <text class="section-title">学习状态</text>
+    <view class="info-card status-card">
+      <text class="status-text">{{learningStatus}}</text>
+    </view>
+  </view>
+
   <!-- 做题统计 -->
   <view class="stats-section">
     <text class="section-title">做题统计</text>
@@ -49,6 +57,12 @@
       <view class="info-row">
         <text class="info-label">今日答题</text>
         <text class="info-value">{{todayTotal}}</text>
+      </view>
+    </view>
+    <view class="info-card">
+      <view class="info-row">
+        <text class="info-label">最近练习</text>
+        <text class="info-value">{{lastPracticeTime || '暂无最近练习记录'}}</text>
       </view>
     </view>
   </view>
@@ -113,14 +127,14 @@
         <text class="backup-btn-text">清空全部本地数据</text>
       </view>
     </view>
-    <text class="backup-hint">备份包含收藏、错题本和学习记录</text>
+    <text class="backup-hint">备份包含收藏、错题本和学习记录。剪贴板仅用于用户主动备份/恢复本地数据，不含登录和云同步。</text>
   </view>
 
   <!-- 本地版说明 -->
   <view class="stats-section">
     <text class="section-title">关于本应用</text>
     <view class="info-card">
-      <text class="local-notice-text">当前版本为本地学习版，不含登录和云同步。收藏、错题和学习记录仅保存在本机。请定期使用"复制备份数据"保存学习进度。</text>
+      <text class="local-notice-text">当前版本为本地学习版，不含登录和云同步。收藏、错题和学习记录仅保存在本机。请定期使用"复制备份数据"保存学习进度，剪贴板仅用于用户主动备份/恢复本地数据。</text>
     </view>
   </view>
 
