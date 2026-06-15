@@ -190,7 +190,9 @@ Page({
     // Round 3.21: 科目对比洞察
     subjectComparison: { text: '', hasData: false, weaker: '' },
     // Round 3.21: 是否为新用户（零练习记录）
-    isNewUser: true
+    isNewUser: true,
+    // R3.78 页面浏览次数
+    viewCount: 0
   },
 
   onLoad: function () {
@@ -200,6 +202,14 @@ Page({
   },
 
   onShow: function () {
+    // R3.78 页面浏览次数统计
+    var viewCount = wx.getStorageSync('profileViewCount') || 0;
+    viewCount += 1;
+    wx.setStorageSync('profileViewCount', viewCount);
+    this.setData({
+      viewCount: viewCount
+    });
+
     this.refreshAllData();
   },
 

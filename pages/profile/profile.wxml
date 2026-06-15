@@ -259,6 +259,17 @@
     </view>
   </view>
 
+  <!-- R3.78 页面浏览次数 -->
+  <view class="stats-section">
+    <text class="section-title">页面统计</text>
+    <view class="info-card">
+      <view class="info-row">
+        <text class="info-label">本页访问次数</text>
+        <text class="info-value">{{viewCount}}</text>
+      </view>
+    </view>
+  </view>
+
   <!-- R3.74 联系反馈 -->
   <view class="stats-section">
     <text class="section-title">联系反馈</text>
