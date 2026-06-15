@@ -6,10 +6,6 @@
       {
         "type": "folder",
         "value": "tools"
-      },
-      {
-        "type": "file",
-        "value": "data/questions_backup_v05.js"
       }
     ],
     "include": []
