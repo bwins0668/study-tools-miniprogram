@@ -5486,6 +5486,104 @@ if (mistakesJs339.indexOf('itCount') < 0) {
 if (round339Ok) pass('Round Mini 3.39 term detail related terms');
 
 // ============================================================
+// Round Mini 3.40 术语卡片批量操作
+// ============================================================
+console.log('\n--- Round Mini 3.40 term card batch operations ---');
+
+var round340Ok = true;
+
+// A. term-search.js 包含批量操作数据字段和方法
+var termSearchJs340 = readFile('packages/glossary/pages/term-search/term-search.js');
+if (termSearchJs340.indexOf('batchMode') < 0) {
+  fail('R3.40: batchMode data field missing in term-search.js');
+  round340Ok = false;
+}
+if (termSearchJs340.indexOf('selectedTerms') < 0) {
+  fail('R3.40: selectedTerms data field missing in term-search.js');
+  round340Ok = false;
+}
+if (termSearchJs340.indexOf('selectedCount') < 0) {
+  fail('R3.40: selectedCount data field missing in term-search.js');
+  round340Ok = false;
+}
+if (termSearchJs340.indexOf('toggleBatchMode') < 0) {
+  fail('R3.40: toggleBatchMode method missing in term-search.js');
+  round340Ok = false;
+}
+if (termSearchJs340.indexOf('onTermCheckboxTap') < 0) {
+  fail('R3.40: onTermCheckboxTap method missing in term-search.js');
+  round340Ok = false;
+}
+if (termSearchJs340.indexOf('selectAll') < 0) {
+  fail('R3.40: selectAll method missing in term-search.js');
+  round340Ok = false;
+}
+if (termSearchJs340.indexOf('deselectAll') < 0) {
+  fail('R3.40: deselectAll method missing in term-search.js');
+  round340Ok = false;
+}
+if (termSearchJs340.indexOf('batchAddToFavorites') < 0) {
+  fail('R3.40: batchAddToFavorites method missing in term-search.js');
+  round340Ok = false;
+}
+
+// B. term-search.wxml 包含批量操作 UI
+var termSearchWxml340 = readFile('packages/glossary/pages/term-search/term-search.wxml');
+if (termSearchWxml340.indexOf('batchMode') < 0) {
+  fail('R3.40: batchMode binding missing in term-search.wxml');
+  round340Ok = false;
+}
+if (termSearchWxml340.indexOf('batch-toggle') < 0) {
+  fail('R3.40: batch-toggle class missing in term-search.wxml');
+  round340Ok = false;
+}
+if (termSearchWxml340.indexOf('card-checkbox') < 0) {
+  fail('R3.40: card-checkbox class missing in term-search.wxml');
+  round340Ok = false;
+}
+if (termSearchWxml340.indexOf('batch-bar') < 0) {
+  fail('R3.40: batch-bar class missing in term-search.wxml');
+  round340Ok = false;
+}
+if (termSearchWxml340.indexOf('batchAddToFavorites') < 0) {
+  fail('R3.40: batchAddToFavorites binding missing in term-search.wxml');
+  round340Ok = false;
+}
+
+// C. term-search.wxss 包含批量操作样式
+var termSearchWxss340 = readFile('packages/glossary/pages/term-search/term-search.wxss');
+if (termSearchWxss340.indexOf('.batch-toggle') < 0) {
+  fail('R3.40: .batch-toggle style missing in term-search.wxss');
+  round340Ok = false;
+}
+if (termSearchWxss340.indexOf('.batch-bar') < 0) {
+  fail('R3.40: .batch-bar style missing in term-search.wxss');
+  round340Ok = false;
+}
+if (termSearchWxss340.indexOf('.checkbox-icon') < 0) {
+  fail('R3.40: .checkbox-icon style missing in term-search.wxss');
+  round340Ok = false;
+}
+
+// D. 回归：R3.32~R3.39 功能未退化
+var quizJs340 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs340.indexOf('progressPercent') < 0) {
+  fail('R3.40: R3.32 progressPercent regressed in quiz.js');
+  round340Ok = false;
+}
+var termSearchJs340b = readFile('packages/glossary/pages/term-search/term-search.js');
+if (termSearchJs340b.indexOf('onCategoryTap') < 0) {
+  fail('R3.40: R3.37 onCategoryTap regressed in term-search.js');
+  round340Ok = false;
+}
+if (termSearchJs340b.indexOf('onHistoryTap') < 0) {
+  fail('R3.40: R3.38 onHistoryTap regressed in term-search.js');
+  round340Ok = false;
+}
+
+if (round340Ok) pass('Round Mini 3.40 term card batch operations');
+
+// ============================================================
 // 汇总
 // ============================================================
 console.log('\n========================================');

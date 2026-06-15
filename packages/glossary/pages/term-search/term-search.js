@@ -18,7 +18,11 @@ Page({
     resultHint: '',
     categories: [],
     selectedCategory: '',
-    searchHistory: []
+    searchHistory: [],
+    // R3.40 批量操作
+    batchMode: false,
+    selectedTerms: {},
+    selectedCount: 0
   },
 
   onLoad: function () {
@@ -291,6 +295,105 @@ Page({
       resultHint: keyword
         ? '当前显示 ' + showCount + ' 条 / 共 ' + filtered.length + ' 条匹配'
         : '分类「' + selected + '」共 ' + totalCount + ' 条'
+    });
+  },
+
+  // R3.40 批量操作
+  toggleBatchMode: function () {
+    var batchMode = !this.data.batchMode;
+    this.setData({
+      batchMode: batchMode,
+      selectedTerms: {},
+      selectedCount: 0
+    });
+  },
+
+  onTermCheckboxTap: function (e) {
+    var id = String(e.currentTarget.dataset.id);
+    var selected = this.data.selectedTerms;
+    var copy = {};
+    var keys = Object.keys(selected);
+    for (var i = 0; i < keys.length; i++) {
+      copy[keys[i]] = true;
+    }
+    if (copy[id]) {
+      delete copy[id];
+    } else {
+      copy[id] = true;
+    }
+    this.setData({
+      selectedTerms: copy,
+      selectedCount: Object.keys(copy).length
+    });
+  },
+
+  selectAll: function () {
+    var list = this.data.filteredList;
+    var selected = {};
+    for (var i = 0; i < list.length; i++) {
+      selected[String(list[i].id)] = true;
+    }
+    this.setData({
+      selectedTerms: selected,
+      selectedCount: Object.keys(selected).length
+    });
+  },
+
+  deselectAll: function () {
+    this.setData({
+      selectedTerms: {},
+      selectedCount: 0
+    });
+  },
+
+  batchAddToFavorites: function () {
+    var selected = this.data.selectedTerms;
+    var keys = Object.keys(selected);
+    if (keys.length === 0) {
+      wx.showToast({ title: '请先选择术语', icon: 'none' });
+      return;
+    }
+    var allData = this.data.allData;
+    var added = 0;
+    var favSet = this.data.favoriteSet;
+    for (var i = 0; i < keys.length; i++) {
+      var id = keys[i];
+      if (favSet[id]) continue;
+      var found = null;
+      for (var j = 0; j < allData.length; j++) {
+        if (String(allData[j].id) === id) {
+          found = allData[j];
+          break;
+        }
+      }
+      if (!found) continue;
+      var favList = getFavoriteTerms();
+      favList.push({
+        id: found.id,
+        term: found.term,
+        zh: found.zh,
+        ja: found.ja,
+        category: found.category,
+        level: found.level
+      });
+      try {
+        wx.setStorageSync('study-tools-mini-favorite-terms-v1', JSON.stringify(favList));
+        favSet[id] = true;
+        added++;
+      } catch (e) {
+        // ignore
+      }
+    }
+    this.setData({
+      favoriteSet: favSet,
+      selectedTerms: {},
+      selectedCount: 0
+    });
+    this.refreshFavoriteStatus();
+    wx.showToast({
+      title: '已添加 ' + added + ' 个术语到收藏',
+      icon: 'none',
+      duration: 2000
     });
   }
 });

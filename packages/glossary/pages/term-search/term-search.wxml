@@ -14,6 +14,10 @@
       />
       <text wx:if="{{keyword}}" class="search-clear" bindtap="clearSearch">✕</text>
     </view>
+    <!-- R3.40 批量操作按钮 -->
+    <view class="batch-toggle" bindtap="toggleBatchMode">
+      <text>{{batchMode ? '取消' : '批量'}}</text>
+    </view>
   </view>
 
   <!-- R3.38 搜索历史 -->
@@ -58,12 +62,18 @@
   <!-- 术语列表 -->
   <view class="glossary-list">
     <view
-      class="glossary-card"
+      class="glossary-card {{batchMode ? 'glossary-card-batch' : ''}}"
       wx:for="{{filteredList}}"
       wx:key="id"
-      bindtap="goToDetail"
+      bindtap="{{batchMode ? '' : 'goToDetail'}}"
       data-id="{{item.id}}"
     >
+      <!-- R3.40 批量选择复选框 -->
+      <view wx:if="{{batchMode}}" class="card-checkbox" bindtap="onTermCheckboxTap" data-id="{{item.id}}">
+        <view class="checkbox-icon {{selectedTerms[item.id] ? 'checkbox-checked' : ''}}">
+          <text wx:if="{{selectedTerms[item.id]}}">✓</text>
+        </view>
+      </view>
       <view class="card-main">
         <view class="card-left">
           <view class="item-header">
@@ -80,7 +90,7 @@
             <text class="item-ja">{{item.ja}}</text>
           </view>
         </view>
-        <view class="card-detail-hint">
+        <view class="card-detail-hint" wx:if="{{!batchMode}}">
           <text class="detail-arrow">›</text>
           <text class="detail-label">详情</text>
         </view>
@@ -102,6 +112,18 @@
     <!-- 默认展示提示 -->
     <view class="list-hint" wx:if="{{!keyword && showCount < totalCount}}">
       <text>仅显示前 {{showCount}} 条，请使用搜索查找更多</text>
+    </view>
+  </view>
+
+  <!-- R3.40 批量操作栏 -->
+  <view class="batch-bar" wx:if="{{batchMode}}">
+    <view class="batch-actions-left">
+      <text class="batch-select-all" bindtap="selectAll">全选</text>
+      <text class="batch-deselect" bindtap="deselectAll">取消</text>
+    </view>
+    <text class="batch-count">已选 {{selectedCount}} 项</text>
+    <view class="batch-action-btn" bindtap="batchAddToFavorites">
+      <text>批量收藏</text>
     </view>
   </view>
 </view>
