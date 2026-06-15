@@ -501,3 +501,22 @@
   margin-top: 16rpx;
   display: block;
 }
+
+/* R3.73 使用帮助按钮 */
+.help-btn {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  background-color: #f8f9fa;
+  border-radius: 8rpx;
+}
+
+.help-btn-icon {
+  font-size: 40rpx;
+  margin-right: 16rpx;
+}
+
+.help-btn-text {
+  font-size: 28rpx;
+  color: #1890ff;
+}

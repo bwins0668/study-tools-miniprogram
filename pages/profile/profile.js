@@ -509,5 +509,15 @@ Page({
         wx.showToast({ title: '版本号已复制', icon: 'none', duration: 1500 });
       }
     });
+  },
+
+  // R3.73 使用帮助
+  showHelp: function () {
+    wx.showModal({
+      title: '使用帮助',
+      content: '1. 首页选择考试方向开始练习\n2. 答错的题目会自动收录到错题本\n3. 术语表可以收藏重要术语\n4. 定期使用"复制备份数据"保存学习进度\n5. 有任何问题可以通过 Git 仓库反馈',
+      showCancel: false,
+      confirmText: '知道了'
+    });
   }
 });

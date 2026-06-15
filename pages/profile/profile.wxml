@@ -248,6 +248,17 @@
     <text class="backup-hint">备份包含收藏、错题本和学习记录。剪贴板仅用于用户主动备份/恢复本地数据，不含登录和云同步。</text>
   </view>
 
+  <!-- R3.73 使用帮助 -->
+  <view class="stats-section">
+    <text class="section-title">使用帮助</text>
+    <view class="info-card">
+      <view class="help-btn" bindtap="showHelp">
+        <text class="help-btn-icon">❓</text>
+        <text class="help-btn-text">查看使用帮助</text>
+      </view>
+    </view>
+  </view>
+
   <!-- 本地版说明 -->
   <view class="stats-section">
     <text class="section-title">关于本应用</text>
