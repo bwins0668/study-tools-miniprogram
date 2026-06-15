@@ -204,7 +204,11 @@ Page({
     // R3.52 学习时间智能提醒
     learningReminder: '',
     // R3.58 每日学习格言
-    dailyQuote: ''
+    dailyQuote: '',
+    // R3.61 练习提醒
+    practiceReminder: '',
+    // R3.63 练习提醒关闭
+    reminderDismissed: false
   },
 
   onShow: function () {
@@ -291,6 +295,17 @@ Page({
 
     // R3.58 生成每日格言
     var dailyQuote = getDailyQuote();
+
+    // R3.61 生成练习提醒
+    var practiceReminder = '';
+    if (lastPracticeTimeText) {
+      if (lastPracticeTimeText.indexOf('天前') >= 0) {
+        var daysMatch = lastPracticeTimeText.match(/^(\d+)天前$/);
+        if (daysMatch && parseInt(daysMatch[1]) >= 2) {
+          practiceReminder = '距离上次练习已经 ' + daysMatch[1] + ' 天了，今天继续吗？';
+        }
+      }
+    }
 
     // 生成下一步行动提示
     var nextActionHint = '';
@@ -487,6 +502,8 @@ Page({
       suggestionActionPath: suggestionActionPath,
       // R3.52 学习时间智能提醒
       learningReminder: learningReminder,
+      // R3.61 练习提醒
+      practiceReminder: practiceReminder,
       // R3.58 每日学习格言
       dailyQuote: dailyQuote
     });
@@ -552,6 +569,14 @@ Page({
     wx.switchTab({
       url: '/pages/profile/profile'
     });
+
+  // R3.63 关闭练习提醒
+  dismissReminder: function () {
+    this.setData({
+      reminderDismissed: true,
+      practiceReminder: ''
+    });
+  },
   },
 
   // R3.55 首页分享 streak

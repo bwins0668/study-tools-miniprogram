@@ -11,6 +11,14 @@
     <text class="quote-text">{{dailyQuote}}</text>
   </view>
 
+  <!-- R3.61 练习提醒 -->
+  <view class="practice-reminder-banner" wx:if="{{practiceReminder && !reminderDismissed}}">
+    <text class="practice-reminder-icon">⏰</text>
+    <text class="practice-reminder-text">{{practiceReminder}}</text>
+    <!-- R3.63 关闭按钮 -->
+    <view class="reminder-dismiss-btn" bindtap="dismissReminder">✕</view>
+  </view>
+
   <!-- 头部标题 -->
   <view class="header">
     <text class="title">Study Tools</text>

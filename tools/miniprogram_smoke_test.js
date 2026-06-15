@@ -6786,6 +6786,35 @@ if (quizWxss362.indexOf(".timer-section") < 0) {
 
 if (round362Ok) pass("Round Mini 3.62 quiz answer timer");
 
+// ===========================================================
+// Round Mini 3.63 home practice reminder dismiss
+// ===========================================================
+var round363Ok = true;
+
+// A. home.js 包含 dismissReminder 方法
+var homeJs363 = readFile("pages/home/home.js");
+if (homeJs363.indexOf("dismissReminder") < 0) {
+  fail("R3.63: dismissReminder method missing in home.js");
+  round363Ok = false;
+}
+
+// B. home.wxml 包含关闭按钮
+var homeWxml363 = readFile("pages/home/home.wxml");
+if (homeWxml363.indexOf("reminder-dismiss-btn") < 0) {
+  fail("R3.63: reminder-dismiss-btn missing in home.wxml");
+  round363Ok = false;
+}
+
+// C. home.wxss 包含关闭按钮样式
+var homeWxss363 = readFile("pages/home/home.wxss");
+if (homeWxss363.indexOf(".reminder-dismiss-btn") < 0) {
+  fail("R3.63: .reminder-dismiss-btn style missing in home.wxss");
+  round363Ok = false;
+}
+
+if (round363Ok) pass("Round Mini 3.63 home reminder dismiss");
+
+
 console.log('========================================');
 console.log('Passed: ' + passed);
 console.log('Failed: ' + failed);
