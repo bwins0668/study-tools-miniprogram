@@ -6970,6 +6970,49 @@ for (var wxss382 = 0; wxss382 < wxssFiles382.length; wxss382++) {
 
 if (round382Ok) pass("Round Mini 3.82-Mega post-autodrive stability coverage");
 
+// ============================================================
+// Round Mini 3.83-Mega maintenance documentation coverage
+// ============================================================
+var round383Ok = true;
+var maintenanceDocPath383 = "docs/post_autodrive_maintenance.md";
+function check383(condition, message) {
+  if (!condition) {
+    fail(message);
+    round383Ok = false;
+  }
+}
+if (!fileExists(maintenanceDocPath383)) {
+  fail("R3.83: maintenance documentation missing");
+  round383Ok = false;
+} else {
+  var maintenanceDoc383 = readFile(maintenanceDocPath383);
+  var maintenanceRequired383 = [
+    "v0.23.0",
+    "本地数据边界",
+    "Storage Key 清单",
+    "study-tools-mini-favorite-terms-v1",
+    "study-tools-mini-wrong-questions-v1",
+    "study-tools-mini-quiz-attempts-v1",
+    "term-search-history",
+    "study-tools-mini-streak-v1",
+    "备份 / 恢复兼容性",
+    "data.favoriteTerms",
+    "data.wrongQuestions",
+    "data.quizAttempts",
+    "测试体系维护",
+    "不要使用 `git add .`",
+    ".workbuddy/"
+  ];
+  for (var md383 = 0; md383 < maintenanceRequired383.length; md383++) {
+    check383(maintenanceDoc383.indexOf(maintenanceRequired383[md383]) >= 0, "R3.83: maintenance doc missing: " + maintenanceRequired383[md383]);
+  }
+  var maintenanceForbidden383 = ["真实 AppID：", "密钥：", "手机号：", "身份证号：", "token", "secret", "password", "bearer", "authorization"];
+  for (var mf383 = 0; mf383 < maintenanceForbidden383.length; mf383++) {
+    check383(maintenanceDoc383.indexOf(maintenanceForbidden383[mf383]) < 0, "R3.83: maintenance doc contains sensitive placeholder: " + maintenanceForbidden383[mf383]);
+  }
+}
+if (round383Ok) pass("Round Mini 3.83-Mega maintenance documentation coverage");
+
 console.log('\n========================================');
 console.log('Passed: ' + passed);
 console.log('Failed: ' + failed);
