@@ -3,7 +3,8 @@ const {
   getFavoriteTermCount,
   getWrongQuestionCount,
   getQuizStats,
-  getLastAttempt
+  getLastAttempt,
+  getLastAttemptByExam
 } = require("../../utils/storage");
 
 var EXAM_LABELS = {
@@ -67,7 +68,11 @@ Page({
     sgTotal: 0,
     sgAccuracy: 0,
     itpassStatusText: '未练习',
-    sgStatusText: '未练习'
+    sgStatusText: '未练习',
+    itpassLastTime: '',
+    sgLastTime: '',
+    itpassWeak: false,
+    sgWeak: false
   },
 
   onShow: function () {
@@ -121,6 +126,26 @@ Page({
     var itpassStatusText = getStatusText(itpassTotal, itpassAccuracy);
     var sgStatusText = getStatusText(sgTotal, sgAccuracy);
 
+    // 各考试方向最近练习时间
+    var itpassLastTs = getLastAttemptByExam('itpass');
+    var sgLastTs = getLastAttemptByExam('sg');
+    var itpassLastTime = itpassLastTs ? formatLastPracticeTime(itpassLastTs) : '';
+    var sgLastTime = sgLastTs ? formatLastPracticeTime(sgLastTs) : '';
+
+    // 弱项检测：两个方向正确率差距 >= 20% 且较低者 < 70% 标记为弱项
+    var itpassWeak = false;
+    var sgWeak = false;
+    if (itpassTotal > 0 && sgTotal > 0) {
+      var gap = Math.abs(itpassAccuracy - sgAccuracy);
+      if (gap >= 20) {
+        if (itpassAccuracy < sgAccuracy && itpassAccuracy < 70) {
+          itpassWeak = true;
+        } else if (sgAccuracy < itpassAccuracy && sgAccuracy < 70) {
+          sgWeak = true;
+        }
+      }
+    }
+
     // 生成建议
     var suggestion = generateSuggestion(wrongQuestionCount, favoriteCount, hasLastAttempt, stats.todayTotal || 0);
 
@@ -143,7 +168,11 @@ Page({
       sgTotal: sgTotal,
       sgAccuracy: sgAccuracy,
       itpassStatusText: itpassStatusText,
-      sgStatusText: sgStatusText
+      sgStatusText: sgStatusText,
+      itpassLastTime: itpassLastTime,
+      sgLastTime: sgLastTime,
+      itpassWeak: itpassWeak,
+      sgWeak: sgWeak
     });
   },
 

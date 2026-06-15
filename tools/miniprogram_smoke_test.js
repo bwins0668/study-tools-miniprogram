@@ -2769,6 +2769,167 @@ for (var d = 0; d < dangerous317.length; d++) {
 if (round317Ok) pass('Round Mini 3.17 v0.21.0 incremental updates');
 
 // ============================================================
+// Round Mini 3.18 quiz entry enhancement checks
+// ============================================================
+console.log('\n--- Round Mini 3.18 quiz entry enhancement checks ---');
+
+var round318Ok = true;
+var appJs318 = readFile('app.js');
+var storage318 = readFile('utils/storage.js');
+var homeJs318 = readFile('pages/home/home.js');
+var homeWxml318 = readFile('pages/home/home.wxml');
+var homeWxss318 = readFile('pages/home/home.wxss');
+
+// 1. 版本号保持 v0.21.0
+if (!appJs318.includes('v0.21.0')) {
+  fail('Round 3.18: app.js missing v0.21.0');
+  round318Ok = false;
+}
+
+// 2. storage.js 新增 getLastAttemptByExam 函数
+if (!storage318.includes('function getLastAttemptByExam')) {
+  fail('Round 3.18: storage.js missing getLastAttemptByExam');
+  round318Ok = false;
+}
+
+// 3. storage.js exports 包含 getLastAttemptByExam
+if (!storage318.includes('getLastAttemptByExam: getLastAttemptByExam')) {
+  fail('Round 3.18: storage.js exports missing getLastAttemptByExam');
+  round318Ok = false;
+}
+
+// 4. getLastAttemptByExam 为纯读函数（不写 storage）
+if (!storage318.includes('var list = getQuizAttempts()') || !storage318.includes('getLastAttemptByExam')) {
+  fail('Round 3.18: getLastAttemptByExam should be pure read');
+  round318Ok = false;
+}
+
+// 5. home.js 导入 getLastAttemptByExam
+if (!homeJs318.includes('getLastAttemptByExam')) {
+  fail('Round 3.18: home.js missing getLastAttemptByExam import');
+  round318Ok = false;
+}
+
+// 6. home.js 存在 per-exam 最近练习时间字段
+if (!homeJs318.includes('itpassLastTime') || !homeJs318.includes('sgLastTime')) {
+  fail('Round 3.18: home.js missing itpassLastTime/sgLastTime');
+  round318Ok = false;
+}
+
+// 7. home.js 存在弱项检测逻辑
+if (!homeJs318.includes('itpassWeak') || !homeJs318.includes('sgWeak')) {
+  fail('Round 3.18: home.js missing weak subject detection');
+  round318Ok = false;
+}
+
+// 8. 弱项条件：差距 >= 20% 且弱者 < 70%
+if (!homeJs318.includes('gap >= 20') || !homeJs318.includes('< 70')) {
+  fail('Round 3.18: home.js weak condition incomplete (need gap>=20, low<70)');
+  round318Ok = false;
+}
+
+// 9. home.wxml IT Passport 卡片显示最近练习时间
+if (!homeWxml318.includes('itpassLastTime')) {
+  fail('Round 3.18: home.wxml IT Passport card missing last time');
+  round318Ok = false;
+}
+
+// 10. home.wxml SG 卡片显示最近练习时间
+if (!homeWxml318.includes('sgLastTime')) {
+  fail('Round 3.18: home.wxml SG card missing last time');
+  round318Ok = false;
+}
+
+// 11. home.wxml 存在弱项徽标
+if (!homeWxml318.includes('card-weak-badge') || !homeWxml318.includes('建议优先复习')) {
+  fail('Round 3.18: home.wxml missing weak badge');
+  round318Ok = false;
+}
+
+// 12. home.wxss 存在弱项徽标样式
+if (!homeWxss318.includes('card-weak-badge')) {
+  fail('Round 3.18: home.wxss missing card-weak-badge style');
+  round318Ok = false;
+}
+
+// 13. home.wxss 存在最近练习时间样式
+if (!homeWxss318.includes('card-last-time')) {
+  fail('Round 3.18: home.wxss missing card-last-time style');
+  round318Ok = false;
+}
+
+// 14. home.wxss 存在 card-title-wrap 样式
+if (!homeWxss318.includes('card-title-wrap')) {
+  fail('Round 3.18: home.wxss missing card-title-wrap style');
+  round318Ok = false;
+}
+
+// 15. 无高风险承诺文案
+var all318 = homeJs318 + homeWxml318 + storage318;
+var banned318 = ['保证通过', '包过', '押题', '必过', '100%通过', '内部资料', '官方答案'];
+for (var b318 = 0; b318 < banned318.length; b318++) {
+  if (all318.includes(banned318[b318])) {
+    fail('Round 3.18: banned text found: ' + banned318[b318]);
+    round318Ok = false;
+  }
+}
+
+// 16. 无新 storage keys
+var newKeysPattern = /study-tools-mini-(?!favorite-terms-v1|wrong-questions-v1|quiz-attempts-v1)/;
+if (newKeysPattern.test(storage318)) {
+  fail('Round 3.18: new storage key detected');
+  round318Ok = false;
+}
+
+// 17. 无危险 API
+var forbiddenAPIs318 = ['wx.request', 'wx.cloud', 'cloud.init', 'wx.login', 'wx.getUserInfo'];
+for (var a318 = 0; a318 < forbiddenAPIs318.length; a318++) {
+  if (all318.includes(forbiddenAPIs318[a318])) {
+    fail('Round 3.18: forbidden API found: ' + forbiddenAPIs318[a318]);
+    round318Ok = false;
+  }
+}
+
+// 18. exportLocalBackup 版本保持 v0.21.0
+if (!storage318.includes("version: 'v0.21.0'")) {
+  fail('Round 3.18: storage.js backup version not v0.21.0');
+  round318Ok = false;
+}
+
+// 19. home Navigation 入口仍存在
+if (!homeJs318.includes('goToItPassport') || !homeJs318.includes('goToSG')) {
+  fail('Round 3.18: home exam entries broken');
+  round318Ok = false;
+}
+
+// 20. Round 3.17 mistakes 增强功能仍存在
+var mistakesJs318 = readFile('pages/mistakes/mistakes.js');
+var mistakesWxml318 = readFile('pages/mistakes/mistakes.wxml');
+if (!mistakesJs318.includes('getWrongQuestionStats')) {
+  fail('Round 3.18: Round 3.17 mistakes JS features broken');
+  round318Ok = false;
+}
+if (!mistakesWxml318.includes('category-stats')) {
+  fail('Round 3.18: Round 3.17 mistakes WXML features broken');
+  round318Ok = false;
+}
+
+// 21. Round 3.17 profile 连续学习天数仍存在
+var profileJs318 = readFile('pages/profile/profile.js');
+if (!profileJs318.includes('getConsecutiveLearningDays')) {
+  fail('Round 3.18: Round 3.17 profile consecutive days broken');
+  round318Ok = false;
+}
+
+// 22. home 继续学习入口仍存在
+if (!homeJs318.includes('continueLearning') || !homeWxml318.includes('继续上次的练习')) {
+  fail('Round 3.18: home continue learning broken');
+  round318Ok = false;
+}
+
+if (round318Ok) pass('Round Mini 3.18 quiz entry enhancement checks');
+
+// ============================================================
 console.log('\n--- preloadRule 分包预下载检查 ---');
 
 let preloadOk = true;

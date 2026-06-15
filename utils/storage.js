@@ -283,6 +283,23 @@ function getLastAttempt() {
   return sorted[0];
 }
 
+/**
+ * 获取指定考试方向最近一次练习的时间（timestamp）
+ * 返回 timestamp 或 null
+ */
+function getLastAttemptByExam(exam) {
+  var list = getQuizAttempts();
+  if (list.length === 0) return null;
+  var latest = 0;
+  for (var i = 0; i < list.length; i++) {
+    var a = list[i];
+    if (a.exam === exam && a.answeredAt > latest) {
+      latest = a.answeredAt;
+    }
+  }
+  return latest || null;
+}
+
 function getQuizStatsByFilter(exam, sourceType) {
   var list = getQuizAttempts();
   var total = 0;
@@ -440,6 +457,7 @@ module.exports = {
   getQuizStats: getQuizStats,
   getQuizStatsByFilter: getQuizStatsByFilter,
   getLastAttempt: getLastAttempt,
+  getLastAttemptByExam: getLastAttemptByExam,
   getRecentAttempts: getRecentAttempts,
   getConsecutiveLearningDays: getConsecutiveLearningDays,
   // 本地数据备份 / 恢复

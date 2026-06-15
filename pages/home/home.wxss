@@ -141,6 +141,13 @@
   min-width: 0;
 }
 
+.card-title-wrap {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6rpx;
+  width: 100%;
+}
+
 .card-title {
   font-size: 32rpx;
   font-weight: 600;
@@ -149,6 +156,12 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.card-title-wrap .card-title {
+  margin-bottom: 0;
+  flex: 1;
+  min-width: 0;
 }
 
 .card-desc {
@@ -206,6 +219,33 @@
 
 .card-arrow-disabled {
   color: #dddddd;
+}
+
+/* 弱项徽标 */
+.card-title-wrap {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6rpx;
+}
+
+.card-weak-badge {
+  font-size: 20rpx;
+  font-weight: 600;
+  color: #e65100;
+  background-color: #fff3e0;
+  border: 1rpx solid #ffcc80;
+  padding: 2rpx 10rpx;
+  border-radius: 8rpx;
+  margin-left: 12rpx;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* 最近练习时间 */
+.card-last-time {
+  font-size: 20rpx;
+  color: #999999;
+  margin-top: 4rpx;
 }
 
 /* 我的统计入口 */

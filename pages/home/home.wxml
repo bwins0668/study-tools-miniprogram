@@ -104,13 +104,17 @@
     <view class="card card-entry" bindtap="goToItPassport">
       <view class="card-icon">📝</view>
       <view class="card-info">
-        <text class="card-title">IT Passport · 基础考试方向</text>
+        <text class="card-title-wrap">
+          <text class="card-title">IT Passport · 基础考试方向</text>
+          <text class="card-weak-badge" wx:if="{{itpassWeak}}">建议优先复习</text>
+        </text>
         <text class="card-desc">IT パスポート試験</text>
         <view class="card-stats">
           <text class="card-stat-text" wx:if="{{itpassTotal > 0}}">已做 {{itpassTotal}} 题 · 正确率 {{itpassAccuracy}}%</text>
           <text class="card-stat-text card-stat-new" wx:else>未练习</text>
           <text class="card-stat-status">{{itpassStatusText}}</text>
         </view>
+        <text class="card-last-time" wx:if="{{itpassLastTime}}">最近练习：{{itpassLastTime}}</text>
       </view>
       <view class="card-arrow">›</view>
     </view>
@@ -119,13 +123,17 @@
     <view class="card card-entry" bindtap="goToSG">
       <view class="card-icon">🎯</view>
       <view class="card-info">
-        <text class="card-title">SG · 信息安全管理方向</text>
+        <text class="card-title-wrap">
+          <text class="card-title">SG · 信息安全管理方向</text>
+          <text class="card-weak-badge" wx:if="{{sgWeak}}">建议优先复习</text>
+        </text>
         <text class="card-desc">システム監査技術者</text>
         <view class="card-stats">
           <text class="card-stat-text" wx:if="{{sgTotal > 0}}">已做 {{sgTotal}} 题 · 正确率 {{sgAccuracy}}%</text>
           <text class="card-stat-text card-stat-new" wx:else>未练习</text>
           <text class="card-stat-status">{{sgStatusText}}</text>
         </view>
+        <text class="card-last-time" wx:if="{{sgLastTime}}">最近练习：{{sgLastTime}}</text>
       </view>
       <view class="card-arrow">›</view>
     </view>
