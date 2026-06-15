@@ -6429,6 +6429,54 @@ if (quizJs354.indexOf('retryWrongQuestions') < 0) {
 
 if (round354Ok) pass('Round Mini 3.54 glossary random term button');
 
+// ============================================================
+// Round Mini 3.55 home streak share button
+// ============================================================
+var round355Ok = true;
+
+// A. home.js 包含 onShareAppMessage 方法
+var homeJs355 = readFile('pages/home/home.js');
+if (homeJs355.indexOf('onShareAppMessage') < 0) {
+  fail('R3.55: onShareAppMessage method missing in home.js');
+  round355Ok = false;
+}
+if (homeJs355.indexOf('streakCount') < 0) {
+  fail('R3.55: streakCount in share message missing in home.js');
+  round355Ok = false;
+}
+
+// B. home.wxml 包含分享按钮
+var homeWxml355 = readFile('pages/home/home.wxml');
+if (homeWxml355.indexOf('streak-share-btn') < 0) {
+  fail('R3.55: streak-share-btn missing in home.wxml');
+  round355Ok = false;
+}
+if (homeWxml355.indexOf('open-type="share"') < 0) {
+  fail('R3.55: open-type="share" missing in home.wxml');
+  round355Ok = false;
+}
+
+// C. home.wxss 包含分享按钮样式
+var homeWxss355 = readFile('pages/home/home.wxss');
+if (homeWxss355.indexOf('.streak-share-btn') < 0) {
+  fail('R3.55: .streak-share-btn style missing in home.wxss');
+  round355Ok = false;
+}
+
+// D. 回归：R3.32~R3.54 功能未退化
+var glossaryJs355 = readFile('pages/glossary/glossary.js');
+if (glossaryJs355.indexOf('goToRandomTerm') < 0) {
+  fail('R3.55: R3.54 goToRandomTerm regressed in glossary.js');
+  round355Ok = false;
+}
+var quizJs355 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs355.indexOf('retryWrongQuestions') < 0) {
+  fail('R3.55: R3.50 retryWrongQuestions regressed in quiz.js');
+  round355Ok = false;
+}
+
+if (round355Ok) pass('Round Mini 3.55 home streak share button');
+
 
 console.log('\n========================================');
 console.log('Study Tools Mini Smoke Test');

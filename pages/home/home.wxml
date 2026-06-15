@@ -15,6 +15,10 @@
   <view class="streak-banner" wx:if="{{streakCount > 0}}">
     <text class="streak-icon">🔥</text>
     <text class="streak-text">{{streakText}}</text>
+    <!-- R3.55 分享按钮 -->
+    <button class="streak-share-btn" open-type="share">
+      <text class="streak-share-icon">📤</text>
+    </button>
   </view>
 
   <!-- R3.44 今日练习进度 -->

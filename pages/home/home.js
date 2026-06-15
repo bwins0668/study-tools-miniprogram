@@ -522,5 +522,19 @@ Page({
     wx.switchTab({
       url: '/pages/profile/profile'
     });
+  },
+
+  // R3.55 首页分享 streak
+  onShareAppMessage: function () {
+    var streakCount = this.data.streakCount || 0;
+    var title = 'Study Tools 学习打卡';
+    if (streakCount > 0) {
+      title = '我已在 Study Tools 连续学习 ' + streakCount + ' 天，一起来学习吧！';
+    }
+    return {
+      title: title,
+      path: '/pages/home/home',
+      imageUrl: ''
+    };
   }
 });

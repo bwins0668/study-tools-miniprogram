@@ -41,6 +41,22 @@
   font-weight: 600;
 }
 
+/* R3.55 分享按钮 */
+.streak-share-btn {
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 0 0 16rpx !important;
+  line-height: 1 !important;
+  min-height: auto !important;
+  display: inline-flex;
+  align-items: center;
+}
+
+.streak-share-icon {
+  font-size: 32rpx;
+}
+
 /* 学习概览 */
 .overview-section {
   background-color: #ffffff;
