@@ -202,6 +202,7 @@ Page({
   },
 
   onShow: function () {
+    console.log('[R3.81] Profile page onShow');
     // R3.78 页面浏览次数统计
     var viewCount = wx.getStorageSync('profileViewCount') || 0;
     viewCount += 1;
