@@ -32,6 +32,16 @@
     </view>
   </view>
 
+  <!-- 新用户欢迎引导 (Round 3.21) -->
+  <view class="stats-section" wx:if="{{isNewUser}}">
+    <text class="section-title">开始学习</text>
+    <view class="info-card welcome-card">
+      <text class="welcome-icon">📚</text>
+      <text class="welcome-title">还没有练习记录</text>
+      <text class="welcome-desc">从首页选择 IT Passport 或 SG 方向开始练习，也可以先浏览术语表了解考试词汇。遇到重要术语可以先收藏，答错的题目会自动收录到错题本。</text>
+    </view>
+  </view>
+
   <!-- 做题统计 -->
   <view class="stats-section">
     <text class="section-title">做题统计</text>
@@ -61,6 +71,17 @@
       <view class="info-row" wx:if="{{consecutiveDays > 0}}">
         <text class="info-label">连续学习</text>
         <text class="info-value streak-value">{{consecutiveDays}} 天</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 复习建议 (Round 3.21) -->
+  <view class="stats-section">
+    <text class="section-title">复习建议</text>
+    <view class="review-hint-list">
+      <view class="review-hint-item review-hint-{{item.type}}" wx:for="{{reviewHints}}" wx:key="*this">
+        <text class="review-hint-icon">{{item.type === 'wrong' ? '📝' : (item.type === 'favorite' ? '⭐' : '💡')}}</text>
+        <text class="review-hint-text">{{item.text}}</text>
       </view>
     </view>
   </view>
@@ -123,6 +144,19 @@
       <view class="info-row">
         <text class="info-label">SG</text>
         <text class="info-value">{{sgAccuracy}}%</text>
+      </view>
+    </view>
+    <!-- 科目对比洞察 (Round 3.21) -->
+    <view class="info-card subject-compare-card" wx:if="{{subjectComparison.hasData}}">
+      <view class="subject-compare-row">
+        <text class="subject-compare-icon">📊</text>
+        <text class="subject-compare-text">{{subjectComparison.text}}</text>
+      </view>
+    </view>
+    <view class="info-card subject-compare-card subject-compare-empty" wx:if="{{!subjectComparison.hasData}}">
+      <view class="subject-compare-row">
+        <text class="subject-compare-icon">📊</text>
+        <text class="subject-compare-text">{{subjectComparison.text}}</text>
       </view>
     </view>
     <view class="info-card">

@@ -358,3 +358,116 @@
   color: #999999;
   margin-top: 6rpx;
 }
+
+/* 复习建议 (Round 3.21) */
+.review-hint-list {
+  margin: 8rpx 20rpx;
+}
+
+.review-hint-item {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  margin: 10rpx;
+  padding: 24rpx 28rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.review-hint-icon {
+  font-size: 36rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.review-hint-text {
+  font-size: 26rpx;
+  color: #555555;
+  line-height: 1.6;
+  flex: 1;
+}
+
+.review-hint-wrong {
+  border-left: 6rpx solid #f44336;
+}
+
+.review-hint-wrong .review-hint-text {
+  color: #d32f2f;
+}
+
+.review-hint-favorite {
+  border-left: 6rpx solid #4a90d9;
+}
+
+.review-hint-favorite .review-hint-text {
+  color: #1976d2;
+}
+
+.review-hint-empty {
+  border-left: 6rpx solid #e0e0e0;
+}
+
+.review-hint-empty .review-hint-text {
+  color: #999999;
+}
+
+/* 科目对比洞察 (Round 3.21) */
+.subject-compare-card {
+  margin: 12rpx 30rpx;
+  background-color: #f8f9fe;
+  border: 1rpx solid #e8ebf5;
+}
+
+.subject-compare-row {
+  display: flex;
+  align-items: flex-start;
+}
+
+.subject-compare-icon {
+  font-size: 32rpx;
+  margin-right: 14rpx;
+  flex-shrink: 0;
+}
+
+.subject-compare-text {
+  font-size: 26rpx;
+  color: #555555;
+  line-height: 1.6;
+  flex: 1;
+}
+
+.subject-compare-empty {
+  background-color: #fafafa;
+  border-color: #eeeeee;
+}
+
+.subject-compare-empty .subject-compare-text {
+  color: #999999;
+}
+
+/* 新用户欢迎引导 (Round 3.21) */
+.welcome-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36rpx 32rpx;
+  text-align: center;
+}
+
+.welcome-icon {
+  font-size: 64rpx;
+  margin-bottom: 16rpx;
+}
+
+.welcome-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 12rpx;
+}
+
+.welcome-desc {
+  font-size: 26rpx;
+  color: #888888;
+  line-height: 1.7;
+}

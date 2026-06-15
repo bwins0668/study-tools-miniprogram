@@ -184,7 +184,13 @@ Page({
       backupVersion: '',
       backupTime: '',
       hasData: false
-    }
+    },
+    // Round 3.21: 复习建议列表
+    reviewHints: [],
+    // Round 3.21: 科目对比洞察
+    subjectComparison: { text: '', hasData: false, weaker: '' },
+    // Round 3.21: 是否为新用户（零练习记录）
+    isNewUser: true
   },
 
   onLoad: function () {
@@ -262,6 +268,51 @@ Page({
     // 备份数据摘要
     var backupSummary = buildBackupSummary();
 
+    // Round 3.21: 复习建议
+    var reviewHints = [];
+    if (wrongQuestionCount > 0) {
+      reviewHints.push({ text: '当前有 ' + wrongQuestionCount + ' 道错题待复习，建议优先复盘错题', type: 'wrong' });
+    }
+    if (favoriteCount > 0) {
+      reviewHints.push({ text: '收藏了 ' + favoriteCount + ' 个术语，可以安排一次收藏复习', type: 'favorite' });
+    }
+    if (reviewHints.length === 0) {
+      reviewHints.push({ text: '开始练习后这里会显示个性化复习建议', type: 'empty' });
+    }
+
+    // Round 3.21: 科目对比洞察
+    var subjectComparison = { text: '', hasData: false, weaker: '' };
+    var itpassAcc = (stats.byExam && stats.byExam.itpass) ? (stats.byExam.itpass.accuracy || 0) : 0;
+    var sgAcc = (stats.byExam && stats.byExam.sg) ? (stats.byExam.sg.accuracy || 0) : 0;
+    var itpassTotal = (stats.byExam && stats.byExam.itpass) ? (stats.byExam.itpass.total || 0) : 0;
+    var sgTotal = (stats.byExam && stats.byExam.sg) ? (stats.byExam.sg.total || 0) : 0;
+    if (itpassTotal > 0 && sgTotal > 0) {
+      subjectComparison.hasData = true;
+      if (itpassAcc > sgAcc) {
+        subjectComparison.text = 'IT Passport 正确率 ' + itpassAcc + '% 高于 SG ' + sgAcc + '%，建议多关注 SG 复习';
+        subjectComparison.weaker = 'sg';
+      } else if (sgAcc > itpassAcc) {
+        subjectComparison.text = 'SG 正确率 ' + sgAcc + '% 高于 IT Passport ' + itpassAcc + '%，建议多关注 IT Passport 复习';
+        subjectComparison.weaker = 'itpass';
+      } else {
+        subjectComparison.text = 'IT Passport 和 SG 正确率均为 ' + itpassAcc + '%，可以均衡复习';
+        subjectComparison.weaker = 'both';
+      }
+    } else if (itpassTotal > 0) {
+      subjectComparison.hasData = true;
+      subjectComparison.text = 'IT Passport 正确率 ' + itpassAcc + '%，还没有 SG 练习记录';
+      subjectComparison.weaker = 'sg';
+    } else if (sgTotal > 0) {
+      subjectComparison.hasData = true;
+      subjectComparison.text = 'SG 正确率 ' + sgAcc + '%，还没有 IT Passport 练习记录';
+      subjectComparison.weaker = 'itpass';
+    } else {
+      subjectComparison.text = '完成练习后会显示各科目正确率对比';
+    }
+
+    // Round 3.21: 新用户判断
+    var isNewUser = (stats.total || 0) === 0;
+
     this.setData({
       favoriteCount: favoriteCount,
       wrongQuestionCount: wrongQuestionCount,
@@ -280,7 +331,10 @@ Page({
       recentAttempts: timelineItems,
       hasRecentAttempts: timelineItems.length > 0,
       lastPracticeSummary: lastSummary,
-      backupSummary: backupSummary
+      backupSummary: backupSummary,
+      reviewHints: reviewHints,
+      subjectComparison: subjectComparison,
+      isNewUser: isNewUser
     });
   },
 

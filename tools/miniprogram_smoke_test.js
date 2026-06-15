@@ -3372,6 +3372,302 @@ if (!quizJs320.includes('addWrongQuestion') || !quizJs320.includes('addQuizAttem
 if (round320Ok) pass('Round Mini 3.20 continue practice + quiz insights checks');
 
 // ============================================================
+// Round Mini 3.21 profile learning insights + glossary search empty state checks
+// ============================================================
+console.log('\n--- Round Mini 3.21 profile insights + glossary search checks ---');
+
+var round321Ok = true;
+var appJs321 = readFile('app.js');
+var storage321 = readFile('utils/storage.js');
+var profileJs321 = readFile('pages/profile/profile.js');
+var profileWxml321 = readFile('pages/profile/profile.wxml');
+var profileWxss321 = readFile('pages/profile/profile.wxss');
+var termSearchWxml321 = readFile('packages/glossary/pages/term-search/term-search.wxml');
+var termSearchWxss321 = readFile('packages/glossary/pages/term-search/term-search.wxss');
+
+// === 版本号 ===
+if (!appJs321.includes('v0.21.0')) {
+  fail('Round 3.21: app.js missing v0.21.0');
+  round321Ok = false;
+}
+
+// === A. Profile 复习建议 ===
+// 1. profile.js 存在 reviewHints 字段
+if (!profileJs321.includes('reviewHints')) {
+  fail('Round 3.21: profile.js missing reviewHints data field');
+  round321Ok = false;
+}
+
+// 2. profile.js 计算错题复习提示
+if (!profileJs321.includes('道错题待复习，建议优先复盘错题')) {
+  fail('Round 3.21: profile.js missing wrong question review hint');
+  round321Ok = false;
+}
+
+// 3. profile.js 计算收藏复习提示
+if (!profileJs321.includes('个术语，可以安排一次收藏复习')) {
+  fail('Round 3.21: profile.js missing favorite review hint');
+  round321Ok = false;
+}
+
+// 4. profile.js 空状态复习提示
+if (!profileJs321.includes('开始练习后这里会显示个性化复习建议')) {
+  fail('Round 3.21: profile.js missing empty review hints fallback');
+  round321Ok = false;
+}
+
+// 5. profile.wxml 存在复习建议区域
+if (!profileWxml321.includes('复习建议') || !profileWxml321.includes('review-hint-list')) {
+  fail('Round 3.21: profile.wxml missing review hints section');
+  round321Ok = false;
+}
+
+// 6. profile.wxml 复习建议使用 review-hint-{{item.type}} 动态样式
+if (!profileWxml321.includes('review-hint-{{item.type}}')) {
+  fail('Round 3.21: profile.wxml missing dynamic review hint type class');
+  round321Ok = false;
+}
+
+// 7. profile.wxss 存在复习建议样式
+if (!profileWxss321.includes('review-hint-list') || !profileWxss321.includes('review-hint-item')) {
+  fail('Round 3.21: profile.wxss missing review hint styles');
+  round321Ok = false;
+}
+if (!profileWxss321.includes('review-hint-wrong') || !profileWxss321.includes('review-hint-favorite') || !profileWxss321.includes('review-hint-empty')) {
+  fail('Round 3.21: profile.wxss missing review hint type styles');
+  round321Ok = false;
+}
+
+// === B. Profile 科目对比洞察 ===
+// 8. profile.js 存在 subjectComparison 字段
+if (!profileJs321.includes('subjectComparison')) {
+  fail('Round 3.21: profile.js missing subjectComparison data field');
+  round321Ok = false;
+}
+
+// 9. profile.js 存在科目对比计算逻辑
+if (!profileJs321.includes('建议多关注 SG 复习') || !profileJs321.includes('建议多关注 IT Passport 复习')) {
+  fail('Round 3.21: profile.js missing subject comparison suggestions');
+  round321Ok = false;
+}
+
+// 10. profile.js 存在两者正确率相同的处理
+if (!profileJs321.includes('可以均衡复习')) {
+  fail('Round 3.21: profile.js missing equal accuracy case');
+  round321Ok = false;
+}
+
+// 11. profile.js 存在单科目数据场景处理
+if (!profileJs321.includes('还没有 SG 练习记录') || !profileJs321.includes('还没有 IT Passport 练习记录')) {
+  fail('Round 3.21: profile.js missing single-exam no-data handling');
+  round321Ok = false;
+}
+
+// 12. profile.js 存在无数据时的友好文案
+if (!profileJs321.includes('完成练习后会显示各科目正确率对比')) {
+  fail('Round 3.21: profile.js missing no-data subject comparison text');
+  round321Ok = false;
+}
+
+// 13. profile.wxml 存在科目对比洞察展示区
+if (!profileWxml321.includes('subject-compare-card') || !profileWxml321.includes('subject-compare-text')) {
+  fail('Round 3.21: profile.wxml missing subject comparison section');
+  round321Ok = false;
+}
+
+// 14. profile.wxml 科目对比分有数据/无数据两种状态
+if (!profileWxml321.includes('subjectComparison.hasData')) {
+  fail('Round 3.21: profile.wxml missing subject comparison hasData conditional');
+  round321Ok = false;
+}
+
+// 15. profile.wxss 存在科目对比样式
+if (!profileWxss321.includes('subject-compare-card') || !profileWxss321.includes('subject-compare-text')) {
+  fail('Round 3.21: profile.wxss missing subject comparison styles');
+  round321Ok = false;
+}
+if (!profileWxss321.includes('subject-compare-empty')) {
+  fail('Round 3.21: profile.wxss missing subject-compare-empty style');
+  round321Ok = false;
+}
+
+// === C. Profile 新用户欢迎引导 ===
+// 16. profile.js 存在 isNewUser 字段
+if (!profileJs321.includes('isNewUser')) {
+  fail('Round 3.21: profile.js missing isNewUser field');
+  round321Ok = false;
+}
+
+// 17. profile.js 使用 stats.total === 0 判断新用户
+if (!profileJs321.includes('(stats.total || 0) === 0')) {
+  fail('Round 3.21: profile.js missing isNewUser computation with NaN guard');
+  round321Ok = false;
+}
+
+// 18. profile.wxml 存在新用户欢迎引导区
+if (!profileWxml321.includes('welcome-card') || !profileWxml321.includes('还没有练习记录')) {
+  fail('Round 3.21: profile.wxml missing welcome card for new users');
+  round321Ok = false;
+}
+
+// 19. profile.wxml 欢迎引导包含具体操作建议
+if (!profileWxml321.includes('选择 IT Passport 或 SG 方向') || !profileWxml321.includes('浏览术语表')) {
+  fail('Round 3.21: profile.wxml welcome card missing actionable guidance');
+  round321Ok = false;
+}
+
+// 20. profile.wxss 存在欢迎引导样式
+if (!profileWxss321.includes('welcome-card') || !profileWxss321.includes('welcome-icon')) {
+  fail('Round 3.21: profile.wxss missing welcome card styles');
+  round321Ok = false;
+}
+
+// === D. Glossary 搜索空状态增强 ===
+// 21. term-search.wxml 空状态文本改为"没有找到相关术语"
+if (!termSearchWxml321.includes('没有找到相关术语')) {
+  fail('Round 3.21: term-search.wxml empty text not updated');
+  round321Ok = false;
+}
+
+// 22. term-search.wxml 空状态包含建议列表
+if (!termSearchWxml321.includes('empty-suggestions') || !termSearchWxml321.includes('empty-suggestion-item')) {
+  fail('Round 3.21: term-search.wxml missing suggestion list in empty state');
+  round321Ok = false;
+}
+
+// 23. term-search.wxml 空状态包含具体建议（更换关键词、多语言、更短关键词）
+if (!termSearchWxml321.includes('更换关键词试试') || !termSearchWxml321.includes('中文、日文或英文技术词') || !termSearchWxml321.includes('尝试更短的关键词')) {
+  fail('Round 3.21: term-search.wxml missing specific suggestions');
+  round321Ok = false;
+}
+
+// 24. term-search.wxss 存在空状态增强样式
+if (!termSearchWxss321.includes('empty-suggestions') || !termSearchWxss321.includes('empty-suggestion-title')) {
+  fail('Round 3.21: term-search.wxss missing enhanced empty state styles');
+  round321Ok = false;
+}
+
+// 25. term-search.wxml 空搜索词不显示无结果错误式文案 (keyword check 保持)
+if (!termSearchWxml321.includes('filteredList.length === 0 && keyword')) {
+  fail('Round 3.21: term-search.wxml empty keyword guard broken');
+  round321Ok = false;
+}
+
+// === E. 合规检查 ===
+// 26. 无新 storage keys
+var all321 = profileJs321 + storage321 + termSearchWxml321;
+var keyPattern321 = /study-tools-mini-(?!favorite-terms-v1|wrong-questions-v1|quiz-attempts-v1)/;
+if (keyPattern321.test(storage321)) {
+  fail('Round 3.21: new storage key detected');
+  round321Ok = false;
+}
+
+// 27. exportLocalBackup 版本保持 v0.21.0
+if (!storage321.includes("version: 'v0.21.0'")) {
+  fail('Round 3.21: storage.js backup version not v0.21.0');
+  round321Ok = false;
+}
+
+// 28. 无危险 API
+var forbidden321 = ['wx.request', 'wx.cloud', 'cloud.init', 'wx.login', 'wx.getUserInfo', 'wx.requestPayment'];
+for (var a321 = 0; a321 < forbidden321.length; a321++) {
+  if (all321.includes(forbidden321[a321])) {
+    fail('Round 3.21: forbidden API found: ' + forbidden321[a321]);
+    round321Ok = false;
+  }
+}
+
+// 29. 无高风险表述
+var banned321 = ['保证通过', '包过', '押题', '必过', '100%通过', '内部资料', '官方答案', '绝对安全', '永久保存', '云端同步', '自动备份', '保证恢复'];
+for (var b321 = 0; b321 < banned321.length; b321++) {
+  if (all321.includes(banned321[b321])) {
+    fail('Round 3.21: banned text found: ' + banned321[b321]);
+    round321Ok = false;
+  }
+}
+
+// === F. 回归检查 ===
+// 30. Round 3.17 mistakes 功能仍存在
+var mistakesJs321 = readFile('pages/mistakes/mistakes.js');
+if (!mistakesJs321.includes('getWrongQuestionStats')) {
+  fail('Round 3.21: Round 3.17 mistakes features broken');
+  round321Ok = false;
+}
+
+// 31. Round 3.17 profile 连续学习天数仍存在
+if (!profileJs321.includes('getConsecutiveLearningDays')) {
+  fail('Round 3.21: Round 3.17 profile consecutive days broken');
+  round321Ok = false;
+}
+
+// 32. Round 3.18 home 弱项徽标仍存在
+var homeWxml321 = readFile('pages/home/home.wxml');
+if (!homeWxml321.includes('card-weak-badge')) {
+  fail('Round 3.21: Round 3.18 home weak badge broken');
+  round321Ok = false;
+}
+
+// 33. Round 3.19 favorite-review 增强仍存在
+var favReviewJs321 = readFile('packages/glossary/pages/favorite-review/favorite-review.js');
+if (!favReviewJs321.includes('lastSavedAtFormatted')) {
+  fail('Round 3.21: Round 3.19 favorite-review lastSavedAtFormatted broken');
+  round321Ok = false;
+}
+if (!storage321.includes('getFavoriteTermStats')) {
+  fail('Round 3.21: Round 3.19 storage getFavoriteTermStats broken');
+  round321Ok = false;
+}
+
+// 34. Round 3.20 home continue suggestion 仍存在
+var homeJs321 = readFile('pages/home/home.js');
+if (!homeJs321.includes('lastAttemptAccuracy') || !homeJs321.includes('continueSuggestion')) {
+  fail('Round 3.21: Round 3.20 home continue practice broken');
+  round321Ok = false;
+}
+
+// 35. Round 3.20 quiz insights 仍存在
+var quizJs321 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (!quizJs321.includes('accuracyLevel') || !quizJs321.includes('insightHint')) {
+  fail('Round 3.21: Round 3.20 quiz insights broken');
+  round321Ok = false;
+}
+
+// 36. profile 备份功能仍存在
+if (!profileJs321.includes('copyBackup') || !profileJs321.includes('restoreFromClipboard')) {
+  fail('Round 3.21: profile backup/restore broken');
+  round321Ok = false;
+}
+
+// 37. profile 时间线功能仍存在
+if (!profileWxml321.includes('练习时间线') || !profileWxml321.includes('timeline-list')) {
+  fail('Round 3.21: profile timeline broken');
+  round321Ok = false;
+}
+
+// 38. glossary 术语列表、收藏逻辑不受影响
+if (!termSearchWxml321.includes('glossary-card') || !termSearchWxml321.includes('_isFavorite')) {
+  fail('Round 3.21: glossary card / favorite display broken');
+  round321Ok = false;
+}
+
+// 39. glossary 搜索逻辑不变（filterData、onSearchInput 仍存在）
+var termSearchJs321 = readFile('packages/glossary/pages/term-search/term-search.js');
+if (!termSearchJs321.includes('filterData') || !termSearchJs321.includes('onSearchInput')) {
+  fail('Round 3.21: glossary search logic broken');
+  round321Ok = false;
+}
+
+// 40. 不出现 NaN / undefined / null 可见风险（reviewHints 文案不嵌入裸变量）
+if (profileJs321.includes("text: '当前有 ' + wrongQuestionCount + ' 道错题")) {
+  // Good - uses computed values safely
+} else {
+  fail('Round 3.21: profile.js review hint text not safely computed');
+  round321Ok = false;
+}
+
+if (round321Ok) pass('Round Mini 3.21 profile insights + glossary search checks');
+
+// ============================================================
 // 汇总
 // ============================================================
 console.log('\n========================================');
