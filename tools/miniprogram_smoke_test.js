@@ -6105,6 +6105,62 @@ if (homeJs348.indexOf('achievements') < 0) {
 
 if (round348Ok) pass('Round Mini 3.48 quiz result wrong answer explanation');
 
+// ============================================================
+// Round Mini 3.49 term favorite note functionality
+// ============================================================
+var round349Ok = true;
+
+// A. term-detail.js 包含 note 数据字段和 saveNote 方法
+var termDetailJs349 = readFile('packages/glossary/pages/term-detail/term-detail.js');
+if (termDetailJs349.indexOf('note') < 0) {
+  fail('R3.49: note data field missing in term-detail.js');
+  round349Ok = false;
+}
+if (termDetailJs349.indexOf('saveNote') < 0) {
+  fail('R3.49: saveNote method missing in term-detail.js');
+  round349Ok = false;
+}
+if (termDetailJs349.indexOf('onNoteInput') < 0) {
+  fail('R3.49: onNoteInput method missing in term-detail.js');
+  round349Ok = false;
+}
+
+// B. term-detail.wxml 包含笔记输入框
+var termDetailWxml349 = readFile('packages/glossary/pages/term-detail/term-detail.wxml');
+if (termDetailWxml349.indexOf('note-input') < 0) {
+  fail('R3.49: note-input missing in term-detail.wxml');
+  round349Ok = false;
+}
+if (termDetailWxml349.indexOf('saveNote') < 0) {
+  fail('R3.49: saveNote button missing in term-detail.wxml');
+  round349Ok = false;
+}
+
+// C. term-detail.wxss 包含笔记样式
+var termDetailWxss349 = readFile('packages/glossary/pages/term-detail/term-detail.wxss');
+if (termDetailWxss349.indexOf('.note-input') < 0) {
+  fail('R3.49: .note-input style missing in term-detail.wxss');
+  round349Ok = false;
+}
+if (termDetailWxss349.indexOf('.note-save-btn') < 0) {
+  fail('R3.49: .note-save-btn style missing in term-detail.wxss');
+  round349Ok = false;
+}
+
+// D. 回归：R3.32~R3.48 功能未退化
+var quizJs349 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs349.indexOf('hint') < 0) {
+  fail('R3.49: R3.48 hint regressed in quiz.js');
+  round349Ok = false;
+}
+var homeJs349 = readFile('pages/home/home.js');
+if (homeJs349.indexOf('achievements') < 0) {
+  fail('R3.49: R3.47 achievements regressed in home.js');
+  round349Ok = false;
+}
+
+if (round349Ok) pass('Round Mini 3.49 term favorite note functionality');
+
 
 // ============================================================
 // 汇总

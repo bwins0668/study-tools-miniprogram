@@ -62,6 +62,21 @@
       </view>
     </view>
 
+    <!-- R3.49 学习笔记 -->
+    <view class="card" wx:if="{{isFavorite}}">
+      <text class="section-title">📝 学习笔记</text>
+      <textarea
+        class="note-input"
+        placeholder="记录学习心得、记忆技巧..."
+        value="{{note}}"
+        bindinput="onNoteInput"
+        maxlength="500"
+      />
+      <view class="note-save-btn" bindtap="saveNote">
+        <text class="note-save-text">保存笔记</text>
+      </view>
+    </view>
+
     <!-- 收藏按钮增强 (Round 3.23) -->
     <view class="favorite-btn {{isFavorite ? 'favorite-btn-active' : ''}}" bindtap="onFavorite">
       <text class="favorite-star">{{isFavorite ? '★' : '☆'}}</text>

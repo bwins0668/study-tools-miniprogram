@@ -18,7 +18,9 @@ Page({
     categoryLabel: '',
     learningTip: '',
     // R3.39 相关术语推荐
-    relatedTerms: []
+    relatedTerms: [],
+    // R3.49 术语收藏笔记功能
+    note: ''
   },
 
   onLoad: function (options) {
@@ -63,13 +65,26 @@ Page({
       }
     }
 
+    // R3.49 加载笔记数据
+    var note = '';
+    if (found) {
+      var favList = require('../../../../utils/storage').getFavoriteTerms();
+      for (var i = 0; i < favList.length; i++) {
+        if (String(favList[i].id) === strId) {
+          note = favList[i].note || '';
+          break;
+        }
+      }
+    }
+
     this.setData({
       term: found,
       exampleText: exampleText,
       isFavorite: found ? isFavoriteTerm(strId) : false,
       learningTip: learningTip,
       categoryLabel: categoryLabel,
-      relatedTerms: relatedTerms
+      relatedTerms: relatedTerms,
+      note: note
     });
   },
 
@@ -150,6 +165,57 @@ Page({
     if (!id) return;
     wx.redirectTo({
       url: '/packages/glossary/pages/term-detail/term-detail?id=' + id
+    });
+  },
+
+  // R3.49 保存笔记
+  saveNote: function () {
+    var term = this.data.term;
+    if (!term) return;
+    var strId = String(term.id);
+    var note = this.data.note || '';
+
+    // 只在已收藏时保存笔记
+    if (!this.data.isFavorite) {
+      wx.showToast({
+        title: '请先收藏该术语',
+        icon: 'none',
+        duration: 1500
+      });
+      return;
+    }
+
+    try {
+      var favList = require('../../../../utils/storage').getFavoriteTerms();
+      var updated = false;
+      for (var i = 0; i < favList.length; i++) {
+        if (String(favList[i].id) === strId) {
+          favList[i].note = note;
+          updated = true;
+          break;
+        }
+      }
+      if (updated) {
+        wx.setStorageSync('study-tools-mini-favorite-terms-v1', JSON.stringify(favList));
+        wx.showToast({
+          title: '笔记已保存',
+          icon: 'none',
+          duration: 1500
+        });
+      }
+    } catch (e) {
+      wx.showToast({
+        title: '保存失败',
+        icon: 'none',
+        duration: 1500
+      });
+    }
+  },
+
+  // R3.49 笔记输入框变化
+  onNoteInput: function (e) {
+    this.setData({
+      note: e.detail.value || ''
     });
   }
 });
