@@ -6529,6 +6529,54 @@ if (glossaryJs356.indexOf('goToRandomTerm') < 0) {
 
 if (round356Ok) pass('Round Mini 3.56 term detail copy button');
 
+// ============================================================
+// Round Mini 3.57 profile version copy button
+// ============================================================
+var round357Ok = true;
+
+// A. profile.js 包含 copyVersion 方法
+var profileJs357 = readFile('pages/profile/profile.js');
+if (profileJs357.indexOf('copyVersion') < 0) {
+  fail('R3.57: copyVersion method missing in profile.js');
+  round357Ok = false;
+}
+if (profileJs357.indexOf('setClipboardData') < 0) {
+  fail('R3.57: setClipboardData call missing in profile.js');
+  round357Ok = false;
+}
+
+// B. profile.wxml 包含复制按钮
+var profileWxml357 = readFile('pages/profile/profile.wxml');
+if (profileWxml357.indexOf('copyVersion') < 0) {
+  fail('R3.57: copyVersion button missing in profile.wxml');
+  round357Ok = false;
+}
+if (profileWxml357.indexOf('📋') < 0) {
+  fail('R3.57: 📋 icon missing in profile.wxml');
+  round357Ok = false;
+}
+
+// C. profile.wxss 包含复制按钮样式
+var profileWxss357 = readFile('pages/profile/profile.wxss');
+if (profileWxss357.indexOf('.copy-version-btn') < 0) {
+  fail('R3.57: .copy-version-btn style missing in profile.wxss');
+  round357Ok = false;
+}
+
+// D. 回归：R3.32~R3.56 功能未退化
+var termDetailJs357 = readFile('packages/glossary/pages/term-detail/term-detail.js');
+if (termDetailJs357.indexOf('copyTerm') < 0) {
+  fail('R3.57: R3.56 copyTerm regressed in term-detail.js');
+  round357Ok = false;
+}
+var homeJs357 = readFile('pages/home/home.js');
+if (homeJs357.indexOf('onShareAppMessage') < 0) {
+  fail('R3.57: R3.55 onShareAppMessage regressed in home.js');
+  round357Ok = false;
+}
+
+if (round357Ok) pass('Round Mini 3.57 profile version copy button');
+
 
 console.log('\n========================================');
 console.log('Study Tools Mini Smoke Test');

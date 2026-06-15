@@ -4,7 +4,13 @@
   <view class="profile-header">
     <view class="avatar-placeholder">👤</view>
     <text class="profile-name">Study Tools Mini</text>
-    <text class="profile-version">当前版本：{{version}}</text>
+    <view class="version-row">
+      <text class="profile-version">当前版本：{{version}}</text>
+      <!-- R3.57 复制版本号按钮 -->
+      <view class="copy-version-btn" bindtap="copyVersion">
+        <text class="copy-version-icon">📋</text>
+      </view>
+    </view>
   </view>
 
   <!-- 基础统计 -->

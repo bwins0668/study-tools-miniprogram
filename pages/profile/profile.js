@@ -494,5 +494,20 @@ Page({
         }
       }
     });
+  },
+
+  // R3.57 复制版本号
+  copyVersion: function () {
+    var version = this.data.version || '';
+    if (!version) {
+      wx.showToast({ title: '版本号为空', icon: 'none' });
+      return;
+    }
+    wx.setClipboardData({
+      data: version,
+      success: function () {
+        wx.showToast({ title: '版本号已复制', icon: 'none', duration: 1500 });
+      }
+    });
   }
 });

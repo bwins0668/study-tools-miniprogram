@@ -31,6 +31,27 @@
   color: #999999;
 }
 
+/* R3.57 复制版本号按钮 */
+.version-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.copy-version-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rpx 10rpx;
+  margin-left: 10rpx;
+  background-color: #f0f0f0;
+  border-radius: 6rpx;
+}
+
+.copy-version-icon {
+  font-size: 24rpx;
+}
+
 /* 学习状态 */
 .status-card {
   text-align: center;
