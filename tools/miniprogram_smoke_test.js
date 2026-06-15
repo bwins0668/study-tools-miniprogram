@@ -6856,6 +6856,15 @@ if (homeJs365.indexOf("onPullDownRefresh") < 0) {
 }
 if (round365Ok) pass("Round Mini 3.65 home pull-down refresh");
 
+// Round Mini 3.66 profile backup time display
+var round366Ok = true;
+var profileWxml366 = readFile("pages/profile/profile.wxml");
+if (profileWxml366.indexOf("backupTime") < 0) {
+  fail("R3.66: backupTime display missing in profile.wxml");
+  round366Ok = false;
+}
+if (round366Ok) pass("Round Mini 3.66 profile backup time display");
+
 console.log('\n========================================');
 console.log('Passed: ' + passed);
 console.log('Failed: ' + failed);
