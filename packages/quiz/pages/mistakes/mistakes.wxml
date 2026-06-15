@@ -25,6 +25,25 @@
     </view>
   </view>
 
+  <!-- 分组统计 -->
+  <view class="group-stats" wx:if="{{totalCount > 0}}">
+    <view class="group-item" wx:if="{{itCount > 0}}">
+      <text class="group-dot group-dot-it"></text>
+      <text class="group-label">IT Passport</text>
+      <text class="group-count">{{itCount}}</text>
+    </view>
+    <view class="group-item" wx:if="{{sgCount > 0}}">
+      <text class="group-dot group-dot-sg"></text>
+      <text class="group-label">SG</text>
+      <text class="group-count">{{sgCount}}</text>
+    </view>
+    <view class="group-item" wx:if="{{japaneseCount > 0}}">
+      <text class="group-dot group-dot-ja"></text>
+      <text class="group-label">日文题</text>
+      <text class="group-count">{{japaneseCount}}</text>
+    </view>
+  </view>
+
   <!-- 搜索框 -->
   <view class="search-section" wx:if="{{totalCount > 0}}">
     <view class="search-bar">

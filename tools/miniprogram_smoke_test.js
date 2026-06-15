@@ -5079,6 +5079,58 @@ if (quizWxml332.indexOf('feedback-tip') < 0 && quizWxml332.indexOf('showFeedback
 if (round332Ok) pass('Round Mini 3.32 quiz progress percent display');
 
 // ============================================================
+// Round Mini 3.33：错题本分组统计增强
+// ============================================================
+console.log('\n--- Round Mini 3.33 mistakes group stats enhancement ---');
+var round333Ok = true;
+
+// A. mistakes.js 包含分组统计字段
+var mistakesJs333 = readFile('packages/quiz/pages/mistakes/mistakes.js');
+if (mistakesJs333.indexOf('itCount') < 0) {
+  fail('R3.33: itCount field missing in mistakes.js');
+  round333Ok = false;
+}
+if (mistakesJs333.indexOf('sgCount') < 0) {
+  fail('R3.33: sgCount field missing in mistakes.js');
+  round333Ok = false;
+}
+if (mistakesJs333.indexOf('japaneseCount') < 0) {
+  fail('R3.33: japaneseCount field missing in mistakes.js');
+  round333Ok = false;
+}
+
+// B. mistakes.wxml 包含分组统计显示
+var mistakesWxml333 = readFile('packages/quiz/pages/mistakes/mistakes.wxml');
+if (mistakesWxml333.indexOf('group-stats') < 0) {
+  fail('R3.33: group-stats missing in mistakes.wxml');
+  round333Ok = false;
+}
+if (mistakesWxml333.indexOf('group-item') < 0) {
+  fail('R3.33: group-item missing in mistakes.wxml');
+  round333Ok = false;
+}
+
+// C. mistakes.wxss 包含对应样式
+var mistakesWxss333 = readFile('packages/quiz/pages/mistakes/mistakes.wxss');
+if (mistakesWxss333.indexOf('.group-stats') < 0) {
+  fail('R3.33: .group-stats style missing in mistakes.wxss');
+  round333Ok = false;
+}
+if (mistakesWxss333.indexOf('.group-dot') < 0) {
+  fail('R3.33: .group-dot style missing in mistakes.wxss');
+  round333Ok = false;
+}
+
+// D. 回归：R3.28 功能未退化
+var quizJs333 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs333.indexOf('nextAction') < 0) {
+  fail('R3.33: R3.28 nextAction regressed');
+  round333Ok = false;
+}
+
+if (round333Ok) pass('Round Mini 3.33 mistakes group stats enhancement');
+
+// ============================================================
 // 汇总
 // ============================================================
 console.log('\n========================================');

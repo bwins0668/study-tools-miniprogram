@@ -57,6 +57,50 @@
   color: #999999;
 }
 
+/* 分组统计 */
+.group-stats {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 12rpx 32rpx 0;
+  flex-wrap: wrap;
+}
+
+.group-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.group-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+}
+
+.group-dot-it {
+  background-color: #4a90d9;
+}
+
+.group-dot-sg {
+  background-color: #e65100;
+}
+
+.group-dot-ja {
+  background-color: #9c27b0;
+}
+
+.group-label {
+  font-size: 22rpx;
+  color: #666666;
+}
+
+.group-count {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
 /* 搜索框 */
 .search-section {
   padding: 8rpx 30rpx 0;

@@ -77,6 +77,9 @@ Page({
     totalCount: 0,
     reviewCount: 0,
     masteredCount: 0,
+    itCount: 0,
+    sgCount: 0,
+    japaneseCount: 0,
     activeFilter: 'all',
     filterOptions: FILTER_OPTIONS,
     emptyHint: '当前没有错题，继续练习后会自动记录需要复习的题目。',
@@ -143,11 +146,24 @@ Page({
       }
     }
 
+    // 计算分组统计
+    var itCount = 0;
+    var sgCount = 0;
+    var japaneseCount = 0;
+    for (var ci = 0; ci < wrongList.length; ci++) {
+      if (wrongList[ci].exam === 'itpass') itCount++;
+      else if (wrongList[ci].exam === 'sg') sgCount++;
+      if (wrongList[ci].sourceType === 'past_exam_japanese') japaneseCount++;
+    }
+
     this.setData({
       wrongList: wrongList,
       totalCount: wrongList.length,
       reviewCount: wrongList.length,
       masteredCount: 0,
+      itCount: itCount,
+      sgCount: sgCount,
+      japaneseCount: japaneseCount,
       currentReviewIndex: 0,
       showExplanation: true
     });
