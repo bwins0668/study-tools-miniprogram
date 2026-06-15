@@ -79,7 +79,12 @@ Page({
     continueSuggestion: '',
     // R3.42 学习 streak
     streakCount: 0,
-    streakText: ''
+    streakText: '',
+    // R3.44 今日练习进度
+    dailyGoal: 10,
+    goalProgress: 0,
+    goalText: '',
+    showGoalReminder: false
   },
 
   onShow: function () {
@@ -222,6 +227,13 @@ Page({
       streakText = '';
     }
 
+    // R3.44 今日练习进度
+    var dailyGoal = 10;
+    var todayCount = stats.todayTotal || 0;
+    var goalProgress = todayCount >= dailyGoal ? 100 : Math.round(todayCount / dailyGoal * 100);
+    var goalText = todayCount >= dailyGoal ? '🎉 今日目标已达成！' : '今日进度 ' + todayCount + '/' + dailyGoal + ' 题';
+    var showGoalReminder = todayCount === 0;
+
     this.setData({
       favoriteCount: favoriteCount,
       wrongQuestionCount: wrongQuestionCount,
@@ -250,7 +262,12 @@ Page({
       lastAttemptAccuracy: lastAttemptAccuracy,
       continueSuggestion: continueSuggestion,
       streakCount: streakCount,
-      streakText: streakText
+      streakText: streakText,
+      // R3.44 今日练习进度
+      dailyGoal: dailyGoal,
+      goalProgress: goalProgress,
+      goalText: goalText,
+      showGoalReminder: showGoalReminder
     });
   },
 

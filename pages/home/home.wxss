@@ -405,3 +405,53 @@
   margin-top: 24rpx;
   text-align: center;
 }
+
+/* R3.44 今日练习进度 */
+.goal-section {
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  margin: 20rpx 30rpx;
+  padding: 28rpx 32rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.goal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+
+.goal-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.goal-text {
+  font-size: 26rpx;
+  color: #4a90d9;
+  font-weight: 500;
+}
+
+.goal-bar-wrap {
+  height: 16rpx;
+  background-color: #f0f0f0;
+  border-radius: 8rpx;
+  overflow: hidden;
+  margin-bottom: 12rpx;
+}
+
+.goal-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #4a90d9, #81c784);
+  border-radius: 8rpx;
+  transition: width 0.3s ease;
+}
+
+.goal-reminder {
+  font-size: 24rpx;
+  color: #ff9800;
+  text-align: center;
+  margin-top: 8rpx;
+}

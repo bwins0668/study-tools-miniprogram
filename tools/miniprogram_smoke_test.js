@@ -5791,6 +5791,84 @@ if (homeJs343.indexOf('streakCount') < 0) {
 if (round343Ok) pass('Round Mini 3.43 quiz result detail enhancement');
 
 // ============================================================
+// Round Mini 3.44 首页今日练习进度
+// ============================================================
+var round344Ok = true;
+
+// A. home.js 包含今日练习进度数据字段
+var homeJs344 = readFile('pages/home/home.js');
+if (homeJs344.indexOf('dailyGoal') < 0) {
+  fail('R3.44: dailyGoal data field missing in home.js');
+  round344Ok = false;
+}
+if (homeJs344.indexOf('goalProgress') < 0) {
+  fail('R3.44: goalProgress data field missing in home.js');
+  round344Ok = false;
+}
+if (homeJs344.indexOf('goalText') < 0) {
+  fail('R3.44: goalText data field missing in home.js');
+  round344Ok = false;
+}
+if (homeJs344.indexOf('showGoalReminder') < 0) {
+  fail('R3.44: showGoalReminder data field missing in home.js');
+  round344Ok = false;
+}
+
+// B. home.js onShow 包含今日练习进度计算逻辑
+if (homeJs344.indexOf('todayTotal') < 0) {
+  fail('R3.44: todayTotal calculation missing in home.js onShow');
+  round344Ok = false;
+}
+if (homeJs344.indexOf('goalProgress') < 0) {
+  fail('R3.44: goalProgress calculation missing in home.js onShow');
+  round344Ok = false;
+}
+
+// C. home.wxml 包含今日练习进度 UI
+var homeWxml344 = readFile('pages/home/home.wxml');
+if (homeWxml344.indexOf('goal-section') < 0) {
+  fail('R3.44: goal-section missing in home.wxml');
+  round344Ok = false;
+}
+if (homeWxml344.indexOf('goal-bar') < 0) {
+  fail('R3.44: goal-bar missing in home.wxml');
+  round344Ok = false;
+}
+if (homeWxml344.indexOf('goalText') < 0) {
+  fail('R3.44: goalText binding missing in home.wxml');
+  round344Ok = false;
+}
+
+// D. home.wxss 包含今日练习进度样式
+var homeWxss344 = readFile('pages/home/home.wxss');
+if (homeWxss344.indexOf('.goal-section') < 0) {
+  fail('R3.44: .goal-section style missing in home.wxss');
+  round344Ok = false;
+}
+if (homeWxss344.indexOf('.goal-bar') < 0) {
+  fail('R3.44: .goal-bar style missing in home.wxss');
+  round344Ok = false;
+}
+if (homeWxss344.indexOf('.goal-text') < 0) {
+  fail('R3.44: .goal-text style missing in home.wxss');
+  round344Ok = false;
+}
+
+// E. 回归：R3.32~R3.43 功能未退化
+var homeJs344b = readFile('pages/home/home.js');
+if (homeJs344b.indexOf('streakCount') < 0) {
+  fail('R3.44: R3.42 streakCount regressed in home.js');
+  round344Ok = false;
+}
+var quizJs344 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs344.indexOf('reviewList') < 0) {
+  fail('R3.44: R3.43 reviewList regressed in quiz.js');
+  round344Ok = false;
+}
+
+if (round344Ok) pass('Round Mini 3.44 home daily practice progress');
+
+// ============================================================
 // 汇总
 // ============================================================
 console.log('\n========================================');
