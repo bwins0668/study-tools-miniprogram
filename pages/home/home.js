@@ -591,5 +591,11 @@ Page({
       path: '/pages/home/home',
       imageUrl: ''
     };
+  },
+
+  // R3.65 下拉刷新
+  onPullDownRefresh: function () {
+    this.onShow();
+    wx.stopPullDownRefresh();
   }
 });

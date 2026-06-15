@@ -1,4 +1,5 @@
 {
   "navigationBarTitleText": "Study Tools",
-  "usingComponents": {}
+  "usingComponents": {},
+  "enablePullDownRefresh": true
 }

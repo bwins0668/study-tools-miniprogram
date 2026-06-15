@@ -6841,3 +6841,30 @@ if (failed > 0) {
   console.log('ALL TESTS PASSED');
   process.exit(0);
 }
+
+// Round Mini 3.65 home pull-down refresh
+var round365Ok = true;
+var homeJson365 = readFile("pages/home/home.json");
+if (homeJson365.indexOf("enablePullDownRefresh") < 0) {
+  fail("R3.65: enablePullDownRefresh missing in home.json");
+  round365Ok = false;
+}
+var homeJs365 = readFile("pages/home/home.js");
+if (homeJs365.indexOf("onPullDownRefresh") < 0) {
+  fail("R3.65: onPullDownRefresh method missing in home.js");
+  round365Ok = false;
+}
+if (round365Ok) pass("Round Mini 3.65 home pull-down refresh");
+
+console.log('\n========================================');
+console.log('Passed: ' + passed);
+console.log('Failed: ' + failed);
+console.log('========================================');
+
+if (failed > 0) {
+  console.log('SOME TESTS FAILED');
+  process.exit(1);
+} else {
+  console.log('ALL TESTS PASSED');
+  process.exit(0);
+}
