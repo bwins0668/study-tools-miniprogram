@@ -13,15 +13,96 @@
   padding: 30rpx 30rpx 20rpx;
 }
 
-.quiz-title {
-  font-size: 36rpx;
-  font-weight: 700;
-  color: #333333;
+.quiz-header-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
 }
 
-.quiz-progress {
-  font-size: 26rpx;
-  color: #999999;
+.quiz-exam-badge {
+  font-size: 22rpx;
+  font-weight: 700;
+  padding: 6rpx 16rpx;
+  border-radius: 10rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+  letter-spacing: 1rpx;
+}
+
+.badge-it {
+  color: #4a90d9;
+  background-color: #e8f0fe;
+}
+
+.badge-sg {
+  color: #e65100;
+  background-color: #fff3e0;
+}
+
+.badge-wrong {
+  color: #c62828;
+  background-color: #ffebee;
+}
+
+.quiz-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #333333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 进度条 */
+.progress-bar-wrap {
+  height: 6rpx;
+  background-color: #eeeeee;
+  margin: 0 30rpx 4rpx;
+  border-radius: 3rpx;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #4a90d9, #63b3ed);
+  border-radius: 3rpx;
+  transition: width 0.3s ease;
+}
+
+/* 实时会话统计 */
+.session-stats {
+  display: flex;
+  align-items: center;
+  padding: 10rpx 30rpx 6rpx;
+  gap: 24rpx;
+}
+
+.session-stat-item {
+  font-size: 22rpx;
+  color: #888888;
+}
+
+.session-stat-correct {
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.session-stat-wrong {
+  color: #c62828;
+  font-weight: 600;
+}
+
+/* 题目内题号 */
+.question-progress-row {
+  margin-top: 14rpx;
+  padding-top: 14rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.question-number {
+  font-size: 24rpx;
+  color: #aaaaaa;
 }
 
 /* 题目卡片 */
@@ -207,12 +288,29 @@
   font-weight: 500;
 }
 
+.feedback-text-wrap {
+  flex: 1;
+  min-width: 0;
+}
+
+.feedback-tip {
+  display: block;
+  margin-top: 6rpx;
+  font-size: 24rpx;
+  color: #777777;
+  line-height: 1.4;
+}
+
 .feedback-correct .feedback-text {
   color: #2e7d32;
 }
 
 .feedback-wrong .feedback-text {
   color: #c62828;
+}
+
+.feedback-correct .feedback-tip {
+  color: #558b2f;
 }
 
 /* 解释卡片 */

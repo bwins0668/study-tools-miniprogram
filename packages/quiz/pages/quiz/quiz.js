@@ -25,7 +25,12 @@ Page({
     encouragementText: '',
     // v0.21.0 第四批：结果页轻量洞察
     accuracyLevel: '',
-    insightHint: ''
+    insightHint: '',
+    // v0.22.0 第一批：答题页体验增强
+    examBadge: '',
+    progressPercent: 0,
+    feedbackTip: '',
+    showFeedbackTip: false
   },
 
   onLoad: function (options) {
@@ -42,6 +47,7 @@ Page({
 
   loadPracticeQuestions: function (exam, sourceType) {
     var examTitle = exam === 'sg' ? 'SG 考试' : 'IT Passport';
+    var examBadge = exam === 'sg' ? 'SG' : 'IT';
     var modeLabel = sourceType === 'past_exam_japanese' ? '日文题练习' : '课程练习';
     var allQuestions = questionsModule.questions.filter(function (question) {
       return question.exam === exam && question.sourceType === sourceType;
@@ -51,6 +57,7 @@ Page({
       this.setData({
         exam: exam,
         examTitle: examTitle + ' - ' + modeLabel,
+        examBadge: examBadge,
         sourceType: sourceType,
         modeLabel: modeLabel,
         resultModeLabel: examTitle + ' · ' + modeLabel,
@@ -58,16 +65,19 @@ Page({
         totalQuestions: allQuestions.length,
         currentQuestion: allQuestions[0],
         currentIndex: 0,
+        progressPercent: Math.round(1 / allQuestions.length * 100) || 0,
         selectedAnswer: '',
         hasAnswered: false,
         isCorrect: false,
         isFinished: false,
-        showResult: false
+        showResult: false,
+        showFeedbackTip: false
       });
     } else {
       this.setData({
         exam: exam,
         examTitle: examTitle + ' - ' + modeLabel,
+        examBadge: examBadge,
         sourceType: sourceType,
         modeLabel: modeLabel,
         resultModeLabel: examTitle + ' · ' + modeLabel,
@@ -75,7 +85,8 @@ Page({
         currentQuestion: null,
         isFinished: true,
         showResult: false,
-        totalQuestions: 0
+        totalQuestions: 0,
+        showFeedbackTip: false
       });
     }
   },
@@ -111,6 +122,15 @@ Page({
     var sessionCorrect = this.data.sessionCorrect + (isCorrect ? 1 : 0);
     var sessionWrong = this.data.sessionWrong + (isCorrect ? 0 : 1);
 
+    // 答题反馈提示语
+    var feedbackTip = '';
+    if (isCorrect) {
+      var tips = ['继续保持！', '回答正确，理解得不错！', '很好，这道题掌握了！', '不错哦！'];
+      feedbackTip = tips[Math.floor(Math.random() * tips.length)];
+    } else {
+      feedbackTip = '正确答案是 ' + correctAnswer + '，建议结合解释理解知识点';
+    }
+
     this.setData({
       selectedAnswer: key,
       hasAnswered: true,
@@ -118,7 +138,9 @@ Page({
       sessionTotal: sessionTotal,
       sessionCorrect: sessionCorrect,
       sessionWrong: sessionWrong,
-      sessionAccuracy: Math.round(sessionCorrect / sessionTotal * 100)
+      sessionAccuracy: Math.round(sessionCorrect / sessionTotal * 100),
+      feedbackTip: feedbackTip,
+      showFeedbackTip: true
     });
   },
 
@@ -132,9 +154,12 @@ Page({
     this.setData({
       currentIndex: nextIndex,
       currentQuestion: this.data.questions[nextIndex],
+      progressPercent: Math.round((nextIndex + 1) / this.data.totalQuestions * 100) || 0,
       selectedAnswer: '',
       hasAnswered: false,
-      isCorrect: false
+      isCorrect: false,
+      showFeedbackTip: false,
+      feedbackTip: ''
     });
   },
 
@@ -240,6 +265,7 @@ Page({
       this.setData({
         exam: 'wrong_only',
         examTitle: '错题练习',
+        examBadge: '错题',
         sourceType: 'wrong_only',
         modeLabel: '错题重练',
         resultModeLabel: '错题练习 · 错题重练',
@@ -247,16 +273,19 @@ Page({
         totalQuestions: matched.length,
         currentQuestion: matched[0],
         currentIndex: 0,
+        progressPercent: Math.round(1 / matched.length * 100) || 0,
         selectedAnswer: '',
         hasAnswered: false,
         isCorrect: false,
         isFinished: false,
-        showResult: false
+        showResult: false,
+        showFeedbackTip: false
       });
     } else {
       this.setData({
         exam: 'wrong_only',
         examTitle: '错题练习',
+        examBadge: '错题',
         sourceType: 'wrong_only',
         modeLabel: '错题重练',
         resultModeLabel: '错题练习 · 错题重练',
@@ -264,7 +293,8 @@ Page({
         currentQuestion: null,
         isFinished: true,
         showResult: false,
-        totalQuestions: 0
+        totalQuestions: 0,
+        showFeedbackTip: false
       });
     }
   }

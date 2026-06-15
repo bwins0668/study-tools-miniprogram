@@ -4,6 +4,6 @@ App({
     console.log('Study Tools 小程序启动');
   },
   globalData: {
-    version: 'v0.21.0'
+    version: 'v0.22.0'
   }
 });

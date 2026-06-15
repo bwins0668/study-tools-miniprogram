@@ -1,16 +1,31 @@
 <!-- pages/quiz/quiz.wxml -->
 <view class="container">
   <view class="quiz-header">
-    <text class="quiz-title">{{examTitle}}</text>
-    <text class="quiz-progress" wx:if="{{!isFinished && currentQuestion}}">
-      第 {{currentIndex + 1}} / {{totalQuestions}} 题
-    </text>
+    <view class="quiz-header-left">
+      <view class="quiz-exam-badge {{exam === 'sg' ? 'badge-sg' : (exam === 'wrong_only' ? 'badge-wrong' : 'badge-it')}}">{{examBadge}}</view>
+      <text class="quiz-title">{{examTitle}}</text>
+    </view>
+  </view>
+
+  <!-- 进度条 -->
+  <view class="progress-bar-wrap" wx:if="{{!isFinished && totalQuestions > 0}}">
+    <view class="progress-bar" style="width: {{progressPercent}}%"></view>
+  </view>
+
+  <!-- 实时统计 -->
+  <view class="session-stats" wx:if="{{!isFinished && totalQuestions > 0 && sessionTotal > 0}}">
+    <text class="session-stat-item">已答 {{sessionTotal}} 题</text>
+    <text class="session-stat-item session-stat-correct">✓ {{sessionCorrect}}</text>
+    <text class="session-stat-item session-stat-wrong">× {{sessionWrong}}</text>
   </view>
 
   <block wx:if="{{!isFinished && currentQuestion}}">
     <view class="card question-card">
       <text class="question-zh">{{currentQuestion.questionZh}}</text>
       <text class="question-ja">{{currentQuestion.questionJa}}</text>
+      <view class="question-progress-row">
+        <text class="question-number">第 {{currentIndex + 1}} / {{totalQuestions}} 题</text>
+      </view>
       <view class="question-source" wx:if="{{currentQuestion.sourceType === 'lesson_quiz'}}">
         <text class="source-badge">课程练习</text>
         <text class="source-title">{{currentQuestion.lessonTitleZh}}</text>
@@ -44,7 +59,10 @@
     <view class="feedback-section" wx:if="{{hasAnswered}}">
       <view class="feedback-result {{isCorrect ? 'feedback-correct' : 'feedback-wrong'}}">
         <text class="feedback-icon">{{isCorrect ? '✓' : '×'}}</text>
-        <text class="feedback-text">{{isCorrect ? '回答正确' : '回答错误，正确答案是 ' + currentQuestion.answer}}</text>
+        <view class="feedback-text-wrap">
+          <text class="feedback-text">{{isCorrect ? '回答正确' : '回答错误，正确答案是 ' + currentQuestion.answer}}</text>
+          <text class="feedback-tip" wx:if="{{showFeedbackTip}}">{{feedbackTip}}</text>
+        </view>
       </view>
 
       <view class="card explanation-card">
