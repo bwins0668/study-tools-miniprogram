@@ -162,3 +162,42 @@
   color: #555555 !important;
   font-size: 26rpx !important;
 }
+
+/* R3.39 相关术语推荐 */
+.related-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.related-item:last-child {
+  border-bottom: none;
+}
+
+.related-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.related-term {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 6rpx;
+}
+
+.related-trans {
+  display: block;
+  font-size: 24rpx;
+  color: #888888;
+}
+
+.related-arrow {
+  font-size: 28rpx;
+  color: #cccccc;
+  flex-shrink: 0;
+  margin-left: 12rpx;
+}

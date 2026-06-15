@@ -44,6 +44,24 @@
       <text class="paragraph learning-tip-text">{{learningTip}}</text>
     </view>
 
+    <!-- R3.39 相关术语推荐 -->
+    <view class="card" wx:if="{{relatedTerms.length > 0}}">
+      <text class="section-title">相关术语</text>
+      <view
+        class="related-item"
+        wx:for="{{relatedTerms}}"
+        wx:key="id"
+        bindtap="goToRelatedTerm"
+        data-id="{{item.id}}"
+      >
+        <view class="related-main">
+          <text class="related-term">{{item.term}}</text>
+          <text class="related-trans">{{item.zh}} / {{item.ja}}</text>
+        </view>
+        <text class="related-arrow">›</text>
+      </view>
+    </view>
+
     <!-- 收藏按钮增强 (Round 3.23) -->
     <view class="favorite-btn {{isFavorite ? 'favorite-btn-active' : ''}}" bindtap="onFavorite">
       <text class="favorite-star">{{isFavorite ? '★' : '☆'}}</text>

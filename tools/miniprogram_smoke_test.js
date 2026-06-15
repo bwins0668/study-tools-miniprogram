@@ -5425,6 +5425,67 @@ if (mistakesJs338.indexOf('itCount') < 0) {
 if (round338Ok) pass('Round Mini 3.38 term search history');
 
 // ============================================================
+// Round Mini 3.39：术语详情页相关术语推荐
+// ============================================================
+console.log('\n--- Round Mini 3.39 term detail related terms ---');
+var round339Ok = true;
+
+// A. term-detail.js 包含 relatedTerms 字段和相关方法
+var termDetailJs339 = readFile('packages/glossary/pages/term-detail/term-detail.js');
+if (termDetailJs339.indexOf('relatedTerms') < 0) {
+  fail('R3.39: relatedTerms field missing in term-detail.js');
+  round339Ok = false;
+}
+if (termDetailJs339.indexOf('goToRelatedTerm') < 0) {
+  fail('R3.39: goToRelatedTerm method missing in term-detail.js');
+  round339Ok = false;
+}
+if (termDetailJs339.indexOf('glossaryIndex') < 0) {
+  fail('R3.39: glossaryIndex import missing in term-detail.js');
+  round339Ok = false;
+}
+
+// B. term-detail.wxml 包含相关术语 UI
+var termDetailWxml339 = readFile('packages/glossary/pages/term-detail/term-detail.wxml');
+if (termDetailWxml339.indexOf('relatedTerms') < 0) {
+  fail('R3.39: relatedTerms missing in term-detail.wxml');
+  round339Ok = false;
+}
+if (termDetailWxml339.indexOf('goToRelatedTerm') < 0) {
+  fail('R3.39: goToRelatedTerm binding missing in term-detail.wxml');
+  round339Ok = false;
+}
+if (termDetailWxml339.indexOf('related-item') < 0) {
+  fail('R3.39: related-item class missing in term-detail.wxml');
+  round339Ok = false;
+}
+
+// C. term-detail.wxss 包含相关术语样式
+var termDetailWxss339 = readFile('packages/glossary/pages/term-detail/term-detail.wxss');
+if (termDetailWxss339.indexOf('.related-item') < 0) {
+  fail('R3.39: .related-item style missing in term-detail.wxss');
+  round339Ok = false;
+}
+if (termDetailWxss339.indexOf('.related-term') < 0) {
+  fail('R3.39: .related-term style missing in term-detail.wxss');
+  round339Ok = false;
+}
+
+// D. 回归：R3.32~R3.38 功能未退化
+var quizJs339 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs339.indexOf('progressPercent') < 0) {
+  fail('R3.39: R3.32 progressPercent regressed in quiz.js');
+  round339Ok = false;
+}
+var mistakesJs339 = readFile('packages/quiz/pages/mistakes/mistakes.js');
+if (mistakesJs339.indexOf('itCount') < 0) {
+  fail('R3.39: R3.33 itCount regressed in mistakes.js');
+  round339Ok = false;
+}
+
+if (round339Ok) pass('Round Mini 3.39 term detail related terms');
+
+// ============================================================
 // 汇总
 // ============================================================
 console.log('\n========================================');

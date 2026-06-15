@@ -1,5 +1,6 @@
 // pages/term-detail/term-detail.js
 var glossaryLoader = require('../../data/glossary_loader');
+var glossaryIndex = require('../../data/glossary_index').glossaryIndex;
 const {
   isFavoriteTerm,
   addFavoriteTerm,
@@ -15,7 +16,9 @@ Page({
     favoriteAction: '',
     // v0.22.0 第三批：术语详情增强
     categoryLabel: '',
-    learningTip: ''
+    learningTip: '',
+    // R3.39 相关术语推荐
+    relatedTerms: []
   },
 
   onLoad: function (options) {
@@ -42,12 +45,31 @@ Page({
     var learningTip = this.buildLearningTip(found);
     var categoryLabel = this.getCategoryLabel(found ? found.category : '');
 
+    // R3.39 相关术语推荐
+    var relatedTerms = [];
+    if (found && found.category) {
+      var count = 0;
+      for (var i = 0; i < glossaryIndex.length; i++) {
+        if (glossaryIndex[i].category === found.category && String(glossaryIndex[i].id) !== strId) {
+          relatedTerms.push({
+            id: glossaryIndex[i].id,
+            term: glossaryIndex[i].term,
+            zh: glossaryIndex[i].zh,
+            ja: glossaryIndex[i].ja
+          });
+          count++;
+          if (count >= 5) break;
+        }
+      }
+    }
+
     this.setData({
       term: found,
       exampleText: exampleText,
       isFavorite: found ? isFavoriteTerm(strId) : false,
       learningTip: learningTip,
-      categoryLabel: categoryLabel
+      categoryLabel: categoryLabel,
+      relatedTerms: relatedTerms
     });
   },
 
@@ -120,5 +142,14 @@ Page({
         duration: 1500
       });
     }
+  },
+
+  // R3.39 点击相关术语
+  goToRelatedTerm: function (e) {
+    var id = e.currentTarget.dataset.id;
+    if (!id) return;
+    wx.redirectTo({
+      url: '/packages/glossary/pages/term-detail/term-detail?id=' + id
+    });
   }
 });
