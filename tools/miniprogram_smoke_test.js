@@ -6213,6 +6213,66 @@ if (homeJs350.indexOf('achievements') < 0) {
 
 if (round350Ok) pass('Round Mini 3.50 quiz retry wrong questions');
 
+// ============================================================
+// Round Mini 3.51 home suggestion action button
+// ============================================================
+var round351Ok = true;
+
+// A. home.js 包含 generateEnhancedSuggestion 函数和相关数据字段
+var homeJs351 = readFile('pages/home/home.js');
+if (homeJs351.indexOf('generateEnhancedSuggestion') < 0) {
+  fail('R3.51: generateEnhancedSuggestion function missing in home.js');
+  round351Ok = false;
+}
+if (homeJs351.indexOf('suggestionActionText') < 0) {
+  fail('R3.51: suggestionActionText data field missing in home.js');
+  round351Ok = false;
+}
+if (homeJs351.indexOf('suggestionActionPath') < 0) {
+  fail('R3.51: suggestionActionPath data field missing in home.js');
+  round351Ok = false;
+}
+if (homeJs351.indexOf('suggestionActionTap') < 0) {
+  fail('R3.51: suggestionActionTap method missing in home.js');
+  round351Ok = false;
+}
+
+// B. home.wxml 包含建议操作按钮
+var homeWxml351 = readFile('pages/home/home.wxml');
+if (homeWxml351.indexOf('suggestionActionTap') < 0) {
+  fail('R3.51: suggestionActionTap button missing in home.wxml');
+  round351Ok = false;
+}
+if (homeWxml351.indexOf('suggestionActionText') < 0) {
+  fail('R3.51: suggestionActionText binding missing in home.wxml');
+  round351Ok = false;
+}
+
+// C. home.wxss 包含建议操作按钮样式
+var homeWxss351 = readFile('pages/home/home.wxss');
+if (homeWxss351.indexOf('.suggestion-action') < 0) {
+  fail('R3.51: .suggestion-action style missing in home.wxss');
+  round351Ok = false;
+}
+if (homeWxss351.indexOf('.suggestion-action-text') < 0) {
+  fail('R3.51: .suggestion-action-text style missing in home.wxss');
+  round351Ok = false;
+}
+
+// D. 回归：R3.32~R3.50 功能未退化
+var quizJs351 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs351.indexOf('retryWrongQuestions') < 0) {
+  fail('R3.51: R3.50 retryWrongQuestions regressed in quiz.js');
+  round351Ok = false;
+}
+var termDetailJs351 = readFile('packages/glossary/pages/term-detail/term-detail.js');
+if (termDetailJs351.indexOf('note') < 0) {
+  fail('R3.51: R3.49 note regressed in term-detail.js');
+  round351Ok = false;
+}
+
+if (round351Ok) pass('Round Mini 3.51 home suggestion action button');
+
 
 // ============================================================
 // 汇总

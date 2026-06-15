@@ -70,6 +70,9 @@
     <view class="suggestion-content">
       <text class="suggestion-text">{{suggestion}}</text>
       <text class="next-action-hint" wx:if="{{nextActionHint}}">{{nextActionHint}}</text>
+      <view class="suggestion-action" wx:if="{{suggestionActionText}}" bindtap="suggestionActionTap">
+        <text class="suggestion-action-text">{{suggestionActionText}}</text>
+      </view>
     </view>
   </view>
 

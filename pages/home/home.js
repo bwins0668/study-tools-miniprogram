@@ -49,6 +49,50 @@ function generateSuggestion(wrongCount, favoriteCount, hasLastAttempt, todayTota
   return '还没有学习记录，可以从术语表或练习开始，遇到重要术语先收藏再复习';
 }
 
+/**
+ * R3.51 增强建议生成：返回包含操作信息的对象
+ */
+function generateEnhancedSuggestion(wrongCount, favoriteCount, hasLastAttempt, todayTotal, streakCount) {
+  var result = {
+    text: '',
+    actionText: '',
+    actionPath: ''
+  };
+
+  if (wrongCount > 0) {
+    result.text = '有 ' + wrongCount + ' 道错题待复习';
+    result.actionText = '去复习错题';
+    result.actionPath = '/packages/quiz/pages/mistakes/mistakes';
+    return result;
+  }
+
+  if (favoriteCount > 0) {
+    result.text = '已收藏 ' + favoriteCount + ' 个术语';
+    result.actionText = '复习收藏';
+    result.actionPath = '/packages/glossary/pages/term-list/term-list';
+    return result;
+  }
+
+  if (streakCount > 0) {
+    result.text = '已连续学习 ' + streakCount + ' 天，继续保持！';
+    result.actionText = '继续练习';
+    result.actionPath = '/packages/quiz/pages/quiz-menu/quiz-menu';
+    return result;
+  }
+
+  if (todayTotal > 0 && hasLastAttempt) {
+    result.text = '今天已练习 ' + todayTotal + ' 题';
+    result.actionText = '继续练习';
+    result.actionPath = '/packages/quiz/pages/quiz-menu/quiz-menu';
+    return result;
+  }
+
+  result.text = '开始今日学习之旅吧';
+  result.actionText = '开始练习';
+  result.actionPath = '/packages/quiz/pages/quiz-menu/quiz-menu';
+  return result;
+}
+
 Page({
   data: {
     favoriteCount: 0,
@@ -62,6 +106,8 @@ Page({
     lastSourceType: '',
     suggestion: '',
     nextActionHint: '',
+    suggestionActionText: '',
+    suggestionActionPath: '',
     lastPracticeTimeText: '',
     sectionTitle: '快速开始',
     itpassTotal: 0,
@@ -163,6 +209,11 @@ Page({
 
     // 生成建议
     var suggestion = generateSuggestion(wrongQuestionCount, favoriteCount, hasLastAttempt, stats.todayTotal || 0);
+
+    // R3.51 生成增强建议（包含操作按钮）
+    var enhancedSuggestion = generateEnhancedSuggestion(wrongQuestionCount, favoriteCount, hasLastAttempt, stats.todayTotal || 0, streakCount);
+    var suggestionActionText = enhancedSuggestion.actionText || '';
+    var suggestionActionPath = enhancedSuggestion.actionPath || '';
 
     // 生成下一步行动提示
     var nextActionHint = '';
@@ -350,7 +401,10 @@ Page({
       showGoalReminder: showGoalReminder,
       // R3.47 学习成就系统
       achievements: achievements,
-      showAchievements: showAchievements
+      showAchievements: showAchievements,
+      // R3.51 增强建议操作
+      suggestionActionText: suggestionActionText,
+      suggestionActionPath: suggestionActionPath
     });
   },
 
@@ -360,6 +414,16 @@ Page({
     if (exam && sourceType) {
       wx.navigateTo({
         url: '/packages/quiz/pages/quiz/quiz?exam=' + exam + '&sourceType=' + sourceType
+      });
+    }
+  },
+
+  // R3.51 建议卡片操作按钮点击事件
+  suggestionActionTap: function () {
+    var path = this.data.suggestionActionPath || '';
+    if (path) {
+      wx.navigateTo({
+        url: path
       });
     }
   },
