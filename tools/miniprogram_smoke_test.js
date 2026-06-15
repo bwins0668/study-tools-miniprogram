@@ -4087,6 +4087,264 @@ if (!readFile('packages/glossary/pages/term-search/term-search.wxml').includes('
 if (round323Ok) pass('Round Mini 3.23 term-detail enhancement checks');
 
 // ============================================================
+// Round Mini 3.24 stability audit + cross-round regression checks
+// ============================================================
+console.log('\n--- Round Mini 3.24 stability audit checks ---');
+
+var round324Ok = true;
+var appJs324 = readFile('app.js');
+var storage324 = readFile('utils/storage.js');
+var appJson324 = readFile('app.json');
+
+// === A. 版本号与配置稳定性 ===
+// 1. 版本号 v0.21.0
+if (!appJs324.includes('v0.21.0')) {
+  fail('Round 3.24: version not v0.21.0');
+  round324Ok = false;
+}
+
+// 2. project.config.json 存在且可读
+try {
+  var cfg324 = JSON.parse(require('fs').readFileSync('project.config.json', 'utf-8'));
+  if (!cfg324.compileType) {
+    fail('Round 3.24: project.config.json invalid');
+    round324Ok = false;
+  }
+} catch (e) {
+  fail('Round 3.24: project.config.json unreadable');
+  round324Ok = false;
+}
+
+// 3. 分包配置完整（subpackages 数组存在）
+if (!appJson324.includes('"root": "packages/quiz"') ||
+    !appJson324.includes('"root": "packages/glossary"')) {
+  fail('Round 3.24: app.json missing subpackage roots');
+  round324Ok = false;
+}
+
+// === B. Storage 数据格式稳定性 ===
+// 4. backup version 保持 v0.21.0
+if (!storage324.includes("version: 'v0.21.0'")) {
+  fail('Round 3.24: storage backup version changed');
+  round324Ok = false;
+}
+
+// 5. 3 个 storage keys 无变化
+var knownKeys324 = ['study-tools-mini-favorite-terms-v1', 'study-tools-mini-wrong-questions-v1', 'study-tools-mini-quiz-attempts-v1'];
+var storageKeyRx324 = /study-tools-mini-[a-z0-9-]+/g;
+var keyMatch324;
+var foundKeys324 = [];
+while ((keyMatch324 = storageKeyRx324.exec(storage324)) !== null) {
+  if (foundKeys324.indexOf(keyMatch324[0]) === -1) foundKeys324.push(keyMatch324[0]);
+}
+if (foundKeys324.length !== 3) {
+  fail('Round 3.24: storage key count changed: expected 3, got ' + foundKeys324.length);
+  round324Ok = false;
+}
+for (var ki324 = 0; ki324 < foundKeys324.length; ki324++) {
+  if (knownKeys324.indexOf(foundKeys324[ki324]) === -1) {
+    fail('Round 3.24: unknown storage key: ' + foundKeys324[ki324]);
+    round324Ok = false;
+  }
+}
+
+// 6. exportLocalBackup 导出格式稳定（包含 version + timestamp + 3 keys）
+if (!storage324.includes("favoriteTerms") || !storage324.includes("wrongQuestions") || !storage324.includes("quizAttempts")) {
+  fail('Round 3.24: storage export format changed');
+  round324Ok = false;
+}
+
+// 7. restoreFromBackup 导入逻辑保持
+if (!storage324.includes("favorite-terms-v1") || !storage324.includes("wrong-questions-v1") || !storage324.includes("quiz-attempts-v1")) {
+  fail('Round 3.24: storage restore keys changed');
+  round324Ok = false;
+}
+
+// === C. 跨页面 NaN 守卫验证 ===
+// 8. quiz.js sessionAccuracy 有零值守卫
+var quizJs324 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (!quizJs324.includes('sessionTotal > 0')) {
+  fail('Round 3.24: quiz.js sessionAccuracy missing zero guard');
+  round324Ok = false;
+}
+
+// 9. profile.js accuracy 有守卫
+var profileJs324 = readFile('pages/profile/profile.js');
+if (!profileJs324.includes('stats.total || 0') && !profileJs324.includes('total > 0')) {
+  fail('Round 3.24: profile.js accuracy missing guard');
+  round324Ok = false;
+}
+
+// 10. exam-menu.js overallAccuracy 有零值守卫
+var examMenuJs324 = readFile('packages/quiz/pages/exam-menu/exam-menu.js');
+if (!examMenuJs324.includes('overallTotal > 0')) {
+  fail('Round 3.24: exam-menu.js overallAccuracy missing zero guard');
+  round324Ok = false;
+}
+
+// 11. home.js suggestion 有 accuracy 守卫
+var homeJs324 = readFile('pages/home/home.js');
+if (!homeJs324.includes('lastAttemptAccuracy') || !homeJs324.includes('continueSuggestion')) {
+  fail('Round 3.24: home.js suggestion logic broken');
+  round324Ok = false;
+}
+
+// === D. 跨轮功能共存验证（全部 7 轮 3.17~3.23） ===
+// 12. Round 3.17: mistakes stats + profile consecutive days
+var mistakesJs324 = readFile('pages/mistakes/mistakes.js');
+if (!mistakesJs324.includes('getWrongQuestionStats') || !profileJs324.includes('getConsecutiveLearningDays')) {
+  fail('Round 3.24: Round 3.17 coexistence broken');
+  round324Ok = false;
+}
+
+// 13. Round 3.18: home weak badge + storage getLastAttemptByExam
+var homeWxml324 = readFile('pages/home/home.wxml');
+if (!homeWxml324.includes('card-weak-badge') || !storage324.includes('getLastAttemptByExam')) {
+  fail('Round 3.24: Round 3.18 coexistence broken');
+  round324Ok = false;
+}
+
+// 14. Round 3.19: favorite-review lastSavedAtFormatted + getFavoriteTermStats
+var favReviewJs324 = readFile('packages/glossary/pages/favorite-review/favorite-review.js');
+if (!favReviewJs324.includes('lastSavedAtFormatted') || !storage324.includes('getFavoriteTermStats')) {
+  fail('Round 3.24: Round 3.19 coexistence broken');
+  round324Ok = false;
+}
+
+// 15. Round 3.20: home continueSuggestion + quiz insightHint
+if (!homeJs324.includes('continueSuggestion') || !quizJs324.includes('insightHint')) {
+  fail('Round 3.24: Round 3.20 coexistence broken');
+  round324Ok = false;
+}
+
+// 16. Round 3.21: profile reviewHints + glossary empty-suggestions
+if (!profileJs324.includes('reviewHints') || !readFile('packages/glossary/pages/term-search/term-search.wxml').includes('empty-suggestions')) {
+  fail('Round 3.24: Round 3.21 coexistence broken');
+  round324Ok = false;
+}
+
+// 17. Round 3.22: exam-menu overallTotal + suggestion
+if (!examMenuJs324.includes('overallTotal') || !examMenuJs324.includes('getLastAttemptByExam')) {
+  fail('Round 3.24: Round 3.22 coexistence broken');
+  round324Ok = false;
+}
+
+// 18. Round 3.23: term-detail onBackToSearch + favorite-hint
+var termDetailWxml324 = readFile('packages/glossary/pages/term-detail/term-detail.wxml');
+if (!termDetailWxml324.includes('onBackToSearch') || !termDetailWxml324.includes('favorite-hint')) {
+  fail('Round 3.24: Round 3.23 coexistence broken');
+  round324Ok = false;
+}
+
+// === E. 文件结构稳定性 ===
+// 19. 主包页面文件齐全
+var mainPages324 = ['pages/home/home.js', 'pages/home/home.wxml', 'pages/home/home.wxss',
+  'pages/profile/profile.js', 'pages/profile/profile.wxml', 'pages/profile/profile.wxss',
+  'pages/glossary/glossary.js', 'pages/glossary/glossary.wxml', 'pages/glossary/glossary.wxss'];
+for (var mp324 = 0; mp324 < mainPages324.length; mp324++) {
+  try {
+    readFile(mainPages324[mp324]);
+  } catch (e) {
+    fail('Round 3.24: main page missing: ' + mainPages324[mp324]);
+    round324Ok = false;
+  }
+}
+
+// 20. 关键工具文件齐全
+var utilFiles324 = ['utils/storage.js', 'packages/glossary/data/glossary_index.js',
+  'packages/glossary/data/glossary_loader.js', 'packages/quiz/data/questions.js'];
+for (var uf324 = 0; uf324 < utilFiles324.length; uf324++) {
+  try {
+    readFile(utilFiles324[uf324]);
+  } catch (e) {
+    fail('Round 3.24: utility file missing: ' + utilFiles324[uf324]);
+    round324Ok = false;
+  }
+}
+
+// 21. 分包 chunk 文件存在（至少 5 个）
+var chunkCount324 = 0;
+try {
+  var chunkDir324 = require('fs').readdirSync('packages/glossary/data/chunks');
+  for (var cd324 = 0; cd324 < chunkDir324.length; cd324++) {
+    if (chunkDir324[cd324].endsWith('.js')) chunkCount324++;
+  }
+} catch (e) {}
+if (chunkCount324 < 5) {
+  fail('Round 3.24: glossary chunks insufficient (found ' + chunkCount324 + ')');
+  round324Ok = false;
+}
+
+// === F. 全量禁止 API 扫描（排除 smoke test） ===
+var allSourceFiles324 = [];
+function collectJs324(dir) {
+  var entries324 = require('fs').readdirSync(dir);
+  for (var e324 = 0; e324 < entries324.length; e324++) {
+    var full324 = dir + '/' + entries324[e324];
+    try {
+      var stat324 = require('fs').statSync(full324);
+      if (stat324.isDirectory() && entries324[e324] !== 'node_modules' && entries324[e324] !== '.git' &&
+          entries324[e324] !== '.workbuddy' && entries324[e324] !== 'generated-backup') {
+        collectJs324(full324);
+      } else if (entries324[e324].endsWith('.js') && !full324.includes('smoke_test')) {
+        allSourceFiles324.push(full324);
+      }
+    } catch (ex) {}
+  }
+}
+try { collectJs324('.'); } catch (e) {}
+
+var forbidden324 = ['wx.request', 'wx.cloud', 'cloud.init', 'wx.login', 'wx.getUserInfo', 'wx.getUserProfile', 'wx.requestPayment', 'wx.getPhoneNumber'];
+for (var sf324 = 0; sf324 < allSourceFiles324.length; sf324++) {
+  var fpForbidden324 = allSourceFiles324[sf324];
+  // 排除数据/备份文件
+  if (fpForbidden324.includes('/chunks/') || fpForbidden324.includes('/generated-backup/') ||
+      fpForbidden324.includes('glossary_index.js') || fpForbidden324.includes('_backup')) continue;
+  try {
+    var content324 = require('fs').readFileSync(fpForbidden324, 'utf-8');
+    for (var f324 = 0; f324 < forbidden324.length; f324++) {
+      if (content324.includes(forbidden324[f324])) {
+        fail('Round 3.24: forbidden API in source: ' + fpForbidden324 + ' -> ' + forbidden324[f324]);
+        round324Ok = false;
+      }
+    }
+  } catch (ex) {}
+}
+
+// 23. 全量高风险表述扫描（排除数据、备份、工具文件）
+var banned324 = ['保证通过', '包过', '押题', '必过', '100%通过', '内部资料', '官方答案', '绝对安全', '永久保存', '云端同步', '自动备份', '保证恢复'];
+for (var sf2324 = 0; sf2324 < allSourceFiles324.length; sf2324++) {
+  var fp324 = allSourceFiles324[sf2324];
+  // 排除纯数据文件和备份文件（含日文技术术语）
+  if (fp324.includes('/chunks/') || fp324.includes('/generated-backup/') ||
+      fp324.includes('glossary_index.js') || fp324.includes('questions.js') ||
+      fp324.includes('_backup') || fp324.includes('glossary_full')) continue;
+  try {
+    var c324 = require('fs').readFileSync(fp324, 'utf-8');
+    for (var bb324 = 0; bb324 < banned324.length; bb324++) {
+      if (c324.includes(banned324[bb324])) {
+        fail('Round 3.24: banned text in ' + fp324 + ': ' + banned324[bb324]);
+        round324Ok = false;
+      }
+    }
+  } catch (ex) {}
+}
+
+// 24. 备份 key 名称一致性检查
+if (!storage324.includes('favorite-terms-v1') || !storage324.includes('wrong-questions-v1') || !storage324.includes('quiz-attempts-v1')) {
+  fail('Round 3.24: backup key names inconsistent');
+  round324Ok = false;
+}
+
+// 25. preloadRule 保持（包含 glossary 分包预下载）
+if (!appJson324.includes('"preloadRule"') || !appJson324.includes('"glossary"')) {
+  fail('Round 3.24: preloadRule for glossary missing');
+  round324Ok = false;
+}
+
+if (round324Ok) pass('Round Mini 3.24 stability audit + cross-round checks');
+
+// ============================================================
 // 汇总
 // ============================================================
 console.log('\n========================================');
