@@ -1,0 +1,87 @@
+/* pages/exam-menu/exam-menu.wxss */
+
+.container {
+  padding: 20rpx 0 60rpx;
+  min-height: 100vh;
+}
+
+.page-header {
+  text-align: center;
+  padding: 50rpx 30rpx 30rpx;
+}
+
+.page-title {
+  display: block;
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #333333;
+  margin-bottom: 12rpx;
+}
+
+.page-desc {
+  display: block;
+  font-size: 26rpx;
+  color: #999999;
+}
+
+.menu-list {
+  padding: 20rpx 0;
+}
+
+.menu-card {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  padding: 40rpx 32rpx;
+  margin: 20rpx 30rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.menu-icon {
+  font-size: 56rpx;
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.menu-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 8rpx;
+}
+
+.menu-desc {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.menu-stats {
+  display: flex;
+  align-items: center;
+  margin-top: 8rpx;
+  gap: 20rpx;
+}
+
+.menu-stat-text {
+  font-size: 22rpx;
+  color: #4a90d9;
+}
+
+.menu-arrow {
+  font-size: 40rpx;
+  color: #cccccc;
+  margin-left: 16rpx;
+  flex-shrink: 0;
+}

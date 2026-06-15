@@ -1,0 +1,64 @@
+<!--packages/glossary/pages/favorite-review/favorite-review.wxml-->
+<view class="container">
+  <!-- 有收藏时的复习卡片 -->
+  <view wx:if="{{hasFavorites}}">
+    <!-- 进度 -->
+    <view class="progress-bar">
+      <text class="progress-text">第 {{currentIndex + 1}} / {{totalCount}} 个</text>
+    </view>
+
+    <!-- 术语卡片 -->
+    <view class="term-card">
+      <view class="term-header">
+        <text class="term-category">{{currentTerm.category}}</text>
+        <text class="term-level">{{currentTerm.level}}</text>
+      </view>
+      <text class="term-english">{{currentTerm.term}}</text>
+      <text class="term-zh">{{currentTerm.zh}}</text>
+      <text class="term-ja">{{currentTerm.ja}}</text>
+
+      <!-- 解释区域 -->
+      <view class="explanation-section" wx:if="{{showExplanation}}">
+        <view class="explanation-divider"></view>
+        <text class="explanation-label">中文解释</text>
+        <text class="explanation-text">{{detail.explanationZh}}</text>
+        <text class="explanation-label expl-ja-label">日文解释</text>
+        <text class="explanation-text expl-ja-text">{{detail.explanationJa}}</text>
+        <view wx:if="{{exampleText}}">
+          <text class="explanation-label">示例</text>
+          <text class="explanation-text expl-example">{{exampleText}}</text>
+        </view>
+      </view>
+
+      <!-- 显示解释按钮 -->
+      <view class="reveal-btn-wrap" wx:if="{{!showExplanation}}">
+        <view class="reveal-btn" bindtap="revealExplanation">
+          <text class="reveal-btn-text">显示解释</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部操作按钮 -->
+    <view class="nav-buttons">
+      <view class="nav-btn {{isFirstItem ? 'nav-btn-disabled' : ''}}" bindtap="prevTerm">
+        <text class="nav-btn-text">上一个</text>
+      </view>
+      <view class="nav-btn nav-btn-detail" bindtap="goDetail">
+        <text class="nav-btn-text">查看详情</text>
+      </view>
+      <view class="nav-btn {{isLastItem ? 'nav-btn-disabled' : ''}}" bindtap="nextTerm">
+        <text class="nav-btn-text">{{nextBtnText}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!hasFavorites}}">
+    <text class="empty-icon">⭐</text>
+    <text class="empty-text">还没有收藏术语</text>
+    <text class="empty-hint">请先在术语详情页收藏想复习的术语</text>
+    <view class="go-search-btn" bindtap="goSearch">
+      <text class="go-search-text">去搜索术语</text>
+    </view>
+  </view>
+</view>

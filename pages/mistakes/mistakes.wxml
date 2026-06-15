@@ -1,0 +1,22 @@
+<!--pages/mistakes/mistakes.wxml - 错题 tab 轻入口-->
+<view class="container">
+  <view class="launcher-section">
+    <text class="launcher-icon">📋</text>
+    <text class="launcher-title">错题本</text>
+    <text class="launcher-desc">做题后，答错的题目会自动记录</text>
+    <view class="stats-row" wx:if="{{wrongCount > 0}}">
+      <text class="stats-value">{{wrongCount}}</text>
+      <text class="stats-label">道错题待复习</text>
+    </view>
+    <view class="launcher-btn" bindtap="goToMistakesList">
+      <text class="launcher-btn-text">查看错题详情</text>
+    </view>
+    <view class="study-btn" bindtap="goStudy">
+      <text class="study-btn-text">去学习</text>
+    </view>
+  </view>
+
+  <view class="empty-state" wx:if="{{wrongCount === 0}}">
+    <text class="empty-hint">还没有错题记录，开始练习吧</text>
+  </view>
+</view>

@@ -1,0 +1,281 @@
+/* pages/mistakes/mistakes.wxss */
+
+.container {
+  padding: 20rpx 0 60rpx;
+  min-height: 100vh;
+}
+
+.page-header {
+  text-align: center;
+  padding: 50rpx 30rpx 30rpx;
+}
+
+.page-title {
+  display: block;
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #333333;
+  margin-bottom: 12rpx;
+}
+
+.page-desc {
+  display: block;
+  font-size: 26rpx;
+  color: #999999;
+}
+
+/* 统计 */
+.stats-card {
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  margin: 20rpx 30rpx;
+  padding: 32rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.stats-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.stats-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stats-value {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #4a90d9;
+  margin-bottom: 8rpx;
+}
+
+.stats-label {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+/* 错题列表 */
+.wrong-list {
+  padding: 10rpx 0;
+}
+
+.wrong-card {
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  margin: 16rpx 30rpx;
+  padding: 28rpx 32rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.wrong-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+
+.wrong-exam {
+  font-size: 22rpx;
+  color: #4a90d9;
+  background-color: #eef4fc;
+  padding: 4rpx 16rpx;
+  border-radius: 16rpx;
+}
+
+.wrong-tags {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.wrong-source {
+  font-size: 20rpx;
+  color: #666666;
+  background-color: #f0f0f0;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+}
+
+.wrong-source-exam {
+  color: #e65100;
+  background-color: #fff3e0;
+}
+
+.wrong-remove {
+  font-size: 24rpx;
+  color: #f44336;
+  padding: 8rpx 20rpx;
+  border: 1rpx solid #f44336;
+  border-radius: 20rpx;
+}
+
+.wrong-remove-text {
+  font-size: 24rpx;
+  color: #f44336;
+}
+
+.wrong-question-zh {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333333;
+  line-height: 1.6;
+  margin-bottom: 8rpx;
+}
+
+.wrong-question-ja {
+  display: block;
+  font-size: 24rpx;
+  color: #888888;
+  line-height: 1.6;
+  margin-bottom: 16rpx;
+}
+
+.translation-warning {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12rpx;
+  padding: 8rpx 16rpx;
+  background-color: #fff8e1;
+  border-radius: 8rpx;
+}
+
+.warning-icon {
+  font-size: 24rpx;
+  margin-right: 8rpx;
+  color: #f59e0b;
+}
+
+.warning-text {
+  font-size: 22rpx;
+  color: #b45309;
+}
+
+.wrong-detail-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.wrong-detail-label {
+  font-size: 24rpx;
+  color: #999999;
+  flex-shrink: 0;
+}
+
+.wrong-detail-value {
+  font-size: 26rpx;
+  font-weight: 500;
+}
+
+.wrong-correct {
+  color: #4caf50;
+}
+
+.wrong-incorrect {
+  color: #f44336;
+}
+
+.wrong-explanation {
+  margin-top: 16rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.wrong-exp-text {
+  display: block;
+  font-size: 24rpx;
+  color: #666666;
+  line-height: 1.7;
+  margin-bottom: 8rpx;
+}
+
+.wrong-exp-ja {
+  color: #888888;
+}
+
+.explanation-warning {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12rpx;
+  padding: 8rpx 16rpx;
+  background-color: #fff8e1;
+  border-radius: 8rpx;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80rpx 40rpx 60rpx;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 24rpx;
+}
+
+.empty-text {
+  font-size: 30rpx;
+  color: #666666;
+  margin-bottom: 12rpx;
+}
+
+.empty-hint {
+  font-size: 24rpx;
+  color: #999999;
+  text-align: center;
+}
+
+/* 去学习按钮 */
+.btn-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16rpx;
+  padding: 20rpx 0 40rpx;
+}
+
+.practice-wrong-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e8913a;
+  border-radius: 40rpx;
+  margin: 0 60rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 16rpx rgba(232, 145, 58, 0.3);
+  width: calc(100% - 120rpx);
+}
+
+.practice-wrong-text {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.practice-btn-disabled {
+  opacity: 0.5;
+}
+
+.go-study-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #4a90d9;
+  border-radius: 40rpx;
+  margin: 0 60rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 16rpx rgba(74, 144, 217, 0.3);
+  width: calc(100% - 120rpx);
+}
+
+.go-study-text {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #ffffff;
+}

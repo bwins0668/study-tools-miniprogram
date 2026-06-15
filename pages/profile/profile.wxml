@@ -1,0 +1,134 @@
+<!--pages/profile/profile.wxml-->
+<view class="container">
+  <!-- 头部 -->
+  <view class="profile-header">
+    <view class="avatar-placeholder">👤</view>
+    <text class="profile-name">Study Tools Mini</text>
+    <text class="profile-version">当前版本：{{version}}</text>
+  </view>
+
+  <!-- 基础统计 -->
+  <view class="stats-section">
+    <text class="section-title">基础信息</text>
+    <view class="info-card">
+      <view class="info-row">
+        <text class="info-label">已收藏术语</text>
+        <text class="info-value info-highlight">{{favoriteCount}}</text>
+      </view>
+    </view>
+    <view class="info-card">
+      <view class="info-row">
+        <text class="info-label">错题数量</text>
+        <text class="info-value info-highlight">{{wrongQuestionCount}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 做题统计 -->
+  <view class="stats-section">
+    <text class="section-title">做题统计</text>
+    <view class="stats-grid">
+      <view class="stat-box">
+        <text class="stat-value">{{totalAttempts}}</text>
+        <text class="stat-label">总答题</text>
+      </view>
+      <view class="stat-box">
+        <text class="stat-value stat-correct">{{correctCount}}</text>
+        <text class="stat-label">答对</text>
+      </view>
+      <view class="stat-box">
+        <text class="stat-value stat-wrong">{{wrongCount}}</text>
+        <text class="stat-label">答错</text>
+      </view>
+      <view class="stat-box">
+        <text class="stat-value stat-accuracy">{{accuracy}}%</text>
+        <text class="stat-label">正确率</text>
+      </view>
+    </view>
+    <view class="info-card">
+      <view class="info-row">
+        <text class="info-label">今日答题</text>
+        <text class="info-value">{{todayTotal}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 分类正确率 -->
+  <view class="stats-section">
+    <text class="section-title">分类正确率</text>
+    <view class="info-card">
+      <view class="info-row">
+        <text class="info-label">IT Passport</text>
+        <text class="info-value">{{itpassAccuracy}}%</text>
+      </view>
+    </view>
+    <view class="info-card">
+      <view class="info-row">
+        <text class="info-label">SG</text>
+        <text class="info-value">{{sgAccuracy}}%</text>
+      </view>
+    </view>
+    <view class="info-card">
+      <view class="info-row">
+        <text class="info-label">课程练习</text>
+        <text class="info-value">{{lessonAccuracy}}%</text>
+      </view>
+    </view>
+    <view class="info-card">
+      <view class="info-row">
+        <text class="info-label">日文真题</text>
+        <text class="info-value">{{pastExamAccuracy}}%</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 系统信息 -->
+  <view class="stats-section">
+    <text class="section-title">系统信息</text>
+    <view class="info-card">
+      <view class="info-row">
+        <text class="info-label">数据模式</text>
+        <text class="info-value">本地静态数据</text>
+      </view>
+    </view>
+    <view class="info-card">
+      <view class="info-row">
+        <text class="info-label">Glossary</text>
+        <text class="info-value">1500 条已导入</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 本地数据管理 -->
+  <view class="stats-section">
+    <text class="section-title">本地数据管理</text>
+    <view class="backup-btn-group">
+      <view class="backup-btn backup-btn-primary" bindtap="copyBackup">
+        <text class="backup-btn-text">复制备份数据</text>
+      </view>
+      <view class="backup-btn backup-btn-secondary" bindtap="restoreFromClipboard">
+        <text class="backup-btn-text">从剪贴板恢复</text>
+      </view>
+      <view class="backup-btn backup-btn-danger" bindtap="clearAllData">
+        <text class="backup-btn-text">清空全部本地数据</text>
+      </view>
+    </view>
+    <text class="backup-hint">备份包含收藏、错题本和学习记录</text>
+  </view>
+
+  <!-- 本地版说明 -->
+  <view class="stats-section">
+    <text class="section-title">关于本应用</text>
+    <view class="info-card">
+      <text class="local-notice-text">当前版本为本地学习版，不含登录和云同步。收藏、错题和学习记录仅保存在本机。请定期使用"复制备份数据"保存学习进度。</text>
+    </view>
+  </view>
+
+  <!-- 清空学习记录 -->
+  <view class="clear-section">
+    <view class="clear-btn" bindtap="clearAttempts">
+      <text class="clear-btn-text">清空学习记录</text>
+    </view>
+    <text class="clear-hint">只清空做题记录，不影响收藏和错题本</text>
+  </view>
+</view>

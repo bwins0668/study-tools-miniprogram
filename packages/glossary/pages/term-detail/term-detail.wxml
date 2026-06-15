@@ -1,0 +1,45 @@
+<view class="page">
+  <block wx:if="{{term}}">
+    <view class="card">
+      <view class="term-header">
+        <text class="term-main">{{term.term}}</text>
+        <text class="level">{{term.level}}</text>
+      </view>
+
+      <text class="term-line">中文：{{term.zh}}</text>
+      <text class="term-line">日文：{{term.ja}}</text>
+      <text class="term-line">分类：{{term.category}}</text>
+
+      <view class="tag-row">
+        <text class="tag" wx:for="{{term.tags}}" wx:key="*this">{{item}}</text>
+      </view>
+    </view>
+
+    <view class="card">
+      <text class="section-title">中文解释</text>
+      <text class="paragraph">{{term.explanationZh}}</text>
+    </view>
+
+    <view class="card">
+      <text class="section-title">日本語説明</text>
+      <text class="paragraph">{{term.explanationJa}}</text>
+    </view>
+
+    <view class="card">
+      <text class="section-title">Example</text>
+      <text class="paragraph">{{exampleText}}</text>
+    </view>
+
+    <view class="favorite-btn {{isFavorite ? 'favorite-btn-active' : ''}}" bindtap="onFavorite">
+      <text class="favorite-star">{{isFavorite ? '★' : '☆'}}</text>
+      <text class="favorite-text">{{isFavorite ? '取消收藏' : '收藏术语'}}</text>
+    </view>
+  </block>
+
+  <block wx:else>
+    <view class="card">
+      <text class="section-title">术语不存在</text>
+      <text class="paragraph">请返回术语表重新选择。</text>
+    </view>
+  </block>
+</view>

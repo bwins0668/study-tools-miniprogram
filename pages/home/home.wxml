@@ -1,0 +1,110 @@
+<!--pages/home/home.wxml-->
+<view class="container">
+  <!-- 头部标题 -->
+  <view class="header">
+    <text class="title">Study Tools</text>
+    <text class="subtitle">中日双语 IT 学习工具</text>
+  </view>
+
+  <!-- 学习概览 -->
+  <view class="overview-section">
+    <text class="section-title">学习概览</text>
+    <view class="overview-row">
+      <view class="overview-item">
+        <text class="overview-value">{{todayTotal}}</text>
+        <text class="overview-label">今日答题</text>
+      </view>
+      <view class="overview-item">
+        <text class="overview-value">{{favoriteCount}}</text>
+        <text class="overview-label">已收藏术语</text>
+      </view>
+      <view class="overview-item">
+        <text class="overview-value">{{wrongQuestionCount}}</text>
+        <text class="overview-label">错题数量</text>
+      </view>
+    </view>
+    <view class="overview-row overview-row-extra">
+      <view class="overview-item">
+        <text class="overview-value overview-accuracy">{{accuracy}}%</text>
+        <text class="overview-label">总正确率</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 继续学习 -->
+  <view class="continue-section" wx:if="{{hasLastAttempt}}">
+    <text class="section-title">继续学习</text>
+    <view class="continue-card" bindtap="continueLearning">
+      <view class="continue-icon">📚</view>
+      <view class="continue-info">
+        <text class="continue-exam">{{lastExamLabel}} · {{lastSourceLabel}}</text>
+        <text class="continue-hint">继续上次的练习</text>
+      </view>
+      <view class="continue-btn">继续练习</view>
+    </view>
+  </view>
+
+  <!-- 无学习记录 -->
+  <view class="continue-section" wx:if="{{!hasLastAttempt}}">
+    <text class="section-title">继续学习</text>
+    <view class="continue-empty">
+      <text class="continue-empty-text">还没有学习记录</text>
+      <text class="continue-empty-hint">可以从 IT Passport 或 SG 开始练习</text>
+    </view>
+  </view>
+
+  <!-- 功能入口 -->
+  <view class="section-label">功能入口</view>
+
+  <view class="card-list">
+    <!-- Glossary 术语表 -->
+    <view class="card card-entry" bindtap="goToGlossary">
+      <view class="card-icon">📖</view>
+      <view class="card-info">
+        <text class="card-title">Glossary 术语表</text>
+        <text class="card-desc">IT 术语中日英对照查询</text>
+      </view>
+      <view class="card-arrow">›</view>
+    </view>
+
+    <!-- 收藏术语复习 -->
+    <view class="card card-entry" bindtap="goToFavoriteReview">
+      <view class="card-icon">⭐</view>
+      <view class="card-info">
+        <text class="card-title">收藏术语复习</text>
+        <text class="card-desc">逐张复习已收藏的术语卡片</text>
+      </view>
+      <view class="card-arrow">›</view>
+    </view>
+
+    <!-- IT Passport -->
+    <view class="card card-entry" bindtap="goToItPassport">
+      <view class="card-icon">📝</view>
+      <view class="card-info">
+        <text class="card-title">IT Passport</text>
+        <text class="card-desc">IT パスポート試験</text>
+      </view>
+      <view class="card-arrow">›</view>
+    </view>
+
+    <!-- SG 考试 -->
+    <view class="card card-entry" bindtap="goToSG">
+      <view class="card-icon">🎯</view>
+      <view class="card-info">
+        <text class="card-title">SG 考试</text>
+        <text class="card-desc">システム監査技術者</text>
+      </view>
+      <view class="card-arrow">›</view>
+    </view>
+
+    <!-- 错题本 -->
+    <view class="card card-entry" bindtap="goToMistakes">
+      <view class="card-icon">📋</view>
+      <view class="card-info">
+        <text class="card-title">错题本</text>
+        <text class="card-desc">查看做错的题目和复习记录</text>
+      </view>
+      <view class="card-arrow">›</view>
+    </view>
+  </view>
+</view>

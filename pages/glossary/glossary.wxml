@@ -1,0 +1,15 @@
+<!--pages/glossary/glossary.wxml - 术语 tab 轻入口-->
+<view class="container">
+  <view class="launcher-section">
+    <text class="launcher-icon">📖</text>
+    <text class="launcher-title">术语表</text>
+    <text class="launcher-desc">1500 条 IT 术语，支持中英日三语搜索</text>
+    <view class="launcher-btn" bindtap="goToGlossarySearch">
+      <text class="launcher-btn-text">打开术语搜索</text>
+    </view>
+    <view class="launcher-btn launcher-btn-secondary" bindtap="goToFavoriteReview">
+      <text class="launcher-btn-text">复习收藏术语（{{favoriteCount}}）</text>
+    </view>
+    <text class="launcher-hint" wx:if="{{favoriteCount > 0}}">已收藏 {{favoriteCount}} 条术语</text>
+  </view>
+</view>

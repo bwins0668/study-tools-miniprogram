@@ -1,0 +1,39 @@
+<!--pages/exam-menu/exam-menu.wxml-->
+<view class="container">
+  <!-- 标题 -->
+  <view class="page-header">
+    <text class="page-title">{{examTitle}}</text>
+    <text class="page-desc">{{examDesc}}</text>
+  </view>
+
+  <!-- 练习入口 -->
+  <view class="menu-list">
+    <!-- 课程练习 -->
+    <view class="card menu-card" bindtap="goLessonQuiz">
+      <view class="menu-icon">📚</view>
+      <view class="menu-info">
+        <text class="menu-title">课程练习</text>
+        <text class="menu-desc">双语课程练习题，含中文翻译</text>
+        <view class="menu-stats">
+          <text class="menu-stat-text">已做 {{lessonTotal}} 题</text>
+          <text class="menu-stat-text">正确率 {{lessonAccuracy}}%</text>
+        </view>
+      </view>
+      <view class="menu-arrow">›</view>
+    </view>
+
+    <!-- 日文真题 -->
+    <view class="card menu-card" bindtap="goPastExam">
+      <view class="menu-icon">📝</view>
+      <view class="menu-info">
+        <text class="menu-title">日文真题</text>
+        <text class="menu-desc">日文原题，中文翻译待补充。</text>
+        <view class="menu-stats">
+          <text class="menu-stat-text">已做 {{pastTotal}} 题</text>
+          <text class="menu-stat-text">正确率 {{pastAccuracy}}%</text>
+        </view>
+      </view>
+      <view class="menu-arrow">›</view>
+    </view>
+  </view>
+</view>

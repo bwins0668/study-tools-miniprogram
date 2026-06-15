@@ -1,0 +1,117 @@
+<!-- pages/quiz/quiz.wxml -->
+<view class="container">
+  <view class="quiz-header">
+    <text class="quiz-title">{{examTitle}}</text>
+    <text class="quiz-progress" wx:if="{{!isFinished && currentQuestion}}">
+      第 {{currentIndex + 1}} / {{totalQuestions}} 题
+    </text>
+  </view>
+
+  <block wx:if="{{!isFinished && currentQuestion}}">
+    <view class="card question-card">
+      <text class="question-zh">{{currentQuestion.questionZh}}</text>
+      <text class="question-ja">{{currentQuestion.questionJa}}</text>
+      <view class="question-source" wx:if="{{currentQuestion.sourceType === 'lesson_quiz'}}">
+        <text class="source-badge">课程练习</text>
+        <text class="source-title">{{currentQuestion.lessonTitleZh}}</text>
+      </view>
+      <view class="question-source" wx:if="{{currentQuestion.sourceType === 'past_exam_japanese'}}">
+        <text class="source-badge source-badge-exam">日文题练习</text>
+        <text class="source-title">{{currentQuestion.year}} 第{{currentQuestion.number}}题</text>
+      </view>
+      <view class="translation-warning" wx:if="{{currentQuestion.translationStatus === 'zh_fallback_from_ja'}}">
+        <text class="warning-icon">!</text>
+        <text class="warning-text">日文原题，中文翻译待补充。</text>
+      </view>
+    </view>
+
+    <view class="options-list">
+      <view
+        wx:for="{{currentQuestion.options}}"
+        wx:key="key"
+        class="option-item {{hasAnswered && item.key === selectedAnswer ? (isCorrect ? 'option-correct' : 'option-wrong') : ''}} {{hasAnswered && item.key === currentQuestion.answer && !isCorrect ? 'option-answer' : ''}}"
+        bindtap="selectAnswer"
+        data-key="{{item.key}}"
+      >
+        <view class="option-key">{{item.key}}</view>
+        <view class="option-content">
+          <text class="option-zh">{{item.textZh}}</text>
+          <text class="option-ja">{{item.textJa}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="feedback-section" wx:if="{{hasAnswered}}">
+      <view class="feedback-result {{isCorrect ? 'feedback-correct' : 'feedback-wrong'}}">
+        <text class="feedback-icon">{{isCorrect ? '✓' : '×'}}</text>
+        <text class="feedback-text">{{isCorrect ? '回答正确' : '回答错误，正确答案是 ' + currentQuestion.answer}}</text>
+      </view>
+
+      <view class="card explanation-card">
+        <view class="explanation-warning" wx:if="{{currentQuestion.explanationStatus === 'shared_hint'}}">
+          <text class="warning-icon">!</text>
+          <text class="warning-text">当前为通用说明，中文解释待补充。</text>
+        </view>
+        <text class="explanation-title">中文解释</text>
+        <text class="explanation-body">{{currentQuestion.explanationZh}}</text>
+        <text class="explanation-title">日文解释</text>
+        <text class="explanation-body">{{currentQuestion.explanationJa}}</text>
+      </view>
+
+      <view class="next-btn" bindtap="nextQuestion">
+        <text class="next-btn-text">{{currentIndex + 1 >= totalQuestions ? '查看结果' : '下一题'}}</text>
+      </view>
+    </view>
+  </block>
+
+  <block wx:if="{{isFinished && !showResult && totalQuestions === 0}}">
+    <view class="card finish-card">
+      <text class="finish-icon">-</text>
+      <text class="finish-title">暂无题目</text>
+      <view class="finish-btn" bindtap="finishQuiz">
+        <text class="finish-btn-text">返回</text>
+      </view>
+    </view>
+  </block>
+
+  <block wx:if="{{showResult && totalQuestions > 0}}">
+    <view class="card result-card">
+      <text class="result-kicker">本次练习完成</text>
+      <text class="result-mode">{{resultModeLabel}}</text>
+
+      <view class="accuracy-block">
+        <text class="accuracy-value">{{sessionAccuracy}}%</text>
+        <text class="accuracy-label">本次正确率</text>
+      </view>
+
+      <view class="result-stats">
+        <view class="result-stat">
+          <text class="result-stat-value">{{sessionTotal}}</text>
+          <text class="result-stat-label">本次答题数</text>
+        </view>
+        <view class="result-stat">
+          <text class="result-stat-value result-correct">{{sessionCorrect}}</text>
+          <text class="result-stat-label">答对数量</text>
+        </view>
+        <view class="result-stat">
+          <text class="result-stat-value result-wrong">{{sessionWrong}}</text>
+          <text class="result-stat-label">答错数量</text>
+        </view>
+      </view>
+
+      <text class="encouragement-text">{{encouragementText}}</text>
+
+      <view class="result-actions">
+        <view class="result-btn result-btn-primary" bindtap="restartPractice">
+          <text class="result-btn-text result-btn-text-primary">再练一次</text>
+        </view>
+        <view class="result-btn" bindtap="goMistakes">
+          <text class="result-btn-text">查看错题</text>
+        </view>
+        <view class="result-btn" bindtap="goHome">
+          <text class="result-btn-text">返回首页</text>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>

@@ -1,0 +1,217 @@
+/* packages/glossary/pages/favorite-review/favorite-review.wxss */
+
+.container {
+  padding: 30rpx 30rpx 80rpx;
+  min-height: 100vh;
+}
+
+/* 进度条 */
+.progress-bar {
+  text-align: center;
+  padding: 20rpx 0 30rpx;
+}
+
+.progress-text {
+  font-size: 28rpx;
+  color: #888888;
+}
+
+/* 术语卡片 */
+.term-card {
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  padding: 40rpx 36rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  margin-bottom: 30rpx;
+}
+
+.term-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 24rpx;
+}
+
+.term-category {
+  font-size: 22rpx;
+  color: #4a90d9;
+  background-color: #eef4fc;
+  padding: 4rpx 16rpx;
+  border-radius: 16rpx;
+  margin-right: 12rpx;
+}
+
+.term-level {
+  font-size: 22rpx;
+  color: #e8913a;
+  background-color: #fff8e1;
+  padding: 4rpx 16rpx;
+  border-radius: 16rpx;
+}
+
+.term-english {
+  display: block;
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #333333;
+  margin-bottom: 20rpx;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.term-zh {
+  display: block;
+  font-size: 32rpx;
+  color: #555555;
+  margin-bottom: 12rpx;
+  line-height: 1.6;
+  word-break: break-word;
+}
+
+.term-ja {
+  display: block;
+  font-size: 28rpx;
+  color: #888888;
+  margin-bottom: 12rpx;
+  line-height: 1.6;
+  word-break: break-word;
+}
+
+/* 解释区域 */
+.explanation-section {
+  margin-top: 10rpx;
+}
+
+.explanation-divider {
+  height: 1rpx;
+  background-color: #f0f0f0;
+  margin-bottom: 24rpx;
+}
+
+.explanation-label {
+  display: block;
+  font-size: 24rpx;
+  color: #999999;
+  margin-bottom: 8rpx;
+  margin-top: 16rpx;
+}
+
+.expl-ja-label {
+  margin-top: 20rpx;
+}
+
+.explanation-text {
+  display: block;
+  font-size: 28rpx;
+  color: #444444;
+  line-height: 1.8;
+  word-break: break-word;
+}
+
+.expl-ja-text {
+  color: #666666;
+}
+
+.expl-example {
+  color: #4a90d9;
+  font-style: italic;
+  padding: 16rpx;
+  background-color: #f5f8fe;
+  border-radius: 12rpx;
+}
+
+/* 显示解释按钮 */
+.reveal-btn-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 32rpx;
+}
+
+.reveal-btn {
+  background-color: #4a90d9;
+  border-radius: 40rpx;
+  padding: 22rpx 60rpx;
+  box-shadow: 0 4rpx 16rpx rgba(74, 144, 217, 0.3);
+}
+
+.reveal-btn-text {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* 底部操作按钮 */
+.nav-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.nav-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  border-radius: 40rpx;
+  padding: 24rpx 0;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.nav-btn-text {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.nav-btn-detail {
+  background-color: #4a90d9;
+  box-shadow: 0 4rpx 16rpx rgba(74, 144, 217, 0.3);
+}
+
+.nav-btn-detail .nav-btn-text {
+  color: #ffffff;
+}
+
+.nav-btn-disabled {
+  opacity: 0.4;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 120rpx 40rpx 60rpx;
+}
+
+.empty-icon {
+  font-size: 100rpx;
+  margin-bottom: 30rpx;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #666666;
+  margin-bottom: 12rpx;
+}
+
+.empty-hint {
+  font-size: 26rpx;
+  color: #999999;
+  text-align: center;
+  margin-bottom: 50rpx;
+}
+
+.go-search-btn {
+  background-color: #4a90d9;
+  border-radius: 40rpx;
+  padding: 24rpx 60rpx;
+  box-shadow: 0 4rpx 16rpx rgba(74, 144, 217, 0.3);
+}
+
+.go-search-text {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #ffffff;
+}

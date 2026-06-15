@@ -1,0 +1,67 @@
+<!--pages/glossary/glossary.wxml-->
+<view class="container">
+  <!-- 搜索框 -->
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <text class="search-icon">🔍</text>
+      <input
+        class="search-input"
+        placeholder="搜索术语（英文/中文/日文）"
+        value="{{keyword}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+      />
+      <text wx:if="{{keyword}}" class="search-clear" bindtap="clearSearch">✕</text>
+    </view>
+  </view>
+
+  <!-- 结果数量提示 -->
+  <view class="result-count">
+    <text>{{resultHint}}</text>
+  </view>
+
+  <!-- 术语列表 -->
+  <view class="glossary-list">
+    <view
+      class="glossary-card"
+      wx:for="{{filteredList}}"
+      wx:key="id"
+      bindtap="goToDetail"
+      data-id="{{item.id}}"
+    >
+      <view class="card-main">
+        <view class="card-left">
+          <view class="item-header">
+            <text class="item-term">{{item.term}}</text>
+            <view class="item-badges">
+              <text class="badge badge-category">{{item.category}}</text>
+              <text class="badge badge-level">{{item.level}}</text>
+              <text wx:if="{{item._isFavorite}}" class="badge badge-fav">已收藏</text>
+            </view>
+          </view>
+          <view class="item-translations">
+            <text class="item-zh">{{item.zh}}</text>
+            <text class="item-sep">/</text>
+            <text class="item-ja">{{item.ja}}</text>
+          </view>
+        </view>
+        <view class="card-detail-hint">
+          <text class="detail-arrow">›</text>
+          <text class="detail-label">详情</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 搜索无结果 -->
+    <view class="empty-state" wx:if="{{filteredList.length === 0 && keyword}}">
+      <text class="empty-icon">🔍</text>
+      <text class="empty-text">没有找到匹配的术语</text>
+      <text class="empty-hint">试试其他关键词</text>
+    </view>
+
+    <!-- 默认展示提示 -->
+    <view class="list-hint" wx:if="{{!keyword && showCount < totalCount}}">
+      <text>仅显示前 {{showCount}} 条，请使用搜索查找更多</text>
+    </view>
+  </view>
+</view>
