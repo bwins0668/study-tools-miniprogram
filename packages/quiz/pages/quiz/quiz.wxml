@@ -181,6 +181,11 @@
             <text class="review-item-label">正确答案：</text>
             <text class="review-item-correct-answer text-correct">{{item.correctAnswer}}</text>
           </view>
+          <!-- R3.48 错题解析 -->
+          <view class="review-item-answer" wx:if="{{item.hint}}">
+            <text class="review-item-label">💡 提示：</text>
+            <text class="review-item-hint">{{item.hint}}</text>
+          </view>
         </view>
         <view class="review-item-status">
           <text>{{item.isCorrect ? '✓' : '×'}}</text>

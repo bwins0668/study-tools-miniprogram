@@ -6057,6 +6057,54 @@ if (homeJs347b.indexOf('streakCount') < 0) {
 
 if (round347Ok) pass('Round Mini 3.47 home learning achievement system');
 
+// ============================================================
+// Round Mini 3.48 quiz result wrong answer explanation
+// ============================================================
+var round348Ok = true;
+
+// A. quiz.js reviewList 包含 hint 字段
+var quizJs348 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs348.indexOf('hint') < 0) {
+  fail('R3.48: hint field missing in quiz.js reviewList');
+  round348Ok = false;
+}
+if (quizJs348.indexOf('shared_hint') < 0) {
+  fail('R3.48: shared_hint reference missing in quiz.js');
+  round348Ok = false;
+}
+
+// B. quiz.wxml 包含错题解析显示
+var quizWxml348 = readFile('packages/quiz/pages/quiz/quiz.wxml');
+if (quizWxml348.indexOf('review-item-hint') < 0) {
+  fail('R3.48: review-item-hint missing in quiz.wxml');
+  round348Ok = false;
+}
+if (quizWxml348.indexOf('💡 提示') < 0) {
+  fail('R3.48: hint label missing in quiz.wxml');
+  round348Ok = false;
+}
+
+// C. quiz.wxss 包含错题解析样式
+var quizWxss348 = readFile('packages/quiz/pages/quiz/quiz.wxss');
+if (quizWxss348.indexOf('.review-item-hint') < 0) {
+  fail('R3.48: .review-item-hint style missing in quiz.wxss');
+  round348Ok = false;
+}
+
+// D. 回归：R3.32~R3.47 功能未退化
+var quizJs348b = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs348b.indexOf('onShareAppMessage') < 0) {
+  fail('R3.48: R3.46 onShareAppMessage regressed in quiz.js');
+  round348Ok = false;
+}
+var homeJs348 = readFile('pages/home/home.js');
+if (homeJs348.indexOf('achievements') < 0) {
+  fail('R3.48: R3.47 achievements regressed in home.js');
+  round348Ok = false;
+}
+
+if (round348Ok) pass('Round Mini 3.48 quiz result wrong answer explanation');
+
 
 // ============================================================
 // 汇总

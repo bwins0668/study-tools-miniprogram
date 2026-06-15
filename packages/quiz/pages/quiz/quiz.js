@@ -239,7 +239,9 @@ Page({
               selectedAnswer: item.selectedAnswer,
               isCorrect: item.isCorrect,
               questionZh: question.questionZh || '',
-              correctAnswer: question.answer || ''
+              correctAnswer: question.answer || '',
+              // R3.48 添加错题解析
+              hint: question.shared_hint || ''
             });
           }
         }

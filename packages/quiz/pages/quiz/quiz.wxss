@@ -822,3 +822,11 @@
   font-size: 28rpx;
   color: #666666;
 }
+
+/* R3.48 错题解析 */
+.review-item-hint {
+  font-size: 22rpx;
+  color: #ff9800;
+  line-height: 1.5;
+  margin-top: 6rpx;
+}
