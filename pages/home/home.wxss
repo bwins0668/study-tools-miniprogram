@@ -630,3 +630,16 @@
   white-space: nowrap;
   max-width: 120rpx;
 }
+
+/* R3.67 页脚版本号 */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx 30rpx 60rpx;
+}
+
+.footer-text {
+  font-size: 24rpx;
+  color: #999999;
+}

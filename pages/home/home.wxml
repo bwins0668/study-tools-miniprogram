@@ -213,4 +213,9 @@
       <view class="card-arrow">›</view>
     </view>
   </view>
+
+  <!-- R3.67 页脚版本号 -->
+  <view class="footer">
+    <text class="footer-text">Study Tools Mini v{{version}}</text>
+  </view>
 </view>
