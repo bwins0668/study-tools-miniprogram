@@ -6273,6 +6273,58 @@ if (termDetailJs351.indexOf('note') < 0) {
 
 if (round351Ok) pass('Round Mini 3.51 home suggestion action button');
 
+// ============================================================
+// Round Mini 3.52 home learning reminder
+// ============================================================
+var round352Ok = true;
+
+// A. home.js 包含 generateLearningReminder 函数和相关数据字段
+var homeJs352 = readFile('pages/home/home.js');
+if (homeJs352.indexOf('generateLearningReminder') < 0) {
+  fail('R3.52: generateLearningReminder function missing in home.js');
+  round352Ok = false;
+}
+if (homeJs352.indexOf('learningReminder') < 0) {
+  fail('R3.52: learningReminder data field missing in home.js');
+  round352Ok = false;
+}
+
+// B. home.wxml 包含学习提醒横幅
+var homeWxml352 = readFile('pages/home/home.wxml');
+if (homeWxml352.indexOf('reminder-banner') < 0) {
+  fail('R3.52: reminder-banner missing in home.wxml');
+  round352Ok = false;
+}
+if (homeWxml352.indexOf('reminder-text') < 0) {
+  fail('R3.52: reminder-text binding missing in home.wxml');
+  round352Ok = false;
+}
+
+// C. home.wxss 包含提醒横幅样式
+var homeWxss352 = readFile('pages/home/home.wxss');
+if (homeWxss352.indexOf('.reminder-banner') < 0) {
+  fail('R3.52: .reminder-banner style missing in home.wxss');
+  round352Ok = false;
+}
+if (homeWxss352.indexOf('.reminder-text') < 0) {
+  fail('R3.52: .reminder-text style missing in home.wxss');
+  round352Ok = false;
+}
+
+// D. 回归：R3.32~R3.51 功能未退化
+var homeJs352b = readFile('pages/home/home.js');
+if (homeJs352b.indexOf('suggestionActionTap') < 0) {
+  fail('R3.52: R3.51 suggestionActionTap regressed in home.js');
+  round352Ok = false;
+}
+var quizJs352 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs352.indexOf('retryWrongQuestions') < 0) {
+  fail('R3.52: R3.50 retryWrongQuestions regressed in quiz.js');
+  round352Ok = false;
+}
+
+if (round352Ok) pass('Round Mini 3.52 home learning reminder');
+
 
 // ============================================================
 // 汇总

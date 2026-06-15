@@ -93,6 +93,50 @@ function generateEnhancedSuggestion(wrongCount, favoriteCount, hasLastAttempt, t
   return result;
 }
 
+/**
+ * R3.52 学习时间智能提醒：根据时间和学习状态生成提醒文本
+ */
+function generateLearningReminder(streakCount, todayTotal, wrongCount, favoriteCount) {
+  var now = new Date();
+  var hour = now.getHours();
+  var greeting = '';
+
+  // 根据时间段生成问候语
+  if (hour >= 5 && hour < 8) {
+    greeting = '早起好';
+  } else if (hour >= 8 && hour < 11) {
+    greeting = '早上好';
+  } else if (hour >= 11 && hour < 13) {
+    greeting = '中午好';
+  } else if (hour >= 13 && hour < 17) {
+    greeting = '下午好';
+  } else if (hour >= 17 && hour < 20) {
+    greeting = '傍晚好';
+  } else if (hour >= 20 && hour < 23) {
+    greeting = '晚上好';
+  } else {
+    greeting = '深夜了';
+  }
+
+  // 根据学习状态生成提醒
+  if (wrongCount > 0 && todayTotal === 0) {
+    return greeting + '，今天还没练习，有 ' + wrongCount + ' 道错题待复习';
+  }
+  if (streakCount > 0 && todayTotal === 0) {
+    return greeting + '，已连续学习 ' + streakCount + ' 天，今天继续吗？';
+  }
+  if (todayTotal > 0 && todayTotal < 10) {
+    return greeting + '，今天已练习 ' + todayTotal + ' 题，再练几题吧';
+  }
+  if (todayTotal >= 10) {
+    return greeting + '，今日目标已达成！继续保持';
+  }
+  if (favoriteCount > 0 && todayTotal === 0) {
+    return greeting + '，有 ' + favoriteCount + ' 个收藏术语，复习一下吧';
+  }
+  return greeting + '，开始今日学习吧';
+}
+
 Page({
   data: {
     favoriteCount: 0,
@@ -133,7 +177,9 @@ Page({
     showGoalReminder: false,
     // R3.47 学习成就系统
     achievements: [],
-    showAchievements: false
+    showAchievements: false,
+    // R3.52 学习时间智能提醒
+    learningReminder: ''
   },
 
   onShow: function () {
@@ -215,6 +261,9 @@ Page({
     var suggestionActionText = enhancedSuggestion.actionText || '';
     var suggestionActionPath = enhancedSuggestion.actionPath || '';
 
+    // R3.52 生成学习提醒（初步，streakCount 可能在下方重新计算）
+    var learningReminder = generateLearningReminder(streakCount, stats.todayTotal || 0, wrongQuestionCount, favoriteCount);
+
     // 生成下一步行动提示
     var nextActionHint = '';
     if (wrongQuestionCount > 0) {
@@ -280,6 +329,9 @@ Page({
       streakCount = 0;
       streakText = '';
     }
+
+    // R3.52 重新计算学习提醒（使用最新的streakCount值）
+    learningReminder = generateLearningReminder(streakCount, stats.todayTotal || 0, wrongQuestionCount, favoriteCount);
 
     // R3.47 学习成就系统计算
     var achievements = [];
@@ -404,7 +456,9 @@ Page({
       showAchievements: showAchievements,
       // R3.51 增强建议操作
       suggestionActionText: suggestionActionText,
-      suggestionActionPath: suggestionActionPath
+      suggestionActionPath: suggestionActionPath,
+      // R3.52 学习时间智能提醒
+      learningReminder: learningReminder
     });
   },
 

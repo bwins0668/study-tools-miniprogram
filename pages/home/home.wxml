@@ -1,5 +1,10 @@
 <!--pages/home/home.wxml-->
 <view class="container">
+  <!-- R3.52 学习时间智能提醒 -->
+  <view class="reminder-banner" wx:if="{{learningReminder}}">
+    <text class="reminder-text">{{learningReminder}}</text>
+  </view>
+
   <!-- 头部标题 -->
   <view class="header">
     <text class="title">Study Tools</text>
