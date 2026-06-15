@@ -5019,6 +5019,66 @@ for (var ek = 0; ek < expectedKeys331.length; ek++) {
 if (round331Ok) pass('Round Mini 3.31 final stability audit');
 
 // ============================================================
+// Round Mini 3.32：答题进度百分比显示增强
+// ============================================================
+console.log('\n--- Round Mini 3.32 quiz progress percent display ---');
+var round332Ok = true;
+
+// A. quiz.wxml 包含进度百分比显示
+var quizWxml332 = readFile('packages/quiz/pages/quiz/quiz.wxml');
+if (quizWxml332.indexOf('progress-percent') < 0) {
+  fail('R3.32: progress-percent class missing in quiz.wxml');
+  round332Ok = false;
+}
+if (quizWxml332.indexOf('progressPercent}}%') < 0) {
+  fail('R3.32: progressPercent percent display missing in quiz.wxml');
+  round332Ok = false;
+}
+if (quizWxml332.indexOf('progress-row') < 0) {
+  fail('R3.32: progress-row wrapper missing in quiz.wxml');
+  round332Ok = false;
+}
+
+// B. quiz.wxss 包含对应样式
+var quizWxss332 = readFile('packages/quiz/pages/quiz/quiz.wxss');
+if (quizWxss332.indexOf('.progress-row') < 0) {
+  fail('R3.32: .progress-row style missing in quiz.wxss');
+  round332Ok = false;
+}
+if (quizWxss332.indexOf('.progress-percent') < 0) {
+  fail('R3.32: .progress-percent style missing in quiz.wxss');
+  round332Ok = false;
+}
+
+// C. quiz.js progressPercent 逻辑完整
+var quizJs332 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs332.indexOf('progressPercent') < 0) {
+  fail('R3.32: progressPercent field missing in quiz.js');
+  round332Ok = false;
+}
+// 检查 nextQuestion 中 progressPercent 更新逻辑
+if (quizJs332.indexOf('progressPercent: Math.round') < 0) {
+  fail('R3.32: progressPercent update logic missing in quiz.js nextQuestion');
+  round332Ok = false;
+}
+
+// D. 回归：R3.27 功能未退化
+if (quizWxml332.indexOf('exam-badge') < 0) {
+  fail('R3.32: R3.27 examBadge regressed in quiz.wxml');
+  round332Ok = false;
+}
+if (quizWxml332.indexOf('session-stats') < 0) {
+  fail('R3.32: R3.27 session-stats regressed in quiz.wxml');
+  round332Ok = false;
+}
+if (quizWxml332.indexOf('feedback-tip') < 0 && quizWxml332.indexOf('showFeedbackTip') < 0) {
+  fail('R3.32: R3.27 feedback-tip regressed in quiz.wxml');
+  round332Ok = false;
+}
+
+if (round332Ok) pass('Round Mini 3.32 quiz progress percent display');
+
+// ============================================================
 // 汇总
 // ============================================================
 console.log('\n========================================');

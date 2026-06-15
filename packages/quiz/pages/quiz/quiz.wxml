@@ -7,9 +7,12 @@
     </view>
   </view>
 
-  <!-- 进度条 -->
-  <view class="progress-bar-wrap" wx:if="{{!isFinished && totalQuestions > 0}}">
-    <view class="progress-bar" style="width: {{progressPercent}}%"></view>
+  <!-- 进度条 + 百分比 -->
+  <view class="progress-row" wx:if="{{!isFinished && totalQuestions > 0}}">
+    <view class="progress-bar-wrap">
+      <view class="progress-bar" style="width: {{progressPercent}}%"></view>
+    </view>
+    <text class="progress-percent">{{progressPercent}}%</text>
   </view>
 
   <!-- 实时统计 -->
