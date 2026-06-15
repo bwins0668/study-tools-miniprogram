@@ -666,3 +666,26 @@
   color: #ffffff;
   font-weight: bold;
 }
+
+/* R3.75 快捷操作提示 */
+.quick-tips {
+  margin: 20rpx 30rpx;
+  padding: 20rpx;
+  background-color: #fff7e6;
+  border-radius: 8rpx;
+  border-left: 4rpx solid #fa8c16;
+}
+
+.quick-tips-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #fa8c16;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.quick-tips-text {
+  font-size: 24rpx;
+  color: #666666;
+  line-height: 1.6;
+}

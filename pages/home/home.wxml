@@ -28,6 +28,12 @@
   <!-- R3.69 分区分隔线 -->
   <view class="section-divider"></view>
 
+  <!-- R3.75 快捷操作提示 -->
+  <view class="quick-tips">
+    <text class="quick-tips-title">💡 快捷操作</text>
+    <text class="quick-tips-text">长按术语可快速收藏 | 答题后可查看解析 | 定期备份学习数据</text>
+  </view>
+
   <!-- R3.42 学习 streak -->
   <view class="streak-banner" wx:if="{{streakCount > 0}}">
     <text class="streak-icon">🔥</text>
