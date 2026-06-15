@@ -240,5 +240,23 @@ Page({
         wx.showToast({ title: '复制失败', icon: 'none', duration: 1500 });
       }
     });
+  },
+
+  // R3.64 复制示例到剪贴板
+  copyExample: function () {
+    var exampleText = this.data.exampleText || '';
+    if (!exampleText) {
+      wx.showToast({ title: '示例为空', icon: 'none' });
+      return;
+    }
+    wx.setClipboardData({
+      data: exampleText,
+      success: function () {
+        wx.showToast({ title: '示例已复制', icon: 'none', duration: 1500 });
+      },
+      fail: function () {
+        wx.showToast({ title: '复制失败', icon: 'none', duration: 1500 });
+      }
+    });
   }
 });

@@ -6816,6 +6816,20 @@ if (round363Ok) pass("Round Mini 3.63 home reminder dismiss");
 
 
 console.log('========================================');
+
+// Round Mini 3.64 term detail copy example
+var round364Ok = true;
+var termDetailJs364 = readFile("packages/glossary/pages/term-detail/term-detail.js");
+if (termDetailJs364.indexOf("copyExample") < 0) {
+  fail("R3.64: copyExample method missing");
+  round364Ok = false;
+}
+var termDetailWxml364 = readFile("packages/glossary/pages/term-detail/term-detail.wxml");
+if (termDetailWxml364.indexOf("copyExample") < 0) {
+  fail("R3.64: copyExample button missing in wxml");
+  round364Ok = false;
+}
+if (round364Ok) pass("Round Mini 3.64 term detail copy example");
 console.log('Passed: ' + passed);
 console.log('Failed: ' + failed);
 console.log('========================================');

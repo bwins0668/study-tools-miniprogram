@@ -57,6 +57,28 @@
   flex-shrink: 0;
 }
 
+/* R3.64 复制示例按钮 */
+.copy-example-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12rpx 20rpx;
+  margin-top: 16rpx;
+  background-color: #f0f0f0;
+  border-radius: 8rpx;
+  align-self: flex-start;
+}
+
+.copy-example-icon {
+  font-size: 28rpx;
+  margin-right: 8rpx;
+}
+
+.copy-example-text {
+  font-size: 26rpx;
+  color: #666666;
+}
+
 .copy-term-icon {
   font-size: 28rpx;
 }
