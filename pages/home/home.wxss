@@ -704,3 +704,30 @@
   margin-top: 8rpx;
   display: block;
 }
+
+/* R3.79 最近更新提示 */
+.update-banner {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 24rpx;
+  background-color: #e6f7ff;
+  border-bottom: 1rpx solid #91d5ff;
+}
+
+.update-icon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+}
+
+.update-text {
+  flex: 1;
+  font-size: 26rpx;
+  color: #1890ff;
+}
+
+.update-dismiss-btn {
+  font-size: 32rpx;
+  color: #1890ff;
+  padding: 8rpx;
+  cursor: pointer;
+}

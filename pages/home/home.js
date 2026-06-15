@@ -212,7 +212,10 @@ Page({
     // R3.72 返回顶部按钮
     showBackToTop: false,
     // R3.77 页面浏览次数
-    viewCount: 0
+    viewCount: 0,
+    // R3.79 最近更新提示
+    showUpdateBanner: true,
+    updateText: '最近更新：新增返回顶部按钮、页面浏览次数统计、最近更新提示'
   },
 
   onShow: function () {
@@ -625,6 +628,13 @@ Page({
     wx.pageScrollTo({
       scrollTop: 0,
       duration: 300
+    });
+  },
+
+  // R3.79 关闭最近更新提示
+  dismissUpdateBanner: function () {
+    this.setData({
+      showUpdateBanner: false
     });
   }
 });

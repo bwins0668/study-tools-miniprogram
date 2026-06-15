@@ -19,6 +19,13 @@
     <view class="reminder-dismiss-btn" bindtap="dismissReminder">✕</view>
   </view>
 
+  <!-- R3.79 最近更新提示 -->
+  <view class="update-banner" wx:if="{{showUpdateBanner}}">
+    <text class="update-icon">🆕</text>
+    <text class="update-text">{{updateText}}</text>
+    <view class="update-dismiss-btn" bindtap="dismissUpdateBanner">✕</view>
+  </view>
+
   <!-- 头部标题 -->
   <view class="header">
     <text class="title">Study Tools</text>
