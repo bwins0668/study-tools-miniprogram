@@ -5167,6 +5167,76 @@ if (termDetailJs334.indexOf('categoryLabel') < 0) {
 if (round334Ok) pass('Round Mini 3.34 home learning path enhancement');
 
 // ============================================================
+// Round Mini 3.35：收藏复习完成提示增强
+// ============================================================
+console.log('\n--- Round Mini 3.35 favorite-review completion hint ---');
+var round335Ok = true;
+
+// A. favorite-review.js 包含 reviewCompletionHint 字段和逻辑
+var favReviewJs335 = readFile('packages/glossary/pages/favorite-review/favorite-review.js');
+if (favReviewJs335.indexOf('reviewCompletionHint') < 0) {
+  fail('R3.35: reviewCompletionHint field missing in favorite-review.js');
+  round335Ok = false;
+}
+if (favReviewJs335.indexOf('completionHint') < 0) {
+  fail('R3.35: completionHint logic missing in favorite-review.js revealExplanation');
+  round335Ok = false;
+}
+if (favReviewJs335.indexOf("复习完成") < 0) {
+  fail('R3.35: completion message missing in favorite-review.js');
+  round335Ok = false;
+}
+
+// B. favorite-review.wxml 包含 completion-hint 显示
+var favReviewWxml335 = readFile('packages/glossary/pages/favorite-review/favorite-review.wxml');
+if (favReviewWxml335.indexOf('completion-hint') < 0) {
+  fail('R3.35: completion-hint class missing in favorite-review.wxml');
+  round335Ok = false;
+}
+if (favReviewWxml335.indexOf('reviewCompletionHint') < 0) {
+  fail('R3.35: reviewCompletionHint binding missing in favorite-review.wxml');
+  round335Ok = false;
+}
+if (favReviewWxml335.indexOf('completion-btn-list') < 0) {
+  fail('R3.35: completion action buttons missing in favorite-review.wxml');
+  round335Ok = false;
+}
+
+// C. favorite-review.wxss 包含对应样式
+var favReviewWxss335 = readFile('packages/glossary/pages/favorite-review/favorite-review.wxss');
+if (favReviewWxss335.indexOf('.completion-hint') < 0) {
+  fail('R3.35: .completion-hint style missing in favorite-review.wxss');
+  round335Ok = false;
+}
+if (favReviewWxss335.indexOf('.completion-text') < 0) {
+  fail('R3.35: .completion-text style missing in favorite-review.wxss');
+  round335Ok = false;
+}
+if (favReviewWxss335.indexOf('.completion-btn') < 0) {
+  fail('R3.35: .completion-btn style missing in favorite-review.wxss');
+  round335Ok = false;
+}
+
+// D. 回归：R3.32~R3.34 功能未退化
+var quizJs335 = readFile('packages/quiz/pages/quiz/quiz.js');
+if (quizJs335.indexOf('progressPercent') < 0) {
+  fail('R3.35: R3.32 progressPercent regressed in quiz.js');
+  round335Ok = false;
+}
+var mistakesJs335 = readFile('packages/quiz/pages/mistakes/mistakes.js');
+if (mistakesJs335.indexOf('itCount') < 0) {
+  fail('R3.35: R3.33 itCount regressed in mistakes.js');
+  round335Ok = false;
+}
+var homeJs335 = readFile('pages/home/home.js');
+if (homeJs335.indexOf('nextActionHint') < 0) {
+  fail('R3.35: R3.34 nextActionHint regressed in home.js');
+  round335Ok = false;
+}
+
+if (round335Ok) pass('Round Mini 3.35 favorite-review completion hint');
+
+// ============================================================
 // 汇总
 // ============================================================
 console.log('\n========================================');

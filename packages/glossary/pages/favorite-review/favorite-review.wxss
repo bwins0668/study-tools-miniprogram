@@ -333,6 +333,61 @@
   border-radius: 12rpx;
 }
 
+/* 复习完成提示 */
+.completion-hint {
+  margin-top: 30rpx;
+  padding: 28rpx;
+  background-color: #f0faf0;
+  border-radius: 16rpx;
+  border: 2rpx solid #c8e6c9;
+}
+
+.completion-text {
+  display: block;
+  font-size: 28rpx;
+  color: #2e7d32;
+  font-weight: 600;
+  line-height: 1.6;
+  margin-bottom: 20rpx;
+}
+
+.completion-actions {
+  display: flex;
+  gap: 16rpx;
+}
+
+.completion-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18rpx 0;
+  border-radius: 32rpx;
+}
+
+.completion-btn-list {
+  background-color: #4a90d9;
+  box-shadow: 0 2rpx 12rpx rgba(74, 144, 217, 0.3);
+}
+
+.completion-btn-glossary {
+  background-color: #ffffff;
+  border: 2rpx solid #4a90d9;
+}
+
+.completion-btn-text {
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.completion-btn-list .completion-btn-text {
+  color: #ffffff;
+}
+
+.completion-btn-glossary .completion-btn-text {
+  color: #4a90d9;
+}
+
 /* 显示解释按钮 */
 .reveal-btn-wrap {
   display: flex;

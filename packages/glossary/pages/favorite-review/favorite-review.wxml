@@ -110,6 +110,19 @@
           </view>
         </view>
 
+        <!-- 复习完成提示 -->
+        <view class="completion-hint" wx:if="{{isLastItem && reviewCompletionHint}}">
+          <text class="completion-text">{{reviewCompletionHint}}</text>
+          <view class="completion-actions">
+            <view class="completion-btn completion-btn-list" bindtap="switchToListMode">
+              <text class="completion-btn-text">去列表模式</text>
+            </view>
+            <view class="completion-btn completion-btn-glossary" bindtap="goToGlossary">
+              <text class="completion-btn-text">去术语表</text>
+            </view>
+          </view>
+        </view>
+
         <!-- 显示解释按钮 -->
         <view class="reveal-btn-wrap" wx:if="{{!showExplanation}}">
           <view class="reveal-btn" bindtap="revealExplanation">

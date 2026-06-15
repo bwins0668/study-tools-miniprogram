@@ -80,7 +80,8 @@ Page({
     searchEmpty: false,
     currentSavedAt: '',
     // v0.21.0 新增
-    lastSavedAtFormatted: ''
+    lastSavedAtFormatted: '',
+    reviewCompletionHint: ''
   },
 
   onShow: function () {
@@ -267,10 +268,16 @@ Page({
       });
       return;
     }
+    var isLast = this.data.isLastItem;
+    var completionHint = '';
+    if (isLast) {
+      completionHint = '🎉 复习完成！已看完所有收藏术语的解释。';
+    }
     this.setData({
       detail: detail,
       exampleText: getExampleText(detail),
-      showExplanation: true
+      showExplanation: true,
+      reviewCompletionHint: completionHint
     });
   },
 
@@ -279,6 +286,7 @@ Page({
     if (newIdx < 0 || newIdx >= favorites.length) {
       return;
     }
+    var isLast = newIdx >= favorites.length - 1;
     this.setData({
       currentIndex: newIdx,
       currentTerm: favorites[newIdx],
@@ -287,8 +295,9 @@ Page({
       exampleText: '',
       showExplanation: false,
       isFirstItem: newIdx === 0,
-      isLastItem: newIdx >= favorites.length - 1,
-      nextBtnText: newIdx >= favorites.length - 1 ? '已到最后' : '下一个'
+      isLastItem: isLast,
+      nextBtnText: isLast ? '已到最后' : '下一个',
+      reviewCompletionHint: ''
     });
   },
 
