@@ -520,3 +520,22 @@
   font-size: 28rpx;
   color: #1890ff;
 }
+
+/* R3.74 联系反馈按钮 */
+.feedback-btn {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  background-color: #f8f9fa;
+  border-radius: 8rpx;
+}
+
+.feedback-btn-icon {
+  font-size: 40rpx;
+  margin-right: 16rpx;
+}
+
+.feedback-btn-text {
+  font-size: 28rpx;
+  color: #52c41a;
+}

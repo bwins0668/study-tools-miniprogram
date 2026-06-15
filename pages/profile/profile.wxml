@@ -259,6 +259,17 @@
     </view>
   </view>
 
+  <!-- R3.74 联系反馈 -->
+  <view class="stats-section">
+    <text class="section-title">联系反馈</text>
+    <view class="info-card">
+      <view class="feedback-btn" bindtap="showFeedback">
+        <text class="feedback-btn-icon">💬</text>
+        <text class="feedback-btn-text">意见反馈</text>
+      </view>
+    </view>
+  </view>
+
   <!-- 本地版说明 -->
   <view class="stats-section">
     <text class="section-title">关于本应用</text>

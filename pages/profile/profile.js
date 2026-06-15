@@ -519,5 +519,15 @@ Page({
       showCancel: false,
       confirmText: '知道了'
     });
+  },
+
+  // R3.74 联系反馈
+  showFeedback: function () {
+    wx.showModal({
+      title: '意见反馈',
+      content: '感谢你的反馈！如有问题或建议，请通过 Git 仓库提交 Issue。你的反馈会帮助改进这个应用。',
+      showCancel: false,
+      confirmText: '知道了'
+    });
   }
 });
