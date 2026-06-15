@@ -6830,17 +6830,6 @@ if (termDetailWxml364.indexOf("copyExample") < 0) {
   round364Ok = false;
 }
 if (round364Ok) pass("Round Mini 3.64 term detail copy example");
-console.log('Passed: ' + passed);
-console.log('Failed: ' + failed);
-console.log('========================================');
-
-if (failed > 0) {
-  console.log('SOME TESTS FAILED');
-  process.exit(1);
-} else {
-  console.log('ALL TESTS PASSED');
-  process.exit(0);
-}
 
 // Round Mini 3.65 home pull-down refresh
 var round365Ok = true;
@@ -6864,6 +6853,122 @@ if (profileWxml366.indexOf("backupTime") < 0) {
   round366Ok = false;
 }
 if (round366Ok) pass("Round Mini 3.66 profile backup time display");
+
+// ============================================================
+// Round Mini 3.82-Mega post-autodrive stability coverage
+// Covers R3.65-R3.81 UI anchors, risk scans, storage-key stability,
+// and backup/restore format stability.
+// ============================================================
+var round382Ok = true;
+
+function check382(condition, message) {
+  if (!condition) {
+    fail(message);
+    round382Ok = false;
+  }
+}
+
+function listFiles382(relDir, extensions) {
+  var base = path.join(ROOT, relDir);
+  var results = [];
+  if (!fs.existsSync(base)) return results;
+  var entries = fs.readdirSync(base, { withFileTypes: true });
+  for (var i = 0; i < entries.length; i++) {
+    var entry = entries[i];
+    var full = path.join(base, entry.name);
+    var rel = path.relative(ROOT, full).replace(/\\/g, '/');
+    if (entry.isDirectory()) {
+      if (entry.name === 'node_modules' || entry.name === 'generated-backup') continue;
+      results = results.concat(listFiles382(rel, extensions));
+    } else {
+      var ext = path.extname(entry.name);
+      if (extensions.indexOf(ext) >= 0) {
+        results.push(rel);
+      }
+    }
+  }
+  return results;
+}
+
+var homeJs382 = readFile("pages/home/home.js");
+var homeWxml382 = readFile("pages/home/home.wxml");
+var homeWxss382 = readFile("pages/home/home.wxss");
+var homeJson382 = readFile("pages/home/home.json");
+var profileJs382 = readFile("pages/profile/profile.js");
+var profileWxml382 = readFile("pages/profile/profile.wxml");
+var profileWxss382 = readFile("pages/profile/profile.wxss");
+var quizJs382 = readFile("packages/quiz/pages/quiz/quiz.js");
+var quizWxml382 = readFile("packages/quiz/pages/quiz/quiz.wxml");
+
+check382(homeJson382.indexOf("enablePullDownRefresh") >= 0, "R3.65/R3.82: home pull-down refresh config missing");
+check382(homeJs382.indexOf("onPullDownRefresh") >= 0, "R3.65/R3.82: onPullDownRefresh missing");
+check382(homeJs382.indexOf("stopPullDownRefresh") >= 0, "R3.65/R3.82: stopPullDownRefresh missing");
+check382(profileJs382.indexOf("backupTime") >= 0 && profileJs382.indexOf("formatBackupTime") >= 0, "R3.66/R3.82: backup time logic missing");
+check382(profileWxml382.indexOf("backupTime") >= 0, "R3.66/R3.82: backup time UI missing");
+check382(homeWxml382.indexOf("v{{version}}") >= 0 && homeJs382.indexOf("globalData.version") >= 0, "R3.67/R3.82: home footer version binding missing");
+check382(profileWxml382.indexOf("update-notice") >= 0 && profileWxss382.indexOf(".update-notice") >= 0, "R3.68/R3.82: profile update notice missing");
+check382(homeWxml382.indexOf("section-divider") >= 0 && homeWxss382.indexOf(".section-divider") >= 0, "R3.69/R3.82: home section divider missing");
+check382(profileWxml382.indexOf("section-divider") >= 0, "R3.70/R3.82: profile section divider missing");
+check382(quizJs382.indexOf("onUnload") >= 0 && quizJs382.indexOf("showToast") >= 0, "R3.71/R3.82: quiz progress save toast missing");
+check382(homeJs382.indexOf("onPageScroll") >= 0 && homeJs382.indexOf("scrollToTop") >= 0 && homeWxml382.indexOf("back-to-top") >= 0, "R3.72/R3.82: back-to-top support missing");
+check382(profileJs382.indexOf("showHelp") >= 0 && profileWxml382.indexOf("help-btn") >= 0, "R3.73/R3.82: help entry missing");
+check382(profileJs382.indexOf("showFeedback") >= 0 && profileWxml382.indexOf("feedback-btn") >= 0, "R3.74/R3.82: feedback entry missing");
+check382(profileJs382.indexOf("wx.request") < 0 && profileJs382.indexOf("http://") < 0 && profileJs382.indexOf("https://") < 0, "R3.74/R3.82: feedback must stay static without network/link");
+check382(homeWxml382.indexOf("quick-tips") >= 0 && homeWxss382.indexOf(".quick-tips") >= 0, "R3.75/R3.82: quick tips missing");
+check382(homeWxml382.indexOf("footer-hint") >= 0 && homeWxss382.indexOf(".footer-hint") >= 0, "R3.76/R3.82: pull-down refresh hint missing");
+check382(homeJs382.indexOf("viewCount") >= 0 && homeWxml382.indexOf("viewCount") >= 0, "R3.77/R3.82: home view count display missing");
+check382(profileJs382.indexOf("viewCount") >= 0 && profileWxml382.indexOf("viewCount") >= 0, "R3.78/R3.82: profile view count display missing");
+check382(homeJs382.indexOf("homeSessionViewCount") >= 0 && homeJs382.indexOf("homeViewCount") < 0, "R3.77/R3.82: home view count must be session-only");
+check382(profileJs382.indexOf("profileSessionViewCount") >= 0 && profileJs382.indexOf("profileViewCount") < 0, "R3.78/R3.82: profile view count must be session-only");
+check382(homeWxml382.indexOf("update-banner") >= 0 && homeJs382.indexOf("dismissUpdateBanner") >= 0, "R3.79/R3.82: update banner support missing");
+check382(homeJs382.indexOf("[R3.80]") < 0 && homeJs382.indexOf("console.log") < 0, "R3.80/R3.82: home debug console output must be removed");
+check382(profileJs382.indexOf("[R3.81]") < 0 && profileJs382.indexOf("console.log") < 0, "R3.81/R3.82: profile debug console output must be removed");
+
+var runtimeFiles382 = ["app.js", "utils/storage.js"]
+  .concat(listFiles382("pages", [".js", ".wxml", ".wxss", ".json"]))
+  .concat(listFiles382("packages", [".js", ".wxml", ".wxss", ".json"]));
+var dangerousApis382 = ["wx.request", "wx.cloud", "cloud.init", "wx.login", "wx.requestPayment", "wx.getUserProfile"];
+for (var api382 = 0; api382 < dangerousApis382.length; api382++) {
+  for (var rf382 = 0; rf382 < runtimeFiles382.length; rf382++) {
+    var runtimeContent382 = readFile(runtimeFiles382[rf382]);
+    check382(runtimeContent382.indexOf(dangerousApis382[api382]) < 0, "R3.82: dangerous API found: " + dangerousApis382[api382] + " in " + runtimeFiles382[rf382]);
+  }
+}
+
+var uiFiles382 = ["app.js", "utils/storage.js"]
+  .concat(listFiles382("pages", [".js", ".wxml", ".wxss", ".json"]))
+  .concat(listFiles382("packages/quiz/pages", [".js", ".wxml", ".wxss", ".json"]))
+  .concat(listFiles382("packages/glossary/pages", [".js", ".wxml", ".wxss", ".json"]));
+var highRiskPhrases382 = ["保证通过", "包过", "押题", "必过", "100%通过", "绝对安全", "永久保存", "云端同步", "自动备份", "保证恢复"];
+for (var hp382 = 0; hp382 < highRiskPhrases382.length; hp382++) {
+  for (var hf382 = 0; hf382 < uiFiles382.length; hf382++) {
+    var riskContent382 = readFile(uiFiles382[hf382]);
+    check382(riskContent382.indexOf(highRiskPhrases382[hp382]) < 0, "R3.82: high-risk UI phrase found: " + highRiskPhrases382[hp382] + " in " + uiFiles382[hf382]);
+  }
+}
+
+check382(storageContent.indexOf("favoriteTerms") >= 0, "R3.82: backup format missing favoriteTerms");
+check382(storageContent.indexOf("wrongQuestions") >= 0, "R3.82: backup format missing wrongQuestions");
+check382(storageContent.indexOf("quizAttempts") >= 0, "R3.82: backup format missing quizAttempts");
+check382(storageContent.indexOf("exportedAt") >= 0, "R3.82: backup format missing exportedAt");
+check382(storageContent.indexOf("homeViewCount") < 0 && storageContent.indexOf("profileViewCount") < 0, "R3.82: backup format must not include page view counts");
+check382(homeJs382.indexOf("setStorageSync('homeViewCount'") < 0 && profileJs382.indexOf("setStorageSync('profileViewCount'") < 0, "R3.82: page view counts must not use persistent storage");
+
+var wxmlFiles382 = listFiles382("pages", [".wxml"]).concat(listFiles382("packages", [".wxml"]));
+for (var wf382 = 0; wf382 < wxmlFiles382.length; wf382++) {
+  var wxmlContent382 = readFile(wxmlFiles382[wf382]);
+  check382(wxmlContent382.indexOf(">undefined<") < 0 && wxmlContent382.indexOf(">null<") < 0 && wxmlContent382.indexOf(">NaN<") < 0, "R3.82: visible placeholder text found in " + wxmlFiles382[wf382]);
+}
+
+var wxssFiles382 = listFiles382("pages", [".wxss"]).concat(listFiles382("packages", [".wxss"]));
+for (var wxss382 = 0; wxss382 < wxssFiles382.length; wxss382++) {
+  var wxssContent382 = readFile(wxssFiles382[wxss382]);
+  var openBraces382 = (wxssContent382.match(/\{/g) || []).length;
+  var closeBraces382 = (wxssContent382.match(/\}/g) || []).length;
+  check382(openBraces382 === closeBraces382, "R3.82: WXSS brace mismatch in " + wxssFiles382[wxss382]);
+}
+
+if (round382Ok) pass("Round Mini 3.82-Mega post-autodrive stability coverage");
 
 console.log('\n========================================');
 console.log('Passed: ' + passed);

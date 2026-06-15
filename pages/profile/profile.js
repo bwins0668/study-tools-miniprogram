@@ -1,6 +1,7 @@
 // pages/profile/profile.js
 var app = getApp();
 var storage = require("../../utils/storage");
+var profileSessionViewCount = 0;
 
 /**
  * 格式化时间戳为可读字符串（用于最近练习时间）
@@ -202,11 +203,9 @@ Page({
   },
 
   onShow: function () {
-    console.log('[R3.81] Profile page onShow');
     // R3.78 页面浏览次数统计
-    var viewCount = wx.getStorageSync('profileViewCount') || 0;
-    viewCount += 1;
-    wx.setStorageSync('profileViewCount', viewCount);
+    profileSessionViewCount += 1;
+    var viewCount = profileSessionViewCount;
     this.setData({
       viewCount: viewCount
     });

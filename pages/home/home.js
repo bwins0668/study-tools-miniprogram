@@ -1,4 +1,5 @@
 // pages/home/home.js
+var app = getApp();
 const {
   getFavoriteTermCount,
   getWrongQuestionCount,
@@ -38,6 +39,8 @@ var SOURCE_LABELS = {
   lesson_quiz: '课程练习',
   past_exam_japanese: '日文真题'
 };
+
+var homeSessionViewCount = 0;
 
 function formatLastPracticeTime(timestamp) {
   if (!timestamp) return '';
@@ -213,17 +216,16 @@ Page({
     showBackToTop: false,
     // R3.77 页面浏览次数
     viewCount: 0,
+    version: '',
     // R3.79 最近更新提示
     showUpdateBanner: true,
     updateText: '最近更新：新增返回顶部按钮、页面浏览次数统计、最近更新提示'
   },
 
   onShow: function () {
-    console.log('[R3.80] Home page onShow');
     // R3.77 页面浏览次数统计
-    var viewCount = wx.getStorageSync('homeViewCount') || 0;
-    viewCount += 1;
-    wx.setStorageSync('homeViewCount', viewCount);
+    homeSessionViewCount += 1;
+    var viewCount = homeSessionViewCount;
 
     var favoriteCount = getFavoriteTermCount ? getFavoriteTermCount() : 0;
     var wrongQuestionCount = getWrongQuestionCount ? getWrongQuestionCount() : 0;
@@ -520,7 +522,8 @@ Page({
       // R3.58 每日学习格言
       dailyQuote: dailyQuote,
       // R3.77 页面浏览次数
-      viewCount: viewCount
+      viewCount: viewCount,
+      version: app.globalData.version
     });
   },
 
@@ -584,6 +587,7 @@ Page({
     wx.switchTab({
       url: '/pages/profile/profile'
     });
+  },
 
   // R3.63 关闭练习提醒
   dismissReminder: function () {
@@ -591,7 +595,6 @@ Page({
       reminderDismissed: true,
       practiceReminder: ''
     });
-  },
   },
 
   // R3.55 首页分享 streak
