@@ -30,6 +30,7 @@ Round Mini 3.32 到 3.81 已完成一批连续小步迭代，Round Mini 3.82 已
 - `study-tools-mini-favorite-terms-v1`：收藏术语。
 - `study-tools-mini-wrong-questions-v1`：错题本。
 - `study-tools-mini-quiz-attempts-v1`：答题记录。
+- `study-tools-mini-anki-status-v1`：Anki 闪卡复习进度（掌握度、复习次数等）。
 
 辅助体验 key：
 
@@ -52,8 +53,9 @@ Round Mini 3.32 到 3.81 已完成一批连续小步迭代，Round Mini 3.82 已
 - `data.favoriteTerms`
 - `data.wrongQuestions`
 - `data.quizAttempts`
+- `ankiStatus`：Anki 闪卡复习进度（顶层字段，与 `data` 同级）。旧备份可缺省，缺省时不影响导入。
 
-`importLocalBackup` 只恢复以上三类学习数据。搜索历史、连续学习天数、页面访问次数等体验型状态不应进入备份结构。
+`importLocalBackup` 恢复以上四类学习数据。搜索历史、连续学习天数、页面访问次数等体验型状态不应进入备份结构。
 
 维护要求：
 

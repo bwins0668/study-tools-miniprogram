@@ -35,6 +35,16 @@ var COMPLIANCE_FORBIDDEN_TERMS = [
   '绝对安全', '永久保存', '云端同步', '自动备份', '保证恢复'
 ];
 
+// Shared storage key contract (single source of truth for storage key checks)
+var KNOWN_STORAGE_KEYS = [
+  'study-tools-mini-favorite-terms-v1',
+  'study-tools-mini-wrong-questions-v1',
+  'study-tools-mini-quiz-attempts-v1',
+  'study-tools-mini-anki-status-v1',
+  'study-tools-mini-streak-v1'
+];
+var STORAGE_KEY_RX = new RegExp('study-tools-mini-(?!' + KNOWN_STORAGE_KEYS.map(function(k) { return k.replace('study-tools-mini-', ''); }).join('|') + ')');
+
 // ============================================================
 // 一、项目基础文件
 // ============================================================
@@ -2913,8 +2923,7 @@ for (var b318 = 0; b318 < banned318.length; b318++) {
 }
 
 // 16. 无新 storage keys
-var newKeysPattern = /study-tools-mini-(?!favorite-terms-v1|wrong-questions-v1|quiz-attempts-v1|anki-status-v1|streak-v1)/;
-if (newKeysPattern.test(storage318)) {
+if (STORAGE_KEY_RX.test(storage318)) {
   fail('Round 3.18: new storage key detected');
   round318Ok = false;
 }
@@ -3078,8 +3087,7 @@ if (!favReviewWxss319.includes('font-size: 120rpx;')) {
 }
 
 // 10. 无新 storage keys
-var keyPattern319 = /study-tools-mini-(?!favorite-terms-v1|wrong-questions-v1|quiz-attempts-v1|anki-status-v1|streak-v1)/;
-if (keyPattern319.test(storage319)) {
+if (STORAGE_KEY_RX.test(storage319)) {
   fail('Round 3.19: new storage key detected');
   round319Ok = false;
 }
@@ -3334,8 +3342,7 @@ if (!quizWxml320.includes('返回首页') || !quizJs320.includes('goHome')) {
 
 // 23. 无新 storage keys
 var all320 = homeJs320 + quizJs320 + storage320;
-var keyPattern320 = /study-tools-mini-(?!favorite-terms-v1|wrong-questions-v1|quiz-attempts-v1|anki-status-v1|streak-v1)/;
-if (keyPattern320.test(storage320)) {
+if (STORAGE_KEY_RX.test(storage320)) {
   fail('Round 3.20: new storage key detected');
   round320Ok = false;
 }
@@ -3594,8 +3601,7 @@ if (!termSearchWxml321.includes('filteredList.length === 0 && keyword')) {
 // === E. 合规检查 ===
 // 26. 无新 storage keys
 var all321 = profileJs321 + storage321 + termSearchWxml321;
-var keyPattern321 = /study-tools-mini-(?!favorite-terms-v1|wrong-questions-v1|quiz-attempts-v1|anki-status-v1|streak-v1)/;
-if (keyPattern321.test(storage321)) {
+if (STORAGE_KEY_RX.test(storage321)) {
   fail('Round 3.21: new storage key detected');
   round321Ok = false;
 }
@@ -3847,8 +3853,7 @@ if (!appJs322.includes('v0.23.0')) {
 
 // 21. 无新 storage keys
 var all322 = examMenuJs322 + storage322;
-var keyPattern322 = /study-tools-mini-(?!favorite-terms-v1|wrong-questions-v1|quiz-attempts-v1|anki-status-v1|streak-v1)/;
-if (keyPattern322.test(storage322)) {
+if (STORAGE_KEY_RX.test(storage322)) {
   fail('Round 3.22: new storage key detected');
   round322Ok = false;
 }
@@ -4049,8 +4054,7 @@ if (!appJs323.includes('v0.23.0')) {
 
 // 18. 无新 storage keys
 var all323 = termDetailJs323 + storage323 + termDetailWxml323;
-var keyPattern323 = /study-tools-mini-(?!favorite-terms-v1|wrong-questions-v1|quiz-attempts-v1|anki-status-v1|streak-v1)/;
-if (keyPattern323.test(storage323)) {
+if (STORAGE_KEY_RX.test(storage323)) {
   fail('Round 3.23: new storage key detected');
   round323Ok = false;
 }
@@ -4167,13 +4171,8 @@ if (!storage324.includes("version: 'v0.23.0'")) {
   round324Ok = false;
 }
 
-// 5. 3 个 storage keys 无变化
-var knownKeys324 = [
-  'study-tools-mini-favorite-terms-v1',
-  'study-tools-mini-wrong-questions-v1',
-  'study-tools-mini-quiz-attempts-v1',
-  'study-tools-mini-anki-status-v1'
-];
+// 5. utils/storage.js 中的 storage keys 无变化（streak-v1 在 home.js 中定义）
+var knownKeys324 = KNOWN_STORAGE_KEYS.filter(function(k) { return k !== 'study-tools-mini-streak-v1'; });
 var storageKeyRx324 = /study-tools-mini-[a-z0-9-]+/g;
 var keyMatch324;
 var foundKeys324 = [];
@@ -5047,12 +5046,13 @@ var allKeys331 = storageContent331.match(/study-tools-mini-[a-z-]+-v1/g) || [];
 var uniqueKeys331 = {};
 allKeys331.forEach(function(k) { uniqueKeys331[k] = true; });
 var keyNames331 = Object.keys(uniqueKeys331);
-if (keyNames331.length !== 4) {
-  fail('R3.31: storage key count is ' + keyNames331.length + ', expected 3: ' + keyNames331.join(', '));
+var storageKeyCount331 = KNOWN_STORAGE_KEYS.filter(function(k) { return k !== 'study-tools-mini-streak-v1'; }).length;
+if (keyNames331.length !== storageKeyCount331) {
+  fail('R3.31: storage key count is ' + keyNames331.length + ', expected ' + storageKeyCount331 + ': ' + keyNames331.join(', '));
   round331Ok = false;
 }
-// 验证是固定的3个key
-var expectedKeys331 = ['study-tools-mini-favorite-terms-v1', 'study-tools-mini-wrong-questions-v1', 'study-tools-mini-quiz-attempts-v1'];
+// 验证是 utils/storage.js 中定义的 storage keys（不含 streak-v1）
+var expectedKeys331 = KNOWN_STORAGE_KEYS.filter(function(k) { return k !== 'study-tools-mini-streak-v1'; });
 for (var ek = 0; ek < expectedKeys331.length; ek++) {
   if (keyNames331.indexOf(expectedKeys331[ek]) < 0) {
     fail('R3.31: expected storage key missing: ' + expectedKeys331[ek]);
