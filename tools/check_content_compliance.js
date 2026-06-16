@@ -38,7 +38,8 @@ const SKIP_REL_DIRS = new Set([
 // Files to skip (relative to ROOT) — tool scripts that define blacklist arrays
 const SKIP_FILES = new Set([
   'tools/check_content_compliance.js',
-  'tools/miniprogram_smoke_test.js'
+  'tools/miniprogram_smoke_test.js',
+  'docs/post_autodrive_maintenance.md'
 ]);
 
 // File extensions to scan

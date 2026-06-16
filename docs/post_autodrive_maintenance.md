@@ -160,6 +160,20 @@ node tools/miniprogram_smoke_test.js
 node tools/check_content_compliance.js
 ```
 
+### 合规词列表集中维护
+
+Smoke test 中的合规扫描词列表已提取为共享常量，定义在 `tools/miniprogram_smoke_test.js` 文件顶部：
+
+- `COMPLIANCE_HIGH_RISK_TERMS`：高风险考试承诺词（如“保证通过”“包过”“押题”“必过”）
+- `COMPLIANCE_FORBIDDEN_TERMS`：完整禁用词超集，含数据安全误导表述（如“绝对安全”“永久保存”“云端同步”等）
+
+新增或删除合规词时应优先修改这两个共享常量，而非在各轮检查段中单独维护。修改后必须运行一键验证和 smoke test 确认无回归：
+
+```
+node tools/run_miniprogram_checks.js
+node tools/miniprogram_smoke_test.js
+```
+
 ## 一键验证入口
 
 推荐每轮修改前后执行：
