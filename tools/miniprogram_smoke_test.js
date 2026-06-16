@@ -7588,6 +7588,33 @@ check3115(ankiJs3115.indexOf('summary') >= 0, 'R3.115: anki-player.js data must 
 
 if (round3115Ok) pass('Round Mini 3.115 Anki summary report fields smoke');
 
+// ============================================================
+// Round Mini 3.116 Anki category filter smoke
+// ============================================================
+console.log('\n--- Round Mini 3.116 Anki category filter ---');
+var round3116Ok = true;
+function check3116(cond, msg) {
+  if (!cond) { fail(msg); round3116Ok = false; }
+}
+
+var ankiJs3116 = readFile('packages/glossary/pages/anki-player/anki-player.js');
+var ankiWxml3116 = readFile('packages/glossary/pages/anki-player/anki-player.wxml');
+
+check3116(ankiJs3116.indexOf('categories') >= 0, 'R3.116: anki-player.js missing categories field');
+check3116(ankiJs3116.indexOf('selectedCategory') >= 0, 'R3.116: anki-player.js missing selectedCategory field');
+check3116(ankiJs3116.indexOf('showFilter') >= 0, 'R3.116: anki-player.js missing showFilter field');
+check3116(ankiJs3116.indexOf('toggleFilter') >= 0, 'R3.116: anki-player.js missing toggleFilter method');
+check3116(ankiJs3116.indexOf('selectCategory') >= 0, 'R3.116: anki-player.js missing selectCategory method');
+check3116(ankiJs3116.indexOf('dataSource') >= 0, 'R3.116: anki-player.js missing dataSource field');
+check3116(ankiJs3116.indexOf('"all"') >= 0 || ankiJs3116.indexOf("'all'") >= 0, 'R3.116: anki-player.js must have "all" category option');
+
+check3116(ankiWxml3116.indexOf('anki-filter') >= 0, 'R3.116: anki wxml missing filter elements');
+check3116(ankiWxml3116.indexOf('selectCategory') >= 0, 'R3.116: anki wxml missing selectCategory bind');
+check3116(ankiWxml3116.indexOf('toggleFilter') >= 0, 'R3.116: anki wxml missing toggleFilter bind');
+check3116(ankiWxml3116.indexOf('全部') >= 0, 'R3.116: anki wxml missing "全部" filter option');
+
+if (round3116Ok) pass('Round Mini 3.116 Anki category filter smoke');
+
 console.log('\n========================================');
 console.log('Passed: ' + passed);
 console.log('Failed: ' + failed);
