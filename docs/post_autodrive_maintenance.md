@@ -185,6 +185,39 @@ node tools/run_miniprogram_checks.js
 
 脚本会输出 Node 版本、当前工作目录和每步耗时，便于排查环境问题。
 
+### JSON 机器输出模式（`--json`）
+
+CI 流水线或脚本调用时，可附加 `--json` 参数获取结构化 JSON 输出：
+
+```
+node tools/run_miniprogram_checks.js --json
+```
+
+此模式下脚本向 stdout 输出单个 JSON 对象，无 ANSI 颜色码，便于程序解析。人类可读模式（不加参数）输出行为完全不变。
+
+**成功时字段说明：**
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `ok` | boolean | 全部通过为 `true` |
+| `totalChecks` | number | 检查步骤总数（固定 4） |
+| `passedChecks` | number | 通过步骤数 |
+| `failedChecks` | number | 失败步骤数 |
+| `durationMs` | number | 总耗时（毫秒） |
+| `environment.node` | string | Node.js 版本 |
+| `environment.cwd` | string | 工作目录 |
+| `steps[]` | array | 各步骤详情：`index`、`name`、`ok`、`durationMs`、`command` |
+
+**失败时额外字段：**
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `failedStep` | string | 第一个失败步骤的名称 |
+| `nextStep` | string | 建议的下一步操作 |
+| `error` | string | 错误概要信息 |
+
+退出码与人类模式一致：全通过为 `0`，有失败为 `1`。
+
 单独执行各检查命令仍然可用：
 
 - `node tools/miniprogram_smoke_test.js`

@@ -18,10 +18,14 @@ var child_process = require('child_process');
 var fs = require('fs');
 var path = require('path');
 
+var JSON_MODE = process.argv.indexOf('--json') !== -1;
+
 // --- Helpers ---
 
 function log() {
-  console.log.apply(console, arguments);
+  if (!JSON_MODE) {
+    console.log.apply(console, arguments);
+  }
 }
 
 function runStep(index, total, title, cmd, args, opts) {
@@ -29,16 +33,17 @@ function runStep(index, total, title, cmd, args, opts) {
   log('\n' + label);
   log('-'.repeat(40));
   var start = Date.now();
+  var execOpts = Object.assign({ stdio: JSON_MODE ? 'pipe' : 'inherit' }, opts || {});
   try {
-    child_process.execFileSync(cmd, args, Object.assign({ stdio: 'inherit' }, opts || {}));
+    child_process.execFileSync(cmd, args, execOpts);
   } catch (e) {
     var elapsed = Date.now() - start;
     log(label + ' ... FAIL (' + elapsed + ' ms)');
-    return { pass: false, title: title, elapsed: elapsed };
+    return { pass: false, title: title, elapsed: elapsed, command: cmd + ' ' + args.join(' ') };
   }
   var elapsed2 = Date.now() - start;
   log(label + ' ... PASS (' + elapsed2 + ' ms)');
-  return { pass: true, title: title, elapsed: elapsed2 };
+  return { pass: true, title: title, elapsed: elapsed2, command: cmd + ' ' + args.join(' ') };
 }
 
 // --- [3/4] JS syntax check (inline, same logic as the one-liner) ---
@@ -85,12 +90,12 @@ function checkJsSyntax() {
   if (failed.length > 0) {
     log('[3/4] JS syntax check ... FAIL (' + elapsed + ' ms)');
     log('JS syntax FAILED: ' + failed.length + ' file(s)');
-    return { pass: false, title: 'JS syntax', elapsed: elapsed };
+    return { pass: false, title: 'JS syntax', elapsed: elapsed, command: 'node --check (inline)' };
   }
 
   log('[3/4] JS syntax check ... PASS (' + elapsed + ' ms)');
   log('JS syntax OK: ' + files.length + ' file(s)');
-  return { pass: true, title: 'JS syntax', elapsed: elapsed };
+  return { pass: true, title: 'JS syntax', elapsed: elapsed, command: 'node --check (inline)' };
 }
 
 // --- [4/4] WXSS escaped newline guard (inline) ---
@@ -134,12 +139,12 @@ function checkWxssEscapedNewline() {
     for (var k = 0; k < badFiles.length; k++) {
       log('  ' + badFiles[k]);
     }
-    return { pass: false, title: 'WXSS \\n guard', elapsed: elapsed };
+    return { pass: false, title: 'WXSS \\n guard', elapsed: elapsed, command: 'fs scan (inline)' };
   }
 
   log('[4/4] WXSS escaped newline guard ... PASS (' + elapsed + ' ms)');
   log('WXSS escaped newline guard OK: 0 violations');
-  return { pass: true, title: 'WXSS \\n guard', elapsed: elapsed };
+  return { pass: true, title: 'WXSS \\n guard', elapsed: elapsed, command: 'fs scan (inline)' };
 }
 
 // --- Main ---
@@ -173,21 +178,66 @@ function main() {
   var r4 = checkWxssEscapedNewline();
   results.push(r4);
 
-  // Summary
+  // Summary computation
   var totalElapsed = Date.now() - totalStart;
+  var passedCount = 0;
+  var failedCount = 0;
+  var failedStep = null;
+  for (var i = 0; i < results.length; i++) {
+    if (results[i].pass) {
+      passedCount++;
+    } else {
+      failedCount++;
+      if (!failedStep) failedStep = results[i].title;
+    }
+  }
+  var allPassed = failedCount === 0;
+
+  // --- JSON mode output ---
+  if (JSON_MODE) {
+    var steps = [];
+    for (var j = 0; j < results.length; j++) {
+      steps.push({
+        index: j + 1,
+        name: results[j].title,
+        ok: results[j].pass,
+        durationMs: results[j].elapsed,
+        command: results[j].command
+      });
+    }
+
+    var jsonResult = {
+      ok: allPassed,
+      totalChecks: results.length,
+      passedChecks: passedCount,
+      failedChecks: failedCount,
+      durationMs: totalElapsed,
+      environment: {
+        node: process.version,
+        cwd: process.cwd()
+      },
+      steps: steps
+    };
+
+    if (!allPassed) {
+      jsonResult.failedStep = failedStep;
+      jsonResult.nextStep = 'inspect the error above, fix the issue, then rerun node tools/run_miniprogram_checks.js';
+      jsonResult.error = 'Check failed: ' + failedStep;
+    }
+
+    console.log(JSON.stringify(jsonResult, null, 2));
+    process.exit(allPassed ? 0 : 1);
+    return;
+  }
+
+  // --- Human-readable summary (unchanged) ---
   log('\n========================================');
   log(' Summary');
   log('========================================');
-  var allPassed = true;
-  var failedStep = null;
-  for (var i = 0; i < results.length; i++) {
-    var status = results[i].pass ? 'PASS' : 'FAIL';
-    var timing = ' (' + results[i].elapsed + ' ms)';
-    log('  [' + (i + 1) + '/4] ' + results[i].title + ': ' + status + timing);
-    if (!results[i].pass) {
-      allPassed = false;
-      if (!failedStep) failedStep = results[i].title;
-    }
+  for (var k = 0; k < results.length; k++) {
+    var status = results[k].pass ? 'PASS' : 'FAIL';
+    var timing = ' (' + results[k].elapsed + ' ms)';
+    log('  [' + (k + 1) + '/4] ' + results[k].title + ': ' + status + timing);
   }
 
   log('');

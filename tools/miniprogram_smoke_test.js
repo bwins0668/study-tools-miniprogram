@@ -7120,6 +7120,48 @@ check388(checks388.indexOf("elapsed > 0 ?") === -1, "R3.88: summary timing shoul
 
 if (round388Ok) pass("Round Mini 3.88-TimingParity step 3/4 timing output");
 
+// ============================================================
+// Round Mini 3.89-JsonCheckOutput --json mode markers
+// ============================================================
+var round389Ok = true;
+function check389(condition, message) {
+  if (!condition) {
+    fail(message);
+    round389Ok = false;
+  }
+}
+
+var checks389 = readFile("tools/run_miniprogram_checks.js");
+
+// JSON mode field markers
+check389(checks389.indexOf("--json") >= 0,          "R3.89: missing --json flag detection");
+check389(checks389.indexOf("JSON.stringify") >= 0,   "R3.89: missing JSON.stringify call");
+check389(checks389.indexOf('"ok"') >= 0 || checks389.indexOf("ok:") >= 0,
+         "R3.89: missing ok field in JSON output");
+check389(checks389.indexOf("durationMs") >= 0,        "R3.89: missing durationMs field");
+check389(checks389.indexOf("steps") >= 0,             "R3.89: missing steps field");
+check389(checks389.indexOf("environment") >= 0,       "R3.89: missing environment field");
+check389(checks389.indexOf("failedStep") >= 0,        "R3.89: missing failedStep field");
+check389(checks389.indexOf("nextStep") >= 0,          "R3.89: missing nextStep field");
+
+if (round389Ok) pass("Round Mini 3.89-JsonCheckOutput JSON mode markers present");
+
+// Human-readable output markers preserved (regression guard)
+var round389hOk = true;
+function check389h(condition, message) {
+  if (!condition) {
+    fail(message);
+    round389hOk = false;
+  }
+}
+check389h(checks389.indexOf("Node:") >= 0,                   "R3.89: human output Node: marker missing");
+check389h(checks389.indexOf("CWD:") >= 0,                    "R3.89: human output CWD: marker missing");
+check389h(checks389.indexOf("All miniprogram checks passed") >= 0,
+          "R3.89: human output pass message missing");
+check389h(checks389.indexOf("Failed step") >= 0,             "R3.89: human output Failed step missing");
+
+if (round389hOk) pass("Round Mini 3.89-JsonCheckOutput human-readable output preserved");
+
 console.log('\n========================================');
 console.log('Passed: ' + passed);
 console.log('Failed: ' + failed);
