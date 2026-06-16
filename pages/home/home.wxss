@@ -3,7 +3,7 @@
 
 /* ===== Hero 仪表盘区 ===== */
 .hero {
-  margin: 0 24rpx 16rpx;
+  margin: 0 24rpx 10rpx;
   padding: 24rpx 28rpx 20rpx;
   background: linear-gradient(135deg, #0f1f35 0%, #1a3050 30%, #1e3a5a 60%, #152a45 100%);
   border-radius: 22rpx;
@@ -30,7 +30,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20rpx;
+  margin-bottom: 14rpx;
 }
 
 .hero-brand {
@@ -111,8 +111,8 @@
   justify-content: space-around;
   background: rgba(255, 255, 255, 0.06);
   border-radius: 14rpx;
-  padding: 16rpx 8rpx;
-  margin-bottom: 14rpx;
+  padding: 12rpx 8rpx;
+  margin-bottom: 10rpx;
 }
 
 .hero-stat {
@@ -229,15 +229,15 @@
 .card-list {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12rpx;
-  padding: 0 24rpx 16rpx;
+  gap: 8rpx;
+  padding: 0 24rpx 12rpx;
 }
 
 .entry-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12rpx;
-  padding: 0 24rpx 16rpx;
+  gap: 8rpx;
+  padding: 0 24rpx 12rpx;
 }
 
 .entry-card {
@@ -245,7 +245,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20rpx 12rpx 16rpx;
+  padding: 16rpx 10rpx 12rpx;
   border-radius: 16rpx;
   background-color: var(--card-bg);
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
@@ -295,13 +295,13 @@
 
 /* 图标容器 */
 .entry-card-icon-wrap {
-  width: 64rpx;
-  height: 64rpx;
-  border-radius: 16rpx;
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 14rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10rpx;
+  margin-bottom: 8rpx;
 }
 
 .entry-icon-anki {
@@ -493,7 +493,7 @@
 .suggestion-card {
   display: flex;
   align-items: flex-start;
-  margin: 0 24rpx 12rpx;
+  margin: 0 24rpx 8rpx;
   padding: 16rpx 20rpx;
   background-color: var(--card-bg);
   border-radius: 14rpx;
@@ -562,7 +562,7 @@
 
 /* ===== 继续学习 / 快速开始 ===== */
 .continue-section {
-  margin: 0 24rpx 12rpx;
+  margin: 0 24rpx 8rpx;
   padding: 0;
 }
 
@@ -712,7 +712,7 @@
 
 /* ===== R3.47 学习成就 ===== */
 .achievement-section {
-  margin: 12rpx 24rpx 0;
+  margin: 8rpx 24rpx 0;
   padding: 20rpx;
   background: var(--card-bg);
   border-radius: 16rpx;
