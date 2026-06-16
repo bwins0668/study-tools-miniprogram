@@ -46,17 +46,38 @@
     bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd">
     <view class="card-swipe" style="{{swipeStyle}}">
       <view class="card-inner {{isFlipped ? 'flipped' : ''}}" bindtap="toggleFlip">
+        <!-- 正面：记忆卡 -->
         <view class="card-face card-front">
-          <text class="card-term">{{currentTerm.term}}</text>
-          <text class="card-ja-reading" wx:if="{{currentTerm.reading}}">{{currentTerm.reading}}</text>
+          <view class="card-front-top">
+            <text class="card-category-tag" wx:if="{{currentTerm.category}}">{{currentTerm.category}}</text>
+            <text class="card-index-badge">{{currentIndex + 1}}/{{totalCount}}</text>
+          </view>
+          <view class="card-front-center">
+            <text class="card-term">{{currentTerm.term}}</text>
+            <text class="card-ja-reading" wx:if="{{currentTerm.reading}}">{{currentTerm.reading}}</text>
+          </view>
           <text class="card-loop-badge" wx:if="{{currentTerm.loopCount > 0}}">↺ {{currentTerm.loopCount}}</text>
-          <text class="card-hint" wx:if="{{!isFlipped}}">点击翻牌</text>
+          <view class="card-front-bottom">
+            <text class="card-hint" wx:if="{{!isFlipped}}">タップして裏面を見る</text>
+          </view>
         </view>
+        <!-- 背面：解析卡 -->
         <view class="card-face card-back">
-          <text class="card-section-label">中文释义</text>
-          <text class="card-zh">{{currentTerm.zh}}</text>
-          <text class="card-section-label" wx:if="{{currentTerm.ja}}">日本語 / 解析</text>
-          <text class="card-ja" wx:if="{{currentTerm.ja}}">{{currentTerm.ja}}</text>
+          <view class="card-back-header">
+            <text class="card-back-icon">📖</text>
+            <text class="card-back-label">解析</text>
+            <text class="card-index-badge card-index-badge-back">{{currentIndex + 1}}/{{totalCount}}</text>
+          </view>
+          <view class="card-back-body">
+            <view class="card-back-section">
+              <text class="card-section-label">中文释义</text>
+              <text class="card-zh">{{currentTerm.zh}}</text>
+            </view>
+            <view class="card-back-section" wx:if="{{currentTerm.ja}}">
+              <text class="card-section-label card-section-label-green">日本語 / 解析</text>
+              <text class="card-ja">{{currentTerm.ja}}</text>
+            </view>
+          </view>
         </view>
       </view>
     </view>

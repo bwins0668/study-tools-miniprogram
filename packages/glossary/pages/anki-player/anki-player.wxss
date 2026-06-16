@@ -1,15 +1,17 @@
 /* anki-player.wxss */
-/* Round 3.134: Anki 首屏重排 + 闪卡视觉升级 */
+/* Round 3.135: Anki 闪卡本体视觉重设计 */
 
 page{overflow:hidden}
-.container{display:flex;flex-direction:column;height:100vh;background:linear-gradient(180deg,#1a2332 0%,#1e2d44 40%,var(--bg-color) 100%)}
+.container{display:flex;flex-direction:column;height:100vh;background:linear-gradient(180deg,#141e30 0%,#1a2a42 30%,#1e2d44 60%,var(--bg-color) 100%)}
+
+/* ===== 头部控制台 ===== */
 .anki-header{padding:12rpx 24rpx 6rpx;flex-shrink:0;background:transparent}
 .anki-category-label{font-size:26rpx;color:#8bb4d8;text-align:center;margin-bottom:8rpx;font-weight:600}
 .anki-header-row{display:flex;align-items:flex-end;justify-content:flex-start;gap:20rpx;margin-bottom:8rpx}
 .anki-info-block{display:flex;flex-direction:column;align-items:flex-start}
-.anki-info-label{font-size:18rpx;color:rgba(255,255,255,0.5);font-weight:500;margin-bottom:2rpx}
+.anki-info-label{font-size:18rpx;color:rgba(255,255,255,0.45);font-weight:500;margin-bottom:2rpx}
 .anki-info-value{font-size:28rpx;font-weight:800;color:#ffffff}
-.anki-info-sep{font-weight:400;color:rgba(255,255,255,0.4);margin:0 2rpx}
+.anki-info-sep{font-weight:400;color:rgba(255,255,255,0.35);margin:0 2rpx}
 .anki-info-mastered{color:#69db7c}
 .anki-info-category{color:#8bb4d8;font-size:24rpx}
 .anki-stats{display:flex;align-items:center;justify-content:center;margin-bottom:8rpx}
@@ -17,23 +19,48 @@ page{overflow:hidden}
 .anki-stat-sep{font-size:24rpx;color:var(--border-color);margin:0 16rpx}
 .anki-stat-value{font-weight:800;color:var(--text-primary);font-size:30rpx}
 .anki-stat-mastered{color:#4caf50}
-.anki-progress-bar{height:6rpx;background:rgba(255,255,255,0.08);border-radius:3rpx;overflow:hidden;margin-top:4rpx;position:relative}
+.anki-progress-bar{height:6rpx;background:rgba(255,255,255,0.06);border-radius:3rpx;overflow:hidden;margin-top:4rpx;position:relative}
 .anki-progress-fill{height:100%;background:linear-gradient(90deg,#4a90d9,#36d1dc,#4ac4e0);border-radius:3rpx;transition:width 0.4s cubic-bezier(0.4,0,0.2,1);box-shadow:0 0 8rpx rgba(74,144,217,0.35);position:relative}
 .anki-progress-fill::after{content:'';position:absolute;right:0;top:0;bottom:0;width:16rpx;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3));border-radius:0 3rpx 3rpx 0}
+
+/* ===== 卡片区域 ===== */
 .card-area{flex:1;display:flex;align-items:center;justify-content:center;padding:4rpx 24rpx 0;perspective:1200px;overflow:hidden}
 .card-swipe{width:100%;height:560rpx;transition:transform 0.3s,opacity 0.3s}
 .card-inner{width:100%;height:100%;position:relative;transition:transform 0.6s cubic-bezier(0.4,0,0.2,1);transform-style:preserve-3d;border-radius:24rpx}
 .card-inner.flipped{transform:rotateY(180deg)}
-.card-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:24rpx;background-color:var(--card-bg);box-shadow:0 12rpx 40rpx rgba(0,0,0,0.2),0 4rpx 12rpx rgba(74,144,217,0.08);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40rpx;box-sizing:border-box;border:1rpx solid rgba(74,144,217,0.1)}
-.card-front{background:linear-gradient(180deg,#ffffff 0%,#f8faff 92%,rgba(74,144,217,0.06) 100%);border-top:4rpx solid #4a90d9}
-.card-back{transform:rotateY(180deg);justify-content:flex-start;padding-top:60rpx;overflow-y:auto;background:linear-gradient(180deg,#ffffff 0%,#f8fff8 92%,rgba(76,175,80,0.06) 100%);border-top:4rpx solid #4caf50}
+
+/* ===== 卡片公共样式 ===== */
+.card-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:24rpx;box-shadow:0 16rpx 48rpx rgba(0,0,0,0.25),0 6rpx 16rpx rgba(74,144,217,0.06);display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden}
+
+/* ===== 正面：记忆卡 ===== */
+.card-front{background:linear-gradient(170deg,#ffffff 0%,#f6f8fc 50%,#edf2fa 100%);border:1rpx solid rgba(74,144,217,0.12)}
+.card-front::before{content:'';position:absolute;top:0;left:0;right:0;height:6rpx;background:linear-gradient(90deg,#4a90d9,#36d1dc);border-radius:24rpx 24rpx 0 0}
+.card-front-top{display:flex;align-items:center;justify-content:space-between;padding:24rpx 28rpx 0;flex-shrink:0}
+.card-category-tag{font-size:20rpx;color:#4a90d9;background:linear-gradient(135deg,rgba(74,144,217,0.1),rgba(54,209,220,0.08));padding:6rpx 16rpx;border-radius:12rpx;font-weight:600;letter-spacing:1rpx;border:1rpx solid rgba(74,144,217,0.15)}
+.card-index-badge{font-size:20rpx;color:rgba(0,0,0,0.3);font-weight:600;font-family:monospace;background-color:rgba(0,0,0,0.04);padding:4rpx 14rpx;border-radius:10rpx}
+.card-index-badge-back{color:rgba(255,255,255,0.5);background-color:rgba(76,175,80,0.12)}
+.card-front-center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 40rpx}
 .card-term{font-size:56rpx;font-weight:800;color:var(--text-primary);text-align:center;margin-bottom:16rpx;word-break:break-word;letter-spacing:2rpx}
-.card-ja-reading{font-size:30rpx;color:var(--text-secondary);text-align:center;word-break:break-word;letter-spacing:1rpx}
-.card-hint{position:absolute;bottom:28rpx;font-size:20rpx;color:var(--text-hint);background-color:rgba(74,144,217,0.06);padding:6rpx 20rpx;border-radius:20rpx;letter-spacing:1rpx}
-.card-section-label{display:block;font-size:22rpx;font-weight:600;color:#4a90d9;margin-bottom:8rpx;margin-top:20rpx;width:100%;padding-bottom:6rpx;border-bottom:1rpx solid rgba(74,144,217,0.12)}
-.card-section-label:first-child{margin-top:0}
-.card-zh{display:block;font-size:38rpx;font-weight:700;color:var(--text-primary);line-height:1.5;width:100%;margin-bottom:12rpx;word-break:break-word;letter-spacing:1rpx}
-.card-ja{display:block;font-size:26rpx;color:var(--text-secondary);line-height:1.7;width:100%;word-break:break-word;background-color:rgba(74,144,217,0.04);border-radius:12rpx;padding:16rpx;margin-top:8rpx;border:1rpx solid rgba(74,144,217,0.06)}
+.card-ja-reading{font-size:30rpx;color:var(--text-secondary);text-align:center;word-break:break-word;letter-spacing:1rpx;margin-top:4rpx}
+.card-loop-badge{position:absolute;top:24rpx;right:28rpx;font-size:20rpx;color:#e8913a;background-color:rgba(232,145,58,0.1);padding:4rpx 14rpx;border-radius:16rpx;font-weight:600;border:1rpx solid rgba(232,145,58,0.18)}
+.card-front-bottom{flex-shrink:0;padding:0 28rpx 28rpx;display:flex;justify-content:center}
+.card-hint{font-size:20rpx;color:var(--text-hint);background:linear-gradient(135deg,rgba(74,144,217,0.06),rgba(54,209,220,0.04));padding:8rpx 28rpx;border-radius:24rpx;letter-spacing:2rpx;font-weight:500;border:1rpx solid rgba(74,144,217,0.08)}
+
+/* ===== 背面：解析卡 ===== */
+.card-back{transform:rotateY(180deg);background:linear-gradient(170deg,#ffffff 0%,#f6faf6 50%,#eef5ee 100%);border:1rpx solid rgba(76,175,80,0.12)}
+.card-back::before{content:'';position:absolute;top:0;left:0;right:0;height:6rpx;background:linear-gradient(90deg,#4caf50,#66bb6a);border-radius:24rpx 24rpx 0 0}
+.card-back-header{display:flex;align-items:center;gap:8rpx;padding:20rpx 28rpx 0;flex-shrink:0}
+.card-back-icon{font-size:28rpx}
+.card-back-label{font-size:22rpx;font-weight:700;color:#4caf50;letter-spacing:2rpx}
+.card-back-body{flex:1;overflow-y:auto;padding:16rpx 28rpx 28rpx;-webkit-overflow-scrolling:touch}
+.card-back-section{margin-bottom:20rpx}
+.card-back-section:last-child{margin-bottom:0}
+.card-section-label{display:block;font-size:20rpx;font-weight:600;color:#4a90d9;margin-bottom:8rpx;padding-bottom:6rpx;border-bottom:1rpx solid rgba(74,144,217,0.1);letter-spacing:1rpx}
+.card-section-label-green{color:#4caf50;border-bottom-color:rgba(76,175,80,0.1)}
+.card-zh{display:block;font-size:36rpx;font-weight:700;color:var(--text-primary);line-height:1.5;word-break:break-word;letter-spacing:1rpx}
+.card-ja{display:block;font-size:26rpx;color:var(--text-secondary);line-height:1.7;word-break:break-word;background-color:rgba(76,175,80,0.04);border-radius:12rpx;padding:16rpx;margin-top:8rpx;border:1rpx solid rgba(76,175,80,0.08)}
+
+/* ===== 操作栏 ===== */
 .action-bar{display:flex;align-items:center;justify-content:center;gap:20rpx;padding:12rpx 24rpx 32rpx;flex-shrink:0;background:linear-gradient(0deg,rgba(0,0,0,0.03) 0%,transparent 100%)}
 .action-btn{flex:1;max-width:320rpx;height:84rpx;border-radius:42rpx;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:8rpx;transition:transform 0.15s,box-shadow 0.15s}
 .action-btn:active{transform:scale(0.96)}
@@ -41,31 +68,23 @@ page{overflow:hidden}
 .action-btn-mastered{background:linear-gradient(135deg,#4caf50,#43a047);box-shadow:0 4rpx 16rpx rgba(76,175,80,0.3)}
 .action-btn-icon{font-size:32rpx;color:#fff;font-weight:700}
 .action-btn-label{font-size:26rpx;color:#fff;font-weight:600;letter-spacing:1rpx}
+
+/* ===== 筛选栏 ===== */
+.anki-filter-btn{margin-left:auto;width:52rpx;height:52rpx;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:12rpx;background-color:rgba(255,255,255,0.08);transition:background-color 0.15s}
+.anki-filter-btn:active{background-color:rgba(255,255,255,0.16)}
+.anki-filter-icon{font-size:28rpx;color:#8bb4d8}
+.anki-filter-bar{margin-top:8rpx;padding:8rpx 0 4rpx;border-top:1rpx solid rgba(255,255,255,0.08)}
+.anki-filter-scroll{white-space:nowrap;width:100%}
+.anki-filter-tag{display:inline-flex;align-items:center;justify-content:center;padding:8rpx 20rpx;border-radius:20rpx;background-color:rgba(255,255,255,0.06);margin-right:10rpx;font-size:22rpx;color:rgba(255,255,255,0.6);flex-shrink:0;transition:all 0.15s}
+.anki-filter-tag:active{transform:scale(0.95)}
+.anki-filter-tag-active{background:linear-gradient(135deg,#4a90d9,#36d1dc);color:#fff;font-weight:600;box-shadow:0 2rpx 8rpx rgba(74,144,217,0.3)}
+
+/* ===== 结算看板 ===== */
 .complete-section{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40rpx}
 .complete-icon{font-size:100rpx;margin-bottom:24rpx}
 .complete-title{font-size:40rpx;font-weight:700;color:var(--text-primary);margin-bottom:12rpx}
 .complete-desc{font-size:28rpx;color:var(--text-secondary);margin-bottom:40rpx}
 .complete-btn{background-color:#4a90d9;border-radius:40rpx;padding:24rpx 80rpx;font-size:30rpx;color:#fff;font-weight:600;box-shadow:0 4rpx 16rpx rgba(74,144,217,0.3)}
-.empty-section{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40rpx}
-.empty-icon{font-size:100rpx;margin-bottom:24rpx}
-.empty-text{font-size:32rpx;color:var(--text-primary);margin-bottom:12rpx}
-.empty-hint{font-size:26rpx;color:var(--text-hint);text-align:center;margin-bottom:40rpx;line-height:1.6}
-.empty-btn{background-color:#4a90d9;border-radius:40rpx;padding:24rpx 60rpx;font-size:28rpx;color:#fff;font-weight:600;box-shadow:0 4rpx 16rpx rgba(74,144,217,0.3)}
-
-/* 筛选栏 */
-.anki-filter-btn { margin-left:auto; width:52rpx; height:52rpx; display:flex; align-items:center; justify-content:center; flex-shrink:0; border-radius:12rpx; background-color:rgba(255,255,255,0.08); transition:background-color 0.15s; }
-.anki-filter-btn:active { background-color:rgba(255,255,255,0.16); }
-.anki-filter-icon { font-size:28rpx; color:#8bb4d8; }
-.anki-filter-bar { margin-top:8rpx; padding:8rpx 0 4rpx; border-top:1rpx solid rgba(255,255,255,0.08); }
-.anki-filter-scroll { white-space:nowrap; width:100%; }
-.anki-filter-tag { display:inline-flex; align-items:center; justify-content:center; padding:8rpx 20rpx; border-radius:20rpx; background-color:rgba(255,255,255,0.06); margin-right:10rpx; font-size:22rpx; color:rgba(255,255,255,0.6); flex-shrink:0; transition:all 0.15s; }
-.anki-filter-tag:active { transform:scale(0.95); }
-.anki-filter-tag-active { background:linear-gradient(135deg,#4a90d9,#36d1dc); color:#fff; font-weight:600; box-shadow:0 2rpx 8rpx rgba(74,144,217,0.3); }
-
-/* 循环计数 */
-.card-loop-badge{position:absolute;top:20rpx;right:20rpx;font-size:22rpx;color:#e8913a;background-color:rgba(232,145,58,0.12);padding:4rpx 16rpx;border-radius:20rpx;font-weight:600;border:1rpx solid rgba(232,145,58,0.2)}
-
-/* 结算看板 */
 .summary-card{background-color:var(--card-bg);border-radius:24rpx;margin:30rpx;padding:36rpx;box-shadow:0 4rpx 24rpx rgba(0,0,0,0.12)}
 .summary-title{display:block;font-size:36rpx;font-weight:700;color:var(--text-primary);text-align:center;margin-bottom:28rpx}
 .summary-grid{display:flex;flex-wrap:wrap;gap:16rpx;margin-bottom:24rpx}
@@ -82,7 +101,14 @@ page{overflow:hidden}
 .summary-btn-primary{background-color:#4a90d9;color:#fff;box-shadow:0 4rpx 16rpx rgba(74,144,217,0.3)}
 .summary-btn-secondary{background-color:var(--divider-color);color:var(--text-secondary)}
 
-/* 加载与错误状态 */
+/* ===== 空状态 ===== */
+.empty-section{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40rpx}
+.empty-icon{font-size:100rpx;margin-bottom:24rpx}
+.empty-text{font-size:32rpx;color:var(--text-primary);margin-bottom:12rpx}
+.empty-hint{font-size:26rpx;color:var(--text-hint);text-align:center;margin-bottom:40rpx;line-height:1.6}
+.empty-btn{background-color:#4a90d9;border-radius:40rpx;padding:24rpx 60rpx;font-size:28rpx;color:#fff;font-weight:600;box-shadow:0 4rpx 16rpx rgba(74,144,217,0.3)}
+
+/* ===== 加载与错误 ===== */
 .loading-section{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40rpx}
 .loading-icon{font-size:80rpx;margin-bottom:24rpx}
 .loading-text{font-size:28rpx;color:var(--text-secondary)}
@@ -91,7 +117,7 @@ page{overflow:hidden}
 .error-text{font-size:28rpx;color:var(--text-secondary);margin-bottom:40rpx;text-align:center}
 .error-btn{background-color:#4a90d9;border-radius:40rpx;padding:24rpx 60rpx;font-size:28rpx;color:#fff;font-weight:600}
 
-/* 深色模式适配 */
+/* ===== 深色模式适配 ===== */
 @media (prefers-color-scheme: dark) {
   .container {
     background: linear-gradient(180deg, #0d1b2a 0%, #1a2a3e 40%, var(--bg-color) 100%);
@@ -110,9 +136,36 @@ page{overflow:hidden}
     color: rgba(255, 255, 255, 0.5);
   }
   .card-front {
-    background: linear-gradient(180deg, var(--card-bg) 0%, #1e2840 92%, rgba(74, 144, 217, 0.08) 100%);
+    background: linear-gradient(170deg, var(--card-bg) 0%, #1e2840 60%, #1a2540 100%);
+    border-color: rgba(74, 144, 217, 0.15);
+  }
+  .card-front::before {
+    background: linear-gradient(90deg, #4a90d9, #36d1dc);
+  }
+  .card-front-top { }
+  .card-category-tag {
+    background: linear-gradient(135deg, rgba(74, 144, 217, 0.15), rgba(54, 209, 220, 0.1));
+    color: #58a6ff;
+    border-color: rgba(74, 144, 217, 0.2);
+  }
+  .card-index-badge {
+    color: rgba(255, 255, 255, 0.4);
+    background-color: rgba(255, 255, 255, 0.06);
+  }
+  .card-index-badge-back {
+    color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(76, 175, 80, 0.15);
   }
   .card-back {
-    background: linear-gradient(180deg, var(--card-bg) 0%, #1e2840 92%, rgba(76, 175, 80, 0.08) 100%);
+    background: linear-gradient(170deg, var(--card-bg) 0%, #1e2e22 60%, #1a2a20 100%);
+    border-color: rgba(76, 175, 80, 0.15);
+  }
+  .card-back::before {
+    background: linear-gradient(90deg, #4caf50, #66bb6a);
+  }
+  .card-hint {
+    background: linear-gradient(135deg, rgba(74, 144, 217, 0.1), rgba(54, 209, 220, 0.06));
+    border-color: rgba(74, 144, 217, 0.12);
+    color: rgba(255, 255, 255, 0.4);
   }
 }
