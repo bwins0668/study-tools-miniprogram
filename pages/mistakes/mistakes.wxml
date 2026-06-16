@@ -1,54 +1,60 @@
-<!--pages/mistakes/mistakes.wxml - 错题 tab 轻入口-->
+<!--pages/mistakes/mistakes.wxml - 错题复盘中心-->
 <view class="container">
-  <view class="launcher-section">
-    <text class="launcher-icon">📋</text>
-    <text class="launcher-title">错题本</text>
-    <text class="launcher-desc">做题后，答错的题目会自动记录</text>
-
-    <!-- 有错题时的统计 -->
-    <view wx:if="{{wrongCount > 0}}">
-      <view class="stats-row">
-        <text class="stats-value">{{wrongCount}}</text>
-        <text class="stats-label">道错题待复习</text>
+  <!-- 顶部 Hero -->
+  <view class="mistakes-hero">
+    <view class="mistakes-hero-row">
+      <view class="mistakes-hero-text">
+        <text class="mistakes-hero-title">错题本</text>
+        <text class="mistakes-hero-subtitle">答错自动收录 · 复盘巩固</text>
       </view>
-
-      <!-- 分类错题统计 -->
-      <view class="category-stats">
-        <view class="category-item" wx:if="{{itpassCount > 0}}">
-          <text class="category-label">IT Passport</text>
-          <text class="category-count">{{itpassCount}} 道</text>
-        </view>
-        <view class="category-item" wx:if="{{sgCount > 0}}">
-          <text class="category-label">SG</text>
-          <text class="category-count">{{sgCount}} 道</text>
-        </view>
-      </view>
-
-      <!-- 最近错误时间 -->
-      <view class="last-wrong" wx:if="{{lastWrongTime}}">
-        <text class="last-wrong-text">最近错误：{{lastWrongTime}}</text>
-      </view>
-
-      <view class="launcher-btn" bindtap="goToMistakesList">
-        <text class="launcher-btn-text">查看错题详情</text>
-      </view>
-      <view class="launcher-btn-secondary launcher-btn" bindtap="goToAnkiMistakes" style="margin-top:24rpx">
-        <text class="launcher-btn-text">🧠 错题闪卡</text>
+      <view class="mistakes-hero-count" wx:if="{{wrongCount > 0}}">
+        <text class="mistakes-hero-count-num">{{wrongCount}}</text>
+        <text class="mistakes-hero-count-label">待复盘</text>
       </view>
     </view>
+    <!-- 分类统计 -->
+    <view class="mistakes-category-row category-stats" wx:if="{{wrongCount > 0}}">
+      <view class="mistakes-cat-chip mistakes-cat-itpass" wx:if="{{itpassCount > 0}}">
+        <text class="mistakes-cat-chip-text">IT Passport {{itpassCount}}</text>
+      </view>
+      <view class="mistakes-cat-chip mistakes-cat-sg" wx:if="{{sgCount > 0}}">
+        <text class="mistakes-cat-chip-text">SG {{sgCount}}</text>
+      </view>
+      <text class="mistakes-last-time" wx:if="{{lastWrongTime}}">{{lastWrongTime}}</text>
+    </view>
+  </view>
 
-    <!-- 无错题时的空状态 -->
-    <view class="enhanced-empty" wx:if="{{wrongCount === 0}}">
-      <text class="empty-icon">🎯</text>
-      <text class="empty-main">暂无错题记录</text>
-      <text class="empty-sub">完成一次练习后，答错的题目会自动收录到这里</text>
-      <view class="study-btn" bindtap="goStudy">
-        <text class="study-btn-text">开始练习</text>
+  <!-- 有错题时：操作区 -->
+  <view class="mistakes-actions" wx:if="{{wrongCount > 0}}">
+    <view class="action-grid">
+      <!-- 查看错题 -->
+      <view class="action-tile action-tile-red" bindtap="goToMistakesList">
+        <text class="action-tile-icon">📋</text>
+        <text class="action-tile-title">查看错题详情</text>
+        <text class="action-tile-stat">{{wrongCount}} 道</text>
+      </view>
+      <!-- 错题闪卡 -->
+      <view class="action-tile action-tile-purple" bindtap="goToAnkiMistakes">
+        <text class="action-tile-icon">🧠</text>
+        <text class="action-tile-title">闪卡复盘</text>
+        <text class="action-tile-stat">Anki</text>
+      </view>
+      <!-- 去学习 -->
+      <view class="action-tile action-tile-blue" bindtap="goStudy">
+        <text class="action-tile-icon">📝</text>
+        <text class="action-tile-title">继续练习</text>
+        <text class="action-tile-stat">做题</text>
       </view>
     </view>
+  </view>
 
-    <view class="study-btn" wx:if="{{wrongCount > 0}}" bindtap="goStudy">
-      <text class="study-btn-text">去学习</text>
+  <!-- 空状态 -->
+  <view class="mistakes-empty enhanced-empty" wx:if="{{wrongCount === 0}}">
+    <text class="mistakes-empty-icon">🎯</text>
+    <text class="mistakes-empty-title">暂无错题记录</text>
+    <text class="mistakes-empty-desc">完成一次练习后，答错的题目会自动收录到这里</text>
+    <view class="mistakes-empty-btn" bindtap="goStudy">
+      <text class="mistakes-empty-btn-text">开始练习</text>
     </view>
   </view>
 </view>
