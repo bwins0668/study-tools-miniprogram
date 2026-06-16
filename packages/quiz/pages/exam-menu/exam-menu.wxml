@@ -1,33 +1,37 @@
 <!--pages/exam-menu/exam-menu.wxml-->
 <view class="container">
-  <!-- 标题 -->
-  <view class="page-header">
-    <text class="page-title">{{examTitle}}</text>
-    <text class="page-desc">{{examDesc}}</text>
-  </view>
-
-  <!-- 整体学习概览 (Round 3.22) -->
-  <view class="overview-card card" wx:if="{{overallTotal > 0}}">
-    <view class="overview-stats">
-      <view class="overview-stat">
-        <text class="overview-stat-value">{{overallTotal}}</text>
-        <text class="overview-stat-label">累计答题</text>
+  <!-- 考试 Dashboard 头部 -->
+  <view class="exam-dashboard">
+    <view class="dashboard-header">
+      <view class="dashboard-title-group">
+        <text class="dashboard-title">{{examTitle}}</text>
+        <text class="dashboard-subtitle">{{examDesc}}</text>
       </view>
-      <view class="overview-divider"></view>
-      <view class="overview-stat">
-        <text class="overview-stat-value overview-accuracy">{{overallAccuracy}}%</text>
-        <text class="overview-stat-label">综合正确率</text>
-      </view>
-      <view class="overview-divider"></view>
-      <view class="overview-stat">
-        <text class="overview-stat-value overview-time-text">{{lastPracticeText || '暂无'}}</text>
-        <text class="overview-stat-label">最近练习</text>
-      </view>
+      <view class="dashboard-badge dashboard-badge-{{exam}}">ACTIVE</view>
     </view>
-    <!-- 学习建议 -->
-    <view class="overview-suggestion suggestion-{{suggestion.level}}" wx:if="{{suggestion.text}}">
-      <text class="suggestion-icon">{{suggestion.level === 'good' ? '✅' : (suggestion.level === 'start' ? '📚' : (suggestion.level === 'moderate' ? '📖' : '🎯'))}}</text>
-      <text class="suggestion-text">{{suggestion.text}}</text>
+    <!-- 指标概览卡 -->
+    <view class="overview-card card" wx:if="{{overallTotal > 0}}">
+      <view class="overview-stats">
+        <view class="overview-stat">
+          <text class="overview-stat-value">{{overallTotal}}</text>
+          <text class="overview-stat-label">累计答题</text>
+        </view>
+        <view class="overview-divider"></view>
+        <view class="overview-stat">
+          <text class="overview-stat-value overview-accuracy">{{overallAccuracy}}%</text>
+          <text class="overview-stat-label">综合正确率</text>
+        </view>
+        <view class="overview-divider"></view>
+        <view class="overview-stat">
+          <text class="overview-stat-value overview-time-text">{{lastPracticeText || '暂无'}}</text>
+          <text class="overview-stat-label">最近练习</text>
+        </view>
+      </view>
+      <!-- 学习建议 -->
+      <view class="overview-suggestion suggestion-{{suggestion.level}}" wx:if="{{suggestion.text}}">
+        <text class="suggestion-icon">{{suggestion.level === 'good' ? '✅' : (suggestion.level === 'start' ? '📚' : (suggestion.level === 'moderate' ? '📖' : '🎯'))}}</text>
+        <text class="suggestion-text">{{suggestion.text}}</text>
+      </view>
     </view>
   </view>
 
@@ -41,31 +45,51 @@
   <!-- 练习入口 -->
   <view class="menu-list">
     <!-- 课程练习 -->
-    <view class="card menu-card" bindtap="goLessonQuiz">
-      <view class="menu-icon">📚</view>
-      <view class="menu-info">
-        <text class="menu-title">课程练习</text>
-        <text class="menu-desc">双语课程练习题，含中文翻译</text>
-        <view class="menu-stats">
-          <text class="menu-stat-text">已做 {{lessonTotal}} 题</text>
-          <text class="menu-stat-text">正确率 {{lessonAccuracy}}%</text>
+    <view class="menu-card menu-card-lesson" bindtap="goLessonQuiz">
+      <view class="menu-card-header">
+        <view class="menu-card-icon-wrap menu-card-icon-lesson">
+          <text class="menu-card-icon">📚</text>
+        </view>
+        <view class="menu-card-body">
+          <text class="menu-card-title">课程练习</text>
+          <text class="menu-card-desc">双语课程练习题，含中文翻译</text>
+        </view>
+        <text class="menu-card-arrow">›</text>
+      </view>
+      <view class="menu-card-footer">
+        <view class="menu-card-stat">
+          <text class="menu-card-stat-value">{{lessonTotal}}</text>
+          <text class="menu-card-stat-label">已做题</text>
+        </view>
+        <view class="menu-card-stat">
+          <text class="menu-card-stat-value menu-card-stat-accent">{{lessonAccuracy}}%</text>
+          <text class="menu-card-stat-label">正确率</text>
         </view>
       </view>
-      <view class="menu-arrow">›</view>
     </view>
 
     <!-- 日文真题 -->
-    <view class="card menu-card" bindtap="goPastExam">
-      <view class="menu-icon">📝</view>
-      <view class="menu-info">
-        <text class="menu-title">日文真题</text>
-        <text class="menu-desc">日文原题，中文翻译待补充。</text>
-        <view class="menu-stats">
-          <text class="menu-stat-text">已做 {{pastTotal}} 题</text>
-          <text class="menu-stat-text">正确率 {{pastAccuracy}}%</text>
+    <view class="menu-card menu-card-exam" bindtap="goPastExam">
+      <view class="menu-card-header">
+        <view class="menu-card-icon-wrap menu-card-icon-exam">
+          <text class="menu-card-icon">📝</text>
+        </view>
+        <view class="menu-card-body">
+          <text class="menu-card-title">日文真题</text>
+          <text class="menu-card-desc">日文原题，中文翻译待补充</text>
+        </view>
+        <text class="menu-card-arrow">›</text>
+      </view>
+      <view class="menu-card-footer">
+        <view class="menu-card-stat">
+          <text class="menu-card-stat-value">{{pastTotal}}</text>
+          <text class="menu-card-stat-label">已做题</text>
+        </view>
+        <view class="menu-card-stat">
+          <text class="menu-card-stat-value menu-card-stat-accent">{{pastAccuracy}}%</text>
+          <text class="menu-card-stat-label">正确率</text>
         </view>
       </view>
-      <view class="menu-arrow">›</view>
     </view>
   </view>
 </view>
