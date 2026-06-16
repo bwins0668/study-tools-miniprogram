@@ -32,6 +32,9 @@
       <view class="launcher-btn" bindtap="goToMistakesList">
         <text class="launcher-btn-text">查看错题详情</text>
       </view>
+      <view class="launcher-btn-secondary launcher-btn" bindtap="goToAnkiMistakes" style="margin-top:24rpx">
+        <text class="launcher-btn-text">🧠 错题闪卡</text>
+      </view>
     </view>
 
     <!-- 无错题时的空状态 -->

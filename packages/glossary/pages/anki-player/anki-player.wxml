@@ -4,23 +4,19 @@
       <text class="anki-stat">{{currentIndex + 1}} / {{totalCount}}</text>
       <text class="anki-stat-sep">|</text>
       <text class="anki-stat">已掌握 <text class="anki-stat-value anki-stat-mastered">{{masteredCount}}</text></text>
-      <view class="anki-filter-btn" bindtap="toggleFilter">
+      <view class="anki-filter-btn" bindtap="toggleFilter" wx:if="{{dataSource === 'glossary'}}">
         <text class="anki-filter-icon">{{showFilter ? '✕' : '☰'}}</text>
       </view>
     </view>
     <view class="anki-progress-bar">
       <view class="anki-progress-fill" style="width: {{progressPercent}}%"></view>
     </view>
-    <view class="anki-filter-bar" wx:if="{{showFilter}}">
+    <view class="anki-filter-bar" wx:if="{{showFilter && dataSource === 'glossary'}}">
       <scroll-view class="anki-filter-scroll" scroll-x enhanced show-scrollbar="{{false}}">
         <view class="anki-filter-tag {{selectedCategory === 'all' ? 'anki-filter-tag-active' : ''}}"
-          data-category="all" bindtap="selectCategory">
-          <text>全部</text>
-        </view>
+          data-category="all" bindtap="selectCategory"><text>全部</text></view>
         <view wx:for="{{categories}}" wx:key="*this" class="anki-filter-tag {{selectedCategory === item ? 'anki-filter-tag-active' : ''}}"
-          data-category="{{item}}" bindtap="selectCategory">
-          <text>{{item}}</text>
-        </view>
+          data-category="{{item}}" bindtap="selectCategory"><text>{{item}}</text></view>
       </scroll-view>
     </view>
   </view>
@@ -30,13 +26,13 @@
       <view class="card-inner {{isFlipped ? 'flipped' : ''}}" bindtap="toggleFlip">
         <view class="card-face card-front">
           <text class="card-term">{{currentTerm.term}}</text>
-          <text class="card-ja-reading" wx:if="{{currentTerm.ja}}">{{currentTerm.ja}}</text>
+          <text class="card-ja-reading" wx:if="{{currentTerm.reading}}">{{currentTerm.reading}}</text>
           <text class="card-hint" wx:if="{{!isFlipped}}">点击翻牌</text>
         </view>
         <view class="card-face card-back">
           <text class="card-section-label">中文释义</text>
           <text class="card-zh">{{currentTerm.zh}}</text>
-          <text class="card-section-label" wx:if="{{currentTerm.ja}}">日本語</text>
+          <text class="card-section-label" wx:if="{{currentTerm.ja}}">日本語 / 解析</text>
           <text class="card-ja" wx:if="{{currentTerm.ja}}">{{currentTerm.ja}}</text>
         </view>
       </view>
@@ -55,13 +51,16 @@
   <view class="complete-section" wx:if="{{isComplete && totalCount > 0}}">
     <text class="complete-icon">🎉</text>
     <text class="complete-title">全部完成</text>
-    <text class="complete-desc">本轮 {{totalCount}} 个术语已刷完。</text>
-    <view class="complete-btn" bindtap="goBack">返回列表</view>
+    <text class="complete-desc">本轮 {{totalCount}} 个已刷完。</text>
+    <view class="complete-btn" bindtap="goBack">返回</view>
   </view>
   <view class="empty-section" wx:elif="{{totalCount === 0}}">
     <text class="empty-icon">📚</text>
-    <text class="empty-text">该分类下无待复习术语</text>
-    <text class="empty-hint">切换分类试试，或浏览术语表后重新开始。</text>
-    <view class="empty-btn" bindtap="loadAllTerms">加载全部术语</view>
+    <text class="empty-text" wx:if="{{dataSource === 'mistakes'}}">错题本空空如也</text>
+    <text class="empty-text" wx:else>暂无待复习术语</text>
+    <text class="empty-hint" wx:if="{{dataSource === 'mistakes'}}">太棒了！所有错题已攻克！</text>
+    <text class="empty-hint" wx:else>切换分类试试，或浏览术语表后重新开始。</text>
+    <view class="empty-btn" wx:if="{{dataSource === 'glossary'}}" bindtap="loadAllTerms">加载全部术语</view>
+    <view class="empty-btn" wx:elif="{{dataSource === 'mistakes'}}" bindtap="goBack">返回</view>
   </view>
 </view>
