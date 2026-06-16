@@ -7685,6 +7685,26 @@ check3118(ankiJs3118.indexOf('loopCount') >= 0, 'R3.118: anki-player.js missing 
 
 if (round3118Ok) pass('Round Mini 3.118 Anki flip state reset smoke');
 
+// ============================================================
+// Round Mini 3.122 Anki offline-only smoke
+// ============================================================
+console.log('\n--- Round Mini 3.122 Anki offline-only ---');
+var round3122Ok = true;
+function check3122(cond, msg) {
+  if (!cond) { fail(msg); round3122Ok = false; }
+}
+
+var ankiJs3122 = readFile('packages/glossary/pages/anki-player/anki-player.js');
+var ankiNet3122 = ['wx.request', 'wx.cloud', 'cloud.init', 'wx.connectSocket', 'wx.sendSocketMessage', 'fetch(', 'XMLHttpRequest', 'wx.uploadFile', 'wx.downloadFile'];
+for (var ni3122 = 0; ni3122 < ankiNet3122.length; ni3122++) {
+  check3122(ankiJs3122.indexOf(ankiNet3122[ni3122]) < 0, 'R3.122: anki-player.js contains network API: ' + ankiNet3122[ni3122]);
+}
+
+check3122(ankiJs3122.indexOf('wx.getStorageSync') >= 0, 'R3.122: anki-player.js must use local storage (getStorageSync)');
+check3122(ankiJs3122.indexOf('wx.setStorageSync') >= 0, 'R3.122: anki-player.js must use local storage (setStorageSync)');
+
+if (round3122Ok) pass('Round Mini 3.122 Anki offline-only smoke');
+
 console.log('\n========================================');
 console.log('Passed: ' + passed);
 console.log('Failed: ' + failed);
