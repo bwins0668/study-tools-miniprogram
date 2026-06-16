@@ -13,11 +13,19 @@
   </view>
 
   <view class="anki-header" wx:if="{{!isLoading && !errorMsg && totalCount > 0 && !isComplete}}">
-    <view class="anki-category-label" wx:if="{{selectedCategory !== 'all'}}">{{selectedCategory}}</view>
-    <view class="anki-stats">
-      <text class="anki-stat">{{currentIndex + 1}} / {{totalCount}}</text>
-      <text class="anki-stat-sep">|</text>
-      <text class="anki-stat">已掌握 <text class="anki-stat-value anki-stat-mastered">{{masteredCount}}</text></text>
+    <view class="anki-header-row">
+      <view class="anki-info-block">
+        <text class="anki-info-label">进度</text>
+        <text class="anki-info-value">{{currentIndex + 1}}<text class="anki-info-sep">/</text>{{totalCount}}</text>
+      </view>
+      <view class="anki-info-block">
+        <text class="anki-info-label">已掌握</text>
+        <text class="anki-info-value anki-info-mastered">{{masteredCount}}</text>
+      </view>
+      <view class="anki-info-block" wx:if="{{selectedCategory !== 'all'}}">
+        <text class="anki-info-label">分类</text>
+        <text class="anki-info-value anki-info-category">{{selectedCategory}}</text>
+      </view>
       <view class="anki-filter-btn" bindtap="toggleFilter" wx:if="{{dataSource === 'glossary'}}">
         <text class="anki-filter-icon">{{showFilter ? '✕' : '☰'}}</text>
       </view>

@@ -3,6 +3,13 @@ page{overflow:hidden}
 .container{display:flex;flex-direction:column;height:100vh;background-color:var(--bg-color)}
 .anki-header{padding:16rpx 30rpx 8rpx;flex-shrink:0;background:linear-gradient(180deg,rgba(74,144,217,0.06) 0%,transparent 100%)}
 .anki-category-label{font-size:26rpx;color:#4a90d9;text-align:center;margin-bottom:8rpx;font-weight:600}
+.anki-header-row{display:flex;align-items:flex-end;justify-content:flex-start;gap:24rpx;margin-bottom:10rpx}
+.anki-info-block{display:flex;flex-direction:column;align-items:flex-start}
+.anki-info-label{font-size:20rpx;color:var(--text-hint);font-weight:500;margin-bottom:2rpx}
+.anki-info-value{font-size:28rpx;font-weight:800;color:var(--text-primary)}
+.anki-info-sep{font-weight:400;color:var(--text-secondary);margin:0 2rpx}
+.anki-info-mastered{color:#4caf50}
+.anki-info-category{color:#4a90d9;font-size:24rpx}
 .anki-stats{display:flex;align-items:center;justify-content:center;margin-bottom:8rpx}
 .anki-stat{font-size:26rpx;color:var(--text-secondary);font-weight:500}
 .anki-stat-sep{font-size:24rpx;color:var(--border-color);margin:0 16rpx}
