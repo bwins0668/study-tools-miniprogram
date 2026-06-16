@@ -66,6 +66,9 @@
           <text class="menu-card-stat-label">正确率</text>
         </view>
       </view>
+      <view class="menu-card-progress">
+        <view class="menu-card-progress-bar" style="width: {{lessonAccuracy}}%"></view>
+      </view>
     </view>
 
     <!-- 日文真题 -->
@@ -89,6 +92,9 @@
           <text class="menu-card-stat-value menu-card-stat-accent">{{pastAccuracy}}%</text>
           <text class="menu-card-stat-label">正确率</text>
         </view>
+      </view>
+      <view class="menu-card-progress">
+        <view class="menu-card-progress-bar" style="width: {{pastAccuracy}}%"></view>
       </view>
     </view>
   </view>
