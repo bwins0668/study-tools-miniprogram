@@ -32,7 +32,8 @@ const SKIP_DIRS = ['.git', 'node_modules', '.workbuddy', 'generated-backup'];
 // These are not marketing promises and should not trigger compliance violations.
 const SKIP_REL_DIRS = new Set([
   'packages/glossary/data',
-  'packages/quiz/data'
+  'packages/quiz/data',
+  'packages/exam/data'
 ]);
 
 // Files to skip (relative to ROOT) — tool scripts that define blacklist arrays

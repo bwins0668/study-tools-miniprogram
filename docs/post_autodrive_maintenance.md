@@ -97,6 +97,19 @@ Round Mini 3.32 到 3.81 已完成一批连续小步迭代，Round Mini 3.82 已
 - 改动备份 / 恢复格式。
 - 引入第三方 SDK、WASM 或图表库。
 
+## ITpass / SG 题库导入边界
+
+题库数据位于 `packages/exam/data/`。维护时应遵守以下边界：
+
+- 题目来源以 IPA 官方公开过去问题为准。
+- 第三方站点解说、分类、预测题不得直接复制。
+- 每题必须保留 `sourceLabel` 字段，标明出处。
+- 改写题必须标记 `modifiedFromOriginal: true`。
+- 解析（`explanationZh` / `explanationJa`）必须自研生成，不复制第三方解说。
+- 全量导入必须分批、分 chunk，避免小程序包体积暴涨。
+- 样本数据必须在 `sourceLabel` 中标注 sample/mock，不得伪装成官方真题。
+- 禁止出现"保证通过""包过""押题""必过"等合规风险词。
+
 ## 提交流程
 
 推荐流程：

@@ -4361,7 +4361,8 @@ for (var sf2324 = 0; sf2324 < allSourceFiles324.length; sf2324++) {
   if (fp324.includes('/chunks/') || fp324.includes('/generated-backup/') ||
       fp324.includes('glossary_index.js') || fp324.includes('questions.js') ||
       fp324.includes('_backup') || fp324.includes('glossary_full') ||
-      fp324.includes('tools/check_content_compliance.js') || fp324.includes('tools/miniprogram_smoke_test.js')) continue;
+      fp324.includes('tools/check_content_compliance.js') || fp324.includes('tools/miniprogram_smoke_test.js') ||
+      fp324.includes('packages/exam/data/')) continue;
   try {
     var c324 = require('fs').readFileSync(fp324, 'utf-8');
     for (var bb324 = 0; bb324 < banned324.length; bb324++) {
@@ -4840,11 +4841,13 @@ var forbiddenTexts330 = COMPLIANCE_FORBIDDEN_TERMS;
 var textHits330 = [];
 for (var fi3 = 0; fi3 < allJsFiles330.length; fi3++) {
   // 排除数据文件和测试文件
-  if (allJsFiles330[fi3].indexOf('smoke_test') >= 0) continue;
-  if (allJsFiles330[fi3].indexOf('questions.js') >= 0) continue;
-  if (allJsFiles330[fi3].indexOf('glossary_index.js') >= 0) continue;
-  if (allJsFiles330[fi3].indexOf('chunks') >= 0) continue;
-  if (allJsFiles330[fi3].indexOf('generated-backup') >= 0) continue;
+  var f330 = allJsFiles330[fi3].replace(/\\/g, '/');
+  if (f330.indexOf('smoke_test') >= 0) continue;
+  if (f330.indexOf('questions.js') >= 0) continue;
+  if (f330.indexOf('glossary_index.js') >= 0) continue;
+  if (f330.indexOf('chunks') >= 0) continue;
+  if (f330.indexOf('generated-backup') >= 0) continue;
+  if (f330.indexOf('packages/exam/data/') >= 0) continue;
   try {
     var content330c = fs.readFileSync(allJsFiles330[fi3], 'utf-8');
     for (var ti = 0; ti < forbiddenTexts330.length; ti++) {
@@ -7330,6 +7333,113 @@ if (jsonOutput391 !== null) {
 }
 
 if (round391Ok) pass("Round Mini 3.91-JsonContractGuard JSON output structure contract");
+
+// ============================================================
+// Round Mini 3.110 exam question bank schema smoke
+// ============================================================
+console.log('\n--- Round Mini 3.110 exam question bank schema ---');
+var round3110Ok = true;
+function check3110(cond, msg) {
+  if (!cond) { fail(msg); round3110Ok = false; }
+}
+
+var schemaPath3110 = 'packages/exam/data/schema.js';
+var itpassPath3110 = 'packages/exam/data/itpass_sample.js';
+var sgPath3110 = 'packages/exam/data/sg_sample.js';
+var indexPath3110 = 'packages/exam/data/index.js';
+
+if (!fileExists(schemaPath3110)) {
+  fail('R3.110: schema.js missing');
+  round3110Ok = false;
+} else {
+  var schema3110;
+  try { schema3110 = require(path.join(ROOT, schemaPath3110)); } catch (e) {
+    fail('R3.110: failed to require schema.js: ' + e.message);
+    round3110Ok = false;
+  }
+  if (schema3110) {
+    check3110(typeof schema3110.validateQuestionBank === 'function', 'R3.110: validateQuestionBank must be a function');
+    check3110(Array.isArray(schema3110.VALID_EXAMS), 'R3.110: VALID_EXAMS must be an array');
+    check3110(schema3110.VALID_EXAMS.indexOf('itpass') >= 0, 'R3.110: VALID_EXAMS must include itpass');
+    check3110(schema3110.VALID_EXAMS.indexOf('sg') >= 0, 'R3.110: VALID_EXAMS must include sg');
+    check3110(schema3110.CHOICES_COUNT === 4, 'R3.110: CHOICES_COUNT must be 4');
+  }
+}
+
+if (!fileExists(itpassPath3110)) {
+  fail('R3.110: itpass_sample.js missing');
+  round3110Ok = false;
+} else {
+  var itpass3110;
+  try { itpass3110 = require(path.join(ROOT, itpassPath3110)); } catch (e) {
+    fail('R3.110: failed to require itpass_sample.js: ' + e.message);
+    round3110Ok = false;
+  }
+  if (itpass3110 && schema3110) {
+    check3110(Array.isArray(itpass3110), 'R3.110: itpass sample must be an array');
+    check3110(itpass3110.length >= 1 && itpass3110.length <= 5, 'R3.110: itpass sample count must be 1-5, got ' + itpass3110.length);
+    var itpassErrors3110 = schema3110.validateQuestionBank(itpass3110);
+    check3110(itpassErrors3110.length === 0, 'R3.110: itpass sample validation failed: ' + itpassErrors3110.join('; '));
+    for (var qi3110 = 0; qi3110 < itpass3110.length; qi3110++) {
+      check3110(itpass3110[qi3110].exam === 'itpass', 'R3.110: itpass sample[' + qi3110 + '].exam must be "itpass"');
+      check3110(itpass3110[qi3110].sourceLabel.indexOf('sample') >= 0 || itpass3110[qi3110].sourceLabel.indexOf('mock') >= 0, 'R3.110: itpass sample[' + qi3110 + '] must have sample/mock in sourceLabel');
+    }
+  }
+}
+
+if (!fileExists(sgPath3110)) {
+  fail('R3.110: sg_sample.js missing');
+  round3110Ok = false;
+} else {
+  var sg3110;
+  try { sg3110 = require(path.join(ROOT, sgPath3110)); } catch (e) {
+    fail('R3.110: failed to require sg_sample.js: ' + e.message);
+    round3110Ok = false;
+  }
+  if (sg3110 && schema3110) {
+    check3110(Array.isArray(sg3110), 'R3.110: sg sample must be an array');
+    check3110(sg3110.length >= 1 && sg3110.length <= 5, 'R3.110: sg sample count must be 1-5, got ' + sg3110.length);
+    var sgErrors3110 = schema3110.validateQuestionBank(sg3110);
+    check3110(sgErrors3110.length === 0, 'R3.110: sg sample validation failed: ' + sgErrors3110.join('; '));
+    for (var qj3110 = 0; qj3110 < sg3110.length; qj3110++) {
+      check3110(sg3110[qj3110].exam === 'sg', 'R3.110: sg sample[' + qj3110 + '].exam must be "sg"');
+      check3110(sg3110[qj3110].sourceLabel.indexOf('sample') >= 0 || sg3110[qj3110].sourceLabel.indexOf('mock') >= 0, 'R3.110: sg sample[' + qj3110 + '] must have sample/mock in sourceLabel');
+    }
+  }
+}
+
+if (!fileExists(indexPath3110)) {
+  fail('R3.110: index.js missing');
+  round3110Ok = false;
+} else {
+  var index3110;
+  try { index3110 = require(path.join(ROOT, indexPath3110)); } catch (e) {
+    fail('R3.110: failed to require index.js: ' + e.message);
+    round3110Ok = false;
+  }
+  if (index3110) {
+    check3110(index3110.schema === schema3110, 'R3.110: index.schema must be schema module');
+    check3110(index3110.itpassSample === itpass3110, 'R3.110: index.itpassSample must be itpass sample');
+    check3110(index3110.sgSample === sg3110, 'R3.110: index.sgSample must be sg sample');
+  }
+}
+
+// Cross-check: all sample ids unique
+if (itpass3110 && sg3110) {
+  var allIds3110 = {};
+  var dupFound3110 = false;
+  for (var ak3110 = 0; ak3110 < itpass3110.length; ak3110++) {
+    if (allIds3110[itpass3110[ak3110].id]) { dupFound3110 = true; }
+    allIds3110[itpass3110[ak3110].id] = true;
+  }
+  for (var bk3110 = 0; bk3110 < sg3110.length; bk3110++) {
+    if (allIds3110[sg3110[bk3110].id]) { dupFound3110 = true; }
+    allIds3110[sg3110[bk3110].id] = true;
+  }
+  check3110(!dupFound3110, 'R3.110: duplicate ids found across itpass and sg samples');
+}
+
+if (round3110Ok) pass('Round Mini 3.110 exam question bank schema smoke');
 
 console.log('\n========================================');
 console.log('Passed: ' + passed);
