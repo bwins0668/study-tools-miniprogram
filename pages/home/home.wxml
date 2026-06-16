@@ -26,127 +26,23 @@
     <view class="update-dismiss-btn" bindtap="dismissUpdateBanner">✕</view>
   </view>
 
-  <!-- 头部标题 -->
+  <!-- 头部标题（紧凑） -->
   <view class="header">
     <text class="title">Study Tools</text>
     <text class="subtitle">中日双语 IT 学习工具</text>
-  </view>
-
-  <!-- R3.69 分区分隔线 -->
-  <view class="section-divider"></view>
-
-  <!-- R3.75 快捷操作提示 -->
-  <view class="quick-tips">
-    <text class="quick-tips-title">💡 快捷操作</text>
-    <text class="quick-tips-text">长按术语可快速收藏 | 答题后可查看解析 | 定期备份学习数据</text>
   </view>
 
   <!-- R3.42 学习 streak -->
   <view class="streak-banner" wx:if="{{streakCount > 0}}">
     <text class="streak-icon">🔥</text>
     <text class="streak-text">{{streakText}}</text>
-    <!-- R3.55 分享按钮 -->
     <button class="streak-share-btn" open-type="share">
       <text class="streak-share-icon">📤</text>
     </button>
   </view>
 
-  <!-- R3.44 今日练习进度 -->
-  <view class="goal-section" wx:if="{{todayTotal >= 0}}">
-    <view class="goal-header">
-      <text class="goal-title">📊 今日练习</text>
-      <text class="goal-celebrate" wx:if="{{goalProgress >= 100}}">🎉</text>
-      <text class="goal-text">{{goalText}}</text>
-    </view>
-    <view class="goal-bar-wrap">
-      <view class="goal-bar {{goalProgress >= 100 ? 'goal-bar-complete' : ''}}" style="width: {{goalProgress}}%"></view>
-    </view>
-    <text class="goal-reminder" wx:if="{{showGoalReminder}}">今天还没有练习，开始吧！</text>
-  </view>
-
-  <!-- R3.47 学习成就系统 -->
-  <view class="achievement-section" wx:if="{{showAchievements}}">
-    <text class="section-title">🏅 学习成就</text>
-    <scroll-view class="achievement-list" scroll-x="true">
-      <view class="achievement-item" wx:for="{{achievements}}" wx:key="id">
-        <text class="achievement-icon">{{item.icon}}</text>
-        <text class="achievement-name">{{item.name}}</text>
-      </view>
-    </scroll-view>
-  </view>
-
-  <!-- 学习概览 -->
-  <view class="overview-section">
-    <text class="section-title">学习概览</text>
-    <view class="overview-row">
-      <view class="overview-item">
-        <text class="overview-value">{{todayTotal}}</text>
-        <text class="overview-label">今日答题</text>
-      </view>
-      <view class="overview-item">
-        <text class="overview-value">{{favoriteCount}}</text>
-        <text class="overview-label">已收藏术语</text>
-      </view>
-      <view class="overview-item">
-        <text class="overview-value">{{wrongQuestionCount}}</text>
-        <text class="overview-label">错题数量</text>
-      </view>
-    </view>
-    <view class="overview-row overview-row-extra">
-      <view class="overview-item">
-        <text class="overview-value overview-accuracy">{{accuracy}}%</text>
-        <text class="overview-label">总正确率</text>
-      </view>
-      <view class="overview-item" wx:if="{{lastPracticeTimeText}}">
-        <text class="overview-value overview-time">{{lastPracticeTimeText}}</text>
-        <text class="overview-label">最近练习</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 今日建议 -->
-  <view class="suggestion-card" wx:if="{{suggestion}}">
-    <text class="suggestion-icon">💡</text>
-    <view class="suggestion-content">
-      <text class="suggestion-text">{{suggestion}}</text>
-      <text class="next-action-hint" wx:if="{{nextActionHint}}">{{nextActionHint}}</text>
-      <view class="suggestion-action" wx:if="{{suggestionActionText}}" bindtap="suggestionActionTap">
-        <text class="suggestion-action-text">{{suggestionActionText}}</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 继续学习 / 快速开始 -->
-  <view class="continue-section" wx:if="{{hasLastAttempt}}">
-    <text class="section-title">{{sectionTitle}}</text>
-    <view class="continue-card" bindtap="continueLearning">
-      <view class="continue-icon">📚</view>
-      <view class="continue-info">
-        <text class="continue-exam">{{lastExamLabel}} · {{lastSourceLabel}}</text>
-        <view class="continue-meta-row">
-          <text class="continue-hint">继续上次的练习</text>
-          <text class="continue-time" wx:if="{{lastPracticeTimeText}}">{{lastPracticeTimeText}}</text>
-        </view>
-      </view>
-      <view class="continue-btn">继续练习</view>
-    </view>
-    <view class="continue-suggestion-bar" wx:if="{{continueSuggestion}}">
-      <text class="continue-suggestion-text">{{continueSuggestion}}</text>
-    </view>
-  </view>
-
-  <!-- 无学习记录 / 快速开始 -->
-  <view class="continue-section" wx:if="{{!hasLastAttempt}}">
-    <text class="section-title">{{sectionTitle}}</text>
-    <view class="continue-empty">
-      <text class="continue-empty-text">还没有学习记录</text>
-      <text class="continue-empty-hint">从 IT Passport 课程练习开始，也可以选择其他题库</text>
-      <view class="quick-start-btn" bindtap="quickStart">快速开始 · IT Passport 课程练习</view>
-    </view>
-  </view>
-
-  <!-- 快捷入口 -->
-  <view class="section-label">快捷入口</view>
+  <!-- 核心功能入口（首屏优先） -->
+  <view class="section-label">学习入口</view>
 
   <view class="card-list">
     <!-- 错题本（优先，有数据时显示徽标） -->
@@ -228,6 +124,103 @@
       </view>
       <view class="card-arrow">›</view>
     </view>
+  </view>
+
+  <!-- 今日状态（紧凑） -->
+  <view class="today-status" wx:if="{{todayTotal >= 0}}">
+    <view class="today-status-item">
+      <text class="today-status-value">{{todayTotal}}</text>
+      <text class="today-status-label">今日答题</text>
+    </view>
+    <view class="today-status-divider"></view>
+    <view class="today-status-item">
+      <text class="today-status-value">{{favoriteCount}}</text>
+      <text class="today-status-label">已收藏</text>
+    </view>
+    <view class="today-status-divider"></view>
+    <view class="today-status-item">
+      <text class="today-status-value">{{wrongQuestionCount}}</text>
+      <text class="today-status-label">错题</text>
+    </view>
+    <view class="today-status-divider"></view>
+    <view class="today-status-item">
+      <text class="today-status-value today-status-accuracy">{{accuracy}}%</text>
+      <text class="today-status-label">正确率</text>
+    </view>
+  </view>
+
+  <!-- R3.44 今日练习进度 -->
+  <view class="goal-section" wx:if="{{todayTotal >= 0}}">
+    <view class="goal-header">
+      <text class="goal-title">📊 今日练习</text>
+      <text class="goal-celebrate" wx:if="{{goalProgress >= 100}}">🎉</text>
+      <text class="goal-text">{{goalText}}</text>
+    </view>
+    <view class="goal-bar-wrap">
+      <view class="goal-bar {{goalProgress >= 100 ? 'goal-bar-complete' : ''}}" style="width: {{goalProgress}}%"></view>
+    </view>
+    <text class="goal-reminder" wx:if="{{showGoalReminder}}">今天还没有练习，开始吧！</text>
+  </view>
+
+  <!-- R3.47 学习成就系统 -->
+  <view class="achievement-section" wx:if="{{showAchievements}}">
+    <text class="section-title">🏅 学习成就</text>
+    <scroll-view class="achievement-list" scroll-x="true">
+      <view class="achievement-item" wx:for="{{achievements}}" wx:key="id">
+        <text class="achievement-icon">{{item.icon}}</text>
+        <text class="achievement-name">{{item.name}}</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 今日建议 -->
+  <view class="suggestion-card" wx:if="{{suggestion}}">
+    <text class="suggestion-icon">💡</text>
+    <view class="suggestion-content">
+      <text class="suggestion-text">{{suggestion}}</text>
+      <text class="next-action-hint" wx:if="{{nextActionHint}}">{{nextActionHint}}</text>
+      <view class="suggestion-action" wx:if="{{suggestionActionText}}" bindtap="suggestionActionTap">
+        <text class="suggestion-action-text">{{suggestionActionText}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 继续学习 / 快速开始 -->
+  <view class="continue-section" wx:if="{{hasLastAttempt}}">
+    <text class="section-title">{{sectionTitle}}</text>
+    <view class="continue-card" bindtap="continueLearning">
+      <view class="continue-icon">📚</view>
+      <view class="continue-info">
+        <text class="continue-exam">{{lastExamLabel}} · {{lastSourceLabel}}</text>
+        <view class="continue-meta-row">
+          <text class="continue-hint">继续上次的练习</text>
+          <text class="continue-time" wx:if="{{lastPracticeTimeText}}">{{lastPracticeTimeText}}</text>
+        </view>
+      </view>
+      <view class="continue-btn">继续练习</view>
+    </view>
+    <view class="continue-suggestion-bar" wx:if="{{continueSuggestion}}">
+      <text class="continue-suggestion-text">{{continueSuggestion}}</text>
+    </view>
+  </view>
+
+  <!-- 无学习记录 / 快速开始 -->
+  <view class="continue-section" wx:if="{{!hasLastAttempt}}">
+    <text class="section-title">{{sectionTitle}}</text>
+    <view class="continue-empty">
+      <text class="continue-empty-text">还没有学习记录</text>
+      <text class="continue-empty-hint">从 IT Passport 课程练习开始，也可以选择其他题库</text>
+      <view class="quick-start-btn" bindtap="quickStart">快速开始 · IT Passport 课程练习</view>
+    </view>
+  </view>
+
+  <!-- R3.69 分区分隔线 -->
+  <view class="section-divider"></view>
+
+  <!-- R3.75 快捷操作提示 -->
+  <view class="quick-tips">
+    <text class="quick-tips-title">💡 快捷操作</text>
+    <text class="quick-tips-text">长按术语可快速收藏 | 答题后可查看解析 | 定期备份学习数据</text>
   </view>
 
   <!-- R3.67 页脚版本号 -->
