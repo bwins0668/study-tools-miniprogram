@@ -643,7 +643,11 @@
   font-size: 24rpx;
   color: #999999;
 }
-.section-divider {\n  height: 2rpx;\n  background-color: #f0f0f0;\n  margin: 20rpx 30rpx;\n}
+.section-divider {
+  height: 2rpx;
+  background-color: #f0f0f0;
+  margin: 20rpx 30rpx;
+}
 
 /* R3.72 返回顶部按钮 */
 .back-to-top {
