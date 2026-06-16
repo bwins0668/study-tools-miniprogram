@@ -50,10 +50,35 @@
     </view>
   </view>
   <view class="complete-section" wx:if="{{isComplete && totalCount === 0}}">
-    <text class="complete-icon">🎉</text>
-    <text class="complete-title">全部完成</text>
-    <text class="complete-desc">本轮已全部通关！</text>
-    <view class="complete-btn" bindtap="goBack">返回</view>
+    <view class="summary-card" wx:if="{{summary}}">
+      <text class="summary-title">🎉 会话结算</text>
+      <view class="summary-grid">
+        <view class="summary-item">
+          <text class="summary-value summary-value-brand">{{summary.totalCards}}</text>
+          <text class="summary-label">复习总数</text>
+        </view>
+        <view class="summary-item">
+          <text class="summary-value summary-value-brand">{{summary.accuracy}}%</text>
+          <text class="summary-label">一记即中率</text>
+        </view>
+        <view class="summary-item">
+          <text class="summary-value">{{summary.totalLoops}}</text>
+          <text class="summary-label">循环次数</text>
+        </view>
+        <view class="summary-item" wx:if="{{dataSource === 'mistakes'}}">
+          <text class="summary-value summary-value-green">{{summary.eliminated}}</text>
+          <text class="summary-label">斩获错题</text>
+        </view>
+      </view>
+      <view class="summary-timer">
+        <text class="summary-timer-label">⏱ 用时</text>
+        <text class="summary-timer-value">{{summary.elapsedStr}}</text>
+      </view>
+      <view class="summary-actions">
+        <view class="summary-btn summary-btn-primary" catchtap="restartSession">再来一轮</view>
+        <view class="summary-btn summary-btn-secondary" catchtap="goBack">返回菜单</view>
+      </view>
+    </view>
   </view>
   <view class="empty-section" wx:elif="{{totalCount === 0 && !isComplete}}">
     <text class="empty-icon">📚</text>

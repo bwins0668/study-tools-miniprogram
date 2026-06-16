@@ -8,20 +8,27 @@ Page({
     isFlipped: false, isComplete: false,
     masteredCount: 0, progressPercent: 0, swipeStyle: "",
     categories: [], selectedCategory: "all", showFilter: false,
-    dataSource: "glossary", initialTotal: 0
+    dataSource: "glossary", initialTotal: 0, summary: null
   },
 
   onLoad: function (options) {
+    this._sessionStart = Date.now();
+    this._firstPassCount = 0;
+    this._totalLoops = 0;
+    this._eliminatedCount = 0;
     var source = (options && options.source) || "glossary";
     this.setData({ dataSource: source });
     this.initSession();
   },
 
   initSession: function (category) {
+    this._firstPassCount = 0;
+    this._totalLoops = 0;
+    this._eliminatedCount = 0;
     var source = this.data.dataSource;
     var items = (source === "mistakes") ? this.loadMistakesData() : this.loadGlossaryData();
     if (!items || items.length === 0) {
-      this.setData({ totalCount: 0, categories: [], initialTotal: 0 });
+      this.setData({ totalCount: 0, categories: [], initialTotal: 0, summary: null });
       return;
     }
     if (source === "glossary" && this.data.categories.length === 0) {
@@ -49,7 +56,7 @@ Page({
     this.setData({
       selectedCategory: category,
       totalCount: queue.length, currentIndex: 0, initialTotal: queue.length,
-      isComplete: queue.length === 0,
+      isComplete: false, summary: null,
       masteredCount: this.countMastered(),
       progressPercent: 0
     });
@@ -71,15 +78,37 @@ Page({
       for (var k = 0; k < q.options.length; k++) {
         if (q.options[k].key === q.answer) { correctOpt = (q.options[k].textZh || q.options[k].textJa || ""); break; }
       }
-      var frontText = q.questionZh || q.questionJa || "未知题目";
       result.push({
-        id: "mistake_" + wq.id, term: frontText, reading: "",
+        id: "mistake_" + wq.id, term: q.questionZh || q.questionJa || "未知题目", reading: "",
         zh: "正确答案: " + q.answer + ". " + (correctOpt || ""),
         ja: (q.explanationZh || q.explanationJa || ""),
         category: wq.exam || "unknown"
       });
     }
     return result;
+  },
+
+  buildSummary: function () {
+    var elapsed = Date.now() - this._sessionStart;
+    var mins = Math.floor(elapsed / 60000);
+    var secs = Math.floor((elapsed % 60000) / 1000);
+    var fp = this._firstPassCount || 0;
+    var tl = this._totalLoops || 0;
+    var total = this.initialTotal;
+    return {
+      totalCards: total,
+      firstPass: fp,
+      accuracy: total > 0 ? Math.round((fp / total) * 100) : 0,
+      totalLoops: tl,
+      eliminated: this._eliminatedCount || 0,
+      elapsedStr: (mins < 10 ? "0" : "") + mins + ":" + (secs < 10 ? "0" : "") + secs
+    };
+  },
+
+  restartSession: function () {
+    this._sessionStart = Date.now();
+    this.setData({ summary: null });
+    this.initSession();
   },
 
   countMastered: function () {
@@ -108,11 +137,10 @@ Page({
   nextCard: function () {
     var n = this.data.currentIndex + 1;
     if (n >= this.queue.length) {
-      this.setData({ isComplete: true, isFlipped: false, swipeStyle: "", totalCount: 0 });
+      var summary = this.buildSummary();
+      this.setData({ isComplete: true, summary: summary, totalCount: 0 });
       return;
     }
-    var processed = this.initialTotal - this.queue.length + (n + 1);
-    // processed: 已从队列中移除（已记住）+ 当前已处理的（索引位置+1）
     this.setData({
       currentIndex: n, currentTerm: this.queue[n],
       isFlipped: false,
@@ -123,8 +151,8 @@ Page({
 
   markForgot: function () {
     var t = this.data.currentTerm; if (!t) return;
+    this._totalLoops++;
     this.persistStatus(t.id, "review");
-    // 内循环：重新插入到当前位置后第4个位置（或队尾）
     var insertPos = Math.min(this.data.currentIndex + 4, this.queue.length);
     t.loopCount = (t.loopCount || 0) + 1;
     this.queue.splice(insertPos, 0, t);
@@ -137,12 +165,13 @@ Page({
 
   markMastered: function () {
     var t = this.data.currentTerm; if (!t) return;
+    if (t.loopCount === 0) this._firstPassCount++;
     this.persistStatus(t.id, "mastered");
     if (this.data.dataSource === "mistakes") {
       var storage = require("../../../../utils/storage");
       storage.removeWrongQuestion(t.id.replace("mistake_", ""));
+      this._eliminatedCount++;
     }
-    // 已记住的卡片从队列中自然移除（nextCard 推进索引后不再出现）
     this.setData({
       swipeStyle: "transform:translateX(120rpx);opacity:0;transition:all 0.25s",
       masteredCount: this.countMastered()

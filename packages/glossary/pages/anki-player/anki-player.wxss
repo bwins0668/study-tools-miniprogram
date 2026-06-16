@@ -49,3 +49,20 @@ page{overflow:hidden}
 
 /* 循环计数 */
 .card-loop-badge{position:absolute;top:20rpx;right:20rpx;font-size:22rpx;color:#e8913a;background-color:rgba(232,145,58,0.12);padding:4rpx 16rpx;border-radius:20rpx;font-weight:600}
+
+/* 结算看板 */
+.summary-card{background-color:var(--card-bg);border-radius:24rpx;margin:30rpx;padding:36rpx;box-shadow:0 4rpx 24rpx rgba(0,0,0,0.12)}
+.summary-title{display:block;font-size:36rpx;font-weight:700;color:var(--text-primary);text-align:center;margin-bottom:28rpx}
+.summary-grid{display:flex;flex-wrap:wrap;gap:16rpx;margin-bottom:24rpx}
+.summary-item{flex:1;min-width:40%;background-color:var(--bg-color);border-radius:16rpx;padding:20rpx 16rpx;display:flex;flex-direction:column;align-items:center}
+.summary-value{font-size:44rpx;font-weight:800;color:var(--text-primary);margin-bottom:6rpx}
+.summary-value-brand{color:#4a90d9}
+.summary-value-green{color:#4caf50}
+.summary-label{font-size:22rpx;color:var(--text-hint)}
+.summary-timer{display:flex;align-items:center;justify-content:center;margin-bottom:28rpx;gap:8rpx}
+.summary-timer-label{font-size:24rpx;color:var(--text-secondary)}
+.summary-timer-value{font-size:36rpx;font-weight:700;color:var(--text-primary);font-family:monospace}
+.summary-actions{display:flex;flex-direction:column;gap:16rpx}
+.summary-btn{border-radius:40rpx;padding:24rpx;text-align:center;font-size:30rpx;font-weight:600}
+.summary-btn-primary{background-color:#4a90d9;color:#fff;box-shadow:0 4rpx 16rpx rgba(74,144,217,0.3)}
+.summary-btn-secondary{background-color:var(--divider-color);color:var(--text-secondary)}
