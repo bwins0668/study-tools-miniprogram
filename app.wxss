@@ -142,3 +142,173 @@ page {
   padding: 20rpx 0;
   min-height: 100vh;
 }
+
+/* ===== 全局按钮系统 ===== */
+.btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #4a90d9 0%, #6366f1 100%);
+  border-radius: 44rpx;
+  padding: 24rpx 48rpx;
+  box-shadow: 0 6rpx 24rpx rgba(74, 144, 217, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+  box-shadow: 0 3rpx 12rpx rgba(74, 144, 217, 0.25);
+}
+
+.btn-primary-text {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 1rpx;
+}
+
+.btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--card-bg);
+  border: 2rpx solid var(--primary-color);
+  border-radius: 44rpx;
+  padding: 22rpx 48rpx;
+  transition: transform 0.15s ease;
+}
+
+.btn-secondary:active {
+  transform: scale(0.97);
+}
+
+.btn-secondary-text {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.btn-danger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  border-radius: 44rpx;
+  padding: 24rpx 48rpx;
+  box-shadow: 0 6rpx 24rpx rgba(239, 68, 68, 0.3);
+  transition: transform 0.15s ease;
+}
+
+.btn-danger:active {
+  transform: scale(0.97);
+}
+
+.btn-danger-text {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* ===== 全局标签系统 ===== */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--font-sm);
+  font-weight: 600;
+  padding: 6rpx 14rpx;
+  border-radius: 10rpx;
+  letter-spacing: 0.5rpx;
+}
+
+.tag-itpass {
+  color: var(--color-itpass);
+  background-color: var(--color-itpass-light);
+}
+
+.tag-sg {
+  color: var(--color-sg);
+  background-color: var(--color-sg-light);
+}
+
+.tag-anki {
+  color: var(--color-anki);
+  background-color: var(--color-anki-light);
+}
+
+.tag-glossary {
+  color: var(--color-glossary);
+  background-color: var(--color-glossary-light);
+}
+
+.tag-mistakes {
+  color: var(--color-mistakes);
+  background-color: var(--color-mistakes-light);
+}
+
+.tag-profile {
+  color: var(--color-profile);
+  background-color: var(--color-profile-light);
+}
+
+/* ===== 全局色条工具类 ===== */
+.bar-top {
+  position: relative;
+  overflow: hidden;
+}
+
+.bar-top::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5rpx;
+  border-radius: inherit;
+}
+
+.bar-top-itpass::before {
+  background: linear-gradient(90deg, var(--color-itpass), #60a5fa);
+}
+
+.bar-top-sg::before {
+  background: linear-gradient(90deg, var(--color-sg), #ce93d8);
+}
+
+.bar-top-anki::before {
+  background: linear-gradient(90deg, var(--color-anki), #a78bfa);
+}
+
+.bar-top-glossary::before {
+  background: linear-gradient(90deg, var(--color-glossary), #22d3ee);
+}
+
+.bar-top-mistakes::before {
+  background: linear-gradient(90deg, var(--color-mistakes), #f87171);
+}
+
+.bar-top-profile::before {
+  background: linear-gradient(90deg, var(--color-profile), #a78bfa);
+}
+
+/* 左侧色条 */
+.bar-left {
+  position: relative;
+  overflow: hidden;
+  border-left: 6rpx solid var(--primary-color);
+}
+
+.bar-left-success {
+  border-left-color: var(--color-success);
+}
+
+.bar-left-warning {
+  border-left-color: var(--color-warning);
+}
+
+.bar-left-error {
+  border-left-color: var(--color-error);
+}
+
+.bar-left-info {
+  border-left-color: var(--color-info);
+}
