@@ -1,4 +1,4 @@
-﻿var glossaryData = require("../../data/glossary_index");
+var glossaryData = require("../../data/glossary_index");
 var STORAGE_KEY = "study-tools-mini-anki-status-v1";
 var SWIPE_THRESHOLD = 80;
 
