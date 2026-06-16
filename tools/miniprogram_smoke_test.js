@@ -2883,7 +2883,7 @@ for (var b318 = 0; b318 < banned318.length; b318++) {
 }
 
 // 16. 无新 storage keys
-var newKeysPattern = /study-tools-mini-(?!favorite-terms-v1|wrong-questions-v1|quiz-attempts-v1)/;
+var newKeysPattern = /study-tools-mini-(?!favorite-terms-v1|wrong-questions-v1|quiz-attempts-v1|anki-status-v1|streak-v1)/;
 if (newKeysPattern.test(storage318)) {
   fail('Round 3.18: new storage key detected');
   round318Ok = false;
@@ -3048,7 +3048,7 @@ if (!favReviewWxss319.includes('font-size: 120rpx;')) {
 }
 
 // 10. 无新 storage keys
-var keyPattern319 = /study-tools-mini-(?!favorite-terms-v1|wrong-questions-v1|quiz-attempts-v1)/;
+var keyPattern319 = /study-tools-mini-(?!favorite-terms-v1|wrong-questions-v1|quiz-attempts-v1|anki-status-v1|streak-v1)/;
 if (keyPattern319.test(storage319)) {
   fail('Round 3.19: new storage key detected');
   round319Ok = false;
@@ -3304,7 +3304,7 @@ if (!quizWxml320.includes('返回首页') || !quizJs320.includes('goHome')) {
 
 // 23. 无新 storage keys
 var all320 = homeJs320 + quizJs320 + storage320;
-var keyPattern320 = /study-tools-mini-(?!favorite-terms-v1|wrong-questions-v1|quiz-attempts-v1)/;
+var keyPattern320 = /study-tools-mini-(?!favorite-terms-v1|wrong-questions-v1|quiz-attempts-v1|anki-status-v1|streak-v1)/;
 if (keyPattern320.test(storage320)) {
   fail('Round 3.20: new storage key detected');
   round320Ok = false;
@@ -3564,7 +3564,7 @@ if (!termSearchWxml321.includes('filteredList.length === 0 && keyword')) {
 // === E. 合规检查 ===
 // 26. 无新 storage keys
 var all321 = profileJs321 + storage321 + termSearchWxml321;
-var keyPattern321 = /study-tools-mini-(?!favorite-terms-v1|wrong-questions-v1|quiz-attempts-v1)/;
+var keyPattern321 = /study-tools-mini-(?!favorite-terms-v1|wrong-questions-v1|quiz-attempts-v1|anki-status-v1|streak-v1)/;
 if (keyPattern321.test(storage321)) {
   fail('Round 3.21: new storage key detected');
   round321Ok = false;
@@ -3817,7 +3817,7 @@ if (!appJs322.includes('v0.23.0')) {
 
 // 21. 无新 storage keys
 var all322 = examMenuJs322 + storage322;
-var keyPattern322 = /study-tools-mini-(?!favorite-terms-v1|wrong-questions-v1|quiz-attempts-v1)/;
+var keyPattern322 = /study-tools-mini-(?!favorite-terms-v1|wrong-questions-v1|quiz-attempts-v1|anki-status-v1|streak-v1)/;
 if (keyPattern322.test(storage322)) {
   fail('Round 3.22: new storage key detected');
   round322Ok = false;
@@ -4019,7 +4019,7 @@ if (!appJs323.includes('v0.23.0')) {
 
 // 18. 无新 storage keys
 var all323 = termDetailJs323 + storage323 + termDetailWxml323;
-var keyPattern323 = /study-tools-mini-(?!favorite-terms-v1|wrong-questions-v1|quiz-attempts-v1)/;
+var keyPattern323 = /study-tools-mini-(?!favorite-terms-v1|wrong-questions-v1|quiz-attempts-v1|anki-status-v1|streak-v1)/;
 if (keyPattern323.test(storage323)) {
   fail('Round 3.23: new storage key detected');
   round323Ok = false;
@@ -4138,15 +4138,20 @@ if (!storage324.includes("version: 'v0.23.0'")) {
 }
 
 // 5. 3 个 storage keys 无变化
-var knownKeys324 = ['study-tools-mini-favorite-terms-v1', 'study-tools-mini-wrong-questions-v1', 'study-tools-mini-quiz-attempts-v1'];
+var knownKeys324 = [
+  'study-tools-mini-favorite-terms-v1',
+  'study-tools-mini-wrong-questions-v1',
+  'study-tools-mini-quiz-attempts-v1',
+  'study-tools-mini-anki-status-v1'
+];
 var storageKeyRx324 = /study-tools-mini-[a-z0-9-]+/g;
 var keyMatch324;
 var foundKeys324 = [];
 while ((keyMatch324 = storageKeyRx324.exec(storage324)) !== null) {
   if (foundKeys324.indexOf(keyMatch324[0]) === -1) foundKeys324.push(keyMatch324[0]);
 }
-if (foundKeys324.length !== 4) {
-  fail('Round 3.24: storage key count changed: expected 3, got ' + foundKeys324.length);
+if (foundKeys324.length !== knownKeys324.length) {
+  fail('Round 3.24: storage key count changed: expected ' + knownKeys324.length + ', got ' + foundKeys324.length);
   round324Ok = false;
 }
 for (var ki324 = 0; ki324 < foundKeys324.length; ki324++) {
