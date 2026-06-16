@@ -248,6 +248,7 @@
   padding: 14rpx 10rpx 12rpx;
   border-radius: 16rpx;
   background-color: var(--card-bg);
+  border: 1rpx solid rgba(15, 23, 42, 0.04);
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   overflow: hidden;
@@ -274,24 +275,54 @@
   background: linear-gradient(90deg, var(--color-anki, #8b5cf6), #a78bfa);
 }
 
+.entry-card-anki {
+  background: linear-gradient(180deg, rgba(139, 92, 246, 0.08), var(--card-bg) 58%);
+  border-color: rgba(139, 92, 246, 0.14);
+}
+
 .entry-card-itpass::before {
   background: linear-gradient(90deg, var(--color-itpass, #4a90d9), #60a5fa);
+}
+
+.entry-card-itpass {
+  background: linear-gradient(180deg, rgba(74, 144, 217, 0.08), var(--card-bg) 58%);
+  border-color: rgba(74, 144, 217, 0.14);
 }
 
 .entry-card-sg::before {
   background: linear-gradient(90deg, var(--color-sg, #9c27b0), #ce93d8);
 }
 
+.entry-card-sg {
+  background: linear-gradient(180deg, rgba(156, 39, 176, 0.08), var(--card-bg) 58%);
+  border-color: rgba(156, 39, 176, 0.14);
+}
+
 .entry-card-glossary::before {
   background: linear-gradient(90deg, var(--color-glossary, #0891b2), #22d3ee);
+}
+
+.entry-card-glossary {
+  background: linear-gradient(180deg, rgba(8, 145, 178, 0.08), var(--card-bg) 58%);
+  border-color: rgba(8, 145, 178, 0.14);
 }
 
 .entry-card-mistakes::before {
   background: linear-gradient(90deg, var(--color-mistakes, #ef4444), #f87171);
 }
 
+.entry-card-mistakes {
+  background: linear-gradient(180deg, rgba(239, 68, 68, 0.08), var(--card-bg) 58%);
+  border-color: rgba(239, 68, 68, 0.14);
+}
+
 .entry-card-profile::before {
   background: linear-gradient(90deg, var(--color-profile, #7c3aed), #a78bfa);
+}
+
+.entry-card-profile {
+  background: linear-gradient(180deg, rgba(124, 58, 237, 0.08), var(--card-bg) 58%);
+  border-color: rgba(124, 58, 237, 0.16);
 }
 
 /* 图标容器 */
@@ -986,6 +1017,15 @@
 
   .entry-icon-profile {
     background: rgba(108, 92, 231, 0.2);
+  }
+
+  .entry-card-anki,
+  .entry-card-itpass,
+  .entry-card-sg,
+  .entry-card-glossary,
+  .entry-card-mistakes,
+  .entry-card-profile {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), var(--card-bg) 62%);
   }
 
   .suggestion-card {

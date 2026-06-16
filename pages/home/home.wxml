@@ -58,7 +58,7 @@
   <!-- ===== 核心入口矩阵（2×3） ===== -->
   <view class="entry-grid card-list">
     <!-- Anki 闪卡复习 -->
-    <view class="entry-card card card-entry" bindtap="goToAnki">
+    <view class="entry-card card card-entry entry-card-anki" bindtap="goToAnki">
       <view class="entry-card-icon-wrap entry-icon-anki">
         <text class="entry-card-icon">🧠</text>
       </view>
