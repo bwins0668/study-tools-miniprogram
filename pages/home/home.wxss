@@ -59,7 +59,7 @@
 
 /* 学习概览 */
 .overview-section {
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   border-radius: 16rpx;
   margin: 20rpx 30rpx;
   padding: 32rpx;
@@ -265,7 +265,7 @@
 .card-entry {
   display: flex;
   align-items: center;
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   border-radius: 16rpx;
   padding: 36rpx 32rpx;
   margin: 16rpx 30rpx;
@@ -412,7 +412,7 @@
 .continue-card {
   display: flex;
   align-items: center;
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   border-radius: 16rpx;
   padding: 28rpx 32rpx;
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
@@ -491,7 +491,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   border-radius: 16rpx;
   padding: 32rpx;
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
@@ -521,7 +521,7 @@
 
 /* R3.44 今日练习进度 */
 .goal-section {
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   border-radius: 16rpx;
   margin: 20rpx 30rpx;
   padding: 28rpx 32rpx;
@@ -734,4 +734,82 @@
   color: #1890ff;
   padding: 8rpx;
   cursor: pointer;
+}
+
+
+/* ===== 深色模式覆盖（Round 3.95） ===== */
+@media (prefers-color-scheme: dark) {
+  .streak-banner {
+    background: linear-gradient(135deg, #2a1a0a, #3a2520) !important;
+  }
+  .streak-text {
+    color: #e8a040 !important;
+  }
+  .suggestion-card {
+    background-color: #0d1b2a !important;
+    border-left-color: #58a6ff !important;
+  }
+  .suggestion-text {
+    color: #8bb4d8 !important;
+  }
+  .next-action-hint {
+    color: #58a6ff !important;
+  }
+  .reminder-banner {
+    background: linear-gradient(135deg, #0d1b2a, #1a2a3e) !important;
+  }
+  .reminder-text {
+    color: #8bb4d8 !important;
+  }
+  .quote-banner {
+    background: linear-gradient(135deg, #2a2a1a, #3a3a20) !important;
+  }
+  .quote-text {
+    color: #c0b060 !important;
+  }
+  .practice-reminder-banner {
+    background: linear-gradient(135deg, #2a1a1a, #3a2020) !important;
+  }
+  .practice-reminder-text {
+    color: #d0a080 !important;
+  }
+  .reminder-dismiss-btn {
+    color: #d0a080 !important;
+  }
+  .continue-suggestion-bar {
+    background-color: #0d1b2a !important;
+    border-left-color: #58a6ff !important;
+  }
+  .continue-suggestion-text {
+    color: #8bb4d8 !important;
+  }
+  .quick-tips {
+    background-color: #2a1a0a !important;
+    border-left-color: #e8a040 !important;
+  }
+  .quick-tips-title {
+    color: #e8a040 !important;
+  }
+  .update-banner {
+    background-color: #0d1b2a !important;
+    border-bottom-color: #1a3a5a !important;
+  }
+  .update-text {
+    color: #58a6ff !important;
+  }
+  .update-dismiss-btn {
+    color: #58a6ff !important;
+  }
+  .card-entry-profile {
+    background-color: var(--card-bg) !important;
+    border-color: #58a6ff !important;
+  }
+  .card-weak-badge {
+    background-color: #2a1a0a !important;
+    border-color: #8a6040 !important;
+    color: #e8a040 !important;
+  }
+  .achievement-item {
+    background: linear-gradient(135deg, #2a1a0a, #3a2520) !important;
+  }
 }
