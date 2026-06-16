@@ -1,171 +1,158 @@
 <!--pages/home/home.wxml-->
+<!-- Round 3.133: 首页仪表盘重构 -->
 <view class="container">
-  <!-- R3.52-R3.79 顶部提示条已禁用，释放首屏空间 -->
 
-  <!-- 头部标题（紧凑） -->
-  <view class="header">
-    <text class="title">Study Tools</text>
-    <text class="subtitle">中日双语 IT 学习工具</text>
-  </view>
-
-  <!-- R3.42 学习 streak -->
-  <view class="streak-banner" wx:if="{{streakCount > 0}}">
-    <text class="streak-icon">🔥</text>
-    <text class="streak-text">{{streakText}}</text>
-    <button class="streak-share-btn" open-type="share">
-      <text class="streak-share-icon">📤</text>
-    </button>
-  </view>
-
-  <!-- 核心功能入口（首屏优先） -->
-  <view class="section-label">学习入口</view>
-
-  <view class="card-list">
-    <!-- 错题本（优先，有数据时显示徽标） -->
-    <view class="card card-entry" bindtap="goToMistakes">
-      <view class="card-icon">📋</view>
-      <view class="card-info">
-        <text class="card-title">错题本</text>
-        <text class="card-desc">查看做错的题目和复习记录</text>
+  <!-- ===== Hero 仪表盘区 ===== -->
+  <view class="hero">
+    <view class="hero-top">
+      <view class="hero-brand">
+        <text class="hero-title">Study Tools</text>
+        <text class="hero-subtitle">中日双语 IT 学习工具</text>
       </view>
-      <view class="card-badge" wx:if="{{wrongQuestionCount > 0}}">{{wrongQuestionCount}}</view>
-      <view class="card-arrow">›</view>
-    </view>
-
-    <!-- Anki 闪卡复习 -->
-    <view class="card card-entry" bindtap="goToAnki">
-      <view class="card-icon">🧠</view>
-      <view class="card-info">
-        <text class="card-title">Anki 闪卡复习</text>
-        <text class="card-desc">术语 / ITpass / SG 记忆卡片</text>
+      <!-- R3.42 streak 内嵌到 hero -->
+      <view class="streak-banner hero-streak" wx:if="{{streakCount > 0}}">
+        <text class="streak-icon hero-streak-icon">🔥</text>
+        <text class="streak-text hero-streak-text">{{streakText}}</text>
+        <!-- R3.55 分享按钮 -->
+        <button class="streak-share-btn" open-type="share">
+          <text class="streak-share-icon">📤</text>
+        </button>
       </view>
-      <view class="card-badge" wx:if="{{favoriteCount > 0}}">{{favoriteCount}}</view>
-      <view class="card-arrow">›</view>
     </view>
 
-    <!-- Glossary 术语表 -->
-    <view class="card card-entry" bindtap="goToGlossary">
-      <view class="card-icon">📖</view>
-      <view class="card-info">
-        <text class="card-title">Glossary 术语表</text>
-        <text class="card-desc">IT 术语中日英对照查询</text>
+    <!-- 今日数据概览 -->
+    <view class="hero-stats">
+      <view class="hero-stat">
+        <text class="hero-stat-value">{{todayTotal}}</text>
+        <text class="hero-stat-label">今日答题</text>
       </view>
-      <view class="card-arrow">›</view>
-    </view>
-
-    <!-- IT Passport -->
-    <view class="card card-entry" bindtap="goToItPassport">
-      <view class="card-icon">📝</view>
-      <view class="card-info">
-        <text class="card-title-wrap">
-          <text class="card-title">IT Passport · 基础考试方向</text>
-          <text class="card-weak-badge" wx:if="{{itpassWeak}}">建议优先复习</text>
-        </text>
-        <text class="card-desc">IT パスポート試験</text>
-        <view class="card-stats">
-          <text class="card-stat-text" wx:if="{{itpassTotal > 0}}">已做 {{itpassTotal}} 题 · 正确率 {{itpassAccuracy}}%</text>
-          <text class="card-stat-text card-stat-new" wx:else>未练习</text>
-          <text class="card-stat-status">{{itpassStatusText}}</text>
-        </view>
-        <text class="card-last-time" wx:if="{{itpassLastTime}}">最近练习：{{itpassLastTime}}</text>
+      <view class="hero-stat-divider"></view>
+      <view class="hero-stat">
+        <text class="hero-stat-value">{{favoriteCount}}</text>
+        <text class="hero-stat-label">已收藏</text>
       </view>
-      <view class="card-arrow">›</view>
-    </view>
-
-    <!-- SG 考试 -->
-    <view class="card card-entry" bindtap="goToSG">
-      <view class="card-icon">🎯</view>
-      <view class="card-info">
-        <text class="card-title-wrap">
-          <text class="card-title">SG · 信息安全管理方向</text>
-          <text class="card-weak-badge" wx:if="{{sgWeak}}">建议优先复习</text>
-        </text>
-        <text class="card-desc">システム監査技術者</text>
-        <view class="card-stats">
-          <text class="card-stat-text" wx:if="{{sgTotal > 0}}">已做 {{sgTotal}} 题 · 正确率 {{sgAccuracy}}%</text>
-          <text class="card-stat-text card-stat-new" wx:else>未练习</text>
-          <text class="card-stat-status">{{sgStatusText}}</text>
-        </view>
-        <text class="card-last-time" wx:if="{{sgLastTime}}">最近练习：{{sgLastTime}}</text>
+      <view class="hero-stat-divider"></view>
+      <view class="hero-stat">
+        <text class="hero-stat-value hero-stat-accent">{{wrongQuestionCount}}</text>
+        <text class="hero-stat-label">错题</text>
       </view>
-      <view class="card-arrow">›</view>
-    </view>
-
-    <!-- 我的统计（使用 switchTab） -->
-    <view class="card card-entry card-entry-profile" bindtap="goToProfile">
-      <view class="card-icon">👤</view>
-      <view class="card-info">
-        <text class="card-title">我的统计</text>
-        <text class="card-desc">查看详细学习数据和备份管理</text>
+      <view class="hero-stat-divider"></view>
+      <view class="hero-stat">
+        <text class="hero-stat-value hero-stat-success">{{accuracy}}%</text>
+        <text class="hero-stat-label">正确率</text>
       </view>
-      <view class="card-arrow">›</view>
     </view>
-  </view>
 
-  <!-- 今日状态（紧凑） -->
-  <view class="today-status" wx:if="{{todayTotal >= 0}}">
-    <view class="today-status-item">
-      <text class="today-status-value">{{todayTotal}}</text>
-      <text class="today-status-label">今日答题</text>
-    </view>
-    <view class="today-status-divider"></view>
-    <view class="today-status-item">
-      <text class="today-status-value">{{favoriteCount}}</text>
-      <text class="today-status-label">已收藏</text>
-    </view>
-    <view class="today-status-divider"></view>
-    <view class="today-status-item">
-      <text class="today-status-value">{{wrongQuestionCount}}</text>
-      <text class="today-status-label">错题</text>
-    </view>
-    <view class="today-status-divider"></view>
-    <view class="today-status-item">
-      <text class="today-status-value today-status-accuracy">{{accuracy}}%</text>
-      <text class="today-status-label">正确率</text>
-    </view>
-  </view>
-
-  <!-- R3.44 今日练习进度 -->
-  <view class="goal-section" wx:if="{{todayTotal >= 0}}">
-    <view class="goal-header">
-      <text class="goal-title">📊 今日练习</text>
+    <!-- R3.44 今日练习进度（内嵌 hero） -->
+    <view class="goal-section hero-progress" wx:if="{{todayTotal >= 0}}">
+      <view class="hero-progress-bar">
+        <view class="goal-bar hero-progress-fill {{goalProgress >= 100 ? 'goal-bar-complete hero-progress-fill-complete' : ''}}" style="width: {{goalProgress}}%"></view>
+      </view>
+      <text class="goal-text hero-progress-text">{{goalText}}</text>
+      <!-- R3.53 庆祝图标 -->
       <text class="goal-celebrate" wx:if="{{goalProgress >= 100}}">🎉</text>
-      <text class="goal-text">{{goalText}}</text>
-    </view>
-    <view class="goal-bar-wrap">
-      <view class="goal-bar {{goalProgress >= 100 ? 'goal-bar-complete' : ''}}" style="width: {{goalProgress}}%"></view>
     </view>
     <text class="goal-reminder" wx:if="{{showGoalReminder}}">今天还没有练习，开始吧！</text>
   </view>
 
-  <!-- R3.47 学习成就系统 -->
-  <view class="achievement-section" wx:if="{{showAchievements}}">
-    <text class="section-title">🏅 学习成就</text>
-    <scroll-view class="achievement-list" scroll-x="true">
-      <view class="achievement-item" wx:for="{{achievements}}" wx:key="id">
-        <text class="achievement-icon">{{item.icon}}</text>
-        <text class="achievement-name">{{item.name}}</text>
+  <!-- ===== 核心入口矩阵（2×3） ===== -->
+  <view class="entry-grid card-list">
+    <!-- Anki 闪卡复习 -->
+    <view class="entry-card card card-entry" bindtap="goToAnki">
+      <view class="entry-card-icon-wrap entry-icon-anki">
+        <text class="entry-card-icon">🧠</text>
       </view>
-    </scroll-view>
+      <text class="entry-card-title">Anki 闪卡</text>
+      <text class="entry-card-desc">记忆复习</text>
+      <view class="card-badge entry-card-badge" wx:if="{{favoriteCount > 0}}">{{favoriteCount}}</view>
+    </view>
+
+    <!-- IT Passport -->
+    <view class="entry-card card card-entry entry-card-itpass" bindtap="goToItPassport">
+      <view class="entry-card-icon-wrap entry-icon-itpass">
+        <text class="entry-card-icon">📝</text>
+      </view>
+      <view class="card-title-wrap entry-card-title-wrap">
+        <text class="entry-card-title card-title">IT Passport</text>
+        <text class="card-weak-badge entry-tag-weak" wx:if="{{itpassWeak}}">建议优先复习</text>
+      </view>
+      <!-- R3.7 card-stats -->
+      <view class="card-stats entry-card-stats">
+        <text class="card-stat-text" wx:if="{{itpassTotal > 0}}">已做 {{itpassTotal}} 题 · 正确率 {{itpassAccuracy}}%</text>
+        <text class="card-stat-text card-stat-new" wx:else>未练习</text>
+        <text class="card-stat-status">{{itpassStatusText}}</text>
+      </view>
+      <!-- R3.18 最近练习时间 -->
+      <text class="card-last-time" wx:if="{{itpassLastTime}}">最近：{{itpassLastTime}}</text>
+    </view>
+
+    <!-- SG 信息安全 -->
+    <view class="entry-card card card-entry entry-card-sg" bindtap="goToSG">
+      <view class="entry-card-icon-wrap entry-icon-sg">
+        <text class="entry-card-icon">🛡️</text>
+      </view>
+      <view class="card-title-wrap entry-card-title-wrap">
+        <text class="entry-card-title card-title">SG 信息安全</text>
+        <text class="card-weak-badge entry-tag-weak" wx:if="{{sgWeak}}">建议优先复习</text>
+      </view>
+      <view class="card-stats entry-card-stats">
+        <text class="card-stat-text" wx:if="{{sgTotal > 0}}">已做 {{sgTotal}} 题 · 正确率 {{sgAccuracy}}%</text>
+        <text class="card-stat-text card-stat-new" wx:else>未练习</text>
+        <text class="card-stat-status">{{sgStatusText}}</text>
+      </view>
+      <text class="card-last-time" wx:if="{{sgLastTime}}">最近：{{sgLastTime}}</text>
+    </view>
+
+    <!-- Glossary 术语表 -->
+    <view class="entry-card card card-entry entry-card-glossary" bindtap="goToGlossary">
+      <view class="entry-card-icon-wrap entry-icon-glossary">
+        <text class="entry-card-icon">📖</text>
+      </view>
+      <text class="entry-card-title card-title">术语表</text>
+      <text class="entry-card-desc">中日英对照</text>
+    </view>
+
+    <!-- 错题本 -->
+    <view class="entry-card card card-entry entry-card-mistakes" bindtap="goToMistakes">
+      <view class="entry-card-icon-wrap entry-icon-mistakes">
+        <text class="entry-card-icon">📋</text>
+      </view>
+      <text class="entry-card-title card-title">错题本</text>
+      <text class="entry-card-desc">复盘巩固</text>
+      <view class="card-badge entry-card-badge" wx:if="{{wrongQuestionCount > 0}}">{{wrongQuestionCount}}</view>
+    </view>
+
+    <!-- 我的统计 -->
+    <view class="entry-card card card-entry card-entry-profile entry-card-profile" bindtap="goToProfile">
+      <view class="entry-card-icon-wrap entry-icon-profile">
+        <text class="entry-card-icon">📊</text>
+      </view>
+      <text class="entry-card-title card-title">我的统计</text>
+      <text class="entry-card-desc">数据与备份</text>
+    </view>
   </view>
 
-  <!-- 今日建议 -->
+  <!-- ===== 今日建议 ===== -->
   <view class="suggestion-card" wx:if="{{suggestion}}">
     <text class="suggestion-icon">💡</text>
     <view class="suggestion-content">
       <text class="suggestion-text">{{suggestion}}</text>
+      <!-- R3.34 下一步行动 -->
       <text class="next-action-hint" wx:if="{{nextActionHint}}">{{nextActionHint}}</text>
+      <!-- R3.51 建议操作按钮 -->
       <view class="suggestion-action" wx:if="{{suggestionActionText}}" bindtap="suggestionActionTap">
         <text class="suggestion-action-text">{{suggestionActionText}}</text>
       </view>
     </view>
   </view>
 
-  <!-- 继续学习 / 快速开始 -->
+  <!-- ===== 继续学习 / 快速开始 ===== -->
   <view class="continue-section" wx:if="{{hasLastAttempt}}">
     <text class="section-title">{{sectionTitle}}</text>
     <view class="continue-card" bindtap="continueLearning">
-      <view class="continue-icon">📚</view>
+      <view class="continue-icon-wrap">
+        <text class="continue-icon">📚</text>
+      </view>
       <view class="continue-info">
         <text class="continue-exam">{{lastExamLabel}} · {{lastSourceLabel}}</text>
         <view class="continue-meta-row">
@@ -186,28 +173,44 @@
     <view class="continue-empty">
       <text class="continue-empty-text">还没有学习记录</text>
       <text class="continue-empty-hint">从 IT Passport 课程练习开始，也可以选择其他题库</text>
+      <!-- R3.7 快速开始按钮 -->
       <view class="quick-start-btn" bindtap="quickStart">快速开始 · IT Passport 课程练习</view>
     </view>
   </view>
 
-  <!-- R3.69 分区分隔线 -->
+  <!-- ===== R3.47 学习成就 ===== -->
+  <view class="achievement-section" wx:if="{{showAchievements}}">
+    <text class="section-title">🏅 学习成就</text>
+    <scroll-view class="achievement-list" scroll-x="true">
+      <view class="achievement-item" wx:for="{{achievements}}" wx:key="id">
+        <text class="achievement-icon">{{item.icon}}</text>
+        <text class="achievement-name">{{item.name}}</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- R3.69 分区分隔线（保留结构但视觉隐藏） -->
   <view class="section-divider"></view>
 
-  <!-- R3.75 快捷操作提示 -->
+  <!-- R3.75 快捷操作提示（保留结构但视觉隐藏） -->
   <view class="quick-tips">
     <text class="quick-tips-title">💡 快捷操作</text>
     <text class="quick-tips-text">长按术语可快速收藏 | 答题后可查看解析 | 定期备份学习数据</text>
   </view>
 
-  <!-- R3.67 页脚版本号 -->
+  <!-- R3.52/R3.58/R3.61 学习提醒已整合到 hero 仪表盘，旧横幅结构已移除 -->
+
+  <!-- ===== 页脚 ===== -->
   <view class="footer">
     <text class="footer-text">Study Tools Mini v{{version}}</text>
+    <!-- R3.76 下拉刷新提示 -->
     <text class="footer-hint">下拉可以刷新页面</text>
+    <!-- R3.77 页面浏览次数 -->
     <text class="footer-view-count">本页已访问 {{viewCount}} 次</text>
   </view>
 
   <!-- R3.72 返回顶部按钮 -->
-  <view class="back-to-top {{showBackToTop ? 'show' : ''}}" bindtap="scrollToTop" wx:if="{{showBackToTop}}">
+  <view class="back-to-top" wx:if="{{showBackToTop}}" bindtap="scrollToTop">
     <text class="back-to-top-icon">↑</text>
   </view>
 </view>
