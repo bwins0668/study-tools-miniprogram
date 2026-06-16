@@ -1,17 +1,32 @@
-/* pages/profile/profile.wxss */
+/* pages/profile/profile.wxss - 学习中心 */
 
+/* === 头部：沉浸式紫色主题 === */
 .profile-header {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 50rpx 30rpx 30rpx;
+  background: linear-gradient(145deg, #2a1a3c 0%, #3a2060 40%, #4d2a7a 70%, transparent 100%);
+  position: relative;
+}
+
+.profile-header::after {
+  content: '';
+  position: absolute;
+  bottom: -16rpx;
+  left: 0;
+  right: 0;
+  height: 32rpx;
+  background: linear-gradient(0deg, var(--bg-color) 0%, transparent 100%);
+  z-index: 1;
 }
 
 .avatar-placeholder {
   width: 120rpx;
   height: 120rpx;
   border-radius: 50%;
-  background-color: #eef4fc;
+  background-color: rgba(255,255,255,0.1);
+  border: 2rpx solid rgba(255,255,255,0.15);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -22,13 +37,13 @@
 .profile-name {
   font-size: 36rpx;
   font-weight: 700;
-  color: var(--text-primary);
+  color: #ffffff;
   margin-bottom: 8rpx;
 }
 
 .profile-version {
   font-size: 24rpx;
-  color: var(--text-hint);
+  color: rgba(255,255,255,0.5);
 }
 
 /* R3.57 复制版本号按钮 */
@@ -118,28 +133,38 @@
   color: var(--text-hint);
 }
 
-/* 统计网格 */
+/* 统计网格：增强现代感 */
 .stats-grid {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 8rpx 20rpx;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14rpx;
+  margin: 8rpx 30rpx;
 }
 
 .stat-box {
-  width: calc(50% - 20rpx);
-  margin: 10rpx;
   background-color: var(--card-bg);
-  border-radius: 16rpx;
+  border-radius: 18rpx;
   padding: 28rpx 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2rpx 16rpx rgba(0,0,0,0.05);
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3rpx;
 }
 
 .stat-value {
   font-size: 44rpx;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--text-primary);
   margin-bottom: 6rpx;
 }
@@ -147,14 +172,15 @@
 .stat-label {
   font-size: 24rpx;
   color: var(--text-hint);
+  font-weight: 500;
 }
 
 .stat-correct {
-  color: #4caf50;
+  color: #22c55e;
 }
 
 .stat-wrong {
-  color: #f44336;
+  color: #ef4444;
 }
 
 .stat-accuracy {
@@ -538,4 +564,27 @@
 .feedback-btn-text {
   font-size: 28rpx;
   color: #52c41a;
+}
+
+/* === 浅色模式适配 === */
+@media (prefers-color-scheme: light) {
+  .profile-header {
+    background: linear-gradient(145deg, rgba(156,39,176,0.06) 0%, rgba(233,30,99,0.04) 100%);
+  }
+  .avatar-placeholder {
+    background-color: #f0e8f5;
+    border-color: rgba(156,39,176,0.1);
+  }
+  .profile-name {
+    color: var(--text-primary);
+  }
+  .profile-version {
+    color: var(--text-hint);
+  }
+  .stat-correct {
+    color: #4caf50;
+  }
+  .stat-wrong {
+    color: #f44336;
+  }
 }
