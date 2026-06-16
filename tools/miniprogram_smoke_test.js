@@ -7643,6 +7643,48 @@ check3117(ankiWxml3117.indexOf('catchtap') >= 0, 'R3.117: anki wxml missing catc
 
 if (round3117Ok) pass('Round Mini 3.117 Anki gesture handler smoke');
 
+// ============================================================
+// Round Mini 3.118 Anki flip state reset smoke
+// ============================================================
+console.log('\n--- Round Mini 3.118 Anki flip state reset ---');
+var round3118Ok = true;
+function check3118(cond, msg) {
+  if (!cond) { fail(msg); round3118Ok = false; }
+}
+
+var ankiJs3118 = readFile('packages/glossary/pages/anki-player/anki-player.js');
+
+check3118(ankiJs3118.indexOf('isFlipped') >= 0, 'R3.118: anki-player.js missing isFlipped field');
+check3118(ankiJs3118.indexOf('toggleFlip') >= 0, 'R3.118: anki-player.js missing toggleFlip method');
+check3118(ankiJs3118.indexOf('isComplete') >= 0, 'R3.118: anki-player.js missing isComplete field');
+
+var nextCardSection3118 = ankiJs3118.substring(
+  ankiJs3118.indexOf('nextCard:'),
+  ankiJs3118.indexOf('nextCard:') + 400
+);
+check3118(nextCardSection3118.indexOf('isFlipped') >= 0 && nextCardSection3118.indexOf('false') >= 0,
+  'R3.118: nextCard must reset isFlipped to false');
+
+var selectCatSection3118 = ankiJs3118.substring(
+  ankiJs3118.indexOf('selectCategory:'),
+  ankiJs3118.indexOf('selectCategory:') + 300
+);
+check3118(selectCatSection3118.indexOf('isFlipped') >= 0 && selectCatSection3118.indexOf('false') >= 0,
+  'R3.118: selectCategory must reset isFlipped to false');
+
+var restartSection3118 = ankiJs3118.substring(
+  ankiJs3118.indexOf('restartSession'),
+  ankiJs3118.indexOf('restartSession') + 200
+);
+check3118(restartSection3118.indexOf('initSession') >= 0,
+  'R3.118: restartSession must call initSession');
+
+check3118(ankiJs3118.indexOf('currentIndex') >= 0, 'R3.118: anki-player.js missing currentIndex field');
+check3118(ankiJs3118.indexOf('currentTerm') >= 0, 'R3.118: anki-player.js missing currentTerm field');
+check3118(ankiJs3118.indexOf('loopCount') >= 0, 'R3.118: anki-player.js missing loopCount field');
+
+if (round3118Ok) pass('Round Mini 3.118 Anki flip state reset smoke');
+
 console.log('\n========================================');
 console.log('Passed: ' + passed);
 console.log('Failed: ' + failed);
