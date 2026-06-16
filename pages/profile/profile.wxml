@@ -238,6 +238,9 @@
       <view class="backup-btn backup-btn-primary" bindtap="copyBackup">
         <text class="backup-btn-text">复制备份数据</text>
       </view>
+      <view class="backup-btn backup-btn-secondary" bindtap="restoreByText">
+        <text class="backup-btn-text">通过文本恢复</text>
+      </view>
       <view class="backup-btn backup-btn-secondary" bindtap="restoreFromClipboard">
         <text class="backup-btn-text">从剪贴板恢复</text>
       </view>

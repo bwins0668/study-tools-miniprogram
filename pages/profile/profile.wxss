@@ -79,7 +79,7 @@
 
 /* 信息卡片 */
 .info-card {
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   border-radius: 16rpx;
   margin: 8rpx 30rpx;
   padding: 24rpx 32rpx;
@@ -128,7 +128,7 @@
 .stat-box {
   width: calc(50% - 20rpx);
   margin: 10rpx;
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   border-radius: 16rpx;
   padding: 28rpx 24rpx;
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
@@ -188,7 +188,7 @@
 }
 
 .backup-btn-secondary {
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   border: 2rpx solid #4a90d9;
 }
 
@@ -199,7 +199,7 @@
 }
 
 .backup-btn-danger {
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   border: 2rpx solid #f44336;
 }
 
@@ -271,7 +271,7 @@
 }
 
 .clear-btn {
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   border: 2rpx solid #f44336;
   border-radius: 40rpx;
   padding: 24rpx 60rpx;
@@ -313,7 +313,7 @@
   align-items: flex-start;
   padding: 20rpx 10rpx;
   position: relative;
-  border-left: 3rpx solid #e8e8e8;
+  border-left: 3rpx solid var(--border-color);
   margin-left: 26rpx;
 }
 
@@ -342,7 +342,7 @@
 .timeline-content {
   margin-left: 20rpx;
   flex: 1;
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   border-radius: 12rpx;
   padding: 16rpx 20rpx;
   box-shadow: 0 1rpx 6rpx rgba(0, 0, 0, 0.04);
@@ -388,7 +388,7 @@
 .review-hint-item {
   display: flex;
   align-items: center;
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   border-radius: 16rpx;
   margin: 10rpx;
   padding: 24rpx 28rpx;
