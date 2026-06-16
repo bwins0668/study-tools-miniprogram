@@ -1272,9 +1272,9 @@ if (glossaryTabJs.includes('data/glossary')) {
   round22Ok = false;
 }
 
-// 5. home.js 有 goToFavoriteReview
-if (!homeJs.includes('goToFavoriteReview')) {
-  fail('home.js missing goToFavoriteReview handler');
+// 5. home.js 有 goToAnki（Anki 闪卡复习入口）
+if (!homeJs.includes('goToAnki')) {
+  fail('home.js missing goToAnki handler');
   round22Ok = false;
 }
 
@@ -1989,9 +1989,9 @@ if (!homeWxml35.includes('goToMistakes') || !homeJs35.includes('goToMistakes')) 
   round35Ok = false;
 }
 
-// 4. 首页存在收藏复习入口
-if (!homeWxml35.includes('goToFavoriteReview') || !homeJs35.includes('goToFavoriteReview')) {
-  fail('Round 3.5: home missing favorite-review entry');
+// 4. 首页存在 Anki 闪卡复习入口
+if (!homeWxml35.includes('goToAnki') || !homeJs35.includes('goToAnki')) {
+  fail('Round 3.5: home missing Anki flashcard entry');
   round35Ok = false;
 }
 

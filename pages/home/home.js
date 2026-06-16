@@ -577,6 +577,12 @@ Page({
     });
   },
 
+  goToAnki: function () {
+    wx.navigateTo({
+      url: '/packages/glossary/pages/anki-player/anki-player'
+    });
+  },
+
   quickStart: function () {
     wx.navigateTo({
       url: '/packages/quiz/pages/quiz/quiz?exam=itpass&sourceType=lesson_quiz'

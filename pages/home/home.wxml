@@ -160,12 +160,12 @@
       <view class="card-arrow">›</view>
     </view>
 
-    <!-- 收藏术语复习 -->
-    <view class="card card-entry" bindtap="goToFavoriteReview">
-      <view class="card-icon">⭐</view>
+    <!-- Anki 闪卡复习 -->
+    <view class="card card-entry" bindtap="goToAnki">
+      <view class="card-icon">🧠</view>
       <view class="card-info">
-        <text class="card-title">收藏术语复习</text>
-        <text class="card-desc">逐张复习已收藏的术语卡片</text>
+        <text class="card-title">Anki 闪卡复习</text>
+        <text class="card-desc">术语 / ITpass / SG 记忆卡片</text>
       </view>
       <view class="card-badge" wx:if="{{favoriteCount > 0}}">{{favoriteCount}}</view>
       <view class="card-arrow">›</view>
