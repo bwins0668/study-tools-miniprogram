@@ -7056,6 +7056,21 @@ check385(fileExists("tools/check_content_compliance.js"), "R3.85: tools/check_co
 
 if (round385Ok) pass("Round Mini 3.85-AuditClean content compliance tool exists");
 
+// ============================================================
+// Round Mini 3.86-OneCommandGate one-command checks script exists
+// ============================================================
+var round386Ok = true;
+function check386(condition, message) {
+  if (!condition) {
+    fail(message);
+    round386Ok = false;
+  }
+}
+
+check386(fileExists("tools/run_miniprogram_checks.js"), "R3.86: tools/run_miniprogram_checks.js missing");
+
+if (round386Ok) pass("Round Mini 3.86-OneCommandGate one-command checks script exists");
+
 console.log('\n========================================');
 console.log('Passed: ' + passed);
 console.log('Failed: ' + failed);

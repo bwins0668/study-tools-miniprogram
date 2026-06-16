@@ -159,3 +159,25 @@ node tools/check_content_compliance.js
 node tools/miniprogram_smoke_test.js
 node tools/check_content_compliance.js
 ```
+
+## 一键验证入口
+
+推荐每轮修改前后执行：
+
+```
+node tools/run_miniprogram_checks.js
+```
+
+该脚本会顺序执行以下四项检查：
+
+1. Smoke test（`tools/miniprogram_smoke_test.js`）
+2. 内容合规扫描（`tools/check_content_compliance.js`）
+3. JS 语法检查（全项目 `.js` 文件 `node --check`）
+4. WXSS 字面量 `\n` 防回归扫描
+
+若一键脚本失败，应先查看失败步骤，不要继续 commit。
+
+单独执行各检查命令仍然可用：
+
+- `node tools/miniprogram_smoke_test.js`
+- `node tools/check_content_compliance.js`
