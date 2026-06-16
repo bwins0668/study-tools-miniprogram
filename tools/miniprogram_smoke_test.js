@@ -7441,6 +7441,66 @@ if (itpass3110 && sg3110) {
 
 if (round3110Ok) pass('Round Mini 3.110 exam question bank schema smoke');
 
+// ============================================================
+// Round Mini 3.112 Anki page entry & structure smoke
+// ============================================================
+console.log('\n--- Round Mini 3.112 Anki page entry & structure ---');
+var round3112Ok = true;
+function check3112(cond, msg) {
+  if (!cond) { fail(msg); round3112Ok = false; }
+}
+
+var ankiFiles3112 = [
+  'packages/glossary/pages/anki-player/anki-player.js',
+  'packages/glossary/pages/anki-player/anki-player.wxml',
+  'packages/glossary/pages/anki-player/anki-player.wxss',
+  'packages/glossary/pages/anki-player/anki-player.json'
+];
+for (var af3112 = 0; af3112 < ankiFiles3112.length; af3112++) {
+  check3112(fileExists(ankiFiles3112[af3112]), 'R3.112: anki file missing: ' + ankiFiles3112[af3112]);
+}
+
+var appJson3112;
+try { appJson3112 = JSON.parse(readFile('app.json')); } catch (e) {
+  fail('R3.112: failed to parse app.json');
+  round3112Ok = false;
+}
+if (appJson3112) {
+  var ankiPageRegistered3112 = false;
+  var subPkgs3112 = appJson3112.subPackages || appJson3112.subpackages || [];
+  for (var sp3112 = 0; sp3112 < subPkgs3112.length; sp3112++) {
+    var pages3112 = subPkgs3112[sp3112].pages || [];
+    for (var pg3112 = 0; pg3112 < pages3112.length; pg3112++) {
+      if (typeof pages3112[pg3112] === 'string' && pages3112[pg3112].indexOf('anki-player') >= 0) {
+        ankiPageRegistered3112 = true;
+      }
+    }
+  }
+  check3112(ankiPageRegistered3112, 'R3.112: anki-player page not registered in app.json subPackages');
+}
+
+var ankiJs3112;
+try { ankiJs3112 = readFile('packages/glossary/pages/anki-player/anki-player.js'); } catch (e) {
+  fail('R3.112: failed to read anki-player.js');
+  round3112Ok = false;
+}
+if (ankiJs3112) {
+  check3112(ankiJs3112.indexOf('Page(') >= 0, 'R3.112: anki-player.js missing Page() call');
+  check3112(ankiJs3112.indexOf('onLoad') >= 0, 'R3.112: anki-player.js missing onLoad handler');
+  check3112(ankiJs3112.indexOf('initSession') >= 0, 'R3.112: anki-player.js missing initSession method');
+  check3112(ankiJs3112.indexOf('study-tools-mini-anki-status-v1') >= 0, 'R3.112: anki-player.js missing ANKI_STATUS_KEY');
+  check3112(ankiJs3112.indexOf('isFlipped') >= 0, 'R3.112: anki-player.js missing flip state');
+  check3112(ankiJs3112.indexOf('masteredCount') >= 0, 'R3.112: anki-player.js missing masteredCount');
+  check3112(ankiJs3112.indexOf('progressPercent') >= 0, 'R3.112: anki-player.js missing progressPercent');
+  check3112(ankiJs3112.indexOf('summary') >= 0, 'R3.112: anki-player.js missing summary field');
+}
+
+var homeJs3112 = readFile('pages/home/home.js');
+check3112(homeJs3112.indexOf('goToAnki') >= 0, 'R3.112: home.js missing goToAnki handler');
+check3112(homeJs3112.indexOf('anki-player') >= 0, 'R3.112: home.js goToAnki must navigate to anki-player');
+
+if (round3112Ok) pass('Round Mini 3.112 Anki page entry & structure smoke');
+
 console.log('\n========================================');
 console.log('Passed: ' + passed);
 console.log('Failed: ' + failed);
