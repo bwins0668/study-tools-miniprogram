@@ -419,6 +419,8 @@ function validateLocalBackup(backup) {
 }
 
 function exportLocalBackup() {
+  var ankiStatus = {};
+  try { ankiStatus = wx.getStorageSync(ANKI_STATUS_KEY) || {}; } catch (e) {}
   return {
     app: 'study-tools-mini',
     version: 'v0.23.0',
@@ -427,7 +429,8 @@ function exportLocalBackup() {
       favoriteTerms: getFavoriteTerms(),
       wrongQuestions: getWrongQuestions(),
       quizAttempts: getQuizAttempts()
-    }
+    },
+    ankiStatus: ankiStatus
   };
 }
 
@@ -436,6 +439,9 @@ function importLocalBackup(backup) {
   saveFavoriteTerms(backup.data.favoriteTerms);
   saveWrongQuestions(backup.data.wrongQuestions);
   saveQuizAttempts(backup.data.quizAttempts);
+  if (backup.ankiStatus) {
+    try { wx.setStorageSync(ANKI_STATUS_KEY, backup.ankiStatus); } catch (e) {}
+  }
   return true;
 }
 
@@ -445,6 +451,7 @@ function clearAllLocalUserData() {
   saveQuizAttempts([]);
 }
 
+var ANKI_STATUS_KEY = 'study-tools-mini-anki-status-v1';
 module.exports = {
   // 收藏术语
   FAVORITE_TERMS_KEY: FAVORITE_TERMS_KEY,

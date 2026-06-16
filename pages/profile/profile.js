@@ -137,6 +137,10 @@ function buildRestoreSummary(backup) {
   var favCount = Array.isArray(backup.data.favoriteTerms) ? backup.data.favoriteTerms.length : 0;
   var wrongCount = Array.isArray(backup.data.wrongQuestions) ? backup.data.wrongQuestions.length : 0;
   var quizCount = Array.isArray(backup.data.quizAttempts) ? backup.data.quizAttempts.length : 0;
+  var ankiCount = 0;
+  if (backup.ankiStatus && typeof backup.ankiStatus === 'object') {
+    ankiCount = Object.keys(backup.ankiStatus).length;
+  }
   var backupVersion = backup.version || '未知';
   var backupTime = backup.exportedAt ? formatBackupTime(backup.exportedAt) : '未知';
   return {

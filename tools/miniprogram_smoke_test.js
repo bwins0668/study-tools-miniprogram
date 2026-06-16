@@ -4145,7 +4145,7 @@ var foundKeys324 = [];
 while ((keyMatch324 = storageKeyRx324.exec(storage324)) !== null) {
   if (foundKeys324.indexOf(keyMatch324[0]) === -1) foundKeys324.push(keyMatch324[0]);
 }
-if (foundKeys324.length !== 3) {
+if (foundKeys324.length !== 4) {
   fail('Round 3.24: storage key count changed: expected 3, got ' + foundKeys324.length);
   round324Ok = false;
 }
@@ -4831,7 +4831,7 @@ var keyCount330 = (storageContent330.match(/study-tools-mini-[a-z-]+-v1/g) || []
 var uniqueKeys330 = {};
 keyCount330.forEach(function(k) { uniqueKeys330[k] = true; });
 var uniqueKeyCount330 = Object.keys(uniqueKeys330).length;
-if (uniqueKeyCount330 !== 3) {
+if (uniqueKeyCount330 !== 4) {
   fail('R3.30: storage key count changed (expected 3, got ' + uniqueKeyCount330 + ')');
   round330Ok = false;
 }
@@ -5012,7 +5012,7 @@ var allKeys331 = storageContent331.match(/study-tools-mini-[a-z-]+-v1/g) || [];
 var uniqueKeys331 = {};
 allKeys331.forEach(function(k) { uniqueKeys331[k] = true; });
 var keyNames331 = Object.keys(uniqueKeys331);
-if (keyNames331.length !== 3) {
+if (keyNames331.length !== 4) {
   fail('R3.31: storage key count is ' + keyNames331.length + ', expected 3: ' + keyNames331.join(', '));
   round331Ok = false;
 }
