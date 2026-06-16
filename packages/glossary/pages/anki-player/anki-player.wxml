@@ -1,0 +1,52 @@
+﻿<view class="container">
+  <view class="anki-header" wx:if="{{totalCount > 0 && !isComplete}}">
+    <view class="anki-stats">
+      <text class="anki-stat">{{currentIndex + 1}} / {{totalCount}}</text>
+      <text class="anki-stat-sep">|</text>
+      <text class="anki-stat">已掌握 <text class="anki-stat-value anki-stat-mastered">{{masteredCount}}</text></text>
+    </view>
+    <view class="anki-progress-bar">
+      <view class="anki-progress-fill" style="width: {{progressPercent}}%"></view>
+    </view>
+  </view>
+  <view class="card-area" wx:if="{{!isComplete && totalCount > 0}}"
+    bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd">
+    <view class="card-swipe" style="{{swipeStyle}}">
+      <view class="card-inner {{isFlipped ? 'flipped' : ''}}" bindtap="toggleFlip">
+        <view class="card-face card-front">
+          <text class="card-term">{{currentTerm.term}}</text>
+          <text class="card-ja-reading" wx:if="{{currentTerm.ja}}">{{currentTerm.ja}}</text>
+          <text class="card-hint" wx:if="{{!isFlipped}}">点击翻牌</text>
+        </view>
+        <view class="card-face card-back">
+          <text class="card-section-label">中文释义</text>
+          <text class="card-zh">{{currentTerm.zh}}</text>
+          <text class="card-section-label" wx:if="{{currentTerm.ja}}">日本語</text>
+          <text class="card-ja" wx:if="{{currentTerm.ja}}">{{currentTerm.ja}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="action-bar" wx:if="{{!isComplete && totalCount > 0}}">
+    <view class="action-btn action-btn-forgot" catchtap="markForgot">
+      <text class="action-btn-icon">✕</text>
+      <text class="action-btn-label">未记住</text>
+    </view>
+    <view class="action-btn action-btn-mastered" catchtap="markMastered">
+      <text class="action-btn-icon">✓</text>
+      <text class="action-btn-label">已记住</text>
+    </view>
+  </view>
+  <view class="complete-section" wx:if="{{isComplete && totalCount > 0}}">
+    <text class="complete-icon">🎉</text>
+    <text class="complete-title">全部完成</text>
+    <text class="complete-desc">本轮 {{totalCount}} 个术语已刷完。</text>
+    <view class="complete-btn" bindtap="goBack">返回列表</view>
+  </view>
+  <view class="empty-section" wx:elif="{{totalCount === 0}}">
+    <text class="empty-icon">📚</text>
+    <text class="empty-text">暂无待复习术语</text>
+    <text class="empty-hint">浏览术语表后可在此进行闪卡记忆。</text>
+    <view class="empty-btn" bindtap="loadAllTerms">加载全部术语</view>
+  </view>
+</view>

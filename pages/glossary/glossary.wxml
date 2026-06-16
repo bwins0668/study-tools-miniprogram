@@ -14,6 +14,9 @@
     <view class="launcher-btn launcher-btn-random" bindtap="goToRandomTerm">
       <text class="launcher-btn-text">🎲 随机术语</text>
     </view>
+    <view class="launcher-btn launcher-btn-secondary" bindtap="goToAnkiPlayer">
+      <text class="launcher-btn-text">🧠 闪卡记忆</text>
+    </view>
     <text class="launcher-hint" wx:if="{{favoriteCount > 0}}">已收藏 {{favoriteCount}} 条术语</text>
   </view>
 </view>

@@ -12,7 +12,8 @@
       "pages": [
         "pages/term-search/term-search",
         "pages/term-detail/term-detail",
-        "pages/favorite-review/favorite-review"
+        "pages/favorite-review/favorite-review",
+        "pages/anki-player/anki-player"
       ]
     },
     {
