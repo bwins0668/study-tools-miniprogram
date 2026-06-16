@@ -1,22 +1,57 @@
-<!--pages/glossary/glossary.wxml - 术语 tab 轻入口-->
+<!--pages/glossary/glossary.wxml - 术语学习中心-->
 <view class="container">
-  <view class="launcher-section">
-    <text class="launcher-icon">📖</text>
-    <text class="launcher-title">术语表</text>
-    <text class="launcher-desc">1500 条 IT 术语，支持中英日三语搜索</text>
-    <view class="launcher-btn" bindtap="goToGlossarySearch">
-      <text class="launcher-btn-text">打开术语搜索</text>
+  <!-- 顶部 Hero -->
+  <view class="glossary-hero">
+    <view class="glossary-hero-row">
+      <view class="glossary-hero-text">
+        <text class="glossary-hero-title">术语表</text>
+        <text class="glossary-hero-subtitle">1500 条 IT 术语 · 中英日三语</text>
+      </view>
+      <view class="glossary-hero-badge" wx:if="{{favoriteCount > 0}}">
+        <text class="glossary-hero-badge-text">{{favoriteCount}} 收藏</text>
+      </view>
     </view>
-    <view class="launcher-btn launcher-btn-secondary" bindtap="goToFavoriteReview">
-      <text class="launcher-btn-text">复习收藏术语（{{favoriteCount}}）</text>
+    <!-- 搜索入口卡片 -->
+    <view class="search-entry-card" bindtap="goToGlossarySearch">
+      <text class="search-entry-icon">🔍</text>
+      <text class="search-entry-placeholder">搜索术语、关键词...</text>
+      <text class="search-entry-arrow">›</text>
     </view>
-    <!-- R3.54 随机术语按钮 -->
-    <view class="launcher-btn launcher-btn-random" bindtap="goToRandomTerm">
-      <text class="launcher-btn-text">🎲 随机术语</text>
+  </view>
+
+  <!-- 功能卡片矩阵 -->
+  <view class="glossary-actions">
+    <view class="action-grid">
+      <!-- 收藏复习 -->
+      <view class="action-tile action-tile-orange" bindtap="goToFavoriteReview">
+        <text class="action-tile-icon">⭐</text>
+        <text class="action-tile-title">收藏复习</text>
+        <text class="action-tile-stat" wx:if="{{favoriteCount > 0}}">{{favoriteCount}} 条</text>
+        <text class="action-tile-stat" wx:else>暂无</text>
+      </view>
+      <!-- 闪卡记忆 -->
+      <view class="action-tile action-tile-purple" bindtap="goToAnkiPlayer">
+        <text class="action-tile-icon">🧠</text>
+        <text class="action-tile-title">闪卡记忆</text>
+        <text class="action-tile-stat">Anki</text>
+      </view>
+      <!-- 随机术语 -->
+      <view class="action-tile action-tile-teal" bindtap="goToRandomTerm">
+        <text class="action-tile-icon">🎲</text>
+        <text class="action-tile-title">随机术语</text>
+        <text class="action-tile-stat">探索</text>
+      </view>
+      <!-- 全部浏览 -->
+      <view class="action-tile action-tile-blue" bindtap="goToGlossarySearch">
+        <text class="action-tile-icon">📋</text>
+        <text class="action-tile-title">全部浏览</text>
+        <text class="action-tile-stat">1500 条</text>
+      </view>
     </view>
-    <view class="launcher-btn launcher-btn-secondary" bindtap="goToAnkiPlayer">
-      <text class="launcher-btn-text">🧠 闪卡记忆</text>
-    </view>
-    <text class="launcher-hint" wx:if="{{favoriteCount > 0}}">已收藏 {{favoriteCount}} 条术语</text>
+  </view>
+
+  <!-- 收藏提示 -->
+  <view class="glossary-footer-hint" wx:if="{{favoriteCount > 0}}">
+    <text class="glossary-footer-hint-text">已收藏 {{favoriteCount}} 条术语，可随时复习</text>
   </view>
 </view>
