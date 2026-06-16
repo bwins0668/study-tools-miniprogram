@@ -2,20 +2,20 @@
 
 .header {
   text-align: center;
-  padding: 24rpx 30rpx 16rpx;
+  padding: 12rpx 20rpx 8rpx;
 }
 
 .title {
   display: block;
-  font-size: 52rpx;
+  font-size: 36rpx;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 12rpx;
+  margin-bottom: 4rpx;
 }
 
 .subtitle {
   display: block;
-  font-size: 28rpx;
+  font-size: 22rpx;
   color: var(--text-secondary);
 }
 
