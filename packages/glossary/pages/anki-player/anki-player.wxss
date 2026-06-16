@@ -46,3 +46,6 @@ page{overflow:hidden}
 .anki-filter-scroll { white-space:nowrap; width:100%; }
 .anki-filter-tag { display:inline-flex; align-items:center; justify-content:center; padding:10rpx 24rpx; border-radius:24rpx; background-color:var(--divider-color); margin-right:12rpx; font-size:24rpx; color:var(--text-secondary); flex-shrink:0; }
 .anki-filter-tag-active { background-color:#4a90d9; color:#fff; font-weight:600; }
+
+/* 循环计数 */
+.card-loop-badge{position:absolute;top:20rpx;right:20rpx;font-size:22rpx;color:#e8913a;background-color:rgba(232,145,58,0.12);padding:4rpx 16rpx;border-radius:20rpx;font-weight:600}

@@ -27,6 +27,7 @@
         <view class="card-face card-front">
           <text class="card-term">{{currentTerm.term}}</text>
           <text class="card-ja-reading" wx:if="{{currentTerm.reading}}">{{currentTerm.reading}}</text>
+          <text class="card-loop-badge" wx:if="{{currentTerm.loopCount > 0}}">↺ {{currentTerm.loopCount}}</text>
           <text class="card-hint" wx:if="{{!isFlipped}}">点击翻牌</text>
         </view>
         <view class="card-face card-back">
@@ -48,13 +49,13 @@
       <text class="action-btn-label">已记住</text>
     </view>
   </view>
-  <view class="complete-section" wx:if="{{isComplete && totalCount > 0}}">
+  <view class="complete-section" wx:if="{{isComplete && totalCount === 0}}">
     <text class="complete-icon">🎉</text>
     <text class="complete-title">全部完成</text>
-    <text class="complete-desc">本轮 {{totalCount}} 个已刷完。</text>
+    <text class="complete-desc">本轮已全部通关！</text>
     <view class="complete-btn" bindtap="goBack">返回</view>
   </view>
-  <view class="empty-section" wx:elif="{{totalCount === 0}}">
+  <view class="empty-section" wx:elif="{{totalCount === 0 && !isComplete}}">
     <text class="empty-icon">📚</text>
     <text class="empty-text" wx:if="{{dataSource === 'mistakes'}}">错题本空空如也</text>
     <text class="empty-text" wx:else>暂无待复习术语</text>
