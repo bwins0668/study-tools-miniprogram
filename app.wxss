@@ -148,16 +148,17 @@ page {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #4a90d9 0%, #6366f1 100%);
+  background: linear-gradient(135deg, #3b82f6 0%, #6366f1 52%, #8b5cf6 100%);
   border-radius: 44rpx;
   padding: 24rpx 48rpx;
-  box-shadow: 0 6rpx 24rpx rgba(74, 144, 217, 0.35);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 8rpx 26rpx rgba(79, 70, 229, 0.32);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
 }
 
 .btn-primary:active {
-  transform: scale(0.97);
-  box-shadow: 0 3rpx 12rpx rgba(74, 144, 217, 0.25);
+  transform: translateY(2rpx) scale(0.97);
+  box-shadow: 0 3rpx 12rpx rgba(79, 70, 229, 0.24);
+  filter: saturate(1.08);
 }
 
 .btn-primary-text {
@@ -171,15 +172,17 @@ page {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--card-bg);
+  background: linear-gradient(135deg, rgba(74, 144, 217, 0.06), var(--card-bg) 72%);
   border: 2rpx solid var(--primary-color);
   border-radius: 44rpx;
   padding: 22rpx 48rpx;
-  transition: transform 0.15s ease;
+  box-shadow: inset 0 0 0 1rpx rgba(255, 255, 255, 0.28);
+  transition: transform 0.12s ease, opacity 0.12s ease;
 }
 
 .btn-secondary:active {
-  transform: scale(0.97);
+  transform: translateY(2rpx) scale(0.97);
+  opacity: 0.88;
 }
 
 .btn-secondary-text {
@@ -192,15 +195,16 @@ page {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  background: linear-gradient(135deg, #f97316 0%, #ef4444 48%, #dc2626 100%);
   border-radius: 44rpx;
   padding: 24rpx 48rpx;
-  box-shadow: 0 6rpx 24rpx rgba(239, 68, 68, 0.3);
-  transition: transform 0.15s ease;
+  box-shadow: 0 7rpx 24rpx rgba(239, 68, 68, 0.28);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
 .btn-danger:active {
-  transform: scale(0.97);
+  transform: translateY(2rpx) scale(0.97);
+  box-shadow: 0 3rpx 12rpx rgba(239, 68, 68, 0.22);
 }
 
 .btn-danger-text {
@@ -214,40 +218,47 @@ page {
   display: inline-flex;
   align-items: center;
   font-size: var(--font-sm);
-  font-weight: 600;
-  padding: 6rpx 14rpx;
-  border-radius: 10rpx;
+  font-weight: 650;
+  padding: 7rpx 16rpx;
+  border-radius: 12rpx;
   letter-spacing: 0.5rpx;
+  border: 1rpx solid transparent;
 }
 
 .tag-itpass {
   color: var(--color-itpass);
   background-color: var(--color-itpass-light);
+  border-color: rgba(74, 144, 217, 0.18);
 }
 
 .tag-sg {
   color: var(--color-sg);
   background-color: var(--color-sg-light);
+  border-color: rgba(156, 39, 176, 0.18);
 }
 
 .tag-anki {
   color: var(--color-anki);
   background-color: var(--color-anki-light);
+  border-color: rgba(139, 92, 246, 0.18);
 }
 
 .tag-glossary {
   color: var(--color-glossary);
   background-color: var(--color-glossary-light);
+  border-color: rgba(8, 145, 178, 0.18);
 }
 
 .tag-mistakes {
   color: var(--color-mistakes);
   background-color: var(--color-mistakes-light);
+  border-color: rgba(239, 68, 68, 0.18);
 }
 
 .tag-profile {
   color: var(--color-profile);
   background-color: var(--color-profile-light);
+  border-color: rgba(124, 58, 237, 0.18);
 }
 
 /* ===== 全局色条工具类 ===== */
