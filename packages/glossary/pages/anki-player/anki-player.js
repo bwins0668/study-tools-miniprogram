@@ -8,7 +8,8 @@ Page({
     isFlipped: false, isComplete: false,
     masteredCount: 0, progressPercent: 0, swipeStyle: "",
     categories: [], selectedCategory: "all", showFilter: false,
-    dataSource: "glossary", initialTotal: 0, summary: null
+    dataSource: "glossary", initialTotal: 0, summary: null,
+    isLoading: true, errorMsg: ""
   },
 
   onLoad: function (options) {
@@ -61,6 +62,7 @@ Page({
       progressPercent: 0
     });
     if (queue.length > 0) this.setData({ currentTerm: queue[0] });
+    this.setData({ isLoading: false });
   },
 
   loadGlossaryData: function () { return glossaryData.glossaryIndex || []; },

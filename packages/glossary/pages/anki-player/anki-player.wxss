@@ -66,3 +66,12 @@ page{overflow:hidden}
 .summary-btn{border-radius:40rpx;padding:24rpx;text-align:center;font-size:30rpx;font-weight:600}
 .summary-btn-primary{background-color:#4a90d9;color:#fff;box-shadow:0 4rpx 16rpx rgba(74,144,217,0.3)}
 .summary-btn-secondary{background-color:var(--divider-color);color:var(--text-secondary)}
+
+/* 加载与错误状态 */
+.loading-section{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40rpx}
+.loading-icon{font-size:80rpx;margin-bottom:24rpx}
+.loading-text{font-size:28rpx;color:var(--text-secondary)}
+.error-section{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40rpx}
+.error-icon{font-size:80rpx;margin-bottom:24rpx}
+.error-text{font-size:28rpx;color:var(--text-secondary);margin-bottom:40rpx;text-align:center}
+.error-btn{background-color:#4a90d9;border-radius:40rpx;padding:24rpx 60rpx;font-size:28rpx;color:#fff;font-weight:600}

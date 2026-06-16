@@ -1,5 +1,18 @@
 <view class="container">
-  <view class="anki-header" wx:if="{{totalCount > 0 && !isComplete}}">
+  <!-- 加载状态 -->
+  <view class="loading-section" wx:if="{{isLoading}}">
+    <text class="loading-icon">⏳</text>
+    <text class="loading-text">正在加载闪卡...</text>
+  </view>
+
+  <!-- 错误状态 -->
+  <view class="error-section" wx:elif="{{errorMsg}}">
+    <text class="error-icon">⚠️</text>
+    <text class="error-text">{{errorMsg}}</text>
+    <view class="error-btn" bindtap="restartSession">重试</view>
+  </view>
+
+  <view class="anki-header" wx:if="{{!isLoading && !errorMsg && totalCount > 0 && !isComplete}}">
     <view class="anki-stats">
       <text class="anki-stat">{{currentIndex + 1}} / {{totalCount}}</text>
       <text class="anki-stat-sep">|</text>
@@ -20,7 +33,7 @@
       </scroll-view>
     </view>
   </view>
-  <view class="card-area" wx:if="{{!isComplete && totalCount > 0}}"
+  <view class="card-area" wx:if="{{!isLoading && !errorMsg && !isComplete && totalCount > 0}}"
     bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd">
     <view class="card-swipe" style="{{swipeStyle}}">
       <view class="card-inner {{isFlipped ? 'flipped' : ''}}" bindtap="toggleFlip">
@@ -39,7 +52,7 @@
       </view>
     </view>
   </view>
-  <view class="action-bar" wx:if="{{!isComplete && totalCount > 0}}">
+  <view class="action-bar" wx:if="{{!isLoading && !errorMsg && !isComplete && totalCount > 0}}">
     <view class="action-btn action-btn-forgot" catchtap="markForgot">
       <text class="action-btn-icon">✕</text>
       <text class="action-btn-label">未记住</text>
@@ -49,7 +62,7 @@
       <text class="action-btn-label">已记住</text>
     </view>
   </view>
-  <view class="complete-section" wx:if="{{isComplete && totalCount === 0}}">
+  <view class="complete-section" wx:if="{{!isLoading && !errorMsg && isComplete && totalCount === 0}}">
     <view class="summary-card" wx:if="{{summary}}">
       <text class="summary-title">🎉 会话结算</text>
       <view class="summary-grid">
@@ -80,7 +93,7 @@
       </view>
     </view>
   </view>
-  <view class="empty-section" wx:elif="{{totalCount === 0 && !isComplete}}">
+  <view class="empty-section" wx:elif="{{!isLoading && !errorMsg && totalCount === 0 && !isComplete}}">
     <text class="empty-icon">📚</text>
     <text class="empty-text" wx:if="{{dataSource === 'mistakes'}}">错题本空空如也</text>
     <text class="empty-text" wx:else>暂无待复习术语</text>
