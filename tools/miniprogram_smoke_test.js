@@ -7090,6 +7090,36 @@ check387(checks387.indexOf("CWD:") >= 0, "R3.87: run_miniprogram_checks.js missi
 
 if (round387Ok) pass("Round Mini 3.87-CheckUX one-command checks output quality");
 
+// ============================================================
+// Round Mini 3.88-TimingParity step 3/4 timing output
+// ============================================================
+var round388Ok = true;
+function check388(condition, message) {
+  if (!condition) {
+    fail(message);
+    round388Ok = false;
+  }
+}
+
+var checks388 = readFile("tools/run_miniprogram_checks.js");
+
+// Verify checkJsSyntax function body contains Date.now() for timing
+var idx388js = checks388.indexOf("function checkJsSyntax()");
+var idx388jsEnd = checks388.indexOf("function checkWxssEscapedNewline()");
+var body388js = checks388.substring(idx388js, idx388jsEnd);
+check388(body388js.indexOf("Date.now()") >= 0, "R3.88: checkJsSyntax missing timing measurement");
+
+// Verify checkWxssEscapedNewline function body contains Date.now() for timing
+var idx388wx = checks388.indexOf("function checkWxssEscapedNewline()");
+var idx388wxEnd = checks388.indexOf("// --- Main ---");
+var body388wx = checks388.substring(idx388wx, idx388wxEnd);
+check388(body388wx.indexOf("Date.now()") >= 0, "R3.88: checkWxssEscapedNewline missing timing measurement");
+
+// Verify summary always shows timing (no conditional skip)
+check388(checks388.indexOf("elapsed > 0 ?") === -1, "R3.88: summary timing should always display");
+
+if (round388Ok) pass("Round Mini 3.88-TimingParity step 3/4 timing output");
+
 console.log('\n========================================');
 console.log('Passed: ' + passed);
 console.log('Failed: ' + failed);

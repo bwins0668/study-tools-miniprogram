@@ -175,7 +175,9 @@ node tools/run_miniprogram_checks.js
 3. JS 语法检查（全项目 `.js` 文件 `node --check`）
 4. WXSS 字面量 `\n` 防回归扫描
 
-若一键脚本失败，应先查看 Failed step 输出，定位失败步骤。修复后重新执行：
+每个步骤均输出单步耗时（如 `PASS (xxx ms)` 或 `FAIL (xxx ms)`），便于定位耗时异常的步骤。总耗时显示在末尾 Summary 中，可用于观察验证速度随项目规模的变化趋势。
+
+若一键脚本失败，优先查看 Failed step 输出及对应单步耗时，定位失败步骤和耗时异常。修复后重新执行：
 
 ```
 node tools/run_miniprogram_checks.js

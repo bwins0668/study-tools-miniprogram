@@ -46,6 +46,7 @@ function runStep(index, total, title, cmd, args, opts) {
 function checkJsSyntax() {
   log('\n[3/4] JS syntax check');
   log('-'.repeat(40));
+  var start = Date.now();
 
   var SKIP_DIRS = ['node_modules', '.git', '.workbuddy'];
   var files = [];
@@ -80,15 +81,16 @@ function checkJsSyntax() {
     }
   }
 
+  var elapsed = Date.now() - start;
   if (failed.length > 0) {
-    log('[3/4] JS syntax check ... FAIL');
+    log('[3/4] JS syntax check ... FAIL (' + elapsed + ' ms)');
     log('JS syntax FAILED: ' + failed.length + ' file(s)');
-    return { pass: false, title: 'JS syntax', elapsed: 0 };
+    return { pass: false, title: 'JS syntax', elapsed: elapsed };
   }
 
-  log('[3/4] JS syntax check ... PASS');
+  log('[3/4] JS syntax check ... PASS (' + elapsed + ' ms)');
   log('JS syntax OK: ' + files.length + ' file(s)');
-  return { pass: true, title: 'JS syntax', elapsed: 0 };
+  return { pass: true, title: 'JS syntax', elapsed: elapsed };
 }
 
 // --- [4/4] WXSS escaped newline guard (inline) ---
@@ -96,6 +98,7 @@ function checkJsSyntax() {
 function checkWxssEscapedNewline() {
   log('\n[4/4] WXSS escaped newline guard');
   log('-'.repeat(40));
+  var start = Date.now();
 
   var SKIP_DIRS = ['node_modules', '.git', '.workbuddy'];
   var target = String.fromCharCode(92, 110); // literal backslash + n
@@ -124,18 +127,19 @@ function checkWxssEscapedNewline() {
 
   walk('.');
 
+  var elapsed = Date.now() - start;
   if (badFiles.length > 0) {
-    log('[4/4] WXSS escaped newline guard ... FAIL');
+    log('[4/4] WXSS escaped newline guard ... FAIL (' + elapsed + ' ms)');
     log('WXSS literal \\n found in:');
     for (var k = 0; k < badFiles.length; k++) {
       log('  ' + badFiles[k]);
     }
-    return { pass: false, title: 'WXSS \\n guard', elapsed: 0 };
+    return { pass: false, title: 'WXSS \\n guard', elapsed: elapsed };
   }
 
-  log('[4/4] WXSS escaped newline guard ... PASS');
+  log('[4/4] WXSS escaped newline guard ... PASS (' + elapsed + ' ms)');
   log('WXSS escaped newline guard OK: 0 violations');
-  return { pass: true, title: 'WXSS \\n guard', elapsed: 0 };
+  return { pass: true, title: 'WXSS \\n guard', elapsed: elapsed };
 }
 
 // --- Main ---
@@ -178,7 +182,7 @@ function main() {
   var failedStep = null;
   for (var i = 0; i < results.length; i++) {
     var status = results[i].pass ? 'PASS' : 'FAIL';
-    var timing = results[i].elapsed > 0 ? ' (' + results[i].elapsed + ' ms)' : '';
+    var timing = ' (' + results[i].elapsed + ' ms)';
     log('  [' + (i + 1) + '/4] ' + results[i].title + ': ' + status + timing);
     if (!results[i].pass) {
       allPassed = false;
