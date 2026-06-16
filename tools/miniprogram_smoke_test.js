@@ -7685,6 +7685,57 @@ check3122(ankiJs3122.indexOf('wx.setStorageSync') >= 0, 'R3.122: anki-player.js 
 
 if (round3122Ok) pass('Round Mini 3.122 Anki offline-only smoke');
 
+// ============================================================
+// UI polish PR visual contract smoke
+// ============================================================
+console.log('\n--- UI polish PR visual contract ---');
+var uiPolishOk = true;
+function checkUiPolish(cond, msg) {
+  if (!cond) { fail(msg); uiPolishOk = false; }
+}
+
+var homeWxmlUiPolish = readFile('pages/home/home.wxml');
+var homeWxssUiPolish = readFile('pages/home/home.wxss');
+var appWxssUiPolish = readFile('app.wxss');
+var themeJsonUiPolish = readFile('theme.json');
+var ankiWxssUiPolish = readFile('packages/glossary/pages/anki-player/anki-player.wxss');
+
+checkUiPolish(homeWxmlUiPolish.indexOf('entry-card-anki') >= 0,
+  'UI polish: Anki entry card must carry its theme class');
+checkUiPolish(homeWxssUiPolish.indexOf('.entry-card:active') >= 0 &&
+  homeWxssUiPolish.indexOf('translateY(2rpx) scale(0.965)') >= 0,
+  'UI polish: home entry cards must keep pressed feedback');
+checkUiPolish(homeWxssUiPolish.indexOf('.entry-card-badge') >= 0 &&
+  homeWxssUiPolish.indexOf('linear-gradient(135deg, #ef4444, #dc2626)') >= 0,
+  'UI polish: home badges must keep gradient treatment');
+checkUiPolish(homeWxssUiPolish.indexOf('.entry-card-anki') >= 0 &&
+  homeWxssUiPolish.indexOf('.entry-card-profile') >= 0,
+  'UI polish: home cards must keep per-module color classes');
+checkUiPolish(homeWxssUiPolish.indexOf('.hero') >= 0 &&
+  homeWxssUiPolish.indexOf('radial-gradient') >= 0,
+  'UI polish: home hero must keep textured visual layer');
+
+checkUiPolish(appWxssUiPolish.indexOf('.btn-primary') >= 0 &&
+  appWxssUiPolish.indexOf('.btn-secondary') >= 0 &&
+  appWxssUiPolish.indexOf('.btn-danger') >= 0,
+  'UI polish: global button system must keep primary/secondary/danger variants');
+checkUiPolish(appWxssUiPolish.indexOf('.tag-itpass') >= 0 &&
+  appWxssUiPolish.indexOf('.tag-profile') >= 0 &&
+  appWxssUiPolish.indexOf('border-color') >= 0,
+  'UI polish: global tags must keep themed border treatment');
+checkUiPolish(themeJsonUiPolish.indexOf('tabSelectedColor') >= 0 &&
+  themeJsonUiPolish.indexOf('#3b82f6') >= 0 &&
+  themeJsonUiPolish.indexOf('#93c5fd') >= 0,
+  'UI polish: tab theme colors must keep light and dark active states');
+checkUiPolish(ankiWxssUiPolish.indexOf('.card-face') >= 0 &&
+  ankiWxssUiPolish.indexOf('inset 0 1rpx 0 rgba(255,255,255,0.45)') >= 0,
+  'UI polish: Anki card faces must keep elevated polish');
+checkUiPolish(ankiWxssUiPolish.indexOf('.action-btn:active') >= 0 &&
+  ankiWxssUiPolish.indexOf('translateY(2rpx) scale(0.955)') >= 0,
+  'UI polish: Anki action buttons must keep pressed feedback');
+
+if (uiPolishOk) pass('UI polish PR visual contract smoke');
+
 console.log('\n========================================');
 console.log('Passed: ' + passed);
 console.log('Failed: ' + failed);
