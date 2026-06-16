@@ -38,3 +38,11 @@ page{overflow:hidden}
 .empty-text{font-size:32rpx;color:var(--text-primary);margin-bottom:12rpx}
 .empty-hint{font-size:26rpx;color:var(--text-hint);text-align:center;margin-bottom:40rpx;line-height:1.6}
 .empty-btn{background-color:#4a90d9;border-radius:40rpx;padding:24rpx 60rpx;font-size:28rpx;color:#fff;font-weight:600;box-shadow:0 4rpx 16rpx rgba(74,144,217,0.3)}
+
+/* 筛选栏 */
+.anki-filter-btn { margin-left:auto; width:56rpx; height:56rpx; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.anki-filter-icon { font-size:32rpx; }
+.anki-filter-bar { margin-top:12rpx; padding:6rpx 0; border-top:1rpx solid var(--border-color); }
+.anki-filter-scroll { white-space:nowrap; width:100%; }
+.anki-filter-tag { display:inline-flex; align-items:center; justify-content:center; padding:10rpx 24rpx; border-radius:24rpx; background-color:var(--divider-color); margin-right:12rpx; font-size:24rpx; color:var(--text-secondary); flex-shrink:0; }
+.anki-filter-tag-active { background-color:#4a90d9; color:#fff; font-weight:600; }

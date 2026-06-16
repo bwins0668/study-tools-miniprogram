@@ -4,9 +4,24 @@
       <text class="anki-stat">{{currentIndex + 1}} / {{totalCount}}</text>
       <text class="anki-stat-sep">|</text>
       <text class="anki-stat">已掌握 <text class="anki-stat-value anki-stat-mastered">{{masteredCount}}</text></text>
+      <view class="anki-filter-btn" bindtap="toggleFilter">
+        <text class="anki-filter-icon">{{showFilter ? '✕' : '☰'}}</text>
+      </view>
     </view>
     <view class="anki-progress-bar">
       <view class="anki-progress-fill" style="width: {{progressPercent}}%"></view>
+    </view>
+    <view class="anki-filter-bar" wx:if="{{showFilter}}">
+      <scroll-view class="anki-filter-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+        <view class="anki-filter-tag {{selectedCategory === 'all' ? 'anki-filter-tag-active' : ''}}"
+          data-category="all" bindtap="selectCategory">
+          <text>全部</text>
+        </view>
+        <view wx:for="{{categories}}" wx:key="*this" class="anki-filter-tag {{selectedCategory === item ? 'anki-filter-tag-active' : ''}}"
+          data-category="{{item}}" bindtap="selectCategory">
+          <text>{{item}}</text>
+        </view>
+      </scroll-view>
     </view>
   </view>
   <view class="card-area" wx:if="{{!isComplete && totalCount > 0}}"
@@ -45,8 +60,8 @@
   </view>
   <view class="empty-section" wx:elif="{{totalCount === 0}}">
     <text class="empty-icon">📚</text>
-    <text class="empty-text">暂无待复习术语</text>
-    <text class="empty-hint">浏览术语表后可在此进行闪卡记忆。</text>
+    <text class="empty-text">该分类下无待复习术语</text>
+    <text class="empty-hint">切换分类试试，或浏览术语表后重新开始。</text>
     <view class="empty-btn" bindtap="loadAllTerms">加载全部术语</view>
   </view>
 </view>
