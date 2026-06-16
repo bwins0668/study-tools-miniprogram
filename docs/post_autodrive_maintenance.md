@@ -108,3 +108,32 @@ Round Mini 3.32 到 3.81 已完成一批连续小步迭代，Round Mini 3.82 已
 7. `git push`
 
 注意：不要使用 `git add .` 或 `git add -A`。如果存在 `.workbuddy/`，记录即可，不删除、不清理、不提交。
+
+## 新设备开发注意事项
+
+在新的开发设备上首次打开微信开发者工具时，工具可能自动改动以下文件：
+
+- `project.config.json`
+- `project.private.config.json`
+
+常见自动变化包括：
+
+- `libVersion` 字段变化（如 `trial` → 具体版本号）
+- `projectname` 字段变化
+- 新增 `condition` 字段
+- `setting` 字段顺序重排
+- 开发者工具本地配置自动重排
+
+默认处理原则：
+
+- 不要提交 `project.private.config.json`。
+- 不要随意提交 `project.config.json`，除非确实需要更新项目配置。
+- 每次 commit 前必须执行 `git status --short`，确认改动范围。
+- 如果只是本地环境变化，用 `git restore` 恢复。
+- 如果确实需要提交 `project.config.json`，必须在提交说明中写明原因。
+
+## WXSS 防回归
+
+不允许在 `.wxss` 文件中出现字面量 `\n`（反斜杠 + n 两个字符）。这会导致微信开发者工具 WXSS 编译报 `Unknown word` 错误，页面白屏。
+
+smoke test 已覆盖此检查（Round Mini 3.84-Guardrail）。如果新增或修改 WXSS 文件，确保使用真实换行而非字面量 `\n`。

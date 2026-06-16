@@ -7013,6 +7013,33 @@ if (!fileExists(maintenanceDocPath383)) {
 }
 if (round383Ok) pass("Round Mini 3.83-Mega maintenance documentation coverage");
 
+// ============================================================
+// Round Mini 3.84-Guardrail WXSS escaped newline guard
+// ============================================================
+var round384Ok = true;
+function check384(condition, message) {
+  if (!condition) {
+    fail(message);
+    round384Ok = false;
+  }
+}
+
+// Scan all .wxss files for literal backslash-n (two chars: \ followed by n)
+// This prevents WXSS compilation errors in WeChat DevTools (Unknown word)
+var literalBackslashN = String.fromCharCode(92, 110); // "\n" as literal text
+var wxssFiles384 = listFiles382("pages", [".wxss"]).concat(listFiles382("packages", [".wxss"]));
+if (fileExists("app.wxss")) wxssFiles384.push("app.wxss");
+var badWxssFiles384 = [];
+for (var wxssIdx384 = 0; wxssIdx384 < wxssFiles384.length; wxssIdx384++) {
+  var wxssContent384 = readFile(wxssFiles384[wxssIdx384]);
+  if (wxssContent384.indexOf(literalBackslashN) >= 0) {
+    badWxssFiles384.push(wxssFiles384[wxssIdx384]);
+  }
+}
+check384(badWxssFiles384.length === 0, "R3.84: WXSS files contain literal \\n (causes DevTools Unknown word): " + (badWxssFiles384.length > 0 ? badWxssFiles384.join(", ") : ""));
+
+if (round384Ok) pass("Round Mini 3.84-Guardrail WXSS escaped newline guard");
+
 console.log('\n========================================');
 console.log('Passed: ' + passed);
 console.log('Failed: ' + failed);
