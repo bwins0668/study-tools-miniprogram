@@ -2,6 +2,7 @@
 page{overflow:hidden}
 .container{display:flex;flex-direction:column;height:100vh;background-color:var(--bg-color)}
 .anki-header{padding:20rpx 30rpx 10rpx;flex-shrink:0}
+.anki-category-label{font-size:26rpx;color:#4a90d9;text-align:center;margin-bottom:8rpx;font-weight:600}
 .anki-stats{display:flex;align-items:center;justify-content:center;margin-bottom:12rpx}
 .anki-stat{font-size:28rpx;color:var(--text-secondary)}
 .anki-stat-sep{font-size:28rpx;color:var(--border-color);margin:0 20rpx}

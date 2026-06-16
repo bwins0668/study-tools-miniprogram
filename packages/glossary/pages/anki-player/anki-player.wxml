@@ -13,6 +13,7 @@
   </view>
 
   <view class="anki-header" wx:if="{{!isLoading && !errorMsg && totalCount > 0 && !isComplete}}">
+    <view class="anki-category-label" wx:if="{{selectedCategory !== 'all'}}">{{selectedCategory}}</view>
     <view class="anki-stats">
       <text class="anki-stat">{{currentIndex + 1}} / {{totalCount}}</text>
       <text class="anki-stat-sep">|</text>
