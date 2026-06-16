@@ -26,16 +26,16 @@
     }
   ],
   "window": {
-    "navigationBarTextStyle": "black",
+    "navigationBarTextStyle": "@navTxtStyle",
     "navigationBarTitleText": "Study Tools",
-    "navigationBarBackgroundColor": "#ffffff",
-    "backgroundColor": "#f5f5f5"
+    "navigationBarBackgroundColor": "@navBgColor",
+    "backgroundColor": "@bgColor"
   },
   "tabBar": {
-    "color": "#999999",
-    "selectedColor": "#4a90d9",
-    "backgroundColor": "#ffffff",
-    "borderStyle": "black",
+    "color": "@tabColor",
+    "selectedColor": "@tabSelectedColor",
+    "backgroundColor": "@tabBgColor",
+    "borderStyle": "@tabBorderStyle",
     "list": [
       {
         "pagePath": "pages/home/home",
@@ -59,12 +59,18 @@
   "componentFramework": "glass-easel",
   "preloadRule": {
     "pages/home/home": {
-      "packages": ["glossary"]
+      "packages": [
+        "glossary"
+      ]
     },
     "pages/glossary/glossary": {
-      "packages": ["glossary"]
+      "packages": [
+        "glossary"
+      ]
     }
   },
   "sitemapLocation": "sitemap.json",
-  "lazyCodeLoading": "requiredComponents"
+  "lazyCodeLoading": "requiredComponents",
+  "darkmode": true,
+  "themeLocation": "theme.json"
 }
