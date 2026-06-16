@@ -7561,6 +7561,33 @@ check3114(ankiWxss3114.indexOf('.summary-card') >= 0, 'R3.114: anki wxss missing
 
 if (round3114Ok) pass('Round Mini 3.114 Anki empty/completion state smoke');
 
+// ============================================================
+// Round Mini 3.115 Anki summary report fields smoke
+// ============================================================
+console.log('\n--- Round Mini 3.115 Anki summary report fields ---');
+var round3115Ok = true;
+function check3115(cond, msg) {
+  if (!cond) { fail(msg); round3115Ok = false; }
+}
+
+var ankiJs3115 = readFile('packages/glossary/pages/anki-player/anki-player.js');
+
+check3115(ankiJs3115.indexOf('buildSummary') >= 0, 'R3.115: anki-player.js missing buildSummary');
+check3115(ankiJs3115.indexOf('totalCards') >= 0, 'R3.115: buildSummary missing totalCards');
+check3115(ankiJs3115.indexOf('firstPass') >= 0, 'R3.115: buildSummary missing firstPass');
+check3115(ankiJs3115.indexOf('accuracy') >= 0, 'R3.115: buildSummary missing accuracy');
+check3115(ankiJs3115.indexOf('totalLoops') >= 0, 'R3.115: buildSummary missing totalLoops');
+check3115(ankiJs3115.indexOf('eliminated') >= 0, 'R3.115: buildSummary missing eliminated');
+check3115(ankiJs3115.indexOf('elapsedStr') >= 0, 'R3.115: buildSummary missing elapsedStr');
+check3115(ankiJs3115.indexOf('_sessionStart') >= 0, 'R3.115: anki-player.js missing _sessionStart');
+check3115(ankiJs3115.indexOf('_firstPassCount') >= 0, 'R3.115: anki-player.js missing _firstPassCount');
+check3115(ankiJs3115.indexOf('_totalLoops') >= 0, 'R3.115: anki-player.js missing _totalLoops');
+check3115(ankiJs3115.indexOf('_eliminatedCount') >= 0, 'R3.115: anki-player.js missing _eliminatedCount');
+check3115(ankiJs3115.indexOf('Math.round') >= 0, 'R3.115: buildSummary accuracy must use Math.round');
+check3115(ankiJs3115.indexOf('summary') >= 0, 'R3.115: anki-player.js data must have summary field');
+
+if (round3115Ok) pass('Round Mini 3.115 Anki summary report fields smoke');
+
 console.log('\n========================================');
 console.log('Passed: ' + passed);
 console.log('Failed: ' + failed);
