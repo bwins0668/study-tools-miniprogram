@@ -26,7 +26,7 @@
 
 /* 统计 */
 .stats-card {
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   border-radius: 16rpx;
   margin: 20rpx 30rpx;
   padding: 32rpx;
@@ -203,7 +203,7 @@
 }
 
 .mode-tab-active {
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
 }
 
@@ -241,7 +241,7 @@
 }
 
 .wrong-card {
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   border-radius: 16rpx;
   margin: 16rpx 30rpx;
   padding: 28rpx 32rpx;
@@ -425,7 +425,7 @@
 }
 
 .review-card {
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   border-radius: 16rpx;
   padding: 28rpx 32rpx;
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);

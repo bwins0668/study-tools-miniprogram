@@ -62,7 +62,7 @@
   </view>
 
   <!-- 筛选标签 -->
-  <view class="filter-bar" wx:if="{{totalCount > 0}}">
+  <scroll-view class="filter-bar" scroll-x enhanced show-scrollbar="{{false}}" wx:if="{{totalCount > 0}}">
     <view
       wx:for="{{filterOptions}}"
       wx:key="key"
@@ -72,7 +72,7 @@
     >
       <text class="filter-tag-text">{{item.label}}</text>
     </view>
-  </view>
+  </scroll-view>
 
   <!-- 模式切换 + 错题重练入口 -->
   <view class="section-action" wx:if="{{filteredList.length > 0}}">
