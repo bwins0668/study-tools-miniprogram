@@ -40,19 +40,27 @@
     "list": [
       {
         "pagePath": "pages/home/home",
-        "text": "首页"
+        "text": "首页",
+        "iconPath": "images/tab/home.png",
+        "selectedIconPath": "images/tab/home_active.png"
       },
       {
         "pagePath": "pages/glossary/glossary",
-        "text": "术语"
+        "text": "术语",
+        "iconPath": "images/tab/glossary.png",
+        "selectedIconPath": "images/tab/glossary_active.png"
       },
       {
         "pagePath": "pages/mistakes/mistakes",
-        "text": "错题"
+        "text": "错题",
+        "iconPath": "images/tab/mistakes.png",
+        "selectedIconPath": "images/tab/mistakes_active.png"
       },
       {
         "pagePath": "pages/profile/profile",
-        "text": "我的"
+        "text": "我的",
+        "iconPath": "images/tab/profile.png",
+        "selectedIconPath": "images/tab/profile_active.png"
       }
     ]
   },
