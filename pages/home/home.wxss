@@ -253,27 +253,27 @@
 }
 
 .entry-card-anki::before {
-  background: linear-gradient(90deg, #9b59b6, #c084fc);
+  background: linear-gradient(90deg, var(--color-anki, #8b5cf6), #a78bfa);
 }
 
 .entry-card-itpass::before {
-  background: linear-gradient(90deg, #2980b9, #60a5fa);
+  background: linear-gradient(90deg, var(--color-itpass, #4a90d9), #60a5fa);
 }
 
 .entry-card-sg::before {
-  background: linear-gradient(90deg, #8e44ad, #c06090);
+  background: linear-gradient(90deg, var(--color-sg, #9c27b0), #ce93d8);
 }
 
 .entry-card-glossary::before {
-  background: linear-gradient(90deg, #2c7a7b, #38b2ac);
+  background: linear-gradient(90deg, var(--color-glossary, #0891b2), #22d3ee);
 }
 
 .entry-card-mistakes::before {
-  background: linear-gradient(90deg, #e67e22, #f59e0b);
+  background: linear-gradient(90deg, var(--color-mistakes, #ef4444), #f87171);
 }
 
 .entry-card-profile::before {
-  background: linear-gradient(90deg, #6c5ce7, #a29bfe);
+  background: linear-gradient(90deg, var(--color-profile, #7c3aed), #a78bfa);
 }
 
 /* 图标容器 */
@@ -288,27 +288,27 @@
 }
 
 .entry-icon-anki {
-  background: rgba(155, 89, 182, 0.1);
+  background: var(--color-anki-light, rgba(139,92,246,0.1));
 }
 
 .entry-icon-itpass {
-  background: rgba(41, 128, 185, 0.1);
+  background: var(--color-itpass-light, rgba(74,144,217,0.1));
 }
 
 .entry-icon-sg {
-  background: rgba(142, 68, 173, 0.1);
+  background: var(--color-sg-light, rgba(156,39,176,0.1));
 }
 
 .entry-icon-glossary {
-  background: rgba(44, 122, 123, 0.1);
+  background: var(--color-glossary-light, rgba(8,145,178,0.1));
 }
 
 .entry-icon-mistakes {
-  background: rgba(230, 126, 34, 0.1);
+  background: var(--color-mistakes-light, rgba(239,68,68,0.1));
 }
 
 .entry-icon-profile {
-  background: rgba(108, 92, 231, 0.1);
+  background: var(--color-profile-light, rgba(124,58,237,0.1));
 }
 
 .entry-card-icon {
