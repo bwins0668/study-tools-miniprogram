@@ -4315,10 +4315,11 @@ for (var sf324 = 0; sf324 < allSourceFiles324.length; sf324++) {
 var banned324 = ['保证通过', '包过', '押题', '必过', '100%通过', '内部资料', '官方答案', '绝对安全', '永久保存', '云端同步', '自动备份', '保证恢复'];
 for (var sf2324 = 0; sf2324 < allSourceFiles324.length; sf2324++) {
   var fp324 = allSourceFiles324[sf2324];
-  // 排除纯数据文件和备份文件（含日文技术术语）
+  // 排除纯数据文件和备份文件（含日文技术术语）以及工具脚本中的黑名单定义
   if (fp324.includes('/chunks/') || fp324.includes('/generated-backup/') ||
       fp324.includes('glossary_index.js') || fp324.includes('questions.js') ||
-      fp324.includes('_backup') || fp324.includes('glossary_full')) continue;
+      fp324.includes('_backup') || fp324.includes('glossary_full') ||
+      fp324.includes('tools/check_content_compliance.js') || fp324.includes('tools/miniprogram_smoke_test.js')) continue;
   try {
     var c324 = require('fs').readFileSync(fp324, 'utf-8');
     for (var bb324 = 0; bb324 < banned324.length; bb324++) {
@@ -7039,6 +7040,21 @@ for (var wxssIdx384 = 0; wxssIdx384 < wxssFiles384.length; wxssIdx384++) {
 check384(badWxssFiles384.length === 0, "R3.84: WXSS files contain literal \\n (causes DevTools Unknown word): " + (badWxssFiles384.length > 0 ? badWxssFiles384.join(", ") : ""));
 
 if (round384Ok) pass("Round Mini 3.84-Guardrail WXSS escaped newline guard");
+
+// ============================================================
+// Round Mini 3.85-AuditClean content compliance tool exists
+// ============================================================
+var round385Ok = true;
+function check385(condition, message) {
+  if (!condition) {
+    fail(message);
+    round385Ok = false;
+  }
+}
+
+check385(fileExists("tools/check_content_compliance.js"), "R3.85: tools/check_content_compliance.js missing");
+
+if (round385Ok) pass("Round Mini 3.85-AuditClean content compliance tool exists");
 
 console.log('\n========================================');
 console.log('Passed: ' + passed);

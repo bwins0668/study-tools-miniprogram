@@ -137,3 +137,25 @@ Round Mini 3.32 到 3.81 已完成一批连续小步迭代，Round Mini 3.82 已
 不允许在 `.wxss` 文件中出现字面量 `\n`（反斜杠 + n 两个字符）。这会导致微信开发者工具 WXSS 编译报 `Unknown word` 错误，页面白屏。
 
 smoke test 已覆盖此检查（Round Mini 3.84-Guardrail）。如果新增或修改 WXSS 文件，确保使用真实换行而非字面量 `\n`。
+
+## 内容合规扫描
+
+运行方式：
+
+```
+node tools/check_content_compliance.js
+```
+
+该脚本扫描项目中的文档、页面和配置文件，检查是否出现营销承诺类敏感表达。具体禁用词列表见 `tools/check_content_compliance.js` 中的 `FORBIDDEN_WORDS` 数组。
+
+脚本默认排除以下位置，避免误报：
+
+- `tools/` 目录下的工具脚本（包含违禁词黑名单定义）
+- `packages/glossary/data` 和 `packages/quiz/data`（IT 术语数据中可能包含技术性子串匹配）
+
+每轮提交前建议执行：
+
+```
+node tools/miniprogram_smoke_test.js
+node tools/check_content_compliance.js
+```
