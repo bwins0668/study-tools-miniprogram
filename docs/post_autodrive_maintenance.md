@@ -175,7 +175,13 @@ node tools/run_miniprogram_checks.js
 3. JS 语法检查（全项目 `.js` 文件 `node --check`）
 4. WXSS 字面量 `\n` 防回归扫描
 
-若一键脚本失败，应先查看失败步骤，不要继续 commit。
+若一键脚本失败，应先查看 Failed step 输出，定位失败步骤。修复后重新执行：
+
+```
+node tools/run_miniprogram_checks.js
+```
+
+脚本会输出 Node 版本、当前工作目录和每步耗时，便于排查环境问题。
 
 单独执行各检查命令仍然可用：
 

@@ -7071,6 +7071,25 @@ check386(fileExists("tools/run_miniprogram_checks.js"), "R3.86: tools/run_minipr
 
 if (round386Ok) pass("Round Mini 3.86-OneCommandGate one-command checks script exists");
 
+// ============================================================
+// Round Mini 3.87-CheckUX one-command checks output quality
+// ============================================================
+var round387Ok = true;
+function check387(condition, message) {
+  if (!condition) {
+    fail(message);
+    round387Ok = false;
+  }
+}
+
+var checks387 = readFile("tools/run_miniprogram_checks.js");
+check387(checks387.indexOf("All miniprogram checks passed") >= 0, "R3.87: run_miniprogram_checks.js missing pass message");
+check387(checks387.indexOf("Failed step") >= 0, "R3.87: run_miniprogram_checks.js missing failed step message");
+check387(checks387.indexOf("Node:") >= 0, "R3.87: run_miniprogram_checks.js missing Node version output");
+check387(checks387.indexOf("CWD:") >= 0, "R3.87: run_miniprogram_checks.js missing CWD output");
+
+if (round387Ok) pass("Round Mini 3.87-CheckUX one-command checks output quality");
+
 console.log('\n========================================');
 console.log('Passed: ' + passed);
 console.log('Failed: ' + failed);

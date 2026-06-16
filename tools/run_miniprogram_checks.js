@@ -24,23 +24,28 @@ function log() {
   console.log.apply(console, arguments);
 }
 
-function runStep(title, cmd, args, opts) {
-  log('\n' + title);
-  log('-'.repeat(title.length));
+function runStep(index, total, title, cmd, args, opts) {
+  var label = '[' + index + '/' + total + '] ' + title;
+  log('\n' + label);
+  log('-'.repeat(40));
+  var start = Date.now();
   try {
     child_process.execFileSync(cmd, args, Object.assign({ stdio: 'inherit' }, opts || {}));
-    return true;
   } catch (e) {
-    log('\nFAILED: ' + title);
-    return false;
+    var elapsed = Date.now() - start;
+    log(label + ' ... FAIL (' + elapsed + ' ms)');
+    return { pass: false, title: title, elapsed: elapsed };
   }
+  var elapsed2 = Date.now() - start;
+  log(label + ' ... PASS (' + elapsed2 + ' ms)');
+  return { pass: true, title: title, elapsed: elapsed2 };
 }
 
 // --- [3/4] JS syntax check (inline, same logic as the one-liner) ---
 
 function checkJsSyntax() {
   log('\n[3/4] JS syntax check');
-  log('-'.repeat(30));
+  log('-'.repeat(40));
 
   var SKIP_DIRS = ['node_modules', '.git', '.workbuddy'];
   var files = [];
@@ -76,19 +81,21 @@ function checkJsSyntax() {
   }
 
   if (failed.length > 0) {
+    log('[3/4] JS syntax check ... FAIL');
     log('JS syntax FAILED: ' + failed.length + ' file(s)');
-    return false;
+    return { pass: false, title: 'JS syntax', elapsed: 0 };
   }
 
+  log('[3/4] JS syntax check ... PASS');
   log('JS syntax OK: ' + files.length + ' file(s)');
-  return true;
+  return { pass: true, title: 'JS syntax', elapsed: 0 };
 }
 
 // --- [4/4] WXSS escaped newline guard (inline) ---
 
 function checkWxssEscapedNewline() {
   log('\n[4/4] WXSS escaped newline guard');
-  log('-'.repeat(30));
+  log('-'.repeat(40));
 
   var SKIP_DIRS = ['node_modules', '.git', '.workbuddy'];
   var target = String.fromCharCode(92, 110); // literal backslash + n
@@ -118,60 +125,75 @@ function checkWxssEscapedNewline() {
   walk('.');
 
   if (badFiles.length > 0) {
+    log('[4/4] WXSS escaped newline guard ... FAIL');
     log('WXSS literal \\n found in:');
     for (var k = 0; k < badFiles.length; k++) {
       log('  ' + badFiles[k]);
     }
-    return false;
+    return { pass: false, title: 'WXSS \\n guard', elapsed: 0 };
   }
 
+  log('[4/4] WXSS escaped newline guard ... PASS');
   log('WXSS escaped newline guard OK: 0 violations');
-  return true;
+  return { pass: true, title: 'WXSS \\n guard', elapsed: 0 };
 }
 
 // --- Main ---
 
 function main() {
+  var totalStart = Date.now();
+
   log('========================================');
-  log(' Miniprogram Checks — One-Command Gate');
+  log(' Miniprogram checks');
   log('========================================');
+  log('Node: ' + process.version);
+  log('CWD:  ' + process.cwd());
+  log('Checks: 4');
+  log('');
 
   var results = [];
 
   // [1/4] Smoke test
-  var step1 = runStep('[1/4] Smoke test', 'node', ['tools/miniprogram_smoke_test.js']);
-  results.push(step1);
+  var r1 = runStep(1, 4, 'Smoke test', 'node', ['tools/miniprogram_smoke_test.js']);
+  results.push(r1);
 
   // [2/4] Content compliance
-  var step2 = runStep('[2/4] Content compliance', 'node', ['tools/check_content_compliance.js']);
-  results.push(step2);
+  var r2 = runStep(2, 4, 'Content compliance', 'node', ['tools/check_content_compliance.js']);
+  results.push(r2);
 
   // [3/4] JS syntax (inline)
-  var step3 = checkJsSyntax();
-  results.push(step3);
+  var r3 = checkJsSyntax();
+  results.push(r3);
 
   // [4/4] WXSS escaped newline (inline)
-  var step4 = checkWxssEscapedNewline();
-  results.push(step4);
+  var r4 = checkWxssEscapedNewline();
+  results.push(r4);
 
   // Summary
+  var totalElapsed = Date.now() - totalStart;
   log('\n========================================');
   log(' Summary');
   log('========================================');
-  var labels = ['Smoke test', 'Content compliance', 'JS syntax', 'WXSS \\n guard'];
   var allPassed = true;
+  var failedStep = null;
   for (var i = 0; i < results.length; i++) {
-    var status = results[i] ? 'PASS' : 'FAIL';
-    log('  [' + (i + 1) + '/4] ' + labels[i] + ': ' + status);
-    if (!results[i]) allPassed = false;
+    var status = results[i].pass ? 'PASS' : 'FAIL';
+    var timing = results[i].elapsed > 0 ? ' (' + results[i].elapsed + ' ms)' : '';
+    log('  [' + (i + 1) + '/4] ' + results[i].title + ': ' + status + timing);
+    if (!results[i].pass) {
+      allPassed = false;
+      if (!failedStep) failedStep = results[i].title;
+    }
   }
 
   log('');
   if (allPassed) {
-    log('All miniprogram checks passed');
+    log('All miniprogram checks passed in ' + totalElapsed + ' ms');
     process.exit(0);
   } else {
-    log('One or more checks FAILED — do not commit until resolved');
+    log('Miniprogram checks failed');
+    log('Failed step: ' + failedStep);
+    log('Next step: inspect the error above, fix the issue, then rerun node tools/run_miniprogram_checks.js');
     process.exit(1);
   }
 }
