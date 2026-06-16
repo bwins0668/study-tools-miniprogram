@@ -7615,6 +7615,34 @@ check3116(ankiWxml3116.indexOf('全部') >= 0, 'R3.116: anki wxml missing "全�
 
 if (round3116Ok) pass('Round Mini 3.116 Anki category filter smoke');
 
+// ============================================================
+// Round Mini 3.117 Anki gesture handler smoke
+// ============================================================
+console.log('\n--- Round Mini 3.117 Anki gesture handler ---');
+var round3117Ok = true;
+function check3117(cond, msg) {
+  if (!cond) { fail(msg); round3117Ok = false; }
+}
+
+var ankiJs3117 = readFile('packages/glossary/pages/anki-player/anki-player.js');
+var ankiWxml3117 = readFile('packages/glossary/pages/anki-player/anki-player.wxml');
+
+check3117(ankiJs3117.indexOf('onTouchStart') >= 0, 'R3.117: anki-player.js missing onTouchStart handler');
+check3117(ankiJs3117.indexOf('onTouchMove') >= 0, 'R3.117: anki-player.js missing onTouchMove handler');
+check3117(ankiJs3117.indexOf('onTouchEnd') >= 0, 'R3.117: anki-player.js missing onTouchEnd handler');
+check3117(ankiJs3117.indexOf('SWIPE_THRESHOLD') >= 0, 'R3.117: anki-player.js missing SWIPE_THRESHOLD constant');
+check3117(ankiJs3117.indexOf('swipeStyle') >= 0, 'R3.117: anki-player.js missing swipeStyle field');
+check3117(ankiJs3117.indexOf('markForgot') >= 0, 'R3.117: anki-player.js missing markForgot method');
+check3117(ankiJs3117.indexOf('markMastered') >= 0, 'R3.117: anki-player.js missing markMastered method');
+check3117(ankiJs3117.indexOf('nextCard') >= 0, 'R3.117: anki-player.js missing nextCard method');
+
+check3117(ankiWxml3117.indexOf('bindtouchstart') >= 0, 'R3.117: anki wxml missing bindtouchstart');
+check3117(ankiWxml3117.indexOf('bindtouchmove') >= 0, 'R3.117: anki wxml missing bindtouchmove');
+check3117(ankiWxml3117.indexOf('bindtouchend') >= 0, 'R3.117: anki wxml missing bindtouchend');
+check3117(ankiWxml3117.indexOf('catchtap') >= 0, 'R3.117: anki wxml missing catchtap for action buttons');
+
+if (round3117Ok) pass('Round Mini 3.117 Anki gesture handler smoke');
+
 console.log('\n========================================');
 console.log('Passed: ' + passed);
 console.log('Failed: ' + failed);
