@@ -1,0 +1,7 @@
+﻿{
+  "name": "study-tools-miniprogram",
+  "private": true,
+  "scripts": {
+    "prepare": "node scripts/setup-git-hooks.js"
+  }
+}
