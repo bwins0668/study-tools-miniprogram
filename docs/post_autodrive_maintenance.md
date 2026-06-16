@@ -232,6 +232,10 @@ node tools/run_miniprogram_checks.js --json
 
 退出码与人类模式一致：全通过为 `0`，有失败为 `1`。
 
+> **JSON 输出结构契约（R3.91-JsonContractGuard）**：
+> `--json` 模式下所有基础字段（`ok`、`totalChecks`、`passedChecks`、`failedChecks`、`durationMs`、`environment`、`steps`）及其类型、各级子字段（`environment.node`、`environment.cwd`、`steps[].index/name/ok/durationMs/command`）已由 smoke test 验证结构契约。成功时 `failedChecks===0`、`passedChecks===totalChecks`、`totalChecks===4`。
+> 可以新增字段，但禁止删除或改名已有基础字段。若需修改基础字段，必须同步更新 smoke test（R3.91 块）与本文档。
+
 单独执行各检查命令仍然可用：
 
 - `node tools/miniprogram_smoke_test.js`

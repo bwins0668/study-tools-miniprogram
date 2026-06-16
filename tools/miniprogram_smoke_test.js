@@ -4,6 +4,7 @@
 
 const path = require('path');
 const fs = require('fs');
+const { execSync } = require('child_process');
 
 const ROOT = path.resolve(__dirname, '..');
 let passed = 0;
@@ -7202,6 +7203,96 @@ check390(dupAssign390 <= 2,
          "R3.90: duplicate compliance term array assignments found (" + dupAssign390 + ", expected <=2)");
 
 if (round390Ok) pass("Round Mini 3.90-SharedComplianceTerms shared constants verified");
+
+// ============================================================
+// Round Mini 3.91-JsonContractGuard --json output structure contract
+// ============================================================
+var round391Ok = true;
+function check391(condition, message) {
+  if (!condition) {
+    fail(message);
+    round391Ok = false;
+  }
+}
+
+// Guard: skip recursion when called from within run_miniprogram_checks.js
+var jsonOutput391 = null;
+if (process.env.CODEX_JSON_CONTRACT === '1') {
+  // Nested call via execSync - skip to avoid infinite recursion
+  round391Ok = true;
+} else {
+  // Run --json mode and capture output (set env var to prevent recursion)
+  try {
+    jsonOutput391 = execSync('node tools/run_miniprogram_checks.js --json', {
+    cwd: ROOT,
+    encoding: 'utf-8',
+    timeout: 30000,
+    env: Object.assign({}, process.env, { CODEX_JSON_CONTRACT: '1' })
+  }).trim();
+  } catch (e) {
+    fail('R3.91: failed to run --json mode: ' + e.message);
+      round391Ok = false;
+      jsonOutput391 = null;
+    }
+  }
+
+if (jsonOutput391 !== null) {
+  var parsed391;
+  try {
+    parsed391 = JSON.parse(jsonOutput391);
+  } catch (e) {
+    fail('R3.91: JSON parse error: ' + e.message);
+    round391Ok = false;
+    parsed391 = null;
+  }
+
+  if (parsed391 !== null) {
+    // Top-level field types
+    check391(typeof parsed391.ok === 'boolean',              'R3.91: ok must be boolean, got ' + typeof parsed391.ok);
+    check391(typeof parsed391.totalChecks === 'number',       'R3.91: totalChecks must be number');
+    check391(typeof parsed391.passedChecks === 'number',      'R3.91: passedChecks must be number');
+    check391(typeof parsed391.failedChecks === 'number',      'R3.91: failedChecks must be number');
+    check391(typeof parsed391.durationMs === 'number',        'R3.91: durationMs must be number');
+
+    // environment object
+    check391(typeof parsed391.environment === 'object' && parsed391.environment !== null,
+             'R3.91: environment must be object');
+    if (parsed391.environment !== null && typeof parsed391.environment === 'object') {
+      check391(typeof parsed391.environment.node === 'string' && parsed391.environment.node.length > 0,
+               'R3.91: environment.node must be non-empty string');
+      check391(typeof parsed391.environment.cwd === 'string' && parsed391.environment.cwd.length > 0,
+               'R3.91: environment.cwd must be non-empty string');
+    }
+
+    // steps array
+    check391(Array.isArray(parsed391.steps),                 'R3.91: steps must be array');
+    if (Array.isArray(parsed391.steps)) {
+      check391(parsed391.steps.length === parsed391.totalChecks,
+               'R3.91: steps.length (' + parsed391.steps.length + ') !== totalChecks (' + parsed391.totalChecks + ')');
+
+      for (var si391 = 0; si391 < parsed391.steps.length; si391++) {
+        var step391 = parsed391.steps[si391];
+        check391(typeof step391.index === 'number',           'R3.91: steps[' + si391 + '].index must be number');
+        check391(typeof step391.name === 'string',            'R3.91: steps[' + si391 + '].name must be string');
+        check391(typeof step391.ok === 'boolean',             'R3.91: steps[' + si391 + '].ok must be boolean');
+        check391(typeof step391.durationMs === 'number',      'R3.91: steps[' + si391 + '].durationMs must be number');
+        check391(typeof step391.command === 'string',         'R3.91: steps[' + si391 + '].command must be string');
+      }
+    }
+
+    // Success scenario invariants
+    if (parsed391.ok === true) {
+      check391(parsed391.failedChecks === 0,
+               'R3.91: ok=true but failedChecks=' + parsed391.failedChecks);
+      check391(parsed391.passedChecks === parsed391.totalChecks,
+               'R3.91: ok=true but passedChecks (' + parsed391.passedChecks + ') !== totalChecks (' + parsed391.totalChecks + ')');
+      check391(parsed391.totalChecks === 4,
+               'R3.91: ok=true but totalChecks=' + parsed391.totalChecks + ' (expected 4)');
+    }
+  }
+}
+
+if (round391Ok) pass("Round Mini 3.91-JsonContractGuard JSON output structure contract");
 
 console.log('\n========================================');
 console.log('Passed: ' + passed);
