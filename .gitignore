@@ -1,5 +1,12 @@
 # Local automation memory and scratch artifacts
-.workbuddy/memory/
+.workbuddy/
+
+# WeChat developer local/private config
+project.private.config.json
+
+# Temporary local scripts
+temp_*.js
+tmp_*.js
 
 # Local dependency/install output
 node_modules/
