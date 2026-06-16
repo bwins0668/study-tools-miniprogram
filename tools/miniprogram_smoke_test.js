@@ -7527,6 +7527,40 @@ check3113(ankiJs3113.indexOf('countMastered') >= 0, 'R3.113: anki-player.js must
 
 if (round3113Ok) pass('Round Mini 3.113 Anki storage read/write defaults smoke');
 
+// ============================================================
+// Round Mini 3.114 Anki empty/completion state smoke
+// ============================================================
+console.log('\n--- Round Mini 3.114 Anki empty/completion state ---');
+var round3114Ok = true;
+function check3114(cond, msg) {
+  if (!cond) { fail(msg); round3114Ok = false; }
+}
+
+var ankiWxml3114 = readFile('packages/glossary/pages/anki-player/anki-player.wxml');
+var ankiWxss3114 = readFile('packages/glossary/pages/anki-player/anki-player.wxss');
+
+check3114(ankiWxml3114.indexOf('empty-section') >= 0, 'R3.114: anki wxml missing empty-section');
+check3114(ankiWxml3114.indexOf('complete-section') >= 0, 'R3.114: anki wxml missing complete-section');
+check3114(ankiWxml3114.indexOf('summary-card') >= 0, 'R3.114: anki wxml missing summary-card');
+check3114(ankiWxml3114.indexOf('summary-title') >= 0, 'R3.114: anki wxml missing summary-title');
+check3114(ankiWxml3114.indexOf('totalCards') >= 0, 'R3.114: anki wxml missing totalCards');
+check3114(ankiWxml3114.indexOf('accuracy') >= 0, 'R3.114: anki wxml missing accuracy');
+check3114(ankiWxml3114.indexOf('totalLoops') >= 0, 'R3.114: anki wxml missing totalLoops');
+check3114(ankiWxml3114.indexOf('elapsedStr') >= 0, 'R3.114: anki wxml missing elapsedStr');
+check3114(ankiWxml3114.indexOf('restartSession') >= 0, 'R3.114: anki wxml missing restartSession');
+check3114(ankiWxml3114.indexOf('goBack') >= 0, 'R3.114: anki wxml missing goBack');
+check3114(ankiWxml3114.indexOf('loadAllTerms') >= 0, 'R3.114: anki wxml missing loadAllTerms');
+check3114(ankiWxml3114.indexOf('toggleFlip') >= 0, 'R3.114: anki wxml missing toggleFlip');
+check3114(ankiWxml3114.indexOf('markForgot') >= 0, 'R3.114: anki wxml missing markForgot');
+check3114(ankiWxml3114.indexOf('markMastered') >= 0, 'R3.114: anki wxml missing markMastered');
+check3114(ankiWxml3114.indexOf('filter') >= 0, 'R3.114: anki wxml missing category filter');
+
+check3114(ankiWxss3114.indexOf('.empty-section') >= 0, 'R3.114: anki wxss missing .empty-section style');
+check3114(ankiWxss3114.indexOf('.complete-section') >= 0, 'R3.114: anki wxss missing .complete-section style');
+check3114(ankiWxss3114.indexOf('.summary-card') >= 0, 'R3.114: anki wxss missing .summary-card style');
+
+if (round3114Ok) pass('Round Mini 3.114 Anki empty/completion state smoke');
+
 console.log('\n========================================');
 console.log('Passed: ' + passed);
 console.log('Failed: ' + failed);
