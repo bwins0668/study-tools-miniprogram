@@ -305,27 +305,27 @@
 }
 
 .entry-icon-anki {
-  background: var(--color-anki-light, rgba(139,92,246,0.1));
+  background: var(--color-anki-light, rgba(139,92,246,0.15));
 }
 
 .entry-icon-itpass {
-  background: var(--color-itpass-light, rgba(74,144,217,0.1));
+  background: var(--color-itpass-light, rgba(74,144,217,0.15));
 }
 
 .entry-icon-sg {
-  background: var(--color-sg-light, rgba(156,39,176,0.1));
+  background: var(--color-sg-light, rgba(156,39,176,0.15));
 }
 
 .entry-icon-glossary {
-  background: var(--color-glossary-light, rgba(8,145,178,0.1));
+  background: var(--color-glossary-light, rgba(8,145,178,0.15));
 }
 
 .entry-icon-mistakes {
-  background: var(--color-mistakes-light, rgba(239,68,68,0.1));
+  background: var(--color-mistakes-light, rgba(239,68,68,0.15));
 }
 
 .entry-icon-profile {
-  background: var(--color-profile-light, rgba(124,58,237,0.1));
+  background: var(--color-profile-light, rgba(124,58,237,0.15));
 }
 
 .entry-card-icon {
@@ -373,10 +373,10 @@
   font-size: 16rpx;
   font-weight: 600;
   color: #e65100;
-  background-color: #fff3e0;
+  background: linear-gradient(135deg, #fff3e0, #ffe0b2);
   border: 1rpx solid #ffcc80;
-  padding: 1rpx 8rpx;
-  border-radius: 6rpx;
+  padding: 2rpx 10rpx;
+  border-radius: 8rpx;
   white-space: nowrap;
 }
 
@@ -384,10 +384,10 @@
   font-size: 16rpx;
   font-weight: 600;
   color: #e65100;
-  background-color: #fff3e0;
+  background: linear-gradient(135deg, #fff3e0, #ffe0b2);
   border: 1rpx solid #ffcc80;
-  padding: 1rpx 8rpx;
-  border-radius: 6rpx;
+  padding: 2rpx 10rpx;
+  border-radius: 8rpx;
   white-space: nowrap;
 }
 
@@ -412,7 +412,8 @@
 
 .card-stat-text {
   font-size: 20rpx;
-  color: #4a90d9;
+  color: var(--color-itpass, #4a90d9);
+  font-weight: 500;
 }
 
 .card-stat-new {
@@ -422,9 +423,10 @@
 .card-stat-status {
   font-size: 18rpx;
   color: #ffffff;
-  background-color: #4a90d9;
-  padding: 0 6rpx;
-  border-radius: 6rpx;
+  background: linear-gradient(135deg, #4a90d9, #6366f1);
+  padding: 2rpx 8rpx;
+  border-radius: 8rpx;
+  font-weight: 600;
 }
 
 /* R3.18 card-last-time 保留 */
@@ -446,9 +448,10 @@
   font-size: 18rpx;
   font-weight: 700;
   color: #ffffff;
-  background-color: #e74c3c;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
   border-radius: 14rpx;
   padding: 0 6rpx;
+  box-shadow: 0 2rpx 8rpx rgba(239, 68, 68, 0.3);
 }
 
 .entry-card-badge {
@@ -462,9 +465,10 @@
   font-size: 18rpx;
   font-weight: 700;
   color: #ffffff;
-  background-color: #e74c3c;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
   border-radius: 14rpx;
   padding: 0 6rpx;
+  box-shadow: 0 2rpx 8rpx rgba(239, 68, 68, 0.3);
 }
 
 /* 入口卡片通用 */
