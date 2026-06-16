@@ -30,8 +30,8 @@ page{overflow:hidden}
 .card-hint{position:absolute;bottom:32rpx;font-size:22rpx;color:var(--text-hint);background-color:rgba(74,144,217,0.06);padding:6rpx 20rpx;border-radius:20rpx;letter-spacing:1rpx}
 .card-section-label{display:block;font-size:22rpx;font-weight:600;color:#4a90d9;margin-bottom:8rpx;margin-top:20rpx;width:100%;padding-bottom:6rpx;border-bottom:1rpx solid rgba(74,144,217,0.12)}
 .card-section-label:first-child{margin-top:0}
-.card-zh{display:block;font-size:36rpx;font-weight:600;color:var(--text-primary);line-height:1.5;width:100%;margin-bottom:8rpx;word-break:break-word}
-.card-ja{display:block;font-size:28rpx;color:var(--text-secondary);line-height:1.6;width:100%;word-break:break-word}
+.card-zh{display:block;font-size:38rpx;font-weight:700;color:var(--text-primary);line-height:1.5;width:100%;margin-bottom:12rpx;word-break:break-word;letter-spacing:1rpx}
+.card-ja{display:block;font-size:26rpx;color:var(--text-secondary);line-height:1.7;width:100%;word-break:break-word;background-color:rgba(74,144,217,0.04);border-radius:12rpx;padding:16rpx;margin-top:8rpx;border:1rpx solid rgba(74,144,217,0.06)}
 .action-bar{display:flex;align-items:center;justify-content:center;gap:24rpx;padding:16rpx 30rpx 36rpx;flex-shrink:0;background:linear-gradient(0deg,rgba(0,0,0,0.02) 0%,transparent 100%)}
 .action-btn{flex:1;max-width:320rpx;height:88rpx;border-radius:44rpx;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:8rpx;transition:transform 0.15s,box-shadow 0.15s}
 .action-btn:active{transform:scale(0.96)}
