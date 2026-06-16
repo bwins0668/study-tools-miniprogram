@@ -147,6 +147,7 @@ function buildRestoreSummary(backup) {
     favoriteCount: favCount,
     wrongQuestionCount: wrongCount,
     quizAttemptCount: quizCount,
+    ankiCount: ankiCount,
     backupVersion: backupVersion,
     backupTime: backupTime
   };
@@ -453,6 +454,7 @@ Page({
               confirmContent += '收藏术语：' + (rs.favoriteCount || 0) + ' 条\n';
               confirmContent += '错题：' + (rs.wrongQuestionCount || 0) + ' 条\n';
               confirmContent += '学习记录：' + (rs.quizAttemptCount || 0) + ' 条\n';
+              confirmContent += 'Anki 闪卡进度：' + (rs.ankiCount || 0) + ' 条\n';
               confirmContent += '备份版本：' + rs.backupVersion + '\n';
               confirmContent += '备份时间：' + rs.backupTime + '\n\n';
               confirmContent += '恢复会覆盖当前本地数据，确定继续？';

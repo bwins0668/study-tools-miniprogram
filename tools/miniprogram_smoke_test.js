@@ -986,6 +986,36 @@ if (storage) {
     backupOk = false;
   }
 
+  // ankiStatus in backup
+  if (typeof backup.ankiStatus !== 'object' || backup.ankiStatus === null || Array.isArray(backup.ankiStatus)) {
+    fail('backup: ankiStatus should be a plain object, got ' + typeof backup.ankiStatus);
+    backupOk = false;
+  }
+
+  // import with ankiStatus
+  global.wx.store = {};
+  storage.addFavoriteTerm('term-anki-keep');
+  var ankiBackup = JSON.parse(JSON.stringify(backup));
+  ankiBackup.ankiStatus = { 'card-1': { mastery: 0.8 }, 'card-2': { mastery: 0.3 } };
+  var ankiImport = storage.importLocalBackup(ankiBackup);
+  if (ankiImport !== true) {
+    fail('backup: importLocalBackup with ankiStatus should return true');
+    backupOk = false;
+  }
+
+  // old backup without ankiStatus should still pass validation
+  var oldBackup = JSON.parse(JSON.stringify(backup));
+  delete oldBackup.ankiStatus;
+  if (storage.validateLocalBackup(oldBackup) !== true) {
+    fail('backup: validateLocalBackup should accept old backup without ankiStatus');
+    backupOk = false;
+  }
+  var oldImport = storage.importLocalBackup(oldBackup);
+  if (oldImport !== true) {
+    fail('backup: importLocalBackup should accept old backup without ankiStatus');
+    backupOk = false;
+  }
+
   // validateLocalBackup 非法数据
   if (storage.validateLocalBackup(null) !== false) {
     fail('backup: validateLocalBackup(null) should be false');
