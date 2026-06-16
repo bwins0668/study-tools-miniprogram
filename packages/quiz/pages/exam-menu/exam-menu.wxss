@@ -285,3 +285,25 @@
   font-size: 20rpx;
   color: var(--text-hint);
 }
+
+/* === SG 主题覆盖 === */
+.exam-sg .exam-dashboard {
+  background: linear-gradient(135deg, rgba(156,39,176,0.08) 0%, rgba(233,30,99,0.06) 100%);
+  border-bottom-color: rgba(156,39,176,0.08);
+}
+
+.exam-sg .overview-accuracy {
+  color: #9c27b0;
+}
+
+.exam-sg .menu-card-icon-lesson {
+  background: linear-gradient(135deg, rgba(156,39,176,0.12), rgba(233,30,99,0.1));
+}
+
+.exam-sg .menu-card-icon-exam {
+  background: linear-gradient(135deg, rgba(244,67,54,0.12), rgba(255,87,34,0.1));
+}
+
+.exam-sg .menu-card-stat-accent {
+  color: #9c27b0;
+}

@@ -1,5 +1,5 @@
 <!--pages/exam-menu/exam-menu.wxml-->
-<view class="container">
+<view class="container exam-{{exam}}">
   <!-- 考试 Dashboard 头部 -->
   <view class="exam-dashboard">
     <view class="dashboard-header">
