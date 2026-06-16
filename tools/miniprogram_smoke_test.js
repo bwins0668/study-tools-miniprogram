@@ -6336,14 +6336,10 @@ if (homeJs352.indexOf('learningReminder') < 0) {
   round352Ok = false;
 }
 
-// B. home.wxml 包含学习提醒横幅
+// B. home.wxml 顶部提示条已移除（R3.129）
 var homeWxml352 = readFile('pages/home/home.wxml');
-if (homeWxml352.indexOf('reminder-banner') < 0) {
-  fail('R3.52: reminder-banner missing in home.wxml');
-  round352Ok = false;
-}
-if (homeWxml352.indexOf('reminder-text') < 0) {
-  fail('R3.52: reminder-text binding missing in home.wxml');
+if (homeWxml352.indexOf('reminder-banner') >= 0 && homeWxml352.indexOf('class="reminder-banner"') >= 0) {
+  fail('R3.52: reminder-banner should be removed from home.wxml rendering');
   round352Ok = false;
 }
 
@@ -6644,14 +6640,10 @@ if (homeJs358.indexOf('dailyQuote') < 0) {
   round358Ok = false;
 }
 
-// B. home.wxml 包含每日格言显示
+// B. home.wxml 顶部格言条已移除（R3.129）
 var homeWxml358 = readFile('pages/home/home.wxml');
-if (homeWxml358.indexOf('quote-banner') < 0) {
-  fail('R3.58: quote-banner missing in home.wxml');
-  round358Ok = false;
-}
-if (homeWxml358.indexOf('dailyQuote') < 0) {
-  fail('R3.58: dailyQuote binding missing in home.wxml');
+if (homeWxml358.indexOf('quote-banner') >= 0 && homeWxml358.indexOf('class="quote-banner"') >= 0) {
+  fail('R3.58: quote-banner should be removed from home.wxml rendering');
   round358Ok = false;
 }
 
@@ -6785,17 +6777,10 @@ if (homeJs361.indexOf("天前") < 0) {
   round361Ok = false;
 }
 
-// B. home.wxml contains reminder display
+// B. home.wxml 练习提醒已移除（R3.129）
 var homeWxml361 = readFile("pages/home/home.wxml");
-if (homeWxml361.indexOf("practice-reminder-banner") < 0) {
-  fail("R3.61: practice-reminder-banner missing in home.wxml");
-  round361Ok = false;
-}
-
-// C. home.wxss contains reminder styles
-var homeWxss361 = readFile("pages/home/home.wxss");
-if (homeWxss361.indexOf(".practice-reminder-banner") < 0) {
-  fail("R3.61: .practice-reminder-banner style missing in home.wxss");
+if (homeWxml361.indexOf("practice-reminder-banner") >= 0 && homeWxml361.indexOf('class="practice-reminder-banner"') >= 0) {
+  fail("R3.61: practice-reminder-banner should be removed from home.wxml rendering");
   round361Ok = false;
 }
 
@@ -6847,15 +6832,10 @@ if (homeJs363.indexOf("dismissReminder") < 0) {
 
 // B. home.wxml 包含关闭按钮
 var homeWxml363 = readFile("pages/home/home.wxml");
-if (homeWxml363.indexOf("reminder-dismiss-btn") < 0) {
-  fail("R3.63: reminder-dismiss-btn missing in home.wxml");
-  round363Ok = false;
-}
-
-// C. home.wxss 包含关闭按钮样式
-var homeWxss363 = readFile("pages/home/home.wxss");
-if (homeWxss363.indexOf(".reminder-dismiss-btn") < 0) {
-  fail("R3.63: .reminder-dismiss-btn style missing in home.wxss");
+// B. home.wxml 关闭按钮已移除（R3.129）
+var homeWxml363 = readFile("pages/home/home.wxml");
+if (homeWxml363.indexOf("reminder-dismiss-btn") >= 0 && homeWxml363.indexOf('class="reminder-dismiss-btn"') >= 0) {
+  fail("R3.63: reminder-dismiss-btn should be removed from home.wxml rendering");
   round363Ok = false;
 }
 
@@ -6967,7 +6947,7 @@ check382(homeJs382.indexOf("viewCount") >= 0 && homeWxml382.indexOf("viewCount")
 check382(profileJs382.indexOf("viewCount") >= 0 && profileWxml382.indexOf("viewCount") >= 0, "R3.78/R3.82: profile view count display missing");
 check382(homeJs382.indexOf("homeSessionViewCount") >= 0 && homeJs382.indexOf("homeViewCount") < 0, "R3.77/R3.82: home view count must be session-only");
 check382(profileJs382.indexOf("profileSessionViewCount") >= 0 && profileJs382.indexOf("profileViewCount") < 0, "R3.78/R3.82: profile view count must be session-only");
-check382(homeWxml382.indexOf("update-banner") >= 0 && homeJs382.indexOf("dismissUpdateBanner") >= 0, "R3.79/R3.82: update banner support missing");
+check382(homeJs382.indexOf("dismissUpdateBanner") >= 0, "R3.79/R3.82: dismissUpdateBanner handler missing in home.js");
 check382(homeJs382.indexOf("[R3.80]") < 0 && homeJs382.indexOf("console.log") < 0, "R3.80/R3.82: home debug console output must be removed");
 check382(profileJs382.indexOf("[R3.81]") < 0 && profileJs382.indexOf("console.log") < 0, "R3.81/R3.82: profile debug console output must be removed");
 

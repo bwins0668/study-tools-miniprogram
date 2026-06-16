@@ -1,30 +1,6 @@
 <!--pages/home/home.wxml-->
 <view class="container">
-  <!-- R3.52 学习时间智能提醒 -->
-  <view class="reminder-banner" wx:if="{{learningReminder}}">
-    <text class="reminder-text">{{learningReminder}}</text>
-  </view>
-
-  <!-- R3.58 每日学习格言 -->
-  <view class="quote-banner" wx:if="{{dailyQuote}}">
-    <text class="quote-icon">💬</text>
-    <text class="quote-text">{{dailyQuote}}</text>
-  </view>
-
-  <!-- R3.61 练习提醒 -->
-  <view class="practice-reminder-banner" wx:if="{{practiceReminder && !reminderDismissed}}">
-    <text class="practice-reminder-icon">⏰</text>
-    <text class="practice-reminder-text">{{practiceReminder}}</text>
-    <!-- R3.63 关闭按钮 -->
-    <view class="reminder-dismiss-btn" bindtap="dismissReminder">✕</view>
-  </view>
-
-  <!-- R3.79 最近更新提示 -->
-  <view class="update-banner" wx:if="{{showUpdateBanner}}">
-    <text class="update-icon">🆕</text>
-    <text class="update-text">{{updateText}}</text>
-    <view class="update-dismiss-btn" bindtap="dismissUpdateBanner">✕</view>
-  </view>
+  <!-- R3.52-R3.79 顶部提示条已禁用，释放首屏空间 -->
 
   <!-- 头部标题（紧凑） -->
   <view class="header">

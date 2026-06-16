@@ -19,18 +19,6 @@
   color: var(--text-secondary);
 }
 
-/* R3.52 学习时间智能提醒 - 首屏降级隐藏 */
-.reminder-banner { display: none; }
-
-/* R3.58 每日学习格言 - 首屏降级隐藏 */
-.quote-banner { display: none; }
-
-/* R3.61 练习提醒 - 首屏降级隐藏 */
-.practice-reminder-banner { display: none; }
-
-/* R3.79 最近更新提示 - 首屏降级隐藏 */
-.update-banner { display: none; }
-
 /* R3.75 快捷操作提示 - 首屏降级隐藏 */
 .quick-tips { display: none; }
 
