@@ -579,7 +579,7 @@ Page({
 
   goToAnki: function () {
     wx.navigateTo({
-      url: '/packages/glossary/pages/anki-player/anki-player'
+      url: '/packages/glossary/pages/anki-player/anki-player?from=home'
     });
   },
 

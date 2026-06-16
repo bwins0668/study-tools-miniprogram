@@ -18,7 +18,8 @@ Page({
     this._totalLoops = 0;
     this._eliminatedCount = 0;
     var source = (options && options.source) || "glossary";
-    this.setData({ dataSource: source });
+    var from = (options && options.from) || "";
+    this.setData({ dataSource: source, from: from });
     this.initSession();
   },
 
