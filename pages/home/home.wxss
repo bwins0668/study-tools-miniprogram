@@ -259,17 +259,21 @@
 }
 
 .card-list {
-  padding: 0 0 40rpx;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+  padding: 0 30rpx 40rpx;
 }
 
 .card-entry {
   display: flex;
+  flex-direction: column;
   align-items: center;
   background-color: var(--card-bg);
   border-radius: 16rpx;
-  padding: 36rpx 32rpx;
-  margin: 16rpx 30rpx;
+  padding: 28rpx 16rpx 24rpx;
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+  text-align: center;
 }
 
 .card-icon {
@@ -279,32 +283,35 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 24rpx;
+  margin-bottom: 12rpx;
   flex-shrink: 0;
 }
 
 .card-info {
-  flex: 1;
   display: flex;
   flex-direction: column;
+  align-items: center;
   min-width: 0;
+  width: 100%;
 }
 
 .card-title-wrap {
   display: flex;
   align-items: center;
-  margin-bottom: 6rpx;
+  justify-content: center;
+  margin-bottom: 4rpx;
   width: 100%;
 }
 
 .card-title {
-  font-size: 32rpx;
+  font-size: 26rpx;
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 6rpx;
+  margin-bottom: 4rpx;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  max-width: 100%;
 }
 
 .card-title-wrap .card-title {
@@ -314,22 +321,25 @@
 }
 
 .card-desc {
-  font-size: 24rpx;
+  font-size: 20rpx;
   color: var(--text-hint);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  max-width: 100%;
 }
 
 .card-stats {
   display: flex;
   align-items: center;
-  margin-top: 8rpx;
-  gap: 16rpx;
+  justify-content: center;
+  margin-top: 6rpx;
+  gap: 8rpx;
+  flex-wrap: wrap;
 }
 
 .card-stat-text {
-  font-size: 22rpx;
+  font-size: 18rpx;
   color: #4a90d9;
 }
 
@@ -338,31 +348,35 @@
 }
 
 .card-stat-status {
-  font-size: 20rpx;
+  font-size: 16rpx;
   color: #ffffff;
   background-color: #4a90d9;
-  padding: 2rpx 12rpx;
-  border-radius: 16rpx;
+  padding: 1rpx 8rpx;
+  border-radius: 12rpx;
 }
 
 .card-badge {
-  font-size: 22rpx;
+  position: absolute;
+  top: 12rpx;
+  right: 12rpx;
+  font-size: 18rpx;
   font-weight: 600;
   color: #ffffff;
   background-color: #e74c3c;
-  min-width: 40rpx;
-  height: 40rpx;
-  line-height: 40rpx;
+  min-width: 32rpx;
+  height: 32rpx;
+  line-height: 32rpx;
   text-align: center;
-  border-radius: 20rpx;
-  padding: 0 12rpx;
-  margin-right: 12rpx;
-  flex-shrink: 0;
+  border-radius: 16rpx;
+  padding: 0 8rpx;
+}
+
+.card-entry {
+  position: relative;
 }
 
 .card-arrow {
-  font-size: 36rpx;
-  color: var(--text-hint);
+  display: none;
   flex-shrink: 0;
 }
 
