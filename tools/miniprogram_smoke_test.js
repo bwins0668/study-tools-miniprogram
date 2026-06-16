@@ -7501,6 +7501,32 @@ check3112(homeJs3112.indexOf('anki-player') >= 0, 'R3.112: home.js goToAnki must
 
 if (round3112Ok) pass('Round Mini 3.112 Anki page entry & structure smoke');
 
+// ============================================================
+// Round Mini 3.113 Anki storage read/write defaults smoke
+// ============================================================
+console.log('\n--- Round Mini 3.113 Anki storage read/write defaults ---');
+var round3113Ok = true;
+function check3113(cond, msg) {
+  if (!cond) { fail(msg); round3113Ok = false; }
+}
+
+var ankiJs3113 = readFile('packages/glossary/pages/anki-player/anki-player.js');
+
+check3113(ankiJs3113.indexOf('wx.getStorageSync') >= 0, 'R3.113: anki-player.js must use wx.getStorageSync');
+check3113(ankiJs3113.indexOf('wx.setStorageSync') >= 0, 'R3.113: anki-player.js must use wx.setStorageSync');
+check3113(ankiJs3113.indexOf('try') >= 0 && ankiJs3113.indexOf('catch') >= 0, 'R3.113: anki-player.js must wrap storage in try/catch');
+check3113(ankiJs3113.indexOf('reviewCount') >= 0, 'R3.113: anki-player.js must have reviewCount field');
+check3113(ankiJs3113.indexOf('"new"') >= 0 || ankiJs3113.indexOf("'new'") >= 0, 'R3.113: anki-player.js must default status to "new"');
+check3113(ankiJs3113.indexOf('lastReview') >= 0, 'R3.113: anki-player.js must have lastReview field');
+check3113(ankiJs3113.indexOf('persistStatus') >= 0, 'R3.113: anki-player.js must have persistStatus method');
+check3113(ankiJs3113.indexOf('loadGlossaryData') >= 0, 'R3.113: anki-player.js must have loadGlossaryData method');
+check3113(ankiJs3113.indexOf('loadMistakesData') >= 0, 'R3.113: anki-player.js must have loadMistakesData method');
+check3113(ankiJs3113.indexOf('buildSummary') >= 0, 'R3.113: anki-player.js must have buildSummary method');
+check3113(ankiJs3113.indexOf('restartSession') >= 0, 'R3.113: anki-player.js must have restartSession method');
+check3113(ankiJs3113.indexOf('countMastered') >= 0, 'R3.113: anki-player.js must have countMastered method');
+
+if (round3113Ok) pass('Round Mini 3.113 Anki storage read/write defaults smoke');
+
 console.log('\n========================================');
 console.log('Passed: ' + passed);
 console.log('Failed: ' + failed);
