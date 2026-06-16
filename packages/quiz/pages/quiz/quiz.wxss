@@ -48,7 +48,7 @@
 .quiz-title {
   font-size: 32rpx;
   font-weight: 700;
-  color: #333333;
+  color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -104,7 +104,7 @@
 
 .progress-bar-wrap {
   height: 6rpx;
-  background-color: #eeeeee;
+  background-color: var(--border-color);
   flex: 1;
   border-radius: 3rpx;
   overflow: hidden;
@@ -137,7 +137,7 @@
 
 .session-stat-item {
   font-size: 22rpx;
-  color: #888888;
+  color: var(--text-secondary);
 }
 
 .session-stat-correct {
@@ -154,12 +154,12 @@
 .question-progress-row {
   margin-top: 14rpx;
   padding-top: 14rpx;
-  border-top: 1rpx solid #f0f0f0;
+  border-top: 1rpx solid var(--divider-color);
 }
 
 .question-number {
   font-size: 24rpx;
-  color: #aaaaaa;
+  color: var(--text-hint);
 }
 
 /* 题目卡片 */
@@ -175,7 +175,7 @@
   display: block;
   font-size: 32rpx;
   font-weight: 600;
-  color: #333333;
+  color: var(--text-primary);
   line-height: 1.6;
   margin-bottom: 12rpx;
 }
@@ -183,7 +183,7 @@
 .question-ja {
   display: block;
   font-size: 26rpx;
-  color: #888888;
+  color: var(--text-secondary);
   line-height: 1.6;
 }
 
@@ -192,7 +192,7 @@
   align-items: center;
   margin-top: 16rpx;
   padding-top: 16rpx;
-  border-top: 1rpx solid #f0f0f0;
+  border-top: 1rpx solid var(--divider-color);
 }
 
 .source-badge {
@@ -212,7 +212,7 @@
 
 .source-title {
   font-size: 24rpx;
-  color: #999999;
+  color: var(--text-hint);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -277,7 +277,7 @@
 
 .hint-text {
   font-size: 26rpx;
-  color: #555555;
+  color: var(--text-secondary);
   line-height: 1.6;
 }
 
@@ -298,7 +298,7 @@
 }
 
 .option-item:active {
-  background-color: #f5f5f5;
+  background-color: var(--bg-color);
 }
 
 .option-correct {
@@ -320,13 +320,13 @@
   width: 48rpx;
   height: 48rpx;
   border-radius: 50%;
-  background-color: #f0f0f0;
+  background-color: var(--divider-color);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 26rpx;
   font-weight: 600;
-  color: #666666;
+  color: var(--text-secondary);
   margin-right: 20rpx;
   flex-shrink: 0;
 }
@@ -338,14 +338,14 @@
 .option-zh {
   display: block;
   font-size: 28rpx;
-  color: #333333;
+  color: var(--text-primary);
   margin-bottom: 4rpx;
 }
 
 .option-ja {
   display: block;
   font-size: 24rpx;
-  color: #999999;
+  color: var(--text-hint);
 }
 
 /* 答题反馈 */
@@ -438,7 +438,7 @@
 .explanation-body {
   display: block;
   font-size: 26rpx;
-  color: #555555;
+  color: var(--text-secondary);
   line-height: 1.7;
 }
 
@@ -489,7 +489,7 @@
 .finish-title {
   font-size: 40rpx;
   font-weight: 700;
-  color: #333333;
+  color: var(--text-primary);
   margin-bottom: 40rpx;
 }
 
@@ -510,7 +510,7 @@
 .finish-stat-value {
   font-size: 48rpx;
   font-weight: 700;
-  color: #333333;
+  color: var(--text-primary);
   margin-bottom: 8rpx;
 }
 
@@ -524,7 +524,7 @@
 
 .finish-stat-label {
   font-size: 24rpx;
-  color: #999999;
+  color: var(--text-hint);
 }
 
 .finish-btn {
@@ -559,7 +559,7 @@
   display: block;
   font-size: 40rpx;
   font-weight: 700;
-  color: #333333;
+  color: var(--text-primary);
 }
 
 .result-mode {
@@ -587,15 +587,15 @@
 .accuracy-label {
   margin-top: 8rpx;
   font-size: 24rpx;
-  color: #888888;
+  color: var(--text-secondary);
 }
 
 .result-stats {
   display: flex;
   width: 100%;
   padding: 24rpx 0;
-  border-top: 1rpx solid #eeeeee;
-  border-bottom: 1rpx solid #eeeeee;
+  border-top: 1rpx solid var(--border-color);
+  border-bottom: 1rpx solid var(--border-color);
 }
 
 .result-stat {
@@ -609,7 +609,7 @@
 .result-stat-value {
   font-size: 40rpx;
   font-weight: 700;
-  color: #333333;
+  color: var(--text-primary);
 }
 
 .result-correct {
@@ -623,7 +623,7 @@
 .result-stat-label {
   margin-top: 8rpx;
   font-size: 22rpx;
-  color: #888888;
+  color: var(--text-secondary);
   line-height: 1.4;
 }
 
@@ -650,7 +650,7 @@
 }
 
 .insight-none {
-  background-color: #f5f5f5;
+  background-color: var(--bg-color);
 }
 
 .insight-header {
@@ -681,13 +681,13 @@
 }
 
 .insight-none .insight-label {
-  color: #999999;
+  color: var(--text-hint);
 }
 
 .insight-hint {
   margin-top: 12rpx;
   font-size: 24rpx;
-  color: #666666;
+  color: var(--text-secondary);
   line-height: 1.5;
   text-align: center;
 }
@@ -800,18 +800,18 @@
   justify-content: space-between;
   margin-bottom: 20rpx;
   padding-bottom: 16rpx;
-  border-bottom: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid var(--divider-color);
 }
 
 .review-title {
   font-size: 30rpx;
   font-weight: 600;
-  color: #333333;
+  color: var(--text-primary);
 }
 
 .review-close {
   font-size: 36rpx;
-  color: #cccccc;
+  color: var(--text-hint);
   padding: 8rpx;
 }
 
@@ -824,7 +824,7 @@
   display: flex;
   align-items: flex-start;
   padding: 20rpx 16rpx;
-  border-bottom: 1rpx solid #f5f5f5;
+  border-bottom: 1rpx solid var(--bg-color);
 }
 
 .review-item:last-child {
@@ -841,7 +841,7 @@
 
 .review-item-index {
   font-size: 24rpx;
-  color: #999999;
+  color: var(--text-hint);
   margin-right: 16rpx;
   flex-shrink: 0;
   width: 40rpx;
@@ -854,7 +854,7 @@
 
 .review-item-question {
   font-size: 26rpx;
-  color: #333333;
+  color: var(--text-primary);
   line-height: 1.5;
   margin-bottom: 8rpx;
   display: block;
@@ -868,7 +868,7 @@
 
 .review-item-label {
   font-size: 22rpx;
-  color: #999999;
+  color: var(--text-hint);
   margin-right: 8rpx;
   flex-shrink: 0;
 }
@@ -913,7 +913,7 @@
 
 .share-btn-text {
   font-size: 28rpx;
-  color: #666666;
+  color: var(--text-secondary);
 }
 
 /* R3.48 错题解析 */

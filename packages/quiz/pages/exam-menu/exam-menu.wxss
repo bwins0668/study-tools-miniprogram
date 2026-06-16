@@ -14,14 +14,14 @@
   display: block;
   font-size: 44rpx;
   font-weight: 700;
-  color: #333333;
+  color: var(--text-primary);
   margin-bottom: 12rpx;
 }
 
 .page-desc {
   display: block;
   font-size: 26rpx;
-  color: #999999;
+  color: var(--text-hint);
 }
 
 .menu-list {
@@ -58,13 +58,13 @@
 .menu-title {
   font-size: 34rpx;
   font-weight: 600;
-  color: #333333;
+  color: var(--text-primary);
   margin-bottom: 8rpx;
 }
 
 .menu-desc {
   font-size: 24rpx;
-  color: #999999;
+  color: var(--text-hint);
 }
 
 .menu-stats {
@@ -81,7 +81,7 @@
 
 .menu-arrow {
   font-size: 40rpx;
-  color: #cccccc;
+  color: var(--text-hint);
   margin-left: 16rpx;
   flex-shrink: 0;
 }
@@ -112,7 +112,7 @@
 .overview-stat-value {
   font-size: 36rpx;
   font-weight: 700;
-  color: #333333;
+  color: var(--text-primary);
   margin-bottom: 6rpx;
 }
 
@@ -122,18 +122,18 @@
 
 .overview-time-text {
   font-size: 26rpx;
-  color: #888888;
+  color: var(--text-secondary);
 }
 
 .overview-stat-label {
   font-size: 22rpx;
-  color: #999999;
+  color: var(--text-hint);
 }
 
 .overview-divider {
   width: 1rpx;
   height: 48rpx;
-  background-color: #f0f0f0;
+  background-color: var(--divider-color);
 }
 
 /* 学习建议 */
@@ -173,7 +173,7 @@
 
 .suggestion-text {
   font-size: 26rpx;
-  color: #555555;
+  color: var(--text-secondary);
   line-height: 1.5;
   flex: 1;
 }
@@ -195,12 +195,12 @@
 .new-user-title {
   font-size: 30rpx;
   font-weight: 600;
-  color: #333333;
+  color: var(--text-primary);
   margin-bottom: 12rpx;
 }
 
 .new-user-desc {
   font-size: 26rpx;
-  color: #888888;
+  color: var(--text-secondary);
   line-height: 1.6;
 }

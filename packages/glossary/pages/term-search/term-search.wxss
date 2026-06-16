@@ -4,7 +4,7 @@
   padding: 20rpx 30rpx;
   position: sticky;
   top: 0;
-  background-color: #f5f5f5;
+  background-color: var(--bg-color);
   z-index: 10;
 }
 
@@ -32,7 +32,7 @@
 
 .search-clear {
   font-size: 28rpx;
-  color: #cccccc;
+  color: var(--text-hint);
   padding: 8rpx;
   margin-left: 8rpx;
   flex-shrink: 0;
@@ -41,13 +41,13 @@
 .result-count {
   padding: 8rpx 30rpx 0;
   font-size: 24rpx;
-  color: #999999;
+  color: var(--text-hint);
 }
 
 .list-hint {
   padding: 8rpx 30rpx 16rpx;
   font-size: 24rpx;
-  color: #bbbbbb;
+  color: var(--text-hint);
 }
 
 .glossary-list {
@@ -82,7 +82,7 @@
 .item-term {
   font-size: 34rpx;
   font-weight: 600;
-  color: #333333;
+  color: var(--text-primary);
   margin-right: 16rpx;
   flex-shrink: 0;
 }
@@ -122,23 +122,23 @@
 
 .item-zh {
   font-size: 28rpx;
-  color: #555555;
+  color: var(--text-secondary);
 }
 
 .item-sep {
   font-size: 24rpx;
-  color: #cccccc;
+  color: var(--text-hint);
   margin: 0 12rpx;
 }
 
 .item-ja {
   font-size: 26rpx;
-  color: #888888;
+  color: var(--text-secondary);
 }
 
 .item-explanation {
   font-size: 24rpx;
-  color: #999999;
+  color: var(--text-hint);
   line-height: 1.6;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -160,12 +160,12 @@
 
 .detail-arrow {
   font-size: 32rpx;
-  color: #cccccc;
+  color: var(--text-hint);
 }
 
 .detail-label {
   font-size: 20rpx;
-  color: #cccccc;
+  color: var(--text-hint);
   margin-top: 2rpx;
 }
 
@@ -184,13 +184,13 @@
 
 .empty-text {
   font-size: 30rpx;
-  color: #666666;
+  color: var(--text-secondary);
   margin-bottom: 12rpx;
 }
 
 .empty-hint {
   font-size: 24rpx;
-  color: #999999;
+  color: var(--text-hint);
 }
 
 /* 搜索空状态增强 (Round 3.21) */
@@ -210,22 +210,22 @@
 
 .empty-suggestion-title {
   font-size: 26rpx;
-  color: #666666;
+  color: var(--text-secondary);
   font-weight: 500;
   margin-bottom: 10rpx;
 }
 
 .empty-suggestion-item {
   font-size: 24rpx;
-  color: #888888;
+  color: var(--text-secondary);
   line-height: 2;
 }
 
 /* R3.37 分类标签 */
 .category-bar {
   padding: 16rpx 30rpx;
-  background-color: #f5f5f5;
-  border-bottom: 1rpx solid #eeeeee;
+  background-color: var(--bg-color);
+  border-bottom: 1rpx solid var(--border-color);
 }
 
 .category-scroll {
@@ -240,8 +240,8 @@
   border-radius: 24rpx;
   margin-right: 16rpx;
   background-color: #ffffff;
-  color: #666666;
-  border: 1rpx solid #e0e0e0;
+  color: var(--text-secondary);
+  border: 1rpx solid var(--border-color);
 }
 
 .category-tag-active {
@@ -254,8 +254,8 @@
 /* R3.38 搜索历史 */
 .history-bar {
   padding: 16rpx 30rpx;
-  background-color: #f5f5f5;
-  border-bottom: 1rpx solid #eeeeee;
+  background-color: var(--bg-color);
+  border-bottom: 1rpx solid var(--border-color);
 }
 
 .history-header {
@@ -267,7 +267,7 @@
 
 .history-title {
   font-size: 24rpx;
-  color: #999999;
+  color: var(--text-hint);
   font-weight: 500;
 }
 
@@ -288,12 +288,12 @@
   padding: 8rpx 20rpx;
   border-radius: 20rpx;
   margin-right: 12rpx;
-  background-color: #f0f0f0;
-  color: #666666;
+  background-color: var(--divider-color);
+  color: var(--text-secondary);
 }
 
 .history-tag:active {
-  background-color: #e0e0e0;
+  background-color: var(--border-color);
 }
 
 /* R3.40 批量操作 */
@@ -323,7 +323,7 @@
   width: 44rpx;
   height: 44rpx;
   border-radius: 50%;
-  border: 3rpx solid #cccccc;
+  border: 3rpx solid var(--text-hint);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -366,13 +366,13 @@
 
 .batch-deselect {
   font-size: 26rpx;
-  color: #999999;
+  color: var(--text-hint);
   padding: 8rpx 16rpx;
 }
 
 .batch-count {
   font-size: 26rpx;
-  color: #666666;
+  color: var(--text-secondary);
   flex: 1;
   text-align: center;
 }

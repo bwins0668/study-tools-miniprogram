@@ -22,13 +22,13 @@
 .profile-name {
   font-size: 36rpx;
   font-weight: 700;
-  color: #333333;
+  color: var(--text-primary);
   margin-bottom: 8rpx;
 }
 
 .profile-version {
   font-size: 24rpx;
-  color: #999999;
+  color: var(--text-hint);
 }
 
 /* R3.57 复制版本号按钮 */
@@ -44,7 +44,7 @@
   justify-content: center;
   padding: 4rpx 10rpx;
   margin-left: 10rpx;
-  background-color: #f0f0f0;
+  background-color: var(--divider-color);
   border-radius: 6rpx;
 }
 
@@ -73,7 +73,7 @@
   display: block;
   font-size: 28rpx;
   font-weight: 600;
-  color: #666666;
+  color: var(--text-secondary);
   padding: 20rpx 30rpx 10rpx;
 }
 
@@ -94,12 +94,12 @@
 
 .info-label {
   font-size: 28rpx;
-  color: #666666;
+  color: var(--text-secondary);
 }
 
 .info-value {
   font-size: 26rpx;
-  color: #333333;
+  color: var(--text-primary);
   font-weight: 500;
 }
 
@@ -115,7 +115,7 @@
 }
 
 .info-disabled {
-  color: #bbbbbb;
+  color: var(--text-hint);
 }
 
 /* 统计网格 */
@@ -140,13 +140,13 @@
 .stat-value {
   font-size: 44rpx;
   font-weight: 700;
-  color: #333333;
+  color: var(--text-primary);
   margin-bottom: 6rpx;
 }
 
 .stat-label {
   font-size: 24rpx;
-  color: #999999;
+  color: var(--text-hint);
 }
 
 .stat-correct {
@@ -212,7 +212,7 @@
 .backup-hint {
   display: block;
   font-size: 22rpx;
-  color: #bbbbbb;
+  color: var(--text-hint);
   text-align: center;
   margin-top: 16rpx;
   padding-bottom: 10rpx;
@@ -231,24 +231,24 @@
 }
 
 .backup-summary-row + .backup-summary-row {
-  border-top: 1rpx solid #f5f5f5;
+  border-top: 1rpx solid var(--bg-color);
 }
 
 .backup-summary-label {
   font-size: 26rpx;
-  color: #666666;
+  color: var(--text-secondary);
 }
 
 .backup-summary-value {
   font-size: 26rpx;
-  color: #333333;
+  color: var(--text-primary);
   font-weight: 500;
 }
 
 .backup-local-notice {
   display: block;
   font-size: 22rpx;
-  color: #bbbbbb;
+  color: var(--text-hint);
   text-align: center;
   padding: 16rpx 30rpx 10rpx;
   line-height: 1.6;
@@ -258,7 +258,7 @@
 .local-notice-text {
   display: block;
   font-size: 26rpx;
-  color: #888888;
+  color: var(--text-secondary);
   line-height: 1.7;
 }
 
@@ -285,7 +285,7 @@
 
 .clear-hint {
   font-size: 22rpx;
-  color: #bbbbbb;
+  color: var(--text-hint);
   margin-top: 16rpx;
 }
 
@@ -299,7 +299,7 @@
 
 .empty-hint {
   font-size: 26rpx;
-  color: #999999;
+  color: var(--text-hint);
   text-align: center;
   line-height: 1.6;
 }
@@ -356,7 +356,7 @@
 
 .timeline-label {
   font-size: 26rpx;
-  color: #333333;
+  color: var(--text-primary);
   font-weight: 500;
 }
 
@@ -376,7 +376,7 @@
 .timeline-time {
   display: block;
   font-size: 22rpx;
-  color: #999999;
+  color: var(--text-hint);
   margin-top: 6rpx;
 }
 
@@ -403,7 +403,7 @@
 
 .review-hint-text {
   font-size: 26rpx;
-  color: #555555;
+  color: var(--text-secondary);
   line-height: 1.6;
   flex: 1;
 }
@@ -425,11 +425,11 @@
 }
 
 .review-hint-empty {
-  border-left: 6rpx solid #e0e0e0;
+  border-left: 6rpx solid var(--border-color);
 }
 
 .review-hint-empty .review-hint-text {
-  color: #999999;
+  color: var(--text-hint);
 }
 
 /* 科目对比洞察 (Round 3.21) */
@@ -452,18 +452,18 @@
 
 .subject-compare-text {
   font-size: 26rpx;
-  color: #555555;
+  color: var(--text-secondary);
   line-height: 1.6;
   flex: 1;
 }
 
 .subject-compare-empty {
   background-color: #fafafa;
-  border-color: #eeeeee;
+  border-color: var(--border-color);
 }
 
 .subject-compare-empty .subject-compare-text {
-  color: #999999;
+  color: var(--text-hint);
 }
 
 /* 新用户欢迎引导 (Round 3.21) */
@@ -483,20 +483,20 @@
 .welcome-title {
   font-size: 30rpx;
   font-weight: 600;
-  color: #333333;
+  color: var(--text-primary);
   margin-bottom: 12rpx;
 }
 
 .welcome-desc {
   font-size: 26rpx;
-  color: #888888;
+  color: var(--text-secondary);
   line-height: 1.7;
 }
 
 /* R3.68 版本更新说明 */
 .update-notice {
   font-size: 24rpx;
-  color: #999999;
+  color: var(--text-hint);
   line-height: 1.6;
   margin-top: 16rpx;
   display: block;

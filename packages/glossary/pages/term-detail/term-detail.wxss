@@ -52,7 +52,7 @@
   justify-content: center;
   padding: 8rpx 12rpx;
   margin-left: 12rpx;
-  background-color: #f0f0f0;
+  background-color: var(--divider-color);
   border-radius: 8rpx;
   flex-shrink: 0;
 }
@@ -64,7 +64,7 @@
   justify-content: center;
   padding: 12rpx 20rpx;
   margin-top: 16rpx;
-  background-color: #f0f0f0;
+  background-color: var(--divider-color);
   border-radius: 8rpx;
   align-self: flex-start;
 }
@@ -76,7 +76,7 @@
 
 .copy-example-text {
   font-size: 26rpx;
-  color: #666666;
+  color: var(--text-secondary);
 }
 
 .copy-term-icon {
@@ -86,7 +86,7 @@
 .term-main {
   font-size: 44rpx;
   font-weight: 700;
-  color: #333333;
+  color: var(--text-primary);
 }
 
 .level {
@@ -100,7 +100,7 @@
 .term-line {
   display: block;
   font-size: 28rpx;
-  color: #555555;
+  color: var(--text-secondary);
   margin-bottom: 10rpx;
   line-height: 1.6;
 }
@@ -128,8 +128,8 @@
 
 .tag {
   font-size: 22rpx;
-  color: #666666;
-  background-color: #f0f0f0;
+  color: var(--text-secondary);
+  background-color: var(--divider-color);
   padding: 6rpx 18rpx;
   border-radius: 16rpx;
   margin-right: 12rpx;
@@ -146,7 +146,7 @@
 
 .paragraph {
   font-size: 28rpx;
-  color: #444444;
+  color: var(--text-secondary);
   line-height: 1.8;
 }
 
@@ -190,7 +190,7 @@
 
 .favorite-hint {
   font-size: 22rpx;
-  color: #999999;
+  color: var(--text-hint);
   line-height: 1.4;
 }
 
@@ -204,7 +204,7 @@
 }
 
 .learning-tip-text {
-  color: #555555 !important;
+  color: var(--text-secondary) !important;
   font-size: 26rpx !important;
 }
 
@@ -214,7 +214,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 20rpx 0;
-  border-bottom: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid var(--divider-color);
 }
 
 .related-item:last-child {
@@ -230,19 +230,19 @@
   display: block;
   font-size: 28rpx;
   font-weight: 600;
-  color: #333333;
+  color: var(--text-primary);
   margin-bottom: 6rpx;
 }
 
 .related-trans {
   display: block;
   font-size: 24rpx;
-  color: #888888;
+  color: var(--text-secondary);
 }
 
 .related-arrow {
   font-size: 28rpx;
-  color: #cccccc;
+  color: var(--text-hint);
   flex-shrink: 0;
   margin-left: 12rpx;
 }
@@ -253,10 +253,10 @@
   min-height: 160rpx;
   padding: 16rpx;
   margin-top: 16rpx;
-  border: 1rpx solid #e0e0e0;
+  border: 1rpx solid var(--border-color);
   border-radius: 8rpx;
   font-size: 26rpx;
-  color: #333333;
+  color: var(--text-primary);
   box-sizing: border-box;
 }
 

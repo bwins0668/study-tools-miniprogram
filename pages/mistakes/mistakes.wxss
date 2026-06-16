@@ -23,13 +23,13 @@
 .launcher-title {
   font-size: 40rpx;
   font-weight: 700;
-  color: #333333;
+  color: var(--text-primary);
   margin-bottom: 16rpx;
 }
 
 .launcher-desc {
   font-size: 26rpx;
-  color: #999999;
+  color: var(--text-hint);
   text-align: center;
   margin-bottom: 30rpx;
 }
@@ -50,7 +50,7 @@
 
 .stats-label {
   font-size: 28rpx;
-  color: #666666;
+  color: var(--text-secondary);
 }
 
 /* 分类错题统计 */
@@ -71,7 +71,7 @@
 
 .category-label {
   font-size: 24rpx;
-  color: #999999;
+  color: var(--text-hint);
   margin-bottom: 6rpx;
 }
 
@@ -88,7 +88,7 @@
 
 .last-wrong-text {
   font-size: 24rpx;
-  color: #bbbbbb;
+  color: var(--text-hint);
 }
 
 /* 查看详情按钮 */
@@ -136,13 +136,13 @@
 .empty-main {
   font-size: 32rpx;
   font-weight: 600;
-  color: #666666;
+  color: var(--text-secondary);
   margin-bottom: 16rpx;
 }
 
 .empty-sub {
   font-size: 26rpx;
-  color: #999999;
+  color: var(--text-hint);
   text-align: center;
   line-height: 1.6;
   margin-bottom: 36rpx;
