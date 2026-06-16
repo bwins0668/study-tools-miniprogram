@@ -1,0 +1,11 @@
+# Local automation memory and scratch artifacts
+.workbuddy/memory/
+
+# Local dependency/install output
+node_modules/
+package-lock.json
+
+# OS/editor and log noise
+.DS_Store
+*.log
+*.tmp
