@@ -250,14 +250,15 @@
   background-color: var(--card-bg);
   border: 1rpx solid rgba(15, 23, 42, 0.04);
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease, filter 0.12s ease;
   overflow: hidden;
 }
 
 .entry-card:active {
-  transform: scale(0.96);
-  box-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.15);
-  opacity: 0.92;
+  transform: translateY(2rpx) scale(0.965);
+  box-shadow: 0 1rpx 6rpx rgba(15, 23, 42, 0.16);
+  opacity: 0.9;
+  filter: saturate(1.08);
 }
 
 /* 卡片顶部主题色条 */
@@ -334,6 +335,11 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 8rpx;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.entry-card:active .entry-card-icon-wrap {
+  transform: scale(0.94);
 }
 
 .entry-icon-anki {
