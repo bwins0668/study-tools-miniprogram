@@ -50,12 +50,14 @@ page{overflow:hidden}
 .empty-btn{background-color:#4a90d9;border-radius:40rpx;padding:24rpx 60rpx;font-size:28rpx;color:#fff;font-weight:600;box-shadow:0 4rpx 16rpx rgba(74,144,217,0.3)}
 
 /* 筛选栏 */
-.anki-filter-btn { margin-left:auto; width:56rpx; height:56rpx; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.anki-filter-icon { font-size:32rpx; }
-.anki-filter-bar { margin-top:12rpx; padding:6rpx 0; border-top:1rpx solid var(--border-color); }
+.anki-filter-btn { margin-left:auto; width:56rpx; height:56rpx; display:flex; align-items:center; justify-content:center; flex-shrink:0; border-radius:12rpx; background-color:rgba(74,144,217,0.08); transition:background-color 0.15s; }
+.anki-filter-btn:active { background-color:rgba(74,144,217,0.16); }
+.anki-filter-icon { font-size:28rpx; color:#4a90d9; }
+.anki-filter-bar { margin-top:10rpx; padding:10rpx 0 4rpx; border-top:1rpx solid rgba(74,144,217,0.1); }
 .anki-filter-scroll { white-space:nowrap; width:100%; }
-.anki-filter-tag { display:inline-flex; align-items:center; justify-content:center; padding:10rpx 24rpx; border-radius:24rpx; background-color:var(--divider-color); margin-right:12rpx; font-size:24rpx; color:var(--text-secondary); flex-shrink:0; }
-.anki-filter-tag-active { background-color:#4a90d9; color:#fff; font-weight:600; }
+.anki-filter-tag { display:inline-flex; align-items:center; justify-content:center; padding:10rpx 24rpx; border-radius:20rpx; background-color:var(--divider-color); margin-right:12rpx; font-size:24rpx; color:var(--text-secondary); flex-shrink:0; transition:all 0.15s; }
+.anki-filter-tag:active { transform:scale(0.95); }
+.anki-filter-tag-active { background:linear-gradient(135deg,#4a90d9,#36d1dc); color:#fff; font-weight:600; box-shadow:0 2rpx 8rpx rgba(74,144,217,0.3); }
 
 /* 循环计数 */
 .card-loop-badge{position:absolute;top:20rpx;right:20rpx;font-size:22rpx;color:#e8913a;background-color:rgba(232,145,58,0.12);padding:4rpx 16rpx;border-radius:20rpx;font-weight:600;border:1rpx solid rgba(232,145,58,0.2)}
