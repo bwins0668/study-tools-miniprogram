@@ -1,4 +1,5 @@
 /* pages/exam-menu/exam-menu.wxss */
+/* Round 3.138: IT Passport / SG Dashboard 化 */
 
 .container {
   padding: 0 0 60rpx;
@@ -6,11 +7,29 @@
   background-color: var(--bg-color);
 }
 
-/* === Dashboard 头部 === */
+/* === Dashboard 头部：沉浸式主题色 === */
 .exam-dashboard {
-  padding: 32rpx 30rpx 0;
-  background: linear-gradient(135deg, rgba(74,144,217,0.08) 0%, rgba(54,209,220,0.06) 100%);
-  border-bottom: 1rpx solid rgba(74,144,217,0.08);
+  padding: 0 30rpx 24rpx;
+  position: relative;
+  overflow: hidden;
+}
+
+.exam-dashboard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+}
+
+.exam-itpass .exam-dashboard::before {
+  background: linear-gradient(145deg, #1a3a5c 0%, #1e4d7a 40%, #2a5f8f 70%, transparent 100%);
+}
+
+.exam-sg .exam-dashboard::before {
+  background: linear-gradient(145deg, #3a1a4c 0%, #4d1e6a 40%, #5f2a8f 70%, transparent 100%);
 }
 
 .dashboard-header {
@@ -18,6 +37,9 @@
   align-items: flex-start;
   justify-content: space-between;
   margin-bottom: 20rpx;
+  padding-top: 24rpx;
+  position: relative;
+  z-index: 1;
 }
 
 .dashboard-title-group {
@@ -28,7 +50,7 @@
   display: block;
   font-size: 40rpx;
   font-weight: 800;
-  color: var(--text-primary);
+  color: #ffffff;
   letter-spacing: 1rpx;
   margin-bottom: 6rpx;
 }
@@ -36,14 +58,14 @@
 .dashboard-subtitle {
   display: block;
   font-size: 24rpx;
-  color: var(--text-secondary);
+  color: rgba(255,255,255,0.65);
   font-weight: 500;
 }
 
 .dashboard-badge {
-  font-size: 20rpx;
+  font-size: 18rpx;
   font-weight: 700;
-  padding: 4rpx 16rpx;
+  padding: 6rpx 18rpx;
   border-radius: 16rpx;
   letter-spacing: 1rpx;
   flex-shrink: 0;
@@ -51,22 +73,26 @@
 }
 
 .dashboard-badge-itpass {
-  background-color: rgba(74,144,217,0.12);
-  color: #4a90d9;
+  background-color: rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.9);
+  border: 1rpx solid rgba(255,255,255,0.2);
 }
 
 .dashboard-badge-sg {
-  background-color: rgba(156,39,176,0.12);
-  color: #9c27b0;
+  background-color: rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.9);
+  border: 1rpx solid rgba(255,255,255,0.2);
 }
 
-/* === 概览卡片 (Round 3.22) === */
+/* === 概览卡片：增强视觉权重 === */
 .overview-card {
   margin: 0 0 16rpx;
-  padding: 20rpx 28rpx 16rpx;
-  background-color: var(--card-bg);
+  padding: 24rpx 28rpx 20rpx;
+  background-color: rgba(255,255,255,0.06);
   border-radius: 16rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+  border: 1rpx solid rgba(255,255,255,0.08);
+  position: relative;
+  z-index: 1;
 }
 
 .overview-stats {
@@ -84,61 +110,61 @@
 }
 
 .overview-stat-value {
-  font-size: 32rpx;
+  font-size: 36rpx;
   font-weight: 800;
-  color: var(--text-primary);
+  color: #ffffff;
   margin-bottom: 4rpx;
 }
 
 .overview-accuracy {
-  color: #4a90d9;
+  color: #69db7c;
 }
 
 .overview-time-text {
-  font-size: 24rpx;
-  color: var(--text-secondary);
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.6);
   font-weight: 600;
 }
 
 .overview-stat-label {
   font-size: 20rpx;
-  color: var(--text-hint);
+  color: rgba(255,255,255,0.45);
   font-weight: 500;
 }
 
 .overview-divider {
   width: 1rpx;
   height: 40rpx;
-  background-color: var(--divider-color);
+  background-color: rgba(255,255,255,0.1);
 }
 
-/* === 学习建议 (Round 3.22) === */
+/* === 学习建议：深色头部适配 === */
 .overview-suggestion {
   display: flex;
   align-items: center;
   padding: 12rpx 20rpx;
   border-radius: 10rpx;
-  margin-top: 4rpx;
+  margin-top: 8rpx;
 }
 
 .suggestion-good {
-  background-color: #e8f5e9;
-  border-left: 5rpx solid #4caf50;
+  background-color: rgba(76,175,80,0.12);
+  border-left: 5rpx solid #69db7c;
 }
 
 .suggestion-moderate {
-  background-color: #e3f2fd;
-  border-left: 5rpx solid #4a90d9;
+  background-color: rgba(74,144,217,0.12);
+  border-left: 5rpx solid #58a6ff;
 }
 
 .suggestion-review {
-  background-color: #fff3e0;
-  border-left: 5rpx solid #ff9800;
+  background-color: rgba(255,152,0,0.12);
+  border-left: 5rpx solid #ffb74d;
 }
 
 .suggestion-start {
-  background-color: #f3e5f5;
-  border-left: 5rpx solid #9c27b0;
+  background-color: rgba(156,39,176,0.12);
+  border-left: 5rpx solid #ce93d8;
 }
 
 .suggestion-icon {
@@ -149,40 +175,42 @@
 
 .suggestion-text {
   font-size: 24rpx;
-  color: var(--text-secondary);
+  color: rgba(255,255,255,0.7);
   line-height: 1.5;
   flex: 1;
 }
 
-/* === 新用户卡片 (Round 3.22) === */
+/* === 新用户卡片：紧凑化 === */
 .new-user-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 24rpx 32rpx;
+  padding: 20rpx 32rpx;
   text-align: center;
   margin: 0 30rpx 16rpx;
+  background-color: rgba(255,255,255,0.06);
+  border: 1rpx solid rgba(255,255,255,0.08);
 }
 
 .new-user-icon {
-  font-size: 44rpx;
-  margin-bottom: 8rpx;
-}
-
-.new-user-title {
-  font-size: 28rpx;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-size: 36rpx;
   margin-bottom: 6rpx;
 }
 
+.new-user-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 4rpx;
+}
+
 .new-user-desc {
-  font-size: 24rpx;
-  color: var(--text-secondary);
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.5);
   line-height: 1.5;
 }
 
-/* === 练习入口列表 === */
+/* === 练习入口列表：增强现代感 === */
 .menu-list {
   padding: 8rpx 0 0;
 }
@@ -192,9 +220,10 @@
   padding: 0;
   border-radius: 20rpx;
   background-color: var(--card-bg);
-  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.06);
+  box-shadow: 0 4rpx 24rpx rgba(0,0,0,0.06);
   overflow: hidden;
   transition: transform 0.15s, box-shadow 0.15s;
+  position: relative;
 }
 
 .menu-card:active {
@@ -219,12 +248,20 @@
   flex-shrink: 0;
 }
 
-.menu-card-icon-lesson {
-  background: linear-gradient(135deg, rgba(74,144,217,0.12), rgba(54,209,220,0.1));
+.exam-itpass .menu-card-icon-lesson {
+  background: linear-gradient(135deg, rgba(74,144,217,0.15), rgba(54,209,220,0.12));
 }
 
-.menu-card-icon-exam {
-  background: linear-gradient(135deg, rgba(255,152,0,0.12), rgba(255,193,7,0.1));
+.exam-itpass .menu-card-icon-exam {
+  background: linear-gradient(135deg, rgba(255,152,0,0.15), rgba(255,193,7,0.12));
+}
+
+.exam-sg .menu-card-icon-lesson {
+  background: linear-gradient(135deg, rgba(156,39,176,0.15), rgba(233,30,99,0.12));
+}
+
+.exam-sg .menu-card-icon-exam {
+  background: linear-gradient(135deg, rgba(244,67,54,0.15), rgba(255,87,34,0.12));
 }
 
 .menu-card-icon {
@@ -277,8 +314,12 @@
   color: var(--text-primary);
 }
 
-.menu-card-stat-accent {
+.exam-itpass .menu-card-stat-accent {
   color: #4a90d9;
+}
+
+.exam-sg .menu-card-stat-accent {
+  color: #9c27b0;
 }
 
 .menu-card-stat-label {
@@ -286,24 +327,72 @@
   color: var(--text-hint);
 }
 
-/* === SG 主题覆盖 === */
-.exam-sg .exam-dashboard {
-  background: linear-gradient(135deg, rgba(156,39,176,0.08) 0%, rgba(233,30,99,0.06) 100%);
-  border-bottom-color: rgba(156,39,176,0.08);
-}
-
-.exam-sg .overview-accuracy {
-  color: #9c27b0;
-}
-
-.exam-sg .menu-card-icon-lesson {
-  background: linear-gradient(135deg, rgba(156,39,176,0.12), rgba(233,30,99,0.1));
-}
-
-.exam-sg .menu-card-icon-exam {
-  background: linear-gradient(135deg, rgba(244,67,54,0.12), rgba(255,87,34,0.1));
-}
-
-.exam-sg .menu-card-stat-accent {
-  color: #9c27b0;
+/* === 浅色模式适配 === */
+@media (prefers-color-scheme: light) {
+  .dashboard-title {
+    color: var(--text-primary);
+  }
+  .dashboard-subtitle {
+    color: var(--text-secondary);
+  }
+  .dashboard-badge-itpass,
+  .dashboard-badge-sg {
+    background-color: rgba(0,0,0,0.04);
+    color: var(--text-secondary);
+    border-color: rgba(0,0,0,0.06);
+  }
+  .overview-card {
+    background-color: var(--card-bg);
+    border-color: rgba(0,0,0,0.04);
+  }
+  .overview-stat-value {
+    color: var(--text-primary);
+  }
+  .overview-accuracy {
+    color: #4a90d9;
+  }
+  .overview-time-text {
+    color: var(--text-secondary);
+  }
+  .overview-stat-label {
+    color: var(--text-hint);
+  }
+  .overview-divider {
+    background-color: var(--divider-color);
+  }
+  .suggestion-good {
+    background-color: #e8f5e9;
+    border-left-color: #4caf50;
+  }
+  .suggestion-moderate {
+    background-color: #e3f2fd;
+    border-left-color: #4a90d9;
+  }
+  .suggestion-review {
+    background-color: #fff3e0;
+    border-left-color: #ff9800;
+  }
+  .suggestion-start {
+    background-color: #f3e5f5;
+    border-left-color: #9c27b0;
+  }
+  .suggestion-text {
+    color: var(--text-secondary);
+  }
+  .new-user-title {
+    color: var(--text-primary);
+  }
+  .new-user-desc {
+    color: var(--text-secondary);
+  }
+  .new-user-card {
+    background-color: var(--card-bg);
+    border-color: rgba(0,0,0,0.04);
+  }
+  .exam-itpass .exam-dashboard::before {
+    background: linear-gradient(145deg, rgba(74,144,217,0.08) 0%, rgba(54,209,220,0.06) 100%);
+  }
+  .exam-sg .exam-dashboard::before {
+    background: linear-gradient(145deg, rgba(156,39,176,0.08) 0%, rgba(233,30,99,0.06) 100%);
+  }
 }
