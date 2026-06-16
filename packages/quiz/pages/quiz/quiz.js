@@ -47,6 +47,17 @@ Page({
   },
 
   onLoad: function (options) {
+  var that = this;
+
+  // 实时计时器（每秒更新）
+  if (this._timerInterval) clearInterval(this._timerInterval);
+  this._timerInterval = setInterval(function () {
+    if (!that.data.quizDone && that.startTime) {
+      var elapsed = Math.floor((Date.now() - that.startTime) / 1000);
+      that.setData({ formattedTime: formatTime(elapsed) });
+    }
+  }, 1000);
+
     var exam = options.exam || 'itpass';
     var sourceType = options.sourceType || 'lesson_quiz';
 
@@ -469,6 +480,11 @@ Page({
 
   // R3.71 进度保存提示
   onUnload: function () {
+  if (this._timerInterval) {
+    clearInterval(this._timerInterval);
+    this._timerInterval = null;
+  }
+
     wx.showToast({
       title: '答题进度已保存',
       icon: 'success',
