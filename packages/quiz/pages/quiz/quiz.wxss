@@ -487,11 +487,18 @@
   margin-top: 0;
 }
 
+.explanation-body + .explanation-title {
+  margin-top: 24rpx;
+  padding-top: 20rpx;
+  border-top: 2rpx solid rgba(74, 144, 217, 0.1);
+}
+
 .explanation-body {
   display: block;
   font-size: 26rpx;
   color: var(--text-secondary);
   line-height: 1.7;
+  margin-top: 4rpx;
 }
 
 .explanation-warning {
@@ -518,7 +525,7 @@
 }
 
 .next-btn:active {
-  transform: scale(0.97);
+  transform: translateY(2rpx) scale(0.97);
   box-shadow: 0 3rpx 12rpx rgba(74, 144, 217, 0.25);
 }
 
