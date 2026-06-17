@@ -33,6 +33,7 @@ const SKIP_DIRS = ['.git', 'node_modules', '.workbuddy', 'generated-backup'];
 const SKIP_REL_DIRS = new Set([
   'packages/glossary/data',
   'packages/quiz/data',
+  'packages/quiz/data/past_exam_bank',
   'packages/exam/data'
 ]);
 

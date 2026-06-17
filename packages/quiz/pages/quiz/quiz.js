@@ -1,5 +1,6 @@
 // pages/quiz/quiz.js
 var questionsModule = require('../../data/questions');
+var pastExamFull = require('../../data/past_exam_full');
 var storage = require('../../../../utils/storage');
 
 Page({
@@ -90,9 +91,16 @@ Page({
     var examTitle = exam === 'sg' ? 'SG 考试' : 'IT Passport';
     var examBadge = exam === 'sg' ? 'SG' : 'IT';
     var modeLabel = sourceType === 'past_exam_japanese' ? '日文题练习' : '课程练习';
-    var allQuestions = questionsModule.questions.filter(function (question) {
+    var baseQuestions = sourceType === 'past_exam_japanese' ? pastExamFull : questionsModule.questions;
+    var allQuestions = baseQuestions.filter(function (question) {
       return question.exam === exam && question.sourceType === sourceType;
     });
+    if (allQuestions.length === 0 && sourceType === 'past_exam_japanese') {
+      // fallback already exists in bundled questions
+      allQuestions = questionsModule.questions.filter(function (question) {
+        return question.exam === exam && question.sourceType === sourceType;
+      });
+    }
 
     if (allQuestions.length > 0) {
       this.setData({

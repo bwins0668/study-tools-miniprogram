@@ -4362,7 +4362,7 @@ for (var sf2324 = 0; sf2324 < allSourceFiles324.length; sf2324++) {
       fp324.includes('glossary_index.js') || fp324.includes('questions.js') ||
       fp324.includes('_backup') || fp324.includes('glossary_full') ||
       fp324.includes('tools/check_content_compliance.js') || fp324.includes('tools/miniprogram_smoke_test.js') ||
-      fp324.includes('packages/exam/data/')) continue;
+      fp324.includes('packages/exam/data/') || fp324.includes('packages/quiz/data/past_exam_bank/')) continue;
   try {
     var c324 = require('fs').readFileSync(fp324, 'utf-8');
     for (var bb324 = 0; bb324 < banned324.length; bb324++) {
@@ -4844,6 +4844,7 @@ for (var fi3 = 0; fi3 < allJsFiles330.length; fi3++) {
   var f330 = allJsFiles330[fi3].replace(/\\/g, '/');
   if (f330.indexOf('smoke_test') >= 0) continue;
   if (f330.indexOf('questions.js') >= 0) continue;
+  if (f330.indexOf('packages/quiz/data/past_exam_bank/') >= 0) continue;
   if (f330.indexOf('glossary_index.js') >= 0) continue;
   if (f330.indexOf('chunks') >= 0) continue;
   if (f330.indexOf('generated-backup') >= 0) continue;
@@ -7241,20 +7242,24 @@ if (process.env.CODEX_JSON_CONTRACT === '1') {
   // Nested call via execSync - skip to avoid infinite recursion
   round391Ok = true;
 } else {
-  // Run --json mode and capture output (set env var to prevent recursion)
   try {
-    jsonOutput391 = execSync('node tools/run_miniprogram_checks.js --json', {
+    jsonOutput391 = (require('child_process').execSync('node tools/run_miniprogram_checks.js --json', {
     cwd: ROOT,
     encoding: 'utf-8',
     timeout: 30000,
     env: Object.assign({}, process.env, { CODEX_JSON_CONTRACT: '1' })
-  }).trim();
-  } catch (e) {
-    fail('R3.91: failed to run --json mode: ' + e.message);
-      round391Ok = false;
-      jsonOutput391 = null;
-    }
+  }) || '').trim();
+  if (!jsonOutput391) {
+    fail('R3.91: --json output is empty');
+    round391Ok = false;
+    jsonOutput391 = null;
   }
+  } catch (e) {
+    fail('R3.91: --json command returned non-zero: ' + e.message);
+    round391Ok = false;
+    jsonOutput391 = null;
+  }
+}
 
 if (jsonOutput391 !== null) {
   var parsed391;
