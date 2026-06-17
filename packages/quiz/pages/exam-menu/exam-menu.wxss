@@ -493,10 +493,7 @@
   .menu-card {
     background: linear-gradient(170deg, var(--card-bg) 0%, rgba(30,30,46,0.98) 100%);
     box-shadow: 0 4rpx 24rpx rgba(0,0,0,0.2);
-  }
-
-  .menu-card-icon-wrap {
-    box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.15);
+    border-radius: 20rpx;
   }
 }
 
