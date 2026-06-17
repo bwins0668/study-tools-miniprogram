@@ -61,6 +61,12 @@
   margin: 16rpx 30rpx;
   padding: 28rpx 32rpx;
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.glossary-card:active {
+  transform: translateY(1rpx) scale(0.99);
+  box-shadow: 0 1rpx 6rpx rgba(0, 0, 0, 0.1);
 }
 
 .card-main {
@@ -137,8 +143,8 @@
 }
 
 .item-explanation {
-  font-size: 24rpx;
-  color: var(--text-hint);
+  font-size: 25rpx;
+  color: var(--text-secondary);
   line-height: 1.6;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -159,12 +165,12 @@
 }
 
 .detail-arrow {
-  font-size: 32rpx;
-  color: var(--text-hint);
+  font-size: 34rpx;
+  color: var(--color-itpass, #4a90d9);
 }
 
 .detail-label {
-  font-size: 20rpx;
+  font-size: 21rpx;
   color: var(--text-hint);
   margin-top: 2rpx;
 }
