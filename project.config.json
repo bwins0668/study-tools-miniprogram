@@ -101,9 +101,9 @@
   "setting": {
     "coverView": true,
     "es6": true,
-    "postcss": true,
+    "postcss": false,
     "minified": true,
-    "enhance": true,
+    "enhance": false,
     "showShadowRootInWxmlPanel": true,
     "packNpmRelationList": [],
     "babelSetting": {
@@ -113,7 +113,7 @@
     },
     "compileWorklet": false,
     "uglifyFileName": false,
-    "uploadWithSourceMap": true,
+    "uploadWithSourceMap": false,
     "packNpmManually": false,
     "minifyWXSS": true,
     "minifyWXML": true,

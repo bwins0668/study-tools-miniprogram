@@ -197,7 +197,7 @@
       >
         <view class="review-item-index">{{index + 1}}</view>
         <view class="review-item-content">
-          <text class="review-item-question">{{item.questionZh}}</text>
+          <text class="review-item-question" user-select="true">{{item.questionZh}}</text>
           <view class="review-item-answer">
             <text class="review-item-label">你的答案：</text>
             <text class="review-item-selected {{item.isCorrect ? 'text-correct' : 'text-wrong'}}">{{item.selectedAnswer}}</text>

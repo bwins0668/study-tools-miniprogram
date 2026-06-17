@@ -8082,8 +8082,35 @@ check3131(quizWxml3131.indexOf('{{currentQuestion.explanationJa}}') < 0,
 // E. No raw HTML / kaisetsu / ansbg in displayed explanation fields
 check3131(quizWxml3131.indexOf('id="kaisetsu"') < 0,
   'R3.131: WXML must not contain kaisetsu ID');
-check3131(quizJs3131.indexOf("'中文解析待补充") >= 0,
-  'R3.131: Chinese fallback text must exist for Japanese-only explanations');
+check3131(quizJs3131.indexOf("'中文解析待补充") < 0,
+  'R3.131: quiz.js must NOT contain old fallback "中文解析待补充" (replaced by generated)');
+check3131(quizJs3131.indexOf('explanations_zh') >= 0,
+  'R3.131: quiz.js must load generated Chinese explanations from explanations_zh');
+
+// Local helper for smoke test data check (uses generated explanations, mirrors quiz.js)
+var generatedZhMap3131;
+try {
+  generatedZhMap3131 = require(path.join(ROOT, 'packages/quiz/data/past_exam_bank/explanations_zh'));
+} catch(e) {
+  generatedZhMap3131 = {};
+}
+function processQuestionForDisplay3131(q) {
+  var raw = q.explanationZh || '';
+  var cleaned = raw.replace(/<[^>]+>/g, '').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim();
+  var hasKana = /[\u3040-\u309F\u30A0-\u30FF]/.test(cleaned);
+  // Use generated explanation if available
+  var genExpl = generatedZhMap3131[q.id] || '';
+  var zhClean;
+  if (genExpl && genExpl.length > 10) {
+    zhClean = genExpl;
+  } else if (!hasKana && cleaned && cleaned.length > 10) {
+    zhClean = cleaned;
+  } else {
+    zhClean = '正确答案：' + (q.answer||'') + '。本题考查IT基础知识。';
+  }
+  var result = { explanationZhClean: zhClean };
+  return result;
+}
 
 // F. Data quality: past exam explanationZh should be processed, not raw
 var pastExamBank3131 = require(path.join(ROOT, 'packages/quiz/data/past_exam_bank/full_bank'));
@@ -8097,17 +8124,89 @@ for (var i3131 = 0; i3131 < sampleSize3131; i3131++) {
 check3131(rawHtmlCount3131 === 0,
   'R3.131: processed explanationZhClean must not contain raw HTML <div tags');
 
-// Local helper for smoke test data check (mirrors quiz.js logic)
-function processQuestionForDisplay3131(q) {
-  var raw = q.explanationZh || '';
-  var cleaned = raw.replace(/<[^>]+>/g, '').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim();
-  var hasKana = /[\u3040-\u309F\u30A0-\u30FF]/.test(cleaned);
-  var result = { explanationZhClean: hasKana ? ('中文解析待补充。正确答案：' + (q.answer||'') + '。') : cleaned };
-  return result;
-}
-
 if (round3131Ok) pass('R3.131: main package, warning fix, Chinese explanation pipeline');
 
+// ============================================================
+// R3.132: Generated Chinese explanations integration + package audit
+// ============================================================
+var round3132Ok = true;
+function check3132(cond, msg) { if (!cond) { fail(msg); round3132Ok = false; } }
+
+// A. Generated explanations file exists and covers all past exam questions
+var explMap3132;
+try {
+  explMap3132 = require(path.join(ROOT, 'packages/quiz/data/past_exam_bank/explanations_zh'));
+} catch(e) { explMap3132 = null; }
+check3132(explMap3132 !== null,
+  'R3.132: explanations_zh.js must exist and be loadable');
+
+if (explMap3132) {
+  var fullBank3132 = require(path.join(ROOT, 'packages/quiz/data/past_exam_bank/full_bank'));
+  var missingCount3132 = 0;
+  fullBank3132.forEach(function(q) {
+    if (!explMap3132[q.id] || explMap3132[q.id].length < 20) missingCount3132++;
+  });
+  check3132(missingCount3132 === 0,
+    'R3.132: all ' + fullBank3132.length + ' past exam questions must have generated Chinese explanations (missing: ' + missingCount3132 + ')');
+  
+  // No forbidden text
+  var forbiddenFound3132 = false;
+  var forbidden3132 = ['中文解析待补充', '暂无中文解析', '无法生成'];
+  Object.keys(explMap3132).forEach(function(id) {
+    var text = explMap3132[id];
+    forbidden3132.forEach(function(f) {
+      if (text.indexOf(f) >= 0) forbiddenFound3132 = true;
+    });
+  });
+  check3132(!forbiddenFound3132,
+    'R3.132: generated explanations must not contain forbidden placeholder text');
+  
+  // No raw HTML in explanations
+  var htmlFound3132 = false;
+  Object.keys(explMap3132).forEach(function(id) {
+    var text = explMap3132[id];
+    if (text.indexOf('<div') >= 0 || text.indexOf('class=') >= 0 || text.indexOf('ansbg') >= 0) htmlFound3132 = true;
+  });
+  check3132(!htmlFound3132,
+    'R3.132: generated explanations must not contain raw HTML');
+}
+
+// B. quiz.js loads generated explanations
+var quizJs3132 = readFile('packages/quiz/pages/quiz/quiz.js');
+check3132(quizJs3132.indexOf('generatedZhExplanations') >= 0 || quizJs3132.indexOf('explanations_zh') >= 0,
+  'R3.132: quiz.js must import generated Chinese explanations');
+
+// C. check_quiz_explanations.js exists
+var checkScript3132 = false;
+try {
+  checkScript3132 = fs.existsSync(path.join(ROOT, 'tools/check_quiz_explanations.js'));
+} catch(e) {}
+check3132(checkScript3132,
+  'R3.132: tools/check_quiz_explanations.js must exist');
+
+// D. check_quiz_explanations.js validates coverage (verify content check markers exist)
+var checkScriptContent3132 = readFile('tools/check_quiz_explanations.js');
+check3132(checkScriptContent3132.indexOf('explanations_zh') >= 0 &&
+  checkScriptContent3132.indexOf('禁止词') >= 0 &&
+  checkScriptContent3132.indexOf('RFI') >= 0 &&
+  checkScriptContent3132.indexOf('process.exit') >= 0,
+  'R3.132: tools/check_quiz_explanations.js must contain valid checks');
+
+// E. quiz.wxml uses user-select on review-item-question
+var quizWxml3132 = readFile('packages/quiz/pages/quiz/quiz.wxml');
+check3132(quizWxml3132.indexOf('review-item-question" user-select') >= 0,
+  'R3.132: review-item-question must have user-select="true"');
+
+// F. Main package: enhance and postcss disabled
+var projCfg3132 = JSON.parse(readFile('project.config.json'));
+check3132(projCfg3132.setting && projCfg3132.setting.enhance === false,
+  'R3.132: enhance should be false to reduce main package size');
+check3132(projCfg3132.setting && projCfg3132.setting.postcss === false,
+  'R3.132: postcss should be false to reduce CSS compilation overhead');
+check3132(projCfg3132.setting && projCfg3132.setting.uploadWithSourceMap === false,
+  'R3.132: uploadWithSourceMap should be false for code quality scan');
+
+if (round3132Ok) pass('R3.132: generated Chinese explanations integration & package audit');
 
 console.log('\n========================================');
 console.log('Passed: ' + passed);
