@@ -1,5 +1,6 @@
 // pages/exam-menu/exam-menu.js
 var storage = require("../../../../utils/storage");
+var pastExamFull = require("../../data/past_exam_bank/full_bank");
 
 var EXAM_INFO = {
   itpass: {
@@ -12,7 +13,6 @@ var EXAM_INFO = {
   }
 };
 
-// 格式化时间戳为友好文案
 function formatTimeAgo(ts) {
   if (!ts) return '';
   var now = Date.now();
@@ -38,11 +38,13 @@ Page({
     lessonAccuracy: 0,
     pastTotal: 0,
     pastAccuracy: 0,
-    // Round 3.22: 整体统计
     overallTotal: 0,
     overallAccuracy: 0,
     lastPracticeText: '',
-    suggestion: { text: '', level: '' }
+    suggestion: { text: '', level: '' },
+    pastExamList: [],
+    pastExamExpanded: false,
+    activePastExamYearId: ''
   },
 
   onLoad: function (options) {
@@ -60,16 +62,13 @@ Page({
     var lessonStats = storage.getQuizStatsByFilter(exam, 'lesson_quiz');
     var pastStats = storage.getQuizStatsByFilter(exam, 'past_exam_japanese');
 
-    // Round 3.22: 整体统计（合并两源）
     var overallTotal = (lessonStats.total || 0) + (pastStats.total || 0);
     var overallCorrect = (lessonStats.correct || 0) + (pastStats.correct || 0);
     var overallAccuracy = overallTotal > 0 ? Math.round(overallCorrect / overallTotal * 100) : 0;
 
-    // Round 3.22: 最近练习时间
     var lastTs = storage.getLastAttemptByExam(exam);
     var lastText = formatTimeAgo(lastTs);
 
-    // Round 3.22: 学习建议
     var suggestion = { text: '', level: '' };
     if (overallTotal === 0) {
       suggestion = { text: '从课程练习开始，逐步了解考试内容', level: 'start' };
@@ -81,6 +80,24 @@ Page({
       suggestion = { text: '建议先复习基础知识点再继续练习', level: 'review' };
     }
 
+    // 构建过去问年份列表
+    var yearMap = {};
+    (pastExamFull || []).forEach(function (q) {
+      if (q.exam !== exam || q.sourceType !== 'past_exam_japanese') return;
+      var yid = q.yearId;
+      if (!yearMap[yid]) {
+        yearMap[yid] = {
+          yearId: yid,
+          year: q.year,
+          count: 0
+        };
+      }
+      yearMap[yid].count += 1;
+    });
+    var pastExamList = Object.keys(yearMap).sort().map(function (k) {
+      return yearMap[k];
+    });
+
     this.setData({
       lessonTotal: lessonStats.total || 0,
       lessonAccuracy: lessonStats.accuracy || 0,
@@ -89,7 +106,23 @@ Page({
       overallTotal: overallTotal,
       overallAccuracy: overallAccuracy,
       lastPracticeText: lastText,
-      suggestion: suggestion
+      suggestion: suggestion,
+      pastExamList: pastExamList
+    });
+  },
+
+  togglePastExamList: function () {
+    this.setData({
+      pastExamExpanded: !this.data.pastExamExpanded
+    });
+  },
+
+  goPastExamYear: function (event) {
+    var yearId = event.currentTarget.dataset.yearId;
+    if (!yearId) return;
+    this.setData({ activePastExamYearId: yearId });
+    wx.navigateTo({
+      url: '/packages/quiz/pages/quiz/quiz?exam=' + this.data.exam + '&sourceType=past_exam_japanese&yearId=' + encodeURIComponent(yearId)
     });
   },
 

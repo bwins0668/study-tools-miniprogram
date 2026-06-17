@@ -61,6 +61,7 @@ Page({
 
     var exam = options.exam || 'itpass';
     var sourceType = options.sourceType || 'lesson_quiz';
+    var yearId = options.yearId || '';
 
     // R3.62 答题计时器：记录开始时间并启动计时器
     var startTime = Date.now();
@@ -84,10 +85,10 @@ Page({
       return;
     }
 
-    this.loadPracticeQuestions(exam, sourceType);
+    this.loadPracticeQuestions(exam, sourceType, yearId);
   },
 
-  loadPracticeQuestions: function (exam, sourceType) {
+  loadPracticeQuestions: function (exam, sourceType, yearId) {
     var examTitle = exam === 'sg' ? 'SG 考试' : 'IT Passport';
     var examBadge = exam === 'sg' ? 'SG' : 'IT';
     var modeLabel = sourceType === 'past_exam_japanese' ? '日文题练习' : '课程练习';
@@ -95,11 +96,21 @@ Page({
     var allQuestions = baseQuestions.filter(function (question) {
       return question.exam === exam && question.sourceType === sourceType;
     });
+    if (yearId) {
+      allQuestions = allQuestions.filter(function (question) {
+        return question.yearId === yearId;
+      });
+    }
     if (allQuestions.length === 0 && sourceType === 'past_exam_japanese') {
       // fallback already exists in bundled questions
       allQuestions = questionsModule.questions.filter(function (question) {
         return question.exam === exam && question.sourceType === sourceType;
       });
+      if (yearId) {
+        allQuestions = allQuestions.filter(function (question) {
+          return question.yearId === yearId;
+        });
+      }
     }
 
     if (allQuestions.length > 0) {

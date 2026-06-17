@@ -72,16 +72,16 @@
     </view>
 
     <!-- 日文真题 -->
-    <view class="menu-card menu-card-exam" bindtap="goPastExam">
+    <view class="menu-card menu-card-exam" bindtap="togglePastExamList">
       <view class="menu-card-header">
         <view class="menu-card-icon-wrap menu-card-icon-exam">
           <text class="menu-card-icon">📝</text>
         </view>
         <view class="menu-card-body">
           <text class="menu-card-title">日文真题</text>
-          <text class="menu-card-desc">日文原题，中文翻译待补充</text>
+          <text class="menu-card-desc">按考试年度 / 回数选择</text>
         </view>
-        <text class="menu-card-arrow">›</text>
+        <text class="menu-card-arrow">{{pastExamExpanded ? '▲' : '▼'}}</text>
       </view>
       <view class="menu-card-footer">
         <view class="menu-card-stat">
@@ -95,6 +95,23 @@
       </view>
       <view class="menu-card-progress">
         <view class="menu-card-progress-bar" style="width: {{pastAccuracy}}%"></view>
+      </view>
+
+      <!-- 年份展开区 -->
+      <view class="past-exam-year-section" wx:if="{{pastExamExpanded && pastExamList.length > 0}}">
+        <view class="past-exam-year-title">选择考试年度</view>
+        <view class="past-exam-year-list">
+          <view
+            class="past-exam-year-chip {{activePastExamYearId === item.yearId ? 'past-exam-year-chip--active' : ''}}"
+            wx:for="{{pastExamList}}"
+            wx:key="yearId"
+            data-yearId="{{item.yearId}}"
+            bindtap="goPastExamYear"
+          >
+            <text class="past-exam-year-text">{{item.year}}</text>
+            <text class="past-exam-year-count">{{item.count}}题</text>
+          </view>
+        </view>
       </view>
     </view>
   </view>
