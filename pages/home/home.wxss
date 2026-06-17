@@ -455,7 +455,12 @@
 }
 
 .card-stat-new {
-  color: var(--text-hint);
+  color: var(--color-itpass, #4a90d9);
+  font-weight: 600;
+  background: linear-gradient(135deg, rgba(74, 144, 217, 0.07), rgba(99, 102, 241, 0.05));
+  padding: 2rpx 12rpx;
+  border-radius: 8rpx;
+  border: 1rpx solid rgba(74, 144, 217, 0.12);
 }
 
 .card-stat-status {

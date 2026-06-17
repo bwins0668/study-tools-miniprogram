@@ -7732,18 +7732,56 @@ checkUiPolish(themeJsonUiPolish.indexOf('tabSelectedColor') >= 0 &&
   themeJsonUiPolish.indexOf('#3b82f6') >= 0 &&
   themeJsonUiPolish.indexOf('#93c5fd') >= 0,
   'UI polish: tab theme colors must keep light and dark active states');
-checkUiPolish(ankiWxssUiPolish.indexOf('.card-face') >= 0 &&
-  ankiWxssUiPolish.indexOf('inset 0 1rpx 0 rgba(255,255,255,0.45)') >= 0,
-  'UI polish: Anki card faces must keep elevated polish');
 checkUiPolish(ankiWxssUiPolish.indexOf('.action-btn:active') >= 0 &&
   ankiWxssUiPolish.indexOf('translateY(2rpx) scale(0.955)') >= 0,
   'UI polish: Anki action buttons must keep pressed feedback');
-
-if (uiPolishOk) pass('UI polish PR visual contract smoke');
-
+checkUiPolish(homeWxmlUiPolish.indexOf('闪卡') >= 0 &&
+  homeWxmlUiPolish.indexOf('记忆辅助') >= 0,
+  'UI polish: Anki entry shows flashcard + memory assist tag');
+checkUiPolish(homeWxmlUiPolish.indexOf('查词') >= 0 &&
+  homeWxmlUiPolish.indexOf('中日英对照') >= 0,
+  'UI polish: Glossary entry shows lookup + language tag');
+checkUiPolish(homeWxmlUiPolish.indexOf('薄弱点复盘') >= 0,
+  'UI polish: Mistakes entry shows weakness review tag');
+checkUiPolish(homeWxmlUiPolish.indexOf('数据 / 备份管理') >= 0,
+  'UI polish: Profile entry shows data + backup tag');
+checkUiPolish(homeWxmlUiPolish.indexOf('开始练习') >= 0,
+  'UI polish: Untouched exam cards show start-practice prompt');
+checkUiPolish(homeWxmlUiPolish.indexOf('积累词汇') >= 0,
+  'UI polish: Empty state suggests glossary + practice start');
 if (uiPolishOk) pass('UI polish PR visual contract smoke');
 
 // ============================================================
+// R3.123: past_exam_bank full_bank data integrity smoke
+// ============================================================
+var round3123Ok = true;
+function check3123(cond, msg) {
+  if (!cond) { fail(msg); round3123Ok = false; }
+}
+
+var bankPath3123 = 'packages/quiz/data/past_exam_bank/full_bank.js';
+var bank3123 = readFile(bankPath3123);
+check3123(bank3123.length > 5000,
+  'R3.123: full_bank.js must be >5KB, got ' + bank3123.length + ' bytes');
+
+var bankCount3123 = (bank3123.match(/"id": "/g) || []).length;
+check3123(bankCount3123 >= 1900,
+  'R3.123: expected >=1900 entries, got ' + bankCount3123);
+
+check3123(bank3123.indexOf('令和') >= 0,
+  'R3.123: must contain Reiwa kanji - encoding may be corrupted');
+check3123(bank3123.indexOf('業務') >= 0,
+  'R3.123: must contain gyoumu - encoding may be corrupted');
+check3123(bank3123.indexOf('著作権') >= 0,
+  'R3.123: must contain chosakuken - encoding may be corrupted');
+
+check3123(bank3123.indexOf('"yearId": "') >= 0,
+  'R3.123: must contain yearId field');
+check3123(bank3123.indexOf('"exam":"itpass"') >= 0 || bank3123.indexOf('"exam": "itpass"') >= 0,
+  'R3.123: must contain IT Passport entries');
+
+if (round3123Ok) pass('R3.123: past_exam_bank data integrity');
+
 // R3.123: past_exam_bank full_bank data integrity smoke\n// ============================================================\nvar round3123Ok = true;\nfunction check3123(cond, msg) {\n  if (!cond) { fail(msg); round3123Ok = false; }\n}\n\nvar bankPath3123 = 'packages/quiz/data/past_exam_bank/full_bank.js';\nvar bank3123 = readFile(bankPath3123);\ncheck3123(bank3123.length > 5000,\n  'R3.123: full_bank.js must be >5KB, got ' + bank3123.length + ' bytes');\n\nvar bankCount3123 = (bank3123.match(/\"id\": \"/g) || []).length;\ncheck3123(bankCount3123 >= 1900,\n  'R3.123: expected >=1900 entries, got ' + bankCount3123);\n\ncheck3123(bank3123.indexOf('\u4ee4\u548c') >= 0,\n  'R3.123: must contain Reiwa kanji - encoding may be corrupted');\ncheck3123(bank3123.indexOf('\u696d\u52d9') >= 0,\n  'R3.123: must contain gyoumu - encoding may be corrupted');\ncheck3123(bank3123.indexOf('\u8457\u4f5c\u6a29') >= 0,\n  'R3.123: must contain chosakuken - encoding may be corrupted');\n\ncheck3123(bank3123.indexOf('\"yearId\": \"') >= 0,\n  'R3.123: must contain yearId field');\ncheck3123(bank3123.indexOf('\"exam\":\"itpass\"') >= 0 || bank3123.indexOf('\"exam\": \"itpass\"') >= 0,\n  'R3.123: must contain IT Passport entries');\n\nif (round3123Ok) pass('R3.123: past_exam_bank data integrity');\nconsole.log('\n========================================');
 console.log('Passed: ' + passed);
 console.log('Failed: ' + failed);

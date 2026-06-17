@@ -63,7 +63,7 @@
         <text class="entry-card-icon">🧠</text>
       </view>
       <text class="entry-card-title">Anki 闪卡</text>
-      <text class="entry-card-desc">记忆复习</text>
+      <text class="entry-card-desc">闪卡 / 记忆辅助</text>
       <view class="card-badge entry-card-badge" wx:if="{{favoriteCount > 0}}">{{favoriteCount}}</view>
     </view>
 
@@ -79,7 +79,7 @@
       <!-- R3.7 card-stats -->
       <view class="card-stats entry-card-stats">
         <text class="card-stat-text" wx:if="{{itpassTotal > 0}}">已做 {{itpassTotal}} 题 · 正确率 {{itpassAccuracy}}%</text>
-        <text class="card-stat-text card-stat-new" wx:else>未练习</text>
+        <text class="card-stat-text card-stat-new" wx:else>开始练习</text>
         <text class="card-stat-status">{{itpassStatusText}}</text>
       </view>
       <!-- R3.18 最近练习时间 -->
@@ -97,7 +97,7 @@
       </view>
       <view class="card-stats entry-card-stats">
         <text class="card-stat-text" wx:if="{{sgTotal > 0}}">已做 {{sgTotal}} 题 · 正确率 {{sgAccuracy}}%</text>
-        <text class="card-stat-text card-stat-new" wx:else>未练习</text>
+        <text class="card-stat-text card-stat-new" wx:else>开始练习</text>
         <text class="card-stat-status">{{sgStatusText}}</text>
       </view>
       <text class="card-last-time" wx:if="{{sgLastTime}}">最近：{{sgLastTime}}</text>
@@ -109,7 +109,7 @@
         <text class="entry-card-icon">📖</text>
       </view>
       <text class="entry-card-title card-title">术语表</text>
-      <text class="entry-card-desc">中日英对照</text>
+      <text class="entry-card-desc">查词 / 中日英对照</text>
     </view>
 
     <!-- 错题本 -->
@@ -118,7 +118,7 @@
         <text class="entry-card-icon">📋</text>
       </view>
       <text class="entry-card-title card-title">错题本</text>
-      <text class="entry-card-desc">复盘巩固</text>
+      <text class="entry-card-desc">薄弱点复盘</text>
       <view class="card-badge entry-card-badge" wx:if="{{wrongQuestionCount > 0}}">{{wrongQuestionCount}}</view>
     </view>
 
@@ -128,7 +128,7 @@
         <text class="entry-card-icon">📊</text>
       </view>
       <text class="entry-card-title card-title">我的统计</text>
-      <text class="entry-card-desc">数据与备份</text>
+      <text class="entry-card-desc">数据 / 备份管理</text>
     </view>
   </view>
 
@@ -172,7 +172,7 @@
     <text class="section-title">{{sectionTitle}}</text>
     <view class="continue-empty">
       <text class="continue-empty-text">还没有学习记录</text>
-      <text class="continue-empty-hint">从 IT Passport 课程练习开始，也可以选择其他题库</text>
+      <text class="continue-empty-hint">建议先从 IT Passport 课程练习入手，也欢迎浏览术语表积累词汇</text>
       <!-- R3.7 快速开始按钮 -->
       <view class="quick-start-btn" bindtap="quickStart">快速开始 · IT Passport 课程练习</view>
     </view>
