@@ -2,7 +2,7 @@
 
 ## 概要
 
-本 PR 基于 `master` 新建 `ui-polish-autodrive-8`，在不改业务逻辑、不继续 PR #3 分支的前提下，完成 8 轮小步 UI 精修。范围集中在首页、全局按钮与标签、底部 Tab、Anki 播放页，以及对应的 smoke 验证覆盖。
+本 PR 基于 `master` 新建 `ui-polish-autodrive-8`，包含 8 轮 UI 精修、数据文件编码修复、以及后续 past-exam 题库与 mistakes 功能扩展。范围涵盖首页、全局按钮与标签、底部 Tab、Anki 播放页、past-exam 题库、exam-menu 过滤、quiz 年份回显及 mistakes 卡片翻转。
 
 ## 主要改动
 
@@ -42,10 +42,12 @@
 
 ## 风险与兼容性
 
-- 主要变更为 WXML/WXSS/主题色和 smoke 测试，不涉及数据结构、接口、路由或业务状态。
-- UI 微调保持小步范围，兼容现有页面结构。
-- `docs/ui-polish-report.md` 保持未跟踪状态，未纳入本 PR。
-
+- 首页、按钮、标签、Tab、Anki 的 UI 精修：仅 WXML/WXSS/主题色，不涉及业务逻辑。
+- Past-exam 题库 (`full_bank.js`, 1945 条)：新增独立数据文件，不修改已有题库结构。
+- Exam-menu 过滤、quiz 年份回显、mistakes 卡片翻转：功能增量，向后兼容。
+- 所有 JS 和数据文件均通过 syntax check 和 content compliance 扫描。
+- 编码修复：`full_bank.js` 和 `docs/ui-polish-report.md` 原为双重编码，已修复为纯 UTF-8。
+- `docs/ui-polish-report.md` 已纳入本 PR。
 ## 手动验收建议
 
 - 在微信开发者工具中检查首页入口卡片、继续学习卡片和底部 Tab 的浅色/深色显示。

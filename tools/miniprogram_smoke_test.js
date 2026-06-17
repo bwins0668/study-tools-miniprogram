@@ -7741,7 +7741,10 @@ checkUiPolish(ankiWxssUiPolish.indexOf('.action-btn:active') >= 0 &&
 
 if (uiPolishOk) pass('UI polish PR visual contract smoke');
 
-console.log('\n========================================');
+if (uiPolishOk) pass('UI polish PR visual contract smoke');
+
+// ============================================================
+// R3.123: past_exam_bank full_bank data integrity smoke\n// ============================================================\nvar round3123Ok = true;\nfunction check3123(cond, msg) {\n  if (!cond) { fail(msg); round3123Ok = false; }\n}\n\nvar bankPath3123 = 'packages/quiz/data/past_exam_bank/full_bank.js';\nvar bank3123 = readFile(bankPath3123);\ncheck3123(bank3123.length > 5000,\n  'R3.123: full_bank.js must be >5KB, got ' + bank3123.length + ' bytes');\n\nvar bankCount3123 = (bank3123.match(/\"id\": \"/g) || []).length;\ncheck3123(bankCount3123 >= 1900,\n  'R3.123: expected >=1900 entries, got ' + bankCount3123);\n\ncheck3123(bank3123.indexOf('\u4ee4\u548c') >= 0,\n  'R3.123: must contain Reiwa kanji - encoding may be corrupted');\ncheck3123(bank3123.indexOf('\u696d\u52d9') >= 0,\n  'R3.123: must contain gyoumu - encoding may be corrupted');\ncheck3123(bank3123.indexOf('\u8457\u4f5c\u6a29') >= 0,\n  'R3.123: must contain chosakuken - encoding may be corrupted');\n\ncheck3123(bank3123.indexOf('\"yearId\": \"') >= 0,\n  'R3.123: must contain yearId field');\ncheck3123(bank3123.indexOf('\"exam\":\"itpass\"') >= 0 || bank3123.indexOf('\"exam\": \"itpass\"') >= 0,\n  'R3.123: must contain IT Passport entries');\n\nif (round3123Ok) pass('R3.123: past_exam_bank data integrity');\nconsole.log('\n========================================');
 console.log('Passed: ' + passed);
 console.log('Failed: ' + failed);
 console.log('========================================');
