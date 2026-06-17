@@ -72,8 +72,8 @@
     </view>
 
     <!-- 日文真题 -->
-    <view class="menu-card menu-card-exam" bindtap="togglePastExamList">
-      <view class="menu-card-header">
+    <view class="menu-card menu-card-exam">
+      <view class="menu-card-header" bindtap="togglePastExamList">
         <view class="menu-card-icon-wrap menu-card-icon-exam">
           <text class="menu-card-icon">📝</text>
         </view>
@@ -105,7 +105,7 @@
             class="past-exam-year-chip {{activePastExamYearId === item.yearId ? 'past-exam-year-chip--active' : ''}}"
             wx:for="{{pastExamList}}"
             wx:key="yearId"
-            data-yearId="{{item.yearId}}"
+            data-year-id="{{item.yearId}}"
             catchtap="goPastExamYear"
           >
             <text class="past-exam-year-text">{{item.year}}</text>

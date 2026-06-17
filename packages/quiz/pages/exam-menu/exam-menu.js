@@ -118,11 +118,21 @@ Page({
   },
 
   goPastExamYear: function (event) {
-    var yearId = event.currentTarget.dataset.yearId;
-    if (!yearId) return;
+    var dataset = event.currentTarget.dataset || {};
+    var yearId = dataset.yearId;
+    if (!yearId) {
+      console.warn('[exam-menu] goPastExamYear: yearId missing in dataset', dataset);
+      wx.showToast({ title: '试卷信息缺失', icon: 'none' });
+      return;
+    }
     this.setData({ activePastExamYearId: yearId });
+    var url = '/packages/quiz/pages/quiz/quiz?exam=' + this.data.exam + '&sourceType=past_exam_japanese&yearId=' + encodeURIComponent(yearId);
     wx.navigateTo({
-      url: '/packages/quiz/pages/quiz/quiz?exam=' + this.data.exam + '&sourceType=past_exam_japanese&yearId=' + encodeURIComponent(yearId)
+      url: url,
+      fail: function (err) {
+        console.error('[exam-menu] navigate to past exam failed', url, err);
+        wx.showToast({ title: '打开试卷失败', icon: 'none' });
+      }
     });
   },
 

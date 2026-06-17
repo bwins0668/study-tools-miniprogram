@@ -7976,6 +7976,63 @@ check3127(quizSubPkg3127 && quizSubPkg3127.pages.indexOf('pages/quiz/quiz') >= 0
 
 if (round3127Ok) pass('R3.127: main package structure & exam paper navigation');
 
+// ============================================================
+// R3.130: exam year chip navigation chain & main package guard
+// ============================================================
+var round3130Ok = true;
+function check3130(cond, msg) { if (!cond) { fail(msg); round3130Ok = false; } }
+
+// A. Year chip event isolation: toggle must NOT be on whole card
+var examMenuWxml3130 = readFile('packages/quiz/pages/exam-menu/exam-menu.wxml');
+check3130(examMenuWxml3130.indexOf('menu-card-exam" bindtap="togglePastExamList"') < 0,
+  'R3.130: togglePastExamList must NOT be on whole menu-card-exam (only on header)');
+check3130(examMenuWxml3130.indexOf('menu-card-header" bindtap="togglePastExamList"') >= 0,
+  'R3.130: togglePastExamList must be on menu-card-header only');
+
+// B. Year chip catchtap + data-* on same element
+check3130(examMenuWxml3130.indexOf('data-year-id=') >= 0,
+  'R3.130: year chip must have data-year-id attribute');
+check3130(examMenuWxml3130.indexOf('catchtap="goPastExamYear"') >= 0,
+  'R3.130: year chip must have catchtap="goPastExamYear"');
+
+// C. JS handler must exist with fail callback
+var examMenuJs3130 = readFile('packages/quiz/pages/exam-menu/exam-menu.js');
+check3130(examMenuJs3130.indexOf('goPastExamYear') >= 0,
+  'R3.130: goPastExamYear handler must exist');
+check3130(examMenuJs3130.indexOf('currentTarget.dataset') >= 0,
+  'R3.130: handler must use currentTarget.dataset');
+check3130(examMenuJs3130.indexOf('fail:') >= 0 || examMenuJs3130.indexOf('fail :') >= 0,
+  'R3.130: navigateTo must have fail callback');
+check3130(examMenuJs3130.indexOf('/packages/quiz/pages/quiz/quiz') >= 0,
+  'R3.130: must navigate to quiz subpackage page');
+
+// D. quiz.js onLoad must accept exam, sourceType, yearId
+var quizJs3130 = readFile('packages/quiz/pages/quiz/quiz.js');
+check3130(quizJs3130.indexOf('options.exam') >= 0,
+  'R3.130: quiz.js onLoad must read options.exam');
+check3130(quizJs3130.indexOf('options.sourceType') >= 0,
+  'R3.130: quiz.js onLoad must read options.sourceType');
+check3130(quizJs3130.indexOf('options.yearId') >= 0,
+  'R3.130: quiz.js onLoad must read options.yearId');
+
+// E. Param name alignment: exam-menu passes yearId, quiz reads yearId
+check3130(examMenuJs3130.indexOf('yearId=') >= 0 && quizJs3130.indexOf('options.yearId') >= 0,
+  'R3.130: exam-menu and quiz.js must use same param name yearId');
+check3130(examMenuJs3130.indexOf('sourceType=past_exam_japanese') >= 0 && quizJs3130.indexOf("'past_exam_japanese'") >= 0,
+  'R3.130: exam-menu and quiz.js must use same sourceType value');
+
+// F. project.config.json guard: compileWorklet should be false
+var projCfg3130 = JSON.parse(readFile('project.config.json'));
+check3130(projCfg3130.setting && projCfg3130.setting.compileWorklet === false,
+  'R3.130: compileWorklet should be false to reduce main package compiled size');
+
+// G. IT Passport and SG both have year data (pastExamFull must exist)
+var fullBankPath3130 = path.join(ROOT, 'packages/quiz/data/past_exam_bank/full_bank.js');
+check3130(fs.existsSync(fullBankPath3130),
+  'R3.130: past_exam_bank/full_bank.js must exist for year chip data');
+
+if (round3130Ok) pass('R3.130: exam year chip navigation chain & main package guard');
+
 
 console.log('\n========================================');
 console.log('Passed: ' + passed);
