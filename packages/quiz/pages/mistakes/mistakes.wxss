@@ -66,6 +66,28 @@
   flex-wrap: wrap;
 }
 
+.priority-hint {
+  display: flex;
+  align-items: center;
+  margin: 0 30rpx 20rpx;
+  padding: 14rpx 18rpx;
+  background: linear-gradient(135deg, rgba(74, 144, 217, 0.06), rgba(99, 102, 241, 0.04));
+  border-radius: 12rpx;
+  border-left: 4rpx solid #6366f1;
+}
+
+.priority-hint-icon {
+  font-size: 24rpx;
+  margin-right: 10rpx;
+  flex-shrink: 0;
+}
+
+.priority-hint-text {
+  font-size: 24rpx;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
 .group-item {
   display: flex;
   align-items: center;

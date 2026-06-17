@@ -44,6 +44,12 @@
     </view>
   </view>
 
+  <!-- 复习优先级提示 -->
+  <view class="priority-hint" wx:if="{{totalCount > 0}}">
+    <text class="priority-hint-icon">💡</text>
+    <text class="priority-hint-text">{{priorityHint}}</text>
+  </view>
+
   <!-- 搜索框 -->
   <view class="search-section" wx:if="{{totalCount > 0}}">
     <view class="search-bar">

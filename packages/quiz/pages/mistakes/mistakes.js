@@ -157,6 +157,16 @@ Page({
       if (wrongList[ci].sourceType === 'past_exam_japanese') japaneseCount++;
     }
 
+    // 计算优先级提示
+    var priorityHint = '';
+    if (wrongList.length > 0) {
+      var maxCategory = 'IT Passport';
+      var maxCount = itCount;
+      if (sgCount > maxCount) { maxCategory = 'SG'; maxCount = sgCount; }
+      if (japaneseCount > maxCount) { maxCategory = '日文题'; maxCount = japaneseCount; }
+      priorityHint = '建议优先复习，可从' + maxCategory + '开始';
+    }
+
     this.setData({
       wrongList: wrongList,
       totalCount: wrongList.length,
@@ -165,6 +175,7 @@ Page({
       itCount: itCount,
       sgCount: sgCount,
       japaneseCount: japaneseCount,
+      priorityHint: priorityHint,
       currentReviewIndex: 0,
       showExplanation: true
     });
