@@ -102,13 +102,20 @@
 }
 
 .fav-list-card {
-  background-color: var(--card-bg);
+  background: linear-gradient(170deg, var(--card-bg) 0%, rgba(74, 144, 217, 0.025) 100%);
   border-radius: 16rpx;
   margin-bottom: 16rpx;
   padding: 28rpx 28rpx;
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+  border: 1rpx solid rgba(74, 144, 217, 0.06);
   display: flex;
   align-items: flex-start;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.fav-list-card:active {
+  transform: translateY(2rpx) scale(0.985);
+  box-shadow: 0 1rpx 8rpx rgba(0, 0, 0, 0.08);
 }
 
 .flc-left {
@@ -469,12 +476,24 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 140rpx 40rpx 60rpx;
+  margin-top: 64rpx;
+  padding: 72rpx 40rpx 60rpx;
+  background: linear-gradient(170deg, var(--card-bg) 0%, rgba(232, 145, 58, 0.035) 100%);
+  border: 1rpx solid rgba(232, 145, 58, 0.1);
+  border-radius: 22rpx;
+  box-shadow: 0 4rpx 18rpx rgba(15, 23, 42, 0.06);
 }
 
 .empty-icon {
-  font-size: 120rpx;
-  margin-bottom: 36rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 30rpx;
+  font-size: 64rpx;
+  margin-bottom: 30rpx;
+  background: linear-gradient(135deg, rgba(232, 145, 58, 0.12), rgba(74, 144, 217, 0.06));
 }
 
 .empty-text {
@@ -493,10 +512,20 @@
 }
 
 .go-search-btn {
-  background-color: #4a90d9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 88rpx;
+  background: linear-gradient(135deg, #4a90d9, #6366f1);
   border-radius: 40rpx;
-  padding: 24rpx 60rpx;
+  padding: 0 60rpx;
   box-shadow: 0 4rpx 16rpx rgba(74, 144, 217, 0.3);
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.go-search-btn:active {
+  transform: scale(0.97);
+  opacity: 0.9;
 }
 
 .go-search-text {
@@ -513,4 +542,26 @@
 
 .go-search-text-secondary {
   color: #4a90d9;
+}
+
+@media (prefers-color-scheme: dark) {
+  .fav-list-card {
+    background: linear-gradient(170deg, var(--card-bg) 0%, rgba(88, 166, 255, 0.04) 100%);
+    border-color: rgba(88, 166, 255, 0.1);
+  }
+
+  .empty-state {
+    background: linear-gradient(170deg, rgba(255, 255, 255, 0.045), rgba(251, 191, 36, 0.045));
+    border-color: rgba(251, 191, 36, 0.12);
+    box-shadow: 0 4rpx 18rpx rgba(0, 0, 0, 0.24);
+  }
+
+  .empty-icon {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.14), rgba(88, 166, 255, 0.08));
+  }
+
+  .go-search-btn-secondary {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(88, 166, 255, 0.35);
+  }
 }

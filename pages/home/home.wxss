@@ -254,6 +254,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-sizing: border-box;
+  min-height: 184rpx;
   padding: 18rpx 14rpx 14rpx;
   border-radius: 16rpx;
   background-color: var(--card-bg);
@@ -297,6 +299,7 @@
 .entry-card-itpass {
   background: linear-gradient(180deg, rgba(74, 144, 217, 0.08), var(--card-bg) 58%);
   border-color: rgba(74, 144, 217, 0.14);
+  box-shadow: 0 8rpx 28rpx rgba(74, 144, 217, 0.1), 0 1rpx 6rpx rgba(15, 23, 42, 0.04);
 }
 
 .entry-card-sg::before {
@@ -306,6 +309,7 @@
 .entry-card-sg {
   background: linear-gradient(180deg, rgba(156, 39, 176, 0.08), var(--card-bg) 58%);
   border-color: rgba(156, 39, 176, 0.14);
+  box-shadow: 0 8rpx 28rpx rgba(156, 39, 176, 0.1), 0 1rpx 6rpx rgba(15, 23, 42, 0.04);
 }
 
 .entry-card-glossary::before {
@@ -411,8 +415,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 2rpx;
-  gap: 4rpx;
+  flex-direction: column;
+  min-height: 58rpx;
+  margin-bottom: 4rpx;
+  gap: 6rpx;
 }
 
 /* R3.18 card-weak-badge 保留 */
@@ -452,8 +458,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 2rpx;
-  gap: 3rpx;
+  min-height: 48rpx;
+  margin-top: 4rpx;
+  gap: 5rpx 8rpx;
   flex-wrap: wrap;
 }
 
@@ -869,25 +876,29 @@
 /* ===== R3.75 快捷操作提示（视觉隐藏） ===== */
 .quick-tips {
   display: block;
-  margin: 4rpx 24rpx 6rpx;
-  padding: 14rpx 20rpx;
-  background: linear-gradient(135deg, rgba(250, 140, 22, 0.05), rgba(255, 152, 0, 0.03));
-  border-radius: 12rpx;
-  border-left: 4rpx solid rgba(250, 140, 22, 0.3);
+  margin: 8rpx 24rpx 8rpx;
+  padding: 16rpx 20rpx;
+  background: linear-gradient(135deg, rgba(255, 251, 235, 0.92), rgba(255, 255, 255, 0.96));
+  border-radius: 14rpx;
+  border: 1rpx solid rgba(250, 140, 22, 0.16);
+  border-left: 5rpx solid rgba(250, 140, 22, 0.38);
+  box-shadow: 0 3rpx 14rpx rgba(146, 64, 14, 0.05);
 }
 
 .quick-tips-title {
-  font-size: 26rpx;
+  font-size: 24rpx;
   font-weight: 600;
-  color: #fa8c16;
+  color: #b45309;
   display: block;
-  margin-bottom: 8rpx;
+  margin-bottom: 6rpx;
 }
 
 .quick-tips-text {
-  font-size: 24rpx;
+  display: block;
+  font-size: 23rpx;
   color: var(--text-secondary);
   line-height: 1.6;
+  word-break: break-word;
 }
 
 /* ===== R3.52 学习提醒横幅（视觉隐藏） ===== */
@@ -1081,6 +1092,16 @@
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), var(--card-bg) 62%);
   }
 
+  .entry-card-itpass {
+    border-color: rgba(88, 166, 255, 0.18);
+    box-shadow: 0 8rpx 28rpx rgba(88, 166, 255, 0.1);
+  }
+
+  .entry-card-sg {
+    border-color: rgba(216, 180, 254, 0.18);
+    box-shadow: 0 8rpx 28rpx rgba(216, 180, 254, 0.09);
+  }
+
   .suggestion-card {
     background-color: var(--card-bg) !important;
     border-left-color: #58a6ff !important;
@@ -1151,12 +1172,18 @@
   }
 
   .quick-tips {
-    background-color: #2a1a0a !important;
-    border-left-color: #e8a040 !important;
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(255, 255, 255, 0.035)) !important;
+    border-color: rgba(251, 191, 36, 0.16) !important;
+    border-left-color: rgba(251, 191, 36, 0.5) !important;
+    box-shadow: 0 3rpx 14rpx rgba(0, 0, 0, 0.2);
   }
 
   .quick-tips-title {
     color: #e8a040 !important;
+  }
+
+  .quick-tips-text {
+    color: rgba(255, 255, 255, 0.64) !important;
   }
 
   .update-banner {

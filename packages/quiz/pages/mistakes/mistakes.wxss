@@ -74,6 +74,7 @@
   background: linear-gradient(135deg, rgba(74, 144, 217, 0.06), rgba(99, 102, 241, 0.04));
   border-radius: 12rpx;
   border-left: 4rpx solid #6366f1;
+  box-shadow: 0 3rpx 14rpx rgba(74, 144, 217, 0.05);
 }
 
 .priority-hint-icon {
@@ -631,11 +632,23 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 80rpx 40rpx 60rpx;
+  margin: 56rpx 30rpx 0;
+  padding: 68rpx 40rpx 56rpx;
+  background: linear-gradient(170deg, var(--card-bg) 0%, rgba(74, 144, 217, 0.035) 100%);
+  border: 1rpx solid rgba(74, 144, 217, 0.08);
+  border-radius: 22rpx;
+  box-shadow: 0 4rpx 18rpx rgba(15, 23, 42, 0.06);
 }
 
 .empty-icon {
-  font-size: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 104rpx;
+  height: 104rpx;
+  border-radius: 28rpx;
+  font-size: 60rpx;
+  background: linear-gradient(135deg, rgba(74, 144, 217, 0.1), rgba(99, 102, 241, 0.06));
   margin-bottom: 24rpx;
 }
 
@@ -663,15 +676,44 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #4a90d9;
+  min-height: 88rpx;
+  background: linear-gradient(135deg, #4a90d9, #6366f1);
   border-radius: 40rpx;
-  padding: 28rpx;
+  padding: 0 28rpx;
   box-shadow: 0 4rpx 16rpx rgba(74, 144, 217, 0.3);
   width: calc(100% - 120rpx);
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.go-study-btn:active {
+  transform: scale(0.97);
+  opacity: 0.9;
 }
 
 .go-study-text {
   font-size: 32rpx;
   font-weight: 600;
   color: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  .priority-hint {
+    background: linear-gradient(135deg, rgba(88, 166, 255, 0.1), rgba(255, 255, 255, 0.035));
+    border-left-color: rgba(88, 166, 255, 0.55);
+    box-shadow: 0 3rpx 14rpx rgba(0, 0, 0, 0.2);
+  }
+
+  .priority-hint-text {
+    color: rgba(255, 255, 255, 0.68);
+  }
+
+  .empty-state {
+    background: linear-gradient(170deg, rgba(255, 255, 255, 0.045), rgba(88, 166, 255, 0.045));
+    border-color: rgba(88, 166, 255, 0.12);
+    box-shadow: 0 4rpx 18rpx rgba(0, 0, 0, 0.24);
+  }
+
+  .empty-icon {
+    background: linear-gradient(135deg, rgba(88, 166, 255, 0.14), rgba(99, 102, 241, 0.08));
+  }
 }

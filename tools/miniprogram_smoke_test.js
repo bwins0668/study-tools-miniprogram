@@ -3080,9 +3080,13 @@ if (!favReviewWxss319.includes('.stats-last-saved')) {
   round319Ok = false;
 }
 
-// 9. favorite-review.wxss 空状态图标为 120rpx
-if (!favReviewWxss319.includes('font-size: 120rpx;')) {
-  fail('Round 3.19: favorite-review.wxss empty icon should be 120rpx');
+// 9. favorite-review.wxss 空状态图标保持醒目视觉处理
+var favEmptyIconPolished319 = favReviewWxss319.includes('font-size: 120rpx;') ||
+  (favReviewWxss319.includes('width: 112rpx;') &&
+    favReviewWxss319.includes('height: 112rpx;') &&
+    favReviewWxss319.includes('background: linear-gradient(135deg, rgba(232, 145, 58, 0.12)'));
+if (!favEmptyIconPolished319) {
+  fail('Round 3.19: favorite-review.wxss empty icon should keep prominent visual treatment');
   round319Ok = false;
 }
 
@@ -7704,6 +7708,9 @@ var homeWxssUiPolish = readFile('pages/home/home.wxss');
 var appWxssUiPolish = readFile('app.wxss');
 var themeJsonUiPolish = readFile('theme.json');
 var ankiWxssUiPolish = readFile('packages/glossary/pages/anki-player/anki-player.wxss');
+var quizWxssUiPolish = readFile('packages/quiz/pages/quiz/quiz.wxss');
+var mistakesWxssUiPolish = readFile('packages/quiz/pages/mistakes/mistakes.wxss');
+var favoriteReviewWxssUiPolish = readFile('packages/glossary/pages/favorite-review/favorite-review.wxss');
 
 checkUiPolish(homeWxmlUiPolish.indexOf('entry-card-anki') >= 0,
   'UI polish: Anki entry card must carry its theme class');
@@ -7755,6 +7762,34 @@ checkUiPolish(homeWxmlUiPolish.indexOf('了解工具') >= 0,
   'UI polish: Empty state shows tool intro chip');
 
 if (uiPolishOk) pass('UI polish PR visual contract smoke');
+
+// ============================================================
+// R3.125: learning experience polish visual tokens
+// ============================================================
+console.log('\n--- R3.125 learning experience polish visual tokens ---');
+var round3125Ok = true;
+function check3125(cond, msg) {
+  if (!cond) { fail(msg); round3125Ok = false; }
+}
+
+check3125(homeWxssUiPolish.indexOf('min-height: 184rpx') >= 0 &&
+  homeWxssUiPolish.indexOf('border-left: 5rpx solid rgba(250, 140, 22, 0.38)') >= 0,
+  'R3.125: home entry cards and quick tips must keep polished hierarchy');
+check3125(quizWxssUiPolish.indexOf('min-height: 88rpx') >= 0 &&
+  quizWxssUiPolish.indexOf('#86efac') >= 0 &&
+  quizWxssUiPolish.indexOf('#fca5a5') >= 0,
+  'R3.125: quiz feedback must keep touch comfort and dark contrast');
+check3125(mistakesWxssUiPolish.indexOf('.go-study-btn:active') >= 0 &&
+  mistakesWxssUiPolish.indexOf('border-radius: 22rpx') >= 0,
+  'R3.125: mistakes empty state must keep card treatment and pressed action');
+check3125(favoriteReviewWxssUiPolish.indexOf('.fav-list-card:active') >= 0 &&
+  favoriteReviewWxssUiPolish.indexOf('.go-search-btn:active') >= 0,
+  'R3.125: favorite review cards and empty actions must keep pressed feedback');
+check3125(ankiWxssUiPolish.indexOf('.empty-btn:active') >= 0 &&
+  ankiWxssUiPolish.indexOf('backdrop-filter:blur(10px)') >= 0,
+  'R3.125: Anki empty state must keep soft panel and pressed action');
+
+if (round3125Ok) pass('R3.125 learning experience polish visual tokens');
 
 // ============================================================
 // R3.123: past_exam_bank full_bank data integrity smoke
