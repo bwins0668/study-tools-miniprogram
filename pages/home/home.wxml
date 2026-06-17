@@ -174,7 +174,13 @@
       <text class="continue-empty-text">还没有学习记录</text>
       <text class="continue-empty-hint">建议先从 IT Passport 课程练习入手，也欢迎浏览术语表积累词汇</text>
       <!-- R3.7 快速开始按钮 -->
-      <view class="quick-start-btn" bindtap="quickStart">快速开始 · IT Passport 课程练习</view>
+     <view class="quick-start-btn" bindtap="quickStart">快速开始 · IT Passport 课程练习</view>
+      <!-- 空状态引导入口 -->
+      <view class="empty-guide-chips">
+        <view class="empty-chip" bindtap="goToGlossary">浏览术语表</view>
+        <view class="empty-chip" bindtap="quickStart">开始练习</view>
+        <view class="empty-chip" bindtap="goToProfile">了解工具</view>
+      </view>
     </view>
   </view>
 

@@ -782,6 +782,32 @@
   box-shadow: 0 3rpx 12rpx rgba(74, 144, 217, 0.25);
 }
 
+.empty-guide-chips {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  margin-top: 20rpx;
+  flex-wrap: wrap;
+}
+
+.empty-chip {
+  display: inline-flex;
+  align-items: center;
+  font-size: 22rpx;
+  color: var(--text-secondary, #4a5568);
+  background: linear-gradient(135deg, rgba(74, 144, 217, 0.06), rgba(99, 102, 241, 0.04));
+  border: 1rpx solid rgba(74, 144, 217, 0.14);
+  border-radius: 20rpx;
+  padding: 8rpx 20rpx;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.empty-chip:active {
+  transform: scale(0.95);
+  opacity: 0.85;
+}
+
 /* ===== R3.47 学习成就 ===== */
 .achievement-section {
   margin: 6rpx 24rpx 0;

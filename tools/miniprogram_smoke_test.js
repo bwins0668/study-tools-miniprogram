@@ -7749,6 +7749,11 @@ checkUiPolish(homeWxmlUiPolish.indexOf('开始练习') >= 0,
   'UI polish: Untouched exam cards show start-practice prompt');
 checkUiPolish(homeWxmlUiPolish.indexOf('积累词汇') >= 0,
   'UI polish: Empty state suggests glossary + practice start');
+checkUiPolish(homeWxmlUiPolish.indexOf('浏览术语表') >= 0,
+  'UI polish: Empty state shows glossary entry chip');
+checkUiPolish(homeWxmlUiPolish.indexOf('了解工具') >= 0,
+  'UI polish: Empty state shows tool intro chip');
+
 if (uiPolishOk) pass('UI polish PR visual contract smoke');
 
 // ============================================================
