@@ -286,6 +286,9 @@ Page({
       insightHint: insightHint,
       nextAction: nextAction,
       hasWrongQuestions: hasWrongQuestions,
+      activeYearId: yearId,
+      // R3.111 结果页显示年份标签
+      resultModeLabel: examTitle + ' · ' + modeLabel + yearLabel,
       // R3.43 准备答题回顾数据（包含题目文本和正确答案）
       reviewList: (function () {
         var questions = self.data.questions;
