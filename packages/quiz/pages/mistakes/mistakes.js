@@ -87,7 +87,8 @@ Page({
     searchEmpty: false,
     viewMode: 'list',
     currentReviewIndex: 0,
-    showExplanation: true
+    showExplanation: true,
+    isFlipped: false
   },
 
   onShow: function () {
@@ -261,7 +262,8 @@ Page({
     this.setData({
       viewMode: 'review',
       currentReviewIndex: 0,
-      showExplanation: true
+      showExplanation: true,
+      isFlipped: false
     });
   },
 
@@ -271,7 +273,8 @@ Page({
     if (this.data.currentReviewIndex > 0) {
       this.setData({
         currentReviewIndex: this.data.currentReviewIndex - 1,
-        showExplanation: true
+        showExplanation: true,
+        isFlipped: false
       });
     }
   },
@@ -280,14 +283,22 @@ Page({
     if (this.data.currentReviewIndex < this.data.filteredList.length - 1) {
       this.setData({
         currentReviewIndex: this.data.currentReviewIndex + 1,
-        showExplanation: true
+        showExplanation: true,
+        isFlipped: false
       });
     }
   },
 
   toggleExplanation: function () {
     this.setData({
-      showExplanation: !this.data.showExplanation
+      showExplanation: !this.data.showExplanation,
+      isFlipped: false
+    });
+  },
+
+  toggleFlip: function () {
+    this.setData({
+      isFlipped: !this.data.isFlipped
     });
   },
 
