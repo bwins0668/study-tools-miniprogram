@@ -114,13 +114,14 @@ Page({
     }
 
     if (allQuestions.length > 0) {
+      var yearTag = yearId ? ('（' + yearId + '）') : '';
       this.setData({
         exam: exam,
-        examTitle: examTitle + ' - ' + modeLabel,
+        examTitle: examTitle + ' - ' + modeLabel + yearTag,
         examBadge: examBadge,
         sourceType: sourceType,
         modeLabel: modeLabel,
-        resultModeLabel: examTitle + ' · ' + modeLabel,
+        resultModeLabel: examTitle + ' · ' + modeLabel + yearTag,
         questions: allQuestions,
         totalQuestions: allQuestions.length,
         currentQuestion: allQuestions[0],
@@ -136,7 +137,7 @@ Page({
     } else {
       this.setData({
         exam: exam,
-        examTitle: examTitle + ' - ' + modeLabel,
+        examTitle: examTitle + ' - ' + modeLabel + (yearId ? ('（' + yearId + '）') : ''),
         examBadge: examBadge,
         sourceType: sourceType,
         modeLabel: modeLabel,
