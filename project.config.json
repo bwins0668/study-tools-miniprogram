@@ -50,6 +50,38 @@
       {
         "type": "file",
         "value": "insert_test_362.js"
+      },
+      {
+        "type": "folder",
+        "value": "packages/exam"
+      },
+      {
+        "type": "folder",
+        "value": "data"
+      },
+      {
+        "type": "folder",
+        "value": "miniapp"
+      },
+      {
+        "type": "folder",
+        "value": "i18n"
+      },
+      {
+        "type": "file",
+        "value": ".gitignore"
+      },
+      {
+        "type": "file",
+        "value": "PR_BODY.md"
+      },
+      {
+        "type": "file",
+        "value": "overview-stage1.md"
+      },
+      {
+        "type": "file",
+        "value": "project.private.config.json"
       }
     ],
     "include": []

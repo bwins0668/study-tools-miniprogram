@@ -7910,8 +7910,74 @@ check3124(qsContent3124.indexOf('ä»¤') < 0 && qsContent3124.indexOf('ã®')
   'R3.124: questions.js free of common mojibake patterns');
 if (qsEncOk3124) pass('R3.124: questions.js encoding integrity');
 
+// ============================================================
+// R3.127: main package structure & exam paper navigation
+// ============================================================
+var round3127Ok = true;
+function check3127(cond, msg) { if (!cond) { fail(msg); round3127Ok = false; } }
 
-// R3.123: past_exam_bank full_bank data integrity smoke\n// ============================================================\nvar round3123Ok = true;\nfunction check3123(cond, msg) {\n  if (!cond) { fail(msg); round3123Ok = false; }\n}\n\nvar bankPath3123 = 'packages/quiz/data/past_exam_bank/full_bank.js';\nvar bank3123 = readFile(bankPath3123);\ncheck3123(bank3123.length > 5000,\n  'R3.123: full_bank.js must be >5KB, got ' + bank3123.length + ' bytes');\n\nvar bankCount3123 = (bank3123.match(/\"id\": \"/g) || []).length;\ncheck3123(bankCount3123 >= 1900,\n  'R3.123: expected >=1900 entries, got ' + bankCount3123);\n\ncheck3123(bank3123.indexOf('\u4ee4\u548c') >= 0,\n  'R3.123: must contain Reiwa kanji - encoding may be corrupted');\ncheck3123(bank3123.indexOf('\u696d\u52d9') >= 0,\n  'R3.123: must contain gyoumu - encoding may be corrupted');\ncheck3123(bank3123.indexOf('\u8457\u4f5c\u6a29') >= 0,\n  'R3.123: must contain chosakuken - encoding may be corrupted');\n\ncheck3123(bank3123.indexOf('\"yearId\": \"') >= 0,\n  'R3.123: must contain yearId field');\ncheck3123(bank3123.indexOf('\"exam\":\"itpass\"') >= 0 || bank3123.indexOf('\"exam\": \"itpass\"') >= 0,\n  'R3.123: must contain IT Passport entries');\n\nif (round3123Ok) pass('R3.123: past_exam_bank data integrity');\nconsole.log('\n========================================');
+// A. Main package / subpackage structure
+var projCfg3127 = JSON.parse(readFile('project.config.json'));
+var ignoreList3127 = (projCfg3127.packOptions && projCfg3127.packOptions.ignore) || [];
+var ignoreValues3127 = ignoreList3127.map(function (item) { return item.value; });
+
+check3127(ignoreValues3127.indexOf('tools') >= 0, 'R3.127: packOptions.ignore must include tools');
+check3127(ignoreValues3127.indexOf('docs') >= 0, 'R3.127: packOptions.ignore must include docs');
+check3127(ignoreValues3127.indexOf('scripts') >= 0, 'R3.127: packOptions.ignore must include scripts');
+check3127(ignoreValues3127.indexOf('.git') >= 0, 'R3.127: packOptions.ignore must include .git');
+check3127(ignoreValues3127.indexOf('node_modules') >= 0, 'R3.127: packOptions.ignore must include node_modules');
+check3127(ignoreValues3127.indexOf('packages/exam') >= 0, 'R3.127: packOptions.ignore must include packages/exam (unused orphan)');
+check3127(ignoreValues3127.indexOf('data') >= 0, 'R3.127: packOptions.ignore must include data (empty dir)');
+check3127(ignoreValues3127.indexOf('miniapp') >= 0, 'R3.127: packOptions.ignore must include miniapp (empty dir)');
+
+var appJson3127 = JSON.parse(readFile('app.json'));
+var subPkgs3127 = appJson3127.subpackages || [];
+var subPkgRoots3127 = subPkgs3127.map(function (sp) { return sp.root; });
+check3127(subPkgRoots3127.indexOf('packages/quiz') >= 0, 'R3.127: subpackages must include quiz');
+check3127(subPkgRoots3127.indexOf('packages/glossary') >= 0, 'R3.127: subpackages must include glossary');
+
+var mainPages3127 = appJson3127.pages || [];
+check3127(mainPages3127.indexOf('packages/quiz/pages/exam-menu/exam-menu') < 0, 'R3.127: exam-menu must NOT be in main package pages');
+check3127(mainPages3127.indexOf('packages/quiz/pages/quiz/quiz') < 0, 'R3.127: quiz must NOT be in main package pages');
+check3127(mainPages3127.indexOf('packages/glossary/pages/anki-player/anki-player') < 0, 'R3.127: anki-player must NOT be in main package pages');
+
+// B. Year paper navigation chain
+var examMenuWxml3127 = readFile('packages/quiz/pages/exam-menu/exam-menu.wxml');
+var examMenuJs3127 = readFile('packages/quiz/pages/exam-menu/exam-menu.js');
+
+check3127(examMenuWxml3127.indexOf('catchtap="goPastExamYear"') >= 0 || examMenuWxml3127.indexOf("catchtap='goPastExamYear'") >= 0,
+  'R3.127: exam-menu WXML must bind catchtap="goPastExamYear" on year chip');
+check3127(examMenuJs3127.indexOf('goPastExamYear') >= 0,
+  'R3.127: exam-menu JS must define goPastExamYear handler');
+check3127(examMenuJs3127.indexOf('wx.navigateTo') >= 0,
+  'R3.127: goPastExamYear must call wx.navigateTo');
+check3127(examMenuJs3127.indexOf('/packages/quiz/pages/quiz/quiz') >= 0,
+  'R3.127: goPastExamYear must navigate to subpackage quiz page');
+check3127(examMenuJs3127.indexOf('currentTarget.dataset') >= 0,
+  'R3.127: goPastExamYear must use currentTarget.dataset (not target.dataset)');
+
+var quizJs3127 = readFile('packages/quiz/pages/quiz/quiz.js');
+// Ensure showPracticeResult does NOT reference undefined variables
+check3127(quizJs3127.indexOf('self.data.questions') < 0,
+  'R3.127: quiz.js must not use self.data.questions (undefined self)');
+check3127(quizJs3127.indexOf('self.data.answeredList') < 0,
+  'R3.127: quiz.js must not use self.data.answeredList (undefined self)');
+check3127(quizJs3127.indexOf('activeYearId: yearId') < 0,
+  'R3.127: showPracticeResult must not reference bare yearId variable');
+check3127(quizJs3127.indexOf('yearLabel') < 0,
+  'R3.127: showPracticeResult must not reference undefined yearLabel');
+// Ensure loadPracticeQuestions saves yearId to this.data
+check3127(quizJs3127.indexOf('yearId: yearId') >= 0,
+  'R3.127: loadPracticeQuestions must save yearId to this.data');
+// Ensure quiz page is registered in app.json subpackage
+var quizSubPkg3127 = subPkgs3127.filter(function (sp) { return sp.root === 'packages/quiz'; })[0];
+check3127(quizSubPkg3127 && quizSubPkg3127.pages.indexOf('pages/quiz/quiz') >= 0,
+  'R3.127: quiz page must be registered in quiz subpackage');
+
+if (round3127Ok) pass('R3.127: main package structure & exam paper navigation');
+
+
+console.log('\n========================================');
 console.log('Passed: ' + passed);
 console.log('Failed: ' + failed);
 console.log('========================================');

@@ -48,17 +48,6 @@ Page({
   },
 
   onLoad: function (options) {
-  var that = this;
-
-  // 实时计时器（每秒更新）
-  if (this._timerInterval) clearInterval(this._timerInterval);
-  this._timerInterval = setInterval(function () {
-    if (!that.data.quizDone && that.startTime) {
-      var elapsed = Math.floor((Date.now() - that.startTime) / 1000);
-      that.setData({ formattedTime: formatTime(elapsed) });
-    }
-  }, 1000);
-
     var exam = options.exam || 'itpass';
     var sourceType = options.sourceType || 'lesson_quiz';
     var yearId = options.yearId || '';
@@ -132,7 +121,8 @@ Page({
         isCorrect: false,
         isFinished: false,
         showResult: false,
-        showFeedbackTip: false
+        showFeedbackTip: false,
+        yearId: yearId
       });
     } else {
       this.setData({
@@ -147,7 +137,8 @@ Page({
         isFinished: true,
         showResult: false,
         totalQuestions: 0,
-        showFeedbackTip: false
+        showFeedbackTip: false,
+        yearId: yearId
       });
     }
   },
@@ -286,13 +277,10 @@ Page({
       insightHint: insightHint,
       nextAction: nextAction,
       hasWrongQuestions: hasWrongQuestions,
-      activeYearId: yearId,
-      // R3.111 结果页显示年份标签
-      resultModeLabel: examTitle + ' · ' + modeLabel + yearLabel,
       // R3.43 准备答题回顾数据（包含题目文本和正确答案）
       reviewList: (function () {
-        var questions = self.data.questions;
-        var answered = self.data.answeredList;
+        var questions = this.data.questions;
+        var answered = this.data.answeredList;
         var result = [];
         for (var i = 0; i < answered.length; i++) {
           var item = answered[i];
@@ -355,7 +343,7 @@ Page({
     if (sourceType === 'wrong_only') {
       this.loadWrongQuestions();
     } else {
-      this.loadPracticeQuestions(exam, sourceType);
+      this.loadPracticeQuestions(exam, sourceType, this.data.yearId || '');
     }
   },
 
