@@ -20,7 +20,7 @@ function main() {
   var itpass = fullBank.filter(function (q) { return q.exam === 'itpass'; });
   var sg = fullBank.filter(function (q) { return q.exam === 'sg'; });
 
-  var pass = 0, fail = 0, warnings = 0;
+  var pass = 0, fail = 0;
   var failDetails = [];
 
   function check(name, condition, detail) {
@@ -28,10 +28,20 @@ function main() {
     else { fail++; failDetails.push('[FAIL] ' + name + (detail ? ': ' + detail : '')); }
   }
 
+  function countKana(text) {
+    var count = 0;
+    if (!text) return count;
+    for (var i = 0; i < text.length; i++) {
+      var code = text.charCodeAt(i);
+      if ((code >= 0x3040 && code <= 0x309F) || (code >= 0x30A0 && code <= 0x30FF)) count++;
+    }
+    return count;
+  }
+
   // 1. 覆盖率检查
   var missingZh = 0;
   fullBank.forEach(function (q) {
-    if (!explanations[q.id] || explanations[q.id].length < 20) missingZh++;
+    if (!explanations[q.id] || explanations[q.id].length < 60) missingZh++;
   });
   check('IT Passport + SG 中文解释覆盖率 100%',
     missingZh === 0, missingZh + ' 题缺失或过短');
@@ -56,43 +66,47 @@ function main() {
     check('无 HTML 残留 "' + pat + '"', count === 0, count + ' 处');
   });
 
-  // 4. 日文假名过多检查
-  var mostlyJapanese = 0;
+  // 4. 日文假名残留检查
+  var kanaResidue = 0;
   Object.values(explanations).forEach(function (text) {
-    var kana = 0;
-    for (var i = 0; i < Math.min(text.length, 80); i++) {
-      var code = text.charCodeAt(i);
-      if ((code >= 0x3040 && code <= 0x309F) || (code >= 0x30A0 && code <= 0x30FF)) kana++;
-    }
-    if (kana > 10) mostlyJapanese++;
+    if (countKana(text) > 0) kanaResidue++;
   });
-  check('日文假名过多的解释 < 5%',
-    mostlyJapanese < fullBank.length * 0.05,
-    mostlyJapanese + '/' + fullBank.length);
+  check('无日文假名残留',
+    kanaResidue === 0,
+    kanaResidue + '/' + fullBank.length);
 
   // 5. 长度检查
   var tooShort = 0;
   var lengths = Object.values(explanations).map(function (v) { return v.length; });
-  lengths.forEach(function (l) { if (l < 30) tooShort++; });
-  check('解释长度 >= 30 字符',
-    tooShort < fullBank.length * 0.02,
+  lengths.forEach(function (l) { if (l < 70) tooShort++; });
+  check('解释长度 >= 70 字符',
+    tooShort === 0,
     tooShort + ' 题过短');
 
+  var avgLen = lengths.reduce(function (a, b) { return a + b; }, 0) / lengths.length;
+  check('平均解释长度 >= 100 字符',
+    avgLen >= 100,
+    avgLen.toFixed(0) + ' 字符');
+
   // 6. RFI/RFP/SLA 特别检查
+  var acronymPattern = /\b(RFI|RFP|SLA)\b/;
   var rfpQuestions = fullBank.filter(function (q) {
-    return q.explanationZh.indexOf('RFI') >= 0 || q.explanationZh.indexOf('RFP') >= 0;
+    return acronymPattern.test([
+      q.questionZh || '',
+      q.questionJa || '',
+      q.explanationZh || '',
+      q.explanationJa || '',
+    ].join(' '));
   });
-  var rfpPass = true;
   var rfpMissing = 0;
   rfpQuestions.forEach(function (q) {
     var expl = explanations[q.id] || '';
-    if (expl.indexOf('RFI') < 0 && expl.indexOf('RFP') < 0 && expl.indexOf('SLA') < 0) {
+    if (!acronymPattern.test(expl)) {
       rfpMissing++;
     }
   });
-  // 允许最多 5 题缺失（边缘情况：RFI/RFP 在日文解释中非主题出现）
   check('RFI/RFP/SLA 题目绝大部分有真实中文解释',
-    rfpMissing <= 5,
+    rfpMissing === 0,
     rfpMissing + '/' + rfpQuestions.length + ' 缺失');
 
   // 7. 抽样输出
@@ -120,7 +134,6 @@ function main() {
   });
 
   // 统计
-  var avgLen = lengths.reduce(function (a, b) { return a + b; }, 0) / lengths.length;
   console.log('\n=== 统计 ===');
   console.log('总题数:', fullBank.length);
   console.log('IT Passport:', itpass.length, '| SG:', sg.length);

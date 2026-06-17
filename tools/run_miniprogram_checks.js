@@ -3,10 +3,11 @@
  * run_miniprogram_checks.js — One-command gate for all miniprogram maintenance checks.
  *
  * Runs in sequence:
- *   [1/4] Smoke test            (node tools/miniprogram_smoke_test.js)
- *   [2/4] Content compliance    (node tools/check_content_compliance.js)
- *   [3/4] JS syntax check       (node --check on all project .js files)
- *   [4/4] WXSS escaped newline  (scan for literal backslash+n in .wxss files)
+ *   [1/5] Smoke test            (node tools/miniprogram_smoke_test.js)
+ *   [2/5] Content compliance    (node tools/check_content_compliance.js)
+ *   [3/5] Quiz explanations     (node tools/check_quiz_explanations.js)
+ *   [4/5] JS syntax check       (node --check on all project .js files)
+ *   [5/5] WXSS escaped newline  (scan for literal backslash+n in .wxss files)
  *
  * Exit code: 0 if all pass, 1 if any step fails.
  * No external dependencies.
@@ -19,6 +20,7 @@ var fs = require('fs');
 var path = require('path');
 
 var JSON_MODE = process.argv.indexOf('--json') !== -1;
+var TOTAL_CHECKS = 5;
 
 // --- Helpers ---
 
@@ -46,10 +48,12 @@ function runStep(index, total, title, cmd, args, opts) {
   return { pass: true, title: title, elapsed: elapsed2, command: cmd + ' ' + args.join(' ') };
 }
 
-// --- [3/4] JS syntax check (inline, same logic as the one-liner) ---
+// --- JS syntax check (inline, same logic as the one-liner) ---
 
 function checkJsSyntax() {
-  log('\n[3/4] JS syntax check');
+  var index = 4;
+  var total = TOTAL_CHECKS;
+  log('\n[' + index + '/' + total + '] JS syntax check');
   log('-'.repeat(40));
   var start = Date.now();
 
@@ -88,20 +92,22 @@ function checkJsSyntax() {
 
   var elapsed = Date.now() - start;
   if (failed.length > 0) {
-    log('[3/4] JS syntax check ... FAIL (' + elapsed + ' ms)');
+    log('[' + index + '/' + total + '] JS syntax check ... FAIL (' + elapsed + ' ms)');
     log('JS syntax FAILED: ' + failed.length + ' file(s)');
     return { pass: false, title: 'JS syntax', elapsed: elapsed, command: 'node --check (inline)' };
   }
 
-  log('[3/4] JS syntax check ... PASS (' + elapsed + ' ms)');
+  log('[' + index + '/' + total + '] JS syntax check ... PASS (' + elapsed + ' ms)');
   log('JS syntax OK: ' + files.length + ' file(s)');
   return { pass: true, title: 'JS syntax', elapsed: elapsed, command: 'node --check (inline)' };
 }
 
-// --- [4/4] WXSS escaped newline guard (inline) ---
+// --- WXSS escaped newline guard (inline) ---
 
 function checkWxssEscapedNewline() {
-  log('\n[4/4] WXSS escaped newline guard');
+  var index = 5;
+  var total = TOTAL_CHECKS;
+  log('\n[' + index + '/' + total + '] WXSS escaped newline guard');
   log('-'.repeat(40));
   var start = Date.now();
 
@@ -134,7 +140,7 @@ function checkWxssEscapedNewline() {
 
   var elapsed = Date.now() - start;
   if (badFiles.length > 0) {
-    log('[4/4] WXSS escaped newline guard ... FAIL (' + elapsed + ' ms)');
+    log('[' + index + '/' + total + '] WXSS escaped newline guard ... FAIL (' + elapsed + ' ms)');
     log('WXSS literal \\n found in:');
     for (var k = 0; k < badFiles.length; k++) {
       log('  ' + badFiles[k]);
@@ -142,7 +148,7 @@ function checkWxssEscapedNewline() {
     return { pass: false, title: 'WXSS \\n guard', elapsed: elapsed, command: 'fs scan (inline)' };
   }
 
-  log('[4/4] WXSS escaped newline guard ... PASS (' + elapsed + ' ms)');
+  log('[' + index + '/' + total + '] WXSS escaped newline guard ... PASS (' + elapsed + ' ms)');
   log('WXSS escaped newline guard OK: 0 violations');
   return { pass: true, title: 'WXSS \\n guard', elapsed: elapsed, command: 'fs scan (inline)' };
 }
@@ -157,26 +163,30 @@ function main() {
   log('========================================');
   log('Node: ' + process.version);
   log('CWD:  ' + process.cwd());
-  log('Checks: 4');
+  log('Checks: ' + TOTAL_CHECKS);
   log('');
 
   var results = [];
 
-  // [1/4] Smoke test
-  var r1 = runStep(1, 4, 'Smoke test', 'node', ['tools/miniprogram_smoke_test.js']);
+  // [1/5] Smoke test
+  var r1 = runStep(1, TOTAL_CHECKS, 'Smoke test', 'node', ['tools/miniprogram_smoke_test.js']);
   results.push(r1);
 
-  // [2/4] Content compliance
-  var r2 = runStep(2, 4, 'Content compliance', 'node', ['tools/check_content_compliance.js']);
+  // [2/5] Content compliance
+  var r2 = runStep(2, TOTAL_CHECKS, 'Content compliance', 'node', ['tools/check_content_compliance.js']);
   results.push(r2);
 
-  // [3/4] JS syntax (inline)
-  var r3 = checkJsSyntax();
+  // [3/5] Quiz explanation quality
+  var r3 = runStep(3, TOTAL_CHECKS, 'Quiz explanations', 'node', ['tools/check_quiz_explanations.js']);
   results.push(r3);
 
-  // [4/4] WXSS escaped newline (inline)
-  var r4 = checkWxssEscapedNewline();
+  // [4/5] JS syntax (inline)
+  var r4 = checkJsSyntax();
   results.push(r4);
+
+  // [5/5] WXSS escaped newline (inline)
+  var r5 = checkWxssEscapedNewline();
+  results.push(r5);
 
   // Summary computation
   var totalElapsed = Date.now() - totalStart;
@@ -237,7 +247,7 @@ function main() {
   for (var k = 0; k < results.length; k++) {
     var status = results[k].pass ? 'PASS' : 'FAIL';
     var timing = ' (' + results[k].elapsed + ' ms)';
-    log('  [' + (k + 1) + '/4] ' + results[k].title + ': ' + status + timing);
+    log('  [' + (k + 1) + '/' + results.length + '] ' + results[k].title + ': ' + status + timing);
   }
 
   log('');

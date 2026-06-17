@@ -212,6 +212,21 @@ function hasJapaneseKana(text) {
   return /[\u3040-\u309F\u30A0-\u30FF]/.test(text);
 }
 
+function kanaCount(text) {
+  var count = 0;
+  if (!text) return count;
+  for (var i = 0; i < text.length; i++) {
+    var code = text.charCodeAt(i);
+    if ((code >= 0x3040 && code <= 0x309F) || (code >= 0x30A0 && code <= 0x30FF)) count++;
+  }
+  return count;
+}
+
+function uniquePush(list, value) {
+  if (!value) return;
+  if (list.indexOf(value) === -1) list.push(value);
+}
+
 function isRealChinese(text) {
   if (!text || text.length < 30) return false;
   var cjk = 0, kana = 0;
@@ -221,6 +236,96 @@ function isRealChinese(text) {
     if ((c >= 0x3040 && c <= 0x309F) || (c >= 0x30A0 && c <= 0x30FF)) kana++;
   }
   return cjk / text.length > 0.25 && kana / text.length < 0.02;
+}
+
+function normalizeChineseText(text) {
+  if (!text) return '';
+  var result = String(text);
+  var replacements = [
+    [/の説明です/g, '的说明'],
+    [/の略/g, '的简称'],
+    [/とは/g, '是指'],
+    [/と呼ばれる/g, '称为'],
+    [/に関する/g, '关于'],
+    [/として/g, '作为'],
+    [/における/g, '中的'],
+    [/に対して/g, '对'],
+    [/によって/g, '通过'],
+    [/について/g, '关于'],
+    [/である/g, ''],
+    [/です/g, ''],
+    [/ます/g, ''],
+    [/する/g, ''],
+    [/した/g, ''],
+    [/して/g, ''],
+    [/れる/g, ''],
+    [/られる/g, ''],
+    [/ない/g, '不'],
+    [/比較的/g, '比较'],
+    [/慎重派/g, '谨慎型人群'],
+    [/懐疑的/g, '持怀疑态度'],
+    [/本肢/g, '该选项'],
+    [/RFI書/g, 'RFI（信息提供请求书）'],
+    [/RFP書/g, 'RFP（提案请求书）'],
+    [/情報/g, '信息'],
+    [/製品/g, '产品'],
+    [/既存/g, '现有'],
+    [/新規/g, '新'],
+    [/市場/g, '市场'],
+    [/多角化/g, '多元化'],
+    [/帳票/g, '报表'],
+    [/書/g, '书'],
+    [/仮想/g, '虚拟'],
+    [/現実/g, '现实'],
+    [/盗聴/g, '窃听'],
+    [/開発/g, '开发'],
+    [/発注/g, '发包'],
+    [/受注/g, '承接'],
+    [/組織/g, '组织'],
+    [/選定/g, '选择'],
+    [/導入/g, '导入'],
+    [/依頼/g, '请求'],
+    [/調達/g, '采购'],
+    [/研究開発/g, '研发'],
+    [/投資/g, '投资'],
+    [/基準/g, '标准'],
+    [/所持/g, '持有'],
+    [/生体/g, '生物特征'],
+    [/知識/g, '知识'],
+    [/見込/g, '潜在'],
+    [/訪問件数/g, '访问次数'],
+    [/在庫/g, '库存'],
+    [/電気通信/g, '电信'],
+    [/基幹/g, '核心'],
+    [/拡大/g, '扩大'],
+    [/業務/g, '业务'],
+    [/要件/g, '需求'],
+    [/定義/g, '定义'],
+  ];
+  replacements.forEach(function (pair) {
+    result = result.replace(pair[0], pair[1]);
+  });
+  result = result
+    .replace(/の/g, '的')
+    .replace(/[はをがにでへも]/g, '')
+    .replace(/[ぁ-ゟ゠-ヿ]+/g, '')
+    .replace(/[「」『』“”"]/g, '')
+    .replace(/&[a-z]+;/gi, ' ')
+    .replace(/([。；;，,])\1+/g, '$1')
+    .replace(/\s{2,}/g, ' ')
+    .replace(/，。/g, '。')
+    .replace(/；。/g, '。')
+    .replace(/的的/g, '的')
+    .replace(/的是说明/g, '是说明')
+    .replace(/该选项是说明/g, '该选项描述的是')
+    .trim();
+  return result;
+}
+
+function hasJapaneseResidue(text) {
+  if (!text) return false;
+  if (kanaCount(text) > 0) return true;
+  return /製品|既存|新規|帳票|開発|発注|受注|組織|選定|導入|依頼|調達|研究開発|投資判断|所持|生体情報|知識情報|見込|訪問件数|在庫|電気通信|本肢/.test(text);
 }
 
 /**
@@ -323,7 +428,7 @@ function translateSentence(jaText) {
   // 激进剥离日文
   translated = stripJapaneseRemnants(translated);
   // 清理残余日文假名碎片
-  translated = translated.replace(/[\u3040-\u309F\u30A0-\u30FF]{3,}/g, '');
+  translated = normalizeChineseText(translated);
   translated = translated.replace(/\s{2,}/g, ' ').replace(/[。]{2,}/g, '。').trim();
   return translated;
 }
@@ -368,7 +473,7 @@ function getOptionText(q, key) {
     if (q.options[i].key === key) {
       var zh = q.options[i].textZh || '';
       // 如果中文选项仅为单字母或与日文相同，不使用
-      if (zh && zh.length > 1 && !hasJapaneseKana(zh)) return zh;
+      if (zh && zh.length > 1 && !hasJapaneseResidue(zh)) return normalizeChineseText(zh);
       return '';
     }
   }
@@ -379,25 +484,86 @@ function getOptionText(q, key) {
 function extractKeyTerms(text) {
   if (!text) return [];
   var found = [];
+  var seen = {};
   var keys = Object.keys(TERM_MAP).sort(function (a, b) { return b.length - a.length; });
   for (var i = 0; i < keys.length; i++) {
     var jp = keys[i];
     if (text.indexOf(jp) !== -1 && jp.length > 0) {
-      // 仅保留包含日文假名的术语（排除纯中文/英文键名）
-      if (/[぀-ヿ]/.test(jp)) {
-        found.push({ jp: jp, zh: TERM_MAP[jp] });
-        if (found.length >= 5) break;
+      var overlapped = found.some(function (item) {
+        return item.jp !== jp && item.jp.indexOf(jp) >= 0;
+      });
+      if (overlapped) continue;
+      var zh = TERM_MAP[jp];
+      if (zh === '帧' && text.indexOf('フレームワーク') >= 0) continue;
+      if (!seen[zh]) {
+        seen[zh] = true;
+        found.push({ jp: jp, zh: zh });
       }
+      if (found.length >= 6) break;
     }
   }
   return found;
+}
+
+function collectQuestionText(q) {
+  var optionText = '';
+  if (q.options) {
+    optionText = q.options.map(function (o) {
+      return [o.textZh || '', o.textJa || ''].join(' ');
+    }).join(' ');
+  }
+  return [
+    q.questionZh || '',
+    q.questionJa || '',
+    q.explanationZh || '',
+    q.explanationJa || '',
+    optionText,
+  ].join('\n');
+}
+
+function getFocusTerms(q, cleaned) {
+  var source = collectQuestionText(q) + '\n' + (cleaned || '');
+  var terms = [];
+
+  if (/\bRFI\b/.test(source)) uniquePush(terms, 'RFI（信息提供请求）');
+  if (/\bRFP\b/.test(source)) uniquePush(terms, 'RFP（提案请求书）');
+  if (/\bSLA\b/.test(source)) uniquePush(terms, 'SLA（服务等级协议）');
+  if (/\bISMS\b/.test(source)) uniquePush(terms, 'ISMS（信息安全管理体系）');
+  if (/\bBYOD\b/.test(source)) uniquePush(terms, 'BYOD（自带设备办公）');
+
+  extractKeyTerms(source).forEach(function (t) { uniquePush(terms, t.zh); });
+
+  return terms.slice(0, 4);
+}
+
+function getSafeOptionSummary(q, key) {
+  if (!q.options) return '';
+  for (var i = 0; i < q.options.length; i++) {
+    if (q.options[i].key !== key) continue;
+    var raw = q.options[i].textZh || q.options[i].textJa || '';
+    var summary = translateSentence(stripHtml(raw));
+    summary = normalizeChineseText(summary)
+      .replace(/[()（）]*$/g, '')
+      .trim();
+    if (!summary || hasJapaneseResidue(summary)) return '';
+    if (summary.length > 38) summary = summary.substring(0, 38);
+    return summary;
+  }
+  return '';
+}
+
+function sentence(text) {
+  var result = normalizeChineseText(text);
+  if (!result) return '';
+  result = result.replace(/[。；;，,]+$/g, '');
+  return result + '。';
 }
 
 // ========== 核心生成函数 ==========
 function generateExplanation(q) {
   var cleaned = stripHtml(q.explanationZh);
   var answer = q.answer || '';
-  var answerText = getOptionText(q, answer);
+  var answerText = getOptionText(q, answer) || getSafeOptionSummary(q, answer);
   var subZh = SUBCATEGORY_ZH[q.subcategory] || CATEGORY_ZH[q.category] || '';
 
   // 1. 如果已有真实中文，直接使用
@@ -408,15 +574,23 @@ function generateExplanation(q) {
   // 2. 解析结构
   var parsed = parseOptionExplanations(cleaned);
   var parts = [];
+  var focusTerms = getFocusTerms(q, cleaned);
+  var topic = subZh || (q.exam === 'sg' ? '信息安全管理' : 'IT基础');
 
   // 知识点标签
-  if (subZh) parts.push('【' + subZh + '】');
+  parts.push('【' + topic + '】');
 
   // 正确答案
   var correctLine = '正确答案：' + answer;
   if (answerText && answerText.length < 40) correctLine += '（' + answerText + '）';
   correctLine += '。';
   parts.push(correctLine);
+
+  if (focusTerms.length > 0) {
+    parts.push('本题考查' + focusTerms.join('、') + '的含义、目的或适用场景。');
+  } else {
+    parts.push('本题考查' + topic + '中的基础概念、流程或应用场景。');
+  }
 
   // 3. 翻译正确答案的解释，先剥离再截断
   var correctExpl = '';
@@ -426,71 +600,58 @@ function generateExplanation(q) {
     correctExpl = translateSentence(parsed.options[answer]);
   }
   if (correctExpl && correctExpl.length > 8) {
-    parts.push(correctExpl.substring(0, 120));
+    parts.push(sentence('正确选项的要点是：' + correctExpl.substring(0, 140)));
+  } else {
+    parts.push('正确选项与题干中的定义、目的、流程顺序或使用场景最一致。');
   }
 
   // 4. 引言（如果有内容，先剥离再截断）
   if (parsed.intro && parsed.intro.length > 10) {
     var introT = translateSentence(parsed.intro);
-    if (introT && introT.length > 8) parts.push(introT.substring(0, 100));
+    if (introT && introT.length > 8) parts.push(sentence('背景要点：' + introT.substring(0, 120)));
   }
 
   // 5. 关键术语补充（最多 3 个，去重）
-  var keyTerms = extractKeyTerms(cleaned);
-  if (keyTerms.length > 0) {
-    var seen = {};
-    var termLines = [];
-    keyTerms.forEach(function (t) {
-      if (seen[t.zh]) return;
-      seen[t.zh] = true;
-      // 确保 jp 包含日文假名才显示 jp=zh
-      var hasKana = /[぀-ヿ]/.test(t.jp);
-      if (!hasKana || t.jp === t.zh || t.zh.indexOf(t.jp) >= 0) {
-        termLines.push(t.zh);
-      } else {
-        termLines.push(t.jp + '=' + t.zh);
-      }
-    });
-    if (termLines.length > 0) {
-      parts.push('关键术语：' + termLines.slice(0, 3).join('；') + '。');
-    }
+  if (focusTerms.length > 0) {
+    parts.push('复习时重点区分：' + focusTerms.slice(0, 3).join('；') + '。');
   }
 
-  // 6. 其他选项简述（每个最多 30 字符）
+  // 6. 其他选项简述（每个最多 38 字符）
   var otherParts = [];
   ['A', 'B', 'C', 'D'].forEach(function (k) {
     if (k === answer) return;
-    var optText = getOptionText(q, k);
+    var optText = getOptionText(q, k) || getSafeOptionSummary(q, k);
     if (parsed.options[k]) {
       var optExpl = translateSentence(parsed.options[k]);
       if (optExpl && optExpl.length > 5) {
-        otherParts.push(k + '：' + optExpl.substring(0, 30));
+        otherParts.push(k + '：' + normalizeChineseText(optExpl).substring(0, 38));
       } else if (optText && optText.length < 25) {
-        otherParts.push(k + '（' + optText + '）不符');
+        otherParts.push(k + '偏向“' + optText + '”，与题干要求不一致');
       }
     } else if (optText && optText.length < 25) {
-      otherParts.push(k + '（' + optText + '）不符');
+      otherParts.push(k + '偏向“' + optText + '”，与题干要求不一致');
     }
   });
   if (otherParts.length > 0) {
     parts.push('其他选项：' + otherParts.join('；') + '。');
+  } else {
+    parts.push('其他选项通常混淆了相近概念、适用范围或处理顺序，排除时要回到题干问法。');
   }
 
   var result = parts.join('');
 
-  // 7. 兆底：太短则加基于题干的信息
-  if (result.length < 50) {
-    var qClean = stripHtml(q.questionZh || q.questionJa || '');
-    var qTerms = extractKeyTerms(qClean);
+  // 7. 兜底：太短则加基于题干的信息
+  if (result.length < 90) {
+    var qTerms = getFocusTerms(q, stripHtml(q.questionZh || q.questionJa || ''));
     if (qTerms.length > 0) {
-      result += '本题涉及' + qTerms.slice(0, 2).map(function (t) { return t.zh; }).join('、') + '。';
+      result += '题干关键词可以归纳为' + qTerms.slice(0, 2).join('、') + '。';
     }
-    result += '该选项最符合题干情境。';
+    result += '作答时先确认题干问的是定义、目的、效果还是操作顺序，再与各选项逐项对应。';
   }
 
   // 8. 最终清理
   result = stripJapaneseRemnants(result);
-  result = result.replace(/[\u3040-\u309F\u30A0-\u30FF]{3,}/g, '');
+  result = normalizeChineseText(result);
   result = result.replace(/<[^>]+>/g, '').replace(/&\w+;/g, ' ');
   result = result.replace(/\s{2,}/g, ' ').replace(/[。]{2,}/g, '。').trim();
   // 清理关键术语中的空键名显示（如 "=网络"）
@@ -532,7 +693,7 @@ function main() {
         var ansText = getOptionText(q, q.answer);
         expl = '【' + subZh + '】正确答案：' + q.answer +
           (ansText ? '（' + ansText + '）' : '') + '。' +
-          '该选项符合' + subZh + '相关知识要点，最契合题干描述的情境。其他选项与题意不符。';
+          '本题考查' + subZh + '相关知识点。该选项最契合题干描述的定义、目的或应用场景。其他选项与题干问法不一致。';
         stats.short++;
       }
       map[q.id] = expl;
@@ -546,7 +707,7 @@ function main() {
 
   // 写文件
   var header = '/**\n * IT Passport / SG 真题中文解释（自动生成）\n' +
-    ' * 生成时间：' + new Date().toISOString() + '\n' +
+    ' * 生成方式：离线确定性脚本 tools/generate_past_exam_zh_explanations.js\n' +
     ' * 总计：' + questions.length + ' 题（IT Passport ' + itpass.length + ', SG ' + sg.length + '）\n */\n';
   var content = header + 'module.exports = ' + JSON.stringify(map, null, 2) + ';\n';
 
@@ -565,9 +726,9 @@ function main() {
   // 中文纯度统计
   var pureZh = 0;
   Object.values(map).forEach(function (text) {
-    if (!hasJapaneseKana(text.substring(0, 80))) pureZh++;
+    if (!hasJapaneseKana(text)) pureZh++;
   });
-  console.log('[gen] Chinese-pure (first 80 chars):', pureZh + '/' + stats.total,
+  console.log('[gen] Chinese-pure:', pureZh + '/' + stats.total,
     '(' + (pureZh / stats.total * 100).toFixed(1) + '%)');
 
   // 样例输出
@@ -582,7 +743,7 @@ function main() {
   // RFI/RFP/SLA 特别检查
   console.log('\n=== RFI/RFP/SLA 检查 ===');
   questions.filter(function (q) {
-    return q.explanationZh.indexOf('RFI') >= 0 || q.explanationZh.indexOf('RFP') >= 0;
+    return /\b(RFI|RFP|SLA)\b/.test([q.explanationZh || '', q.questionZh || '', q.questionJa || ''].join(' '));
   }).slice(0, 5).forEach(function (q) {
     console.log('\n---', q.id, '---');
     console.log(map[q.id].substring(0, 350));

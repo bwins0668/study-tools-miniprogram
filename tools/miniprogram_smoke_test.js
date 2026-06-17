@@ -7311,12 +7311,15 @@ if (jsonOutput391 !== null) {
 
     // Success scenario invariants
     if (parsed391.ok === true) {
+      var checksContent391 = readFile("tools/run_miniprogram_checks.js");
+      var totalMatch391 = checksContent391.match(/var TOTAL_CHECKS = (\d+)/);
+      var expectedTotal391 = totalMatch391 ? Number(totalMatch391[1]) : parsed391.totalChecks;
       check391(parsed391.failedChecks === 0,
                'R3.91: ok=true but failedChecks=' + parsed391.failedChecks);
       check391(parsed391.passedChecks === parsed391.totalChecks,
                'R3.91: ok=true but passedChecks (' + parsed391.passedChecks + ') !== totalChecks (' + parsed391.totalChecks + ')');
-      check391(parsed391.totalChecks === 4,
-               'R3.91: ok=true but totalChecks=' + parsed391.totalChecks + ' (expected 4)');
+      check391(parsed391.totalChecks === expectedTotal391,
+               'R3.91: ok=true but totalChecks=' + parsed391.totalChecks + ' (expected ' + expectedTotal391 + ')');
     }
   }
 }
@@ -8163,12 +8166,20 @@ if (explMap3132) {
   
   // No raw HTML in explanations
   var htmlFound3132 = false;
+  var kanaFound3132 = false;
+  var totalLength3132 = 0;
   Object.keys(explMap3132).forEach(function(id) {
     var text = explMap3132[id];
     if (text.indexOf('<div') >= 0 || text.indexOf('class=') >= 0 || text.indexOf('ansbg') >= 0) htmlFound3132 = true;
+    if (/[\u3040-\u309F\u30A0-\u30FF]/.test(text)) kanaFound3132 = true;
+    totalLength3132 += text.length;
   });
   check3132(!htmlFound3132,
     'R3.132: generated explanations must not contain raw HTML');
+  check3132(!kanaFound3132,
+    'R3.132: generated explanations must not contain Japanese kana');
+  check3132(totalLength3132 / Object.keys(explMap3132).length >= 100,
+    'R3.132: generated explanations average length should stay useful');
 }
 
 // B. quiz.js loads generated explanations
@@ -8189,15 +8200,29 @@ var checkScriptContent3132 = readFile('tools/check_quiz_explanations.js');
 check3132(checkScriptContent3132.indexOf('explanations_zh') >= 0 &&
   checkScriptContent3132.indexOf('禁止词') >= 0 &&
   checkScriptContent3132.indexOf('RFI') >= 0 &&
+  checkScriptContent3132.indexOf('无日文假名残留') >= 0 &&
   checkScriptContent3132.indexOf('process.exit') >= 0,
   'R3.132: tools/check_quiz_explanations.js must contain valid checks');
 
-// E. quiz.wxml uses user-select on review-item-question
+// E. package audit script exists and marks itself as auxiliary
+check3132(fileExists('tools/audit_miniprogram_package_size.js'),
+  'R3.132: tools/audit_miniprogram_package_size.js must exist');
+var auditScript3132 = readFile('tools/audit_miniprogram_package_size.js');
+check3132(auditScript3132.indexOf('auxiliary audit') >= 0 &&
+  auditScript3132.indexOf('main-package candidate') >= 0,
+  'R3.132: package audit script must describe auxiliary main package candidates');
+
+// F. one-command gate should run the stricter explanation quality check
+var runChecks3132 = readFile('tools/run_miniprogram_checks.js');
+check3132(runChecks3132.indexOf('tools/check_quiz_explanations.js') >= 0,
+  'R3.132: run_miniprogram_checks.js must run quiz explanation quality check');
+
+// G. quiz.wxml uses user-select on review-item-question
 var quizWxml3132 = readFile('packages/quiz/pages/quiz/quiz.wxml');
 check3132(quizWxml3132.indexOf('review-item-question" user-select') >= 0,
   'R3.132: review-item-question must have user-select="true"');
 
-// F. Main package: enhance and postcss disabled
+// H. Main package: enhance and postcss disabled
 var projCfg3132 = JSON.parse(readFile('project.config.json'));
 check3132(projCfg3132.setting && projCfg3132.setting.enhance === false,
   'R3.132: enhance should be false to reduce main package size');
