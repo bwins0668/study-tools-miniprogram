@@ -3,6 +3,72 @@ var questionsModule = require('../../data/questions');
 var pastExamFull = require('../../data/past_exam_bank/full_bank');
 var storage = require('../../../../utils/storage');
 
+// === P0-3: HTML 清洗 + 日文检测 + 中文解析 fallback ===
+function stripHtmlTags(html) {
+  if (!html || typeof html !== 'string') return '';
+  return html
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/p>/gi, '\n')
+    .replace(/<\/div>/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+function hasJapaneseKana(text) {
+  if (!text) return false;
+  return /[\u3040-\u309F\u30A0-\u30FF]/.test(text);
+}
+
+function isMostlyJapanese(text) {
+  if (!text || text.length < 10) return false;
+  var kanaCount = 0;
+  for (var i = 0; i < text.length; i++) {
+    var code = text.charCodeAt(i);
+    if ((code >= 0x3040 && code <= 0x309F) || (code >= 0x30A0 && code <= 0x30FF) || (code >= 0x4E00 && code <= 0x9FFF)) {
+      kanaCount++;
+    }
+  }
+  return kanaCount / text.length > 0.3;
+}
+
+function formatExplanation(raw) {
+  var cleaned = stripHtmlTags(raw);
+  if (!cleaned || cleaned.length < 5) return { clean: '', isJapanese: true };
+  var isJa = hasJapaneseKana(cleaned) || isMostlyJapanese(cleaned);
+  return { clean: cleaned, isJapanese: isJa };
+}
+
+function processQuestionForDisplay(q) {
+  var result = {};
+  for (var key in q) { result[key] = q[key]; }
+
+  // 清洗题干 HTML
+  if (q.questionZh) result.questionZhClean = stripHtmlTags(q.questionZh);
+  if (q.questionJa) result.questionJaClean = stripHtmlTags(q.questionJa);
+
+  // 处理中文解析
+  var zhResult = formatExplanation(q.explanationZh);
+  if (zhResult.isJapanese || !zhResult.clean) {
+    var answerText = q.answer || '';
+    result.explanationZhClean = '中文解析待补充。正确答案：' + answerText + '。';
+  } else {
+    result.explanationZhClean = zhResult.clean;
+  }
+
+  // 处理日文解析
+  var jaResult = formatExplanation(q.explanationJa);
+  result.explanationJaClean = jaResult.clean;
+
+  return result;
+}
+
 Page({
   data: {
     exam: '',
@@ -103,6 +169,8 @@ Page({
     }
 
     if (allQuestions.length > 0) {
+      // P0-3: 清洗所有题目的 HTML 并生成中文解析 fallback
+      var processed = allQuestions.map(processQuestionForDisplay);
       var yearTag = yearId ? ('（' + yearId + '）') : '';
       this.setData({
         exam: exam,
@@ -111,11 +179,11 @@ Page({
         sourceType: sourceType,
         modeLabel: modeLabel,
         resultModeLabel: examTitle + ' · ' + modeLabel + yearTag,
-        questions: allQuestions,
-        totalQuestions: allQuestions.length,
-        currentQuestion: allQuestions[0],
+        questions: processed,
+        totalQuestions: processed.length,
+        currentQuestion: processed[0],
         currentIndex: 0,
-        progressPercent: Math.round(1 / allQuestions.length * 100) || 0,
+        progressPercent: Math.round(1 / processed.length * 100) || 0,
         selectedAnswer: '',
         hasAnswered: false,
         isCorrect: false,
@@ -292,13 +360,13 @@ Page({
             }
           }
           if (question) {
+            var qClean = processQuestionForDisplay(question);
             result.push({
               questionId: item.questionId,
               selectedAnswer: item.selectedAnswer,
               isCorrect: item.isCorrect,
-              questionZh: question.questionZh || '',
+              questionZh: qClean.questionZhClean || question.questionZh || '',
               correctAnswer: question.answer || '',
-              // R3.48 添加错题解析
               hint: question.shared_hint || ''
             });
           }
@@ -386,6 +454,7 @@ Page({
     }
 
     if (matched.length > 0) {
+      var processed = matched.map(processQuestionForDisplay);
       this.setData({
         exam: 'wrong_only',
         examTitle: '错题练习',
@@ -393,9 +462,9 @@ Page({
         sourceType: 'wrong_only',
         modeLabel: '错题重练',
         resultModeLabel: '错题练习 · 错题重练',
-        questions: matched,
-        totalQuestions: matched.length,
-        currentQuestion: matched[0],
+        questions: processed,
+        totalQuestions: processed.length,
+        currentQuestion: processed[0],
         currentIndex: 0,
         progressPercent: Math.round(1 / matched.length * 100) || 0,
         selectedAnswer: '',

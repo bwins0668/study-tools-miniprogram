@@ -88,6 +88,10 @@
         "value": "project.miniapp.json"
       },
       {
+        "type": "file",
+        "value": "app.miniapp.json"
+      },
+      {
         "type": "folder",
         "value": ".playwright-cli"
       }

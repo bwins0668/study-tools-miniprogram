@@ -65,7 +65,6 @@
     ]
   },
   "style": "v2",
-  "componentFramework": "glass-easel",
   "preloadRule": {
     "pages/home/home": {
       "packages": [

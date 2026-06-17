@@ -29,8 +29,8 @@
 
   <block wx:if="{{!isFinished && currentQuestion}}">
     <view class="card question-card">
-      <text class="question-zh">{{currentQuestion.questionZh}}</text>
-      <text class="question-ja">{{currentQuestion.questionJa}}</text>
+      <text class="question-zh" user-select="true">{{currentQuestion.questionZhClean || currentQuestion.questionZh}}</text>
+      <text class="question-ja" user-select="true">{{currentQuestion.questionJaClean || currentQuestion.questionJa}}</text>
       <view class="question-progress-row">
         <text class="question-number">第 {{currentIndex + 1}} / {{totalQuestions}} 题</text>
       </view>
@@ -54,7 +54,7 @@
           <text class="hint-btn-text">{{showHint ? '隐藏提示' : '查看提示'}}</text>
         </view>
         <view class="hint-content" wx:if="{{showHint}}">
-          <text class="hint-text">{{currentQuestion.shared_hint}}</text>
+          <text class="hint-text" user-select="true">{{currentQuestion.shared_hint}}</text>
         </view>
       </view>
     </view>
@@ -69,8 +69,8 @@
       >
         <view class="option-key">{{item.key}}</view>
         <view class="option-content">
-          <text class="option-zh">{{item.textZh}}</text>
-          <text class="option-ja">{{item.textJa}}</text>
+          <text class="option-zh" user-select="true">{{item.textZh}}</text>
+          <text class="option-ja" user-select="true">{{item.textJa}}</text>
         </view>
       </view>
     </view>
@@ -90,9 +90,9 @@
           <text class="warning-text">当前为通用说明，中文解释待补充。</text>
         </view>
         <text class="explanation-title">中文解释</text>
-        <text class="explanation-body">{{currentQuestion.explanationZh}}</text>
-        <text class="explanation-title">日文解释</text>
-        <text class="explanation-body">{{currentQuestion.explanationJa}}</text>
+        <view class="explanation-body" user-select="true">{{currentQuestion.explanationZhClean}}</view>
+        <text class="explanation-title">日文原文</text>
+        <view class="explanation-body" user-select="true">{{currentQuestion.explanationJaClean}}</view>
       </view>
 
       <view class="next-btn" bindtap="nextQuestion">

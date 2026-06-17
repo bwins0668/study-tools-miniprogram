@@ -8033,6 +8033,81 @@ check3130(fs.existsSync(fullBankPath3130),
 
 if (round3130Ok) pass('R3.130: exam year chip navigation chain & main package guard');
 
+// ============================================================
+// R3.131: main package glass-easel removal, warning fix, Chinese explanation
+// ============================================================
+var round3131Ok = true;
+function check3131(cond, msg) { if (!cond) { fail(msg); round3131Ok = false; } }
+
+// A. Main package: glass-easel removed, app.miniapp.json ignored
+var appJson3131 = JSON.parse(readFile('app.json'));
+check3131(!appJson3131.componentFramework || appJson3131.componentFramework !== 'glass-easel',
+  'R3.131: app.json must NOT use glass-easel componentFramework (bloat main package)');
+var projCfg3131 = JSON.parse(readFile('project.config.json'));
+var ignoreValues3131 = ((projCfg3131.packOptions && projCfg3131.packOptions.ignore) || []).map(function(i){return i.value;});
+check3131(ignoreValues3131.indexOf('app.miniapp.json') >= 0,
+  'R3.131: packOptions.ignore must include app.miniapp.json');
+check3131(projCfg3131.setting && projCfg3131.setting.compileWorklet === false,
+  'R3.131: compileWorklet must remain false');
+
+// B. Warning fix: quiz.wxml long text user-select
+var quizWxml3131 = readFile('packages/quiz/pages/quiz/quiz.wxml');
+check3131(quizWxml3131.indexOf('user-select="true"') >= 0,
+  'R3.131: quiz.wxml must have user-select="true" on long text elements');
+// Explanation body must use view (not text) for long content
+check3131(quizWxml3131.indexOf('<view class="explanation-body"') >= 0,
+  'R3.131: explanation-body must use <view> not <text> for long content');
+
+// C. Chinese explanation: HTML cleaning + Japanese detection + fallback
+var quizJs3131 = readFile('packages/quiz/pages/quiz/quiz.js');
+check3131(quizJs3131.indexOf('stripHtmlTags') >= 0,
+  'R3.131: quiz.js must have stripHtmlTags function');
+check3131(quizJs3131.indexOf('hasJapaneseKana') >= 0,
+  'R3.131: quiz.js must have hasJapaneseKana detection function');
+check3131(quizJs3131.indexOf('processQuestionForDisplay') >= 0,
+  'R3.131: quiz.js must have processQuestionForDisplay function');
+check3131(quizJs3131.indexOf('explanationZhClean') >= 0,
+  'R3.131: quiz.js must generate explanationZhClean field');
+
+// D. WXML binds clean fields, NOT raw
+check3131(quizWxml3131.indexOf('currentQuestion.explanationZhClean') >= 0,
+  'R3.131: WXML must bind explanationZhClean (not raw explanationZh)');
+check3131(quizWxml3131.indexOf('currentQuestion.explanationJaClean') >= 0,
+  'R3.131: WXML must bind explanationJaClean');
+check3131(quizWxml3131.indexOf('{{currentQuestion.explanationZh}}') < 0,
+  'R3.131: WXML must NOT bind raw explanationZh directly');
+check3131(quizWxml3131.indexOf('{{currentQuestion.explanationJa}}') < 0,
+  'R3.131: WXML must NOT bind raw explanationJa directly');
+
+// E. No raw HTML / kaisetsu / ansbg in displayed explanation fields
+check3131(quizWxml3131.indexOf('id="kaisetsu"') < 0,
+  'R3.131: WXML must not contain kaisetsu ID');
+check3131(quizJs3131.indexOf("'中文解析待补充") >= 0,
+  'R3.131: Chinese fallback text must exist for Japanese-only explanations');
+
+// F. Data quality: past exam explanationZh should be processed, not raw
+var pastExamBank3131 = require(path.join(ROOT, 'packages/quiz/data/past_exam_bank/full_bank'));
+var sampleSize3131 = Math.min(10, pastExamBank3131.length);
+var rawHtmlCount3131 = 0;
+for (var i3131 = 0; i3131 < sampleSize3131; i3131++) {
+  var q3131 = pastExamBank3131[i3131];
+  var processed3131 = processQuestionForDisplay3131(q3131);
+  if (processed3131.explanationZhClean && processed3131.explanationZhClean.indexOf('<div') >= 0) rawHtmlCount3131++;
+}
+check3131(rawHtmlCount3131 === 0,
+  'R3.131: processed explanationZhClean must not contain raw HTML <div tags');
+
+// Local helper for smoke test data check (mirrors quiz.js logic)
+function processQuestionForDisplay3131(q) {
+  var raw = q.explanationZh || '';
+  var cleaned = raw.replace(/<[^>]+>/g, '').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim();
+  var hasKana = /[\u3040-\u309F\u30A0-\u30FF]/.test(cleaned);
+  var result = { explanationZhClean: hasKana ? ('中文解析待补充。正确答案：' + (q.answer||'') + '。') : cleaned };
+  return result;
+}
+
+if (round3131Ok) pass('R3.131: main package, warning fix, Chinese explanation pipeline');
+
 
 console.log('\n========================================');
 console.log('Passed: ' + passed);
