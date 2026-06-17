@@ -24,7 +24,7 @@
       </view>
       <view class="anki-info-block" wx:if="{{selectedCategory !== 'all'}}">
         <text class="anki-info-label">分类</text>
-        <text class="anki-info-value anki-info-category">{{selectedCategory}}</text>
+        <text class="anki-info-value anki-info-category">{{selectedCategoryLabel}}</text>
       </view>
       <view class="anki-filter-btn" bindtap="toggleFilter" wx:if="{{dataSource === 'glossary'}}">
         <text class="anki-filter-icon">{{showFilter ? '✕' : '☰'}}</text>
@@ -37,8 +37,8 @@
       <scroll-view class="anki-filter-scroll" scroll-x enhanced show-scrollbar="{{false}}">
         <view class="anki-filter-tag {{selectedCategory === 'all' ? 'anki-filter-tag-active' : ''}}"
           data-category="all" bindtap="selectCategory"><text>全部</text></view>
-        <view wx:for="{{categories}}" wx:key="*this" class="anki-filter-tag {{selectedCategory === item ? 'anki-filter-tag-active' : ''}}"
-          data-category="{{item}}" bindtap="selectCategory"><text>{{item}}</text></view>
+        <view wx:for="{{categories}}" wx:key="key" class="anki-filter-tag {{selectedCategory === item.key ? 'anki-filter-tag-active' : ''}}"
+          data-category="{{item.key}}" bindtap="selectCategory"><text>{{item.label}}</text></view>
       </scroll-view>
     </view>
   </view>
@@ -49,7 +49,7 @@
         <!-- 正面：记忆卡 -->
         <view class="card-face card-front">
           <view class="card-front-top">
-            <text class="card-category-tag" wx:if="{{currentTerm.category}}">{{currentTerm.category}}</text>
+            <text class="card-category-tag" wx:if="{{currentTerm.category}}">{{currentTerm.categoryLabel}}</text>
             <text class="card-index-badge">{{currentIndex + 1}}/{{totalCount}}</text>
           </view>
           <view class="card-front-center">

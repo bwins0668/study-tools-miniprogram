@@ -77,7 +77,7 @@ page{overflow:hidden}
 .anki-filter-icon{font-size:28rpx;color:#8bb4d8}
 .anki-filter-bar{margin-top:8rpx;padding:8rpx 0 4rpx;border-top:1rpx solid rgba(255,255,255,0.08)}
 .anki-filter-scroll{white-space:nowrap;width:100%}
-.anki-filter-tag{display:inline-flex;align-items:center;justify-content:center;padding:8rpx 20rpx;border-radius:20rpx;background-color:rgba(255,255,255,0.06);margin-right:10rpx;font-size:22rpx;color:rgba(255,255,255,0.6);flex-shrink:0;transition:all 0.15s}
+.anki-filter-tag{display:inline-flex;align-items:center;justify-content:center;min-height:44rpx;padding:8rpx 22rpx;border-radius:22rpx;background-color:rgba(255,255,255,0.06);margin-right:10rpx;font-size:23rpx;color:rgba(255,255,255,0.68);flex-shrink:0;transition:all 0.15s;box-sizing:border-box;white-space:nowrap}
 .anki-filter-tag:active{transform:scale(0.95)}
 .anki-filter-tag-active{background:linear-gradient(135deg,#4a90d9,#36d1dc);color:#fff;font-weight:600;box-shadow:0 2rpx 8rpx rgba(74,144,217,0.3)}
 
@@ -136,7 +136,7 @@ page{overflow:hidden}
   }
   .anki-filter-tag {
     background-color: rgba(255, 255, 255, 0.04);
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.62);
   }
   .card-front {
     background: linear-gradient(170deg, var(--card-bg) 0%, #1e2840 60%, #1a2540 100%);

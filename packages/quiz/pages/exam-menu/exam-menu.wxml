@@ -106,7 +106,7 @@
             wx:for="{{pastExamList}}"
             wx:key="yearId"
             data-yearId="{{item.yearId}}"
-            bindtap="goPastExamYear"
+            catchtap="goPastExamYear"
           >
             <text class="past-exam-year-text">{{item.year}}</text>
             <text class="past-exam-year-count">{{item.count}}题</text>

@@ -7792,6 +7792,81 @@ check3125(ankiWxssUiPolish.indexOf('.empty-btn:active') >= 0 &&
 if (round3125Ok) pass('R3.125 learning experience polish visual tokens');
 
 // ============================================================
+// R3.126: package ignore, flashcard entry, localized categories
+// ============================================================
+console.log('\n--- R3.126 package and flashcard usability fixes ---');
+var round3126Ok = true;
+function check3126(cond, msg) {
+  if (!cond) { fail(msg); round3126Ok = false; }
+}
+
+var projectConfig3126 = JSON.parse(readFile('project.config.json'));
+var ignore3126 = (projectConfig3126.packOptions && projectConfig3126.packOptions.ignore) || [];
+function hasIgnore3126(type, value) {
+  return ignore3126.some(function (item) {
+    return item && item.type === type && item.value === value;
+  });
+}
+['tools', '.workbuddy', 'docs', 'scripts', '.git', '.github', 'node_modules'].forEach(function (folder) {
+  check3126(hasIgnore3126('folder', folder), 'R3.126: project.config.json must ignore non-runtime folder ' + folder);
+});
+check3126(hasIgnore3126('suffix', '.md'), 'R3.126: project.config.json must ignore markdown docs');
+check3126(hasIgnore3126('file', 'package.json') && hasIgnore3126('file', 'package-lock.json'),
+  'R3.126: project.config.json must ignore npm metadata files');
+
+var glossaryWxml3126 = readFile('pages/glossary/glossary.wxml');
+var glossaryJs3126 = readFile('pages/glossary/glossary.js');
+function isRegisteredPage3126(targetUrl) {
+  var target = targetUrl.replace(/^\//, '').split('?')[0];
+  if ((appJson.pages || []).indexOf(target) >= 0) return true;
+  var pkgs = appJson.subpackages || [];
+  for (var i = 0; i < pkgs.length; i++) {
+    var root = (pkgs[i].root || '').replace(/\/$/, '');
+    if (target.indexOf(root + '/') !== 0) continue;
+    var subPath = target.slice(root.length + 1);
+    if ((pkgs[i].pages || []).indexOf(subPath) >= 0) return true;
+  }
+  return false;
+}
+var ankiHandlerMatch3126 = glossaryJs3126.match(/goToAnkiPlayer:\s*function\s*\([^)]*\)\s*{[\s\S]*?url:\s*['"]([^'"]+)['"]/);
+var ankiTarget3126 = ankiHandlerMatch3126 && ankiHandlerMatch3126[1];
+check3126(glossaryWxml3126.indexOf('闪卡记忆') >= 0 &&
+  glossaryWxml3126.indexOf('bindtap="goToAnkiPlayer"') >= 0,
+  'R3.126: glossary flashcard entry must exist and bind goToAnkiPlayer');
+check3126(!!ankiTarget3126 && isRegisteredPage3126(ankiTarget3126) &&
+  fileExists(ankiTarget3126.replace(/^\//, '').split('?')[0] + '.wxml'),
+  'R3.126: goToAnkiPlayer target must be registered and backed by a page file');
+
+var ankiJs3126 = readFile('packages/glossary/pages/anki-player/anki-player.js');
+var ankiWxml3126 = readFile('packages/glossary/pages/anki-player/anki-player.wxml');
+var ankiWxss3126 = readFile('packages/glossary/pages/anki-player/anki-player.wxss');
+['algorithm: "算法"', 'automation: "自动化"', 'business: "业务"', 'cloud: "云计算"', 'database: "数据库"'].forEach(function (mapping) {
+  check3126(ankiJs3126.indexOf(mapping) >= 0, 'R3.126: anki category mapping missing ' + mapping);
+});
+check3126(ankiJs3126.indexOf('key: key, label: getCategoryLabel(key)') >= 0,
+  'R3.126: anki category chips must carry key and label');
+check3126(ankiWxml3126.indexOf('selectedCategory === item.key') >= 0 &&
+  ankiWxml3126.indexOf('data-category="{{item.key}}"') >= 0 &&
+  ankiWxml3126.indexOf('{{item.label}}') >= 0,
+  'R3.126: anki filter must display label while filtering by key');
+check3126(ankiWxml3126.indexOf('selectedCategoryLabel') >= 0 &&
+  ankiWxml3126.indexOf('{{currentTerm.categoryLabel}}') >= 0,
+  'R3.126: anki header and card must show localized category labels');
+check3126(ankiWxss3126.indexOf('min-height:44rpx') >= 0 && ankiWxss3126.indexOf('white-space:nowrap') >= 0,
+  'R3.126: anki category chips must keep readable sizing');
+
+var examMenuWxml3126 = readFile('packages/quiz/pages/exam-menu/exam-menu.wxml');
+var examMenuWxss3126 = readFile('packages/quiz/pages/exam-menu/exam-menu.wxss');
+check3126(examMenuWxml3126.indexOf('catchtap="goPastExamYear"') >= 0,
+  'R3.126: past exam year chips should not bubble into card toggle');
+check3126(examMenuWxss3126.indexOf('.past-exam-year-count') >= 0 &&
+  examMenuWxss3126.indexOf('min-width: 56rpx') >= 0 &&
+  examMenuWxss3126.indexOf('background-color: rgba(245, 158, 11, 0.12)') >= 0,
+  'R3.126: past exam year count must keep badge treatment');
+
+if (round3126Ok) pass('R3.126 package and flashcard usability fixes');
+
+// ============================================================
 // R3.123: past_exam_bank full_bank data integrity smoke
 // ============================================================
 var round3123Ok = true;

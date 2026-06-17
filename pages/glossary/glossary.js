@@ -23,6 +23,12 @@ Page({
     });
   },
 
+  goToAnkiPlayer: function () {
+    wx.navigateTo({
+      url: '/packages/glossary/pages/anki-player/anki-player?from=glossary'
+    });
+  },
+
   // R3.54 随机术语：跳转到术语搜索页，并触发随机筛选
   goToRandomTerm: function () {
     wx.navigateTo({
