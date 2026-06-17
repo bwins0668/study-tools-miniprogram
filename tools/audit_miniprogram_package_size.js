@@ -1,10 +1,14 @@
 #!/usr/bin/env node
 /**
  * audit_miniprogram_package_size.js
- * 只读审计微信小程序主包候选文件与大文件分布。
+ * DevTools-like auxiliary audit for local miniprogram package sizes.
  *
- * 说明：这里的 main-package candidate 是基于 app.json / subpackages /
- * packOptions.ignore 的近似估算，不等同于微信开发者工具编译后的真实包体积。
+ * This estimates:
+ * - main-package candidate: files outside every app.json subpackage root
+ * - each declared subpackage root
+ *
+ * It intentionally counts non-subpackage root files so generated backups and
+ * local tooling cannot silently inflate the package footprint.
  */
 
 'use strict';
@@ -15,26 +19,29 @@ var path = require('path');
 var ROOT = path.resolve(__dirname, '..');
 var ONE_KB = 1024;
 var ONE_MB = 1024 * 1024;
+var MAIN_WARN = 1.4 * ONE_MB;
+var MAIN_FAIL = 1.5 * ONE_MB;
+var PACKAGE_WARN = 1.5 * ONE_MB;
+var PACKAGE_FAIL = 1.8 * ONE_MB;
+var HARD_LIMIT = 2 * ONE_MB;
 
 function toRel(file) {
   return path.relative(ROOT, file).replace(/\\/g, '/');
 }
 
-function readText(rel) {
-  return fs.readFileSync(path.join(ROOT, rel), 'utf8');
-}
-
-function readJson(rel, fallback) {
-  try {
-    return JSON.parse(readText(rel));
-  } catch (e) {
-    return fallback || {};
-  }
+function readJson(rel) {
+  return JSON.parse(fs.readFileSync(path.join(ROOT, rel), 'utf8'));
 }
 
 function formatSize(bytes) {
   if (bytes >= ONE_MB) return (bytes / ONE_MB).toFixed(2) + ' MB';
   return (bytes / ONE_KB).toFixed(1) + ' KB';
+}
+
+function isSkippedRel(rel) {
+  return rel === '.git' || rel.indexOf('.git/') === 0 ||
+    rel === '.workbuddy' || rel.indexOf('.workbuddy/') === 0 ||
+    rel === 'node_modules' || rel.indexOf('node_modules/') === 0;
 }
 
 function walk(dir, files) {
@@ -45,232 +52,142 @@ function walk(dir, files) {
   } catch (e) {
     return files;
   }
-
-  for (var i = 0; i < entries.length; i++) {
-    var name = entries[i];
+  entries.forEach(function (name) {
     var full = path.join(dir, name);
     var rel = toRel(full);
-    if (rel === '.git' || rel.indexOf('.git/') === 0) continue;
+    if (isSkippedRel(rel)) return;
     var stat;
     try {
       stat = fs.statSync(full);
     } catch (e) {
-      continue;
+      return;
     }
     if (stat.isDirectory()) {
       walk(full, files);
     } else if (stat.isFile()) {
       files.push({ rel: rel, abs: full, size: stat.size });
     }
-  }
+  });
   return files;
 }
 
-function normalizeRuleValue(value) {
-  return String(value || '').replace(/\\/g, '/').replace(/^\/+/, '').replace(/\/+$/, '');
+function sum(files) {
+  return files.reduce(function (total, file) { return total + file.size; }, 0);
 }
 
-function createIgnoreMatcher(packOptions) {
-  var rules = (packOptions && packOptions.ignore) || [];
-  return function isIgnored(rel) {
-    for (var i = 0; i < rules.length; i++) {
-      var rule = rules[i] || {};
-      var type = rule.type;
-      var value = normalizeRuleValue(rule.value);
-      if (!value) continue;
-      if (type === 'folder' && (rel === value || rel.indexOf(value + '/') === 0)) return true;
-      if (type === 'file' && rel === value) return true;
-      if (type === 'suffix' && rel.endsWith(value)) return true;
-      if (type === 'prefix' && rel.indexOf(value) === 0) return true;
-    }
-    return false;
-  };
+function topFiles(files, limit) {
+  return files.slice().sort(function (a, b) { return b.size - a.size; }).slice(0, limit);
 }
 
-function sumSize(files) {
-  return files.reduce(function (sum, item) { return sum + item.size; }, 0);
+function isInsideRoot(rel, root) {
+  return rel === root || rel.indexOf(root + '/') === 0;
 }
 
-function topFiles(files, count) {
-  return files.slice().sort(function (a, b) { return b.size - a.size; }).slice(0, count);
-}
-
-function printFiles(title, files, count) {
+function printTop(title, files, limit) {
   console.log('\n' + title);
-  topFiles(files, count || 20).forEach(function (item, index) {
-    console.log(String(index + 1).padStart(2, ' ') + '. ' + formatSize(item.size).padStart(9, ' ') + '  ' + item.rel);
-  });
-  if (files.length === 0) console.log('  (none)');
-}
-
-function addFile(set, rel) {
-  if (!rel) return;
-  rel = rel.replace(/\\/g, '/').replace(/^\/+/, '');
-  set[rel] = true;
-}
-
-function resolveWithExt(fromRel, request) {
-  if (!request || request.charAt(0) !== '.') return null;
-  var base = path.normalize(path.join(path.dirname(fromRel), request)).replace(/\\/g, '/');
-  var candidates = [base, base + '.js', base + '.json', base + '.wxml', base + '.wxss', base + '.png', base + '.jpg'];
-  for (var i = 0; i < candidates.length; i++) {
-    if (fs.existsSync(path.join(ROOT, candidates[i]))) return candidates[i];
+  var top = topFiles(files, limit || 12);
+  if (top.length === 0) {
+    console.log('  (none)');
+    return;
   }
-  return null;
-}
-
-function crawlReferencedMainFiles(appJson) {
-  var seen = {};
-  var queue = [];
-
-  function enqueue(rel) {
-    if (!rel || seen[rel]) return;
-    seen[rel] = true;
-    queue.push(rel);
-  }
-
-  ['app.js', 'app.json', 'app.wxss', 'theme.json', 'sitemap.json'].forEach(enqueue);
-  (appJson.pages || []).forEach(function (page) {
-    ['.js', '.json', '.wxml', '.wxss'].forEach(function (ext) { enqueue(page + ext); });
+  top.forEach(function (file, index) {
+    console.log(String(index + 1).padStart(2, ' ') + '. ' + formatSize(file.size).padStart(9, ' ') + '  ' + file.rel);
   });
-
-  var tabItems = appJson.tabBar && appJson.tabBar.list ? appJson.tabBar.list : [];
-  tabItems.forEach(function (item) {
-    enqueue(item.iconPath);
-    enqueue(item.selectedIconPath);
-  });
-
-  while (queue.length > 0) {
-    var rel = queue.shift();
-    var abs = path.join(ROOT, rel);
-    if (!fs.existsSync(abs)) continue;
-    var ext = path.extname(rel);
-    var text = '';
-    try {
-      text = fs.readFileSync(abs, 'utf8');
-    } catch (e) {
-      continue;
-    }
-
-    if (ext === '.js') {
-      var requireRe = /require\(['"]([^'"]+)['"]\)|from\s+['"]([^'"]+)['"]/g;
-      var match;
-      while ((match = requireRe.exec(text)) !== null) {
-        enqueue(resolveWithExt(rel, match[1] || match[2]));
-      }
-    } else if (ext === '.wxss') {
-      var importRe = /@import\s+['"]([^'"]+)['"]/g;
-      var cssMatch;
-      while ((cssMatch = importRe.exec(text)) !== null) {
-        enqueue(resolveWithExt(rel, cssMatch[1]));
-      }
-    } else if (ext === '.wxml') {
-      var srcRe = /\s(?:src|icon|image)=["']([^"']+)["']/g;
-      var srcMatch;
-      while ((srcMatch = srcRe.exec(text)) !== null) {
-        enqueue(resolveWithExt(rel, srcMatch[1]));
-      }
-    } else if (ext === '.json') {
-      try {
-        var json = JSON.parse(text);
-        var components = json.usingComponents || {};
-        Object.keys(components).forEach(function (key) {
-          enqueue(resolveWithExt(rel, components[key]));
-        });
-      } catch (e) {}
-    }
-  }
-
-  return seen;
 }
 
 function main() {
-  var projectConfig = readJson('project.config.json', {});
-  var appJson = readJson('app.json', {});
-  var subpackageRoots = (appJson.subpackages || []).map(function (pkg) {
-    return normalizeRuleValue(pkg.root);
-  }).filter(Boolean);
-  var isIgnored = createIgnoreMatcher(projectConfig.packOptions || {});
-  var referenced = crawlReferencedMainFiles(appJson);
+  var appJson = readJson('app.json');
+  var subpackages = (appJson.subpackages || []).map(function (pkg) {
+    return {
+      root: String(pkg.root || '').replace(/\\/g, '/').replace(/\/+$/, ''),
+      name: pkg.name || ''
+    };
+  }).filter(function (pkg) { return pkg.root; });
 
   var allFiles = walk(ROOT);
-  var ignoredFiles = [];
-  var subpackageFiles = [];
-  var candidateFiles = [];
-
-  allFiles.forEach(function (file) {
-    var rel = file.rel;
-    if (isIgnored(rel)) {
-      ignoredFiles.push(file);
-      return;
-    }
-    var inSubpackage = subpackageRoots.some(function (root) {
-      return rel === root || rel.indexOf(root + '/') === 0;
-    });
-    if (inSubpackage) {
-      subpackageFiles.push(file);
-      return;
-    }
-    candidateFiles.push(file);
+  var packages = subpackages.map(function (pkg) {
+    var files = allFiles.filter(function (file) { return isInsideRoot(file.rel, pkg.root); });
+    return {
+      root: pkg.root,
+      name: pkg.name,
+      files: files,
+      size: sum(files)
+    };
   });
 
-  var referencedFiles = candidateFiles.filter(function (file) { return referenced[file.rel]; });
-  var unreferencedCandidates = candidateFiles.filter(function (file) {
-    return !referenced[file.rel] && !/\.(json|js|wxml|wxss|png|jpg|jpeg|webp|svg)$/.test(file.rel);
+  var subRoots = packages.map(function (pkg) { return pkg.root; });
+  var mainFiles = allFiles.filter(function (file) {
+    return !subRoots.some(function (root) { return isInsideRoot(file.rel, root); });
   });
-  var largeSourceFiles = allFiles.filter(function (file) {
-    return /\.(js|json|wxml|wxss)$/.test(file.rel) && file.size > 100 * ONE_KB;
+  var mainSize = sum(mainFiles);
+  var totalSize = sum(allFiles);
+
+  var failures = [];
+  var warnings = [];
+
+  if (mainSize > MAIN_FAIL) {
+    failures.push('main-package candidate exceeds 1.5 MB: ' + formatSize(mainSize));
+  } else if (mainSize > MAIN_WARN) {
+    warnings.push('main-package candidate above 1.4 MB warning line: ' + formatSize(mainSize));
+  }
+
+  packages.forEach(function (pkg) {
+    if (pkg.size > PACKAGE_FAIL) {
+      failures.push(pkg.root + ' exceeds 1.8 MB target: ' + formatSize(pkg.size));
+    } else if (pkg.size > PACKAGE_WARN) {
+      warnings.push(pkg.root + ' above 1.5 MB watch line: ' + formatSize(pkg.size));
+    }
+    if (pkg.size > HARD_LIMIT) {
+      failures.push(pkg.root + ' exceeds WeChat single-package 2 MB limit: ' + formatSize(pkg.size));
+    }
   });
-  var largeResources = allFiles.filter(function (file) {
-    return /\.(png|jpg|jpeg|webp|gif|mp3|mp4|zip|pdf)$/.test(file.rel) && file.size > 200 * ONE_KB;
+
+  var forbiddenRuntimeFiles = [
+    'packages/quiz/data/past_exam_bank/full_bank.js',
+    'packages/quiz/data/past_exam_bank/explanations_zh.js'
+  ];
+  forbiddenRuntimeFiles.forEach(function (rel) {
+    var file = path.join(ROOT, rel);
+    if (fs.existsSync(file)) {
+      failures.push('old aggregate runtime file still exists: ' + rel + ' (' + formatSize(fs.statSync(file).size) + ')');
+    }
   });
-  var suspectedSubpackageInMain = candidateFiles.filter(function (file) {
-    return file.rel.indexOf('packages/quiz/') === 0 || file.rel.indexOf('packages/glossary/') === 0;
-  });
+
+  var quizQuestionsPath = path.join(ROOT, 'packages/quiz/data/questions.js');
+  if (fs.existsSync(quizQuestionsPath) && fs.statSync(quizQuestionsPath).size > ONE_MB) {
+    failures.push('packages/quiz/data/questions.js is still a large aggregate: ' + formatSize(fs.statSync(quizQuestionsPath).size));
+  }
 
   console.log('=== Miniprogram Package Size Audit ===');
   console.log('Root:', ROOT);
-  console.log('Note: auxiliary audit, not equal to WeChat compiler output.');
-  console.log('\n--- Config ---');
-  console.log('miniprogramRoot:', projectConfig.miniprogramRoot || '(not set)');
-  console.log('app pages:', (appJson.pages || []).join(', '));
-  console.log('subpackages:', subpackageRoots.join(', ') || '(none)');
-  console.log('tabBar pages:', (appJson.tabBar && appJson.tabBar.list || []).map(function (item) { return item.pagePath; }).join(', '));
-  console.log('packOptions.ignore:', ((projectConfig.packOptions || {}).ignore || []).length, 'rules');
-
-  var setting = projectConfig.setting || {};
-  var settingKeys = [
-    'es6', 'postcss', 'minified', 'minifyWXSS', 'minifyWXML', 'compileWorklet',
-    'componentFramework', 'lazyCodeLoading', 'useCompilerPlugins', 'enhance',
-    'sourceMap', 'uploadWithSourceMap', 'checkInvalidKey', 'showShadowRootInWxmlPanel',
-    'packNpmManually', 'packNpmRelationList'
-  ];
-  console.log('settings:');
-  settingKeys.forEach(function (key) {
-    var value = key === 'lazyCodeLoading' ? appJson.lazyCodeLoading : setting[key];
-    if (typeof value !== 'undefined') console.log('  ' + key + ': ' + JSON.stringify(value));
-  });
+  console.log('Mode: DevTools-like auxiliary audit');
+  console.log('Subpackages:', subRoots.join(', '));
 
   console.log('\n--- Size Summary ---');
-  console.log('all tracked-like files scanned:', allFiles.length, formatSize(sumSize(allFiles)));
-  console.log('ignored by packOptions:', ignoredFiles.length, formatSize(sumSize(ignoredFiles)));
-  console.log('subpackage files:', subpackageFiles.length, formatSize(sumSize(subpackageFiles)));
-  console.log('main-package candidate:', candidateFiles.length, formatSize(sumSize(candidateFiles)));
-  console.log('referenced main seed/crawl:', referencedFiles.length, formatSize(sumSize(referencedFiles)));
-  console.log('suspected subpackage files in main candidate:', suspectedSubpackageInMain.length);
+  console.log('total local code estimate:', formatSize(totalSize), '(' + allFiles.length + ' files)');
+  console.log('main-package candidate:', formatSize(mainSize), '(' + mainFiles.length + ' files)');
+  packages.forEach(function (pkg) {
+    console.log(pkg.root + ':', formatSize(pkg.size), '(' + pkg.files.length + ' files)');
+  });
 
-  printFiles('--- Main Package Candidate Top 50 ---', candidateFiles, 50);
-  printFiles('--- Referenced Main Files Top 30 ---', referencedFiles, 30);
-  printFiles('--- Root Large JS/WXSS/WXML/JSON >100KB ---', largeSourceFiles, 30);
-  printFiles('--- Large Resources >200KB ---', largeResources, 30);
-  printFiles('--- Ignored Files Top 30 ---', ignoredFiles, 30);
-  printFiles('--- Suspected Unreferenced Non-runtime Main Candidates ---', unreferencedCandidates, 30);
+  printTop('--- Main Package Candidate Top 20 ---', mainFiles, 20);
+  packages.forEach(function (pkg) {
+    printTop('--- ' + pkg.root + ' Top 10 ---', pkg.files, 10);
+  });
 
-  if (sumSize(candidateFiles) > 1.5 * ONE_MB) {
-    console.log('\n[RISK] main-package candidate is above 1.5 MB. Re-check in WeChat DevTools after pruning or moving files.');
-  } else {
-    console.log('\n[OK] main-package candidate is below 1.5 MB in this auxiliary audit.');
+  if (warnings.length > 0) {
+    console.log('\n--- Warnings ---');
+    warnings.forEach(function (item) { console.log('[WARN] ' + item); });
   }
+
+  if (failures.length > 0) {
+    console.log('\n--- Failures ---');
+    failures.forEach(function (item) { console.log('[FAIL] ' + item); });
+    console.log('\n[FAIL] Package size audit failed');
+    process.exit(1);
+  }
+
+  console.log('\n[PASS] Package size audit passed');
 }
 
 main();

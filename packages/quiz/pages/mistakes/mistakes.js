@@ -109,20 +109,24 @@ Page({
           break;
         }
       }
+      if (!question && wq.questionSnapshot) {
+        question = wq.questionSnapshot;
+      }
       if (question) {
+        var questionOptions = Array.isArray(question.options) ? question.options : [];
         var correctText = '';
-        for (var k = 0; k < question.options.length; k++) {
-          if (question.options[k].key === question.answer) {
-            correctText = question.options[k].key + '. ' + (question.options[k].textZh || question.options[k].textJa || '');
+        for (var k = 0; k < questionOptions.length; k++) {
+          if (questionOptions[k].key === question.answer) {
+            correctText = questionOptions[k].key + '. ' + (questionOptions[k].textZh || questionOptions[k].textJa || questionOptions[k].text || '');
             break;
           }
         }
         var optionsDisplay = [];
-        for (var oi = 0; oi < question.options.length; oi++) {
-          var opt = question.options[oi];
+        for (var oi = 0; oi < questionOptions.length; oi++) {
+          var opt = questionOptions[oi];
           optionsDisplay.push({
             key: opt.key,
-            text: opt.textZh || opt.textJa || ''
+            text: opt.textZh || opt.textJa || opt.text || ''
           });
         }
         wrongList.push({
@@ -131,12 +135,12 @@ Page({
           examLabel: EXAM_NAMES[wq.exam] || wq.exam,
           sourceType: question.sourceType || 'lesson_quiz',
           sourceLabel: SOURCE_LABELS[question.sourceType] || '课程练习',
-          questionZh: question.questionZh,
-          questionJa: question.questionJa,
+          questionZh: question.questionZhClean || question.questionZh,
+          questionJa: question.questionJaClean || question.questionJa,
           options: optionsDisplay,
           correctAnswer: correctText,
-          explanationZh: question.explanationZh,
-          explanationJa: question.explanationJa,
+          explanationZh: question.explanationZhClean || question.explanationZh,
+          explanationJa: question.explanationJaClean || question.explanationJa,
           lastAnswer: wq.lastAnswer,
           wrongAt: wq.wrongAt,
           wrongAtLabel: formatTime(wq.wrongAt),

@@ -28,6 +28,43 @@ function readFile(rel) {
   return fs.readFileSync(path.join(ROOT, rel), 'utf-8');
 }
 
+function walkFiles(absDir, files) {
+  files = files || [];
+  if (!fs.existsSync(absDir)) return files;
+  fs.readdirSync(absDir).forEach(function (name) {
+    const full = path.join(absDir, name);
+    const stat = fs.statSync(full);
+    if (stat.isDirectory()) walkFiles(full, files);
+    else if (stat.isFile()) files.push({ abs: full, rel: path.relative(ROOT, full).replace(/\\/g, '/'), size: stat.size });
+  });
+  return files;
+}
+
+function getDirSize(relDir) {
+  return walkFiles(path.join(ROOT, relDir)).reduce(function (total, file) {
+    return total + file.size;
+  }, 0);
+}
+
+function loadSplitPastExamDataForSmoke() {
+  const index = require(path.join(ROOT, 'packages/quiz/data/past_exam_bank/index'));
+  const fullBank = [];
+  const explanations = {};
+  (index.packages || []).forEach(function (pkg) {
+    const dataRoot = path.join(ROOT, pkg.root, 'data');
+    const questionsModule = require(path.join(dataRoot, 'questions'));
+    const explMap = require(path.join(dataRoot, 'explanations_zh'));
+    const byYear = questionsModule.questionsByYear || {};
+    Object.keys(byYear).forEach(function (yearId) {
+      fullBank.push.apply(fullBank, byYear[yearId] || []);
+    });
+    Object.keys(explMap || {}).forEach(function (id) {
+      explanations[id] = explMap[id];
+    });
+  });
+  return { index: index, fullBank: fullBank, explanations: explanations };
+}
+
 // Shared compliance forbidden terms (centralized for easier maintenance)
 var COMPLIANCE_HIGH_RISK_TERMS = ['保证通过', '包过', '押题', '必过'];
 var COMPLIANCE_FORBIDDEN_TERMS = [
@@ -314,7 +351,7 @@ try {
 if (glossaryOk) pass('glossary split data valid');
 
 // ============================================================
-console.log('\n--- data/questions.js ---');
+console.log('\n--- data/questions.js (course-only lightweight entry) ---');
 
 let questionsOk = true;
 try {
@@ -331,20 +368,20 @@ try {
     pass('questions data can be required and is array');
     console.log('  questions entries: ' + questions.length);
 
-    if (questions.length < 229) {
-      fail('questions.js: expected >= 229 entries, got ' + questions.length);
+    if (questions.length < 129) {
+      fail('questions.js: expected >= 129 course entries, got ' + questions.length);
       questionsOk = false;
     }
 
     const itpassCount = questions.filter(q => q.exam === 'itpass').length;
     const sgCount = questions.filter(q => q.exam === 'sg').length;
     console.log('  itpass: ' + itpassCount + ', sg: ' + sgCount);
-    if (itpassCount < 135) {
-      fail('questions.js: expected >= 135 itpass, got ' + itpassCount);
+    if (itpassCount < 85) {
+      fail('questions.js: expected >= 85 itpass course entries, got ' + itpassCount);
       questionsOk = false;
     }
-    if (sgCount < 94) {
-      fail('questions.js: expected >= 94 sg, got ' + sgCount);
+    if (sgCount < 44) {
+      fail('questions.js: expected >= 44 sg course entries, got ' + sgCount);
       questionsOk = false;
     }
 
@@ -356,21 +393,22 @@ try {
       fail('questions.js: expected >= 129 lesson_quiz, got ' + lessonQuizCount);
       questionsOk = false;
     }
-    if (pastExamCount < 100) {
-      fail('questions.js: expected >= 100 past_exam_japanese, got ' + pastExamCount);
+    if (pastExamCount !== 0) {
+      fail('questions.js: past_exam_japanese must live in split subpackages, got ' + pastExamCount);
       questionsOk = false;
     }
 
-    // past_exam_japanese distribution by exam
-    const pastItpass = questions.filter(q => q.sourceType === 'past_exam_japanese' && q.exam === 'itpass').length;
-    const pastSg = questions.filter(q => q.sourceType === 'past_exam_japanese' && q.exam === 'sg').length;
-    console.log('  past_exam itpass: ' + pastItpass + ', past_exam sg: ' + pastSg);
-    if (pastItpass < 50) {
-      fail('questions.js: expected >= 50 past_exam itpass, got ' + pastItpass);
+    // past_exam_japanese distribution by split packages
+    const splitPastData = loadSplitPastExamDataForSmoke();
+    const pastItpass = splitPastData.fullBank.filter(q => q.sourceType === 'past_exam_japanese' && q.exam === 'itpass').length;
+    const pastSg = splitPastData.fullBank.filter(q => q.sourceType === 'past_exam_japanese' && q.exam === 'sg').length;
+    console.log('  split past_exam itpass: ' + pastItpass + ', split past_exam sg: ' + pastSg);
+    if (pastItpass !== 1500) {
+      fail('split past_exam: expected 1500 itpass, got ' + pastItpass);
       questionsOk = false;
     }
-    if (pastSg < 50) {
-      fail('questions.js: expected >= 50 past_exam sg, got ' + pastSg);
+    if (pastSg !== 445) {
+      fail('split past_exam: expected 445 sg, got ' + pastSg);
       questionsOk = false;
     }
 
@@ -2354,7 +2392,10 @@ if (!homeJs37.includes('goToSG') || !homeWxml37.includes('goToSG')) {
 
 // 10. 课程练习 / 日文真题入口仍存在（通过 exam-menu）
 var examMenuJs37 = readFile('packages/quiz/pages/exam-menu/exam-menu.js');
-if (!examMenuJs37.includes("sourceType=lesson_quiz") || !examMenuJs37.includes("sourceType=past_exam_japanese")) {
+var splitIndexJs37 = readFile('packages/quiz/data/past_exam_bank/index.js');
+if (!examMenuJs37.includes("sourceType=lesson_quiz") ||
+    !examMenuJs37.includes('pastExamIndex.getRoute') ||
+    !splitIndexJs37.includes("sourceType=past_exam_japanese")) {
   fail('Round 3.7: exam-menu missing lesson_quiz/past_exam_japanese entry');
   round37Ok = false;
 }
@@ -7870,48 +7911,47 @@ check3126(examMenuWxss3126.indexOf('.past-exam-year-count') >= 0 &&
 if (round3126Ok) pass('R3.126 package and flashcard usability fixes');
 
 // ============================================================
-// R3.123: past_exam_bank full_bank data integrity smoke
+// R3.123: split past_exam_bank data integrity smoke
 // ============================================================
 var round3123Ok = true;
 function check3123(cond, msg) {
   if (!cond) { fail(msg); round3123Ok = false; }
 }
 
-var bankPath3123 = 'packages/quiz/data/past_exam_bank/full_bank.js';
-var bank3123 = readFile(bankPath3123);
-check3123(bank3123.length > 5000,
-  'R3.123: full_bank.js must be >5KB, got ' + bank3123.length + ' bytes');
+var split3123 = loadSplitPastExamDataForSmoke();
+var bank3123 = split3123.fullBank;
+var bankText3123 = bank3123.map(function (q) {
+  return [q.questionZh, q.questionJa, q.explanationZh, q.explanationJa, q.yearId, q.exam].join(' ');
+}).join('\n');
+check3123(fileExists('packages/quiz/data/past_exam_bank/index.js'),
+  'R3.123: lightweight split index must exist');
+check3123(bank3123.length === 1945,
+  'R3.123: expected 1945 split past exam entries, got ' + bank3123.length);
+check3123(split3123.index.packages && split3123.index.packages.length >= 7,
+  'R3.123: split index should register quiz data subpackages');
+check3123(bankText3123.indexOf('令和') >= 0,
+  'R3.123: split bank must contain Reiwa kanji - encoding may be corrupted');
+check3123(bankText3123.indexOf('業務') >= 0,
+  'R3.123: split bank must contain gyoumu - encoding may be corrupted');
+check3123(bankText3123.indexOf('著作権') >= 0,
+  'R3.123: split bank must contain chosakuken - encoding may be corrupted');
+check3123(bankText3123.indexOf('01_aki') >= 0 && bankText3123.indexOf('sg_31_haru') >= 0,
+  'R3.123: split bank must include IT Passport and SG yearId boundaries');
 
-var bankCount3123 = (bank3123.match(/"id": "/g) || []).length;
-check3123(bankCount3123 >= 1900,
-  'R3.123: expected >=1900 entries, got ' + bankCount3123);
-
-check3123(bank3123.indexOf('令和') >= 0,
-  'R3.123: must contain Reiwa kanji - encoding may be corrupted');
-check3123(bank3123.indexOf('業務') >= 0,
-  'R3.123: must contain gyoumu - encoding may be corrupted');
-check3123(bank3123.indexOf('著作権') >= 0,
-  'R3.123: must contain chosakuken - encoding may be corrupted');
-
-check3123(bank3123.indexOf('"yearId": "') >= 0,
-  'R3.123: must contain yearId field');
-check3123(bank3123.indexOf('"exam":"itpass"') >= 0 || bank3123.indexOf('"exam": "itpass"') >= 0,
-  'R3.123: must contain IT Passport entries');
-
-if (round3123Ok) pass('R3.123: past_exam_bank data integrity');
-// R3.124: questions.js encoding integrity check
-var qs3124 = readFile('packages/quiz/data/questions.js');
+if (round3123Ok) pass('R3.123: split past_exam_bank data integrity');
+// R3.124: course + split data encoding integrity check
+var qs3124 = readFile('packages/quiz/data/course_questions.js') + '\n' + bankText3123;
 var qsEncOk3124 = true;
 function check3124(cond, msg) { if (!cond) { fail(msg); qsEncOk3124 = false; } }
 var qsContent3124 = qs3124;
 // Verifies questionJa text fields are not mojibake
 check3124(qsContent3124.indexOf('問題') >= 0,
-  'R3.124: questions.js must contain 問題 (kanji for mondai)');
+  'R3.124: split/course questions must contain 問題 (kanji for mondai)');
 check3124(qsContent3124.indexOf('令和') >= 0,
-  'R3.124: questions.js must contain 令和 (Reiwa era)');
+  'R3.124: split/course questions must contain 令和 (Reiwa era)');
 check3124(qsContent3124.indexOf('ä»¤') < 0 && qsContent3124.indexOf('ã®') < 0,
-  'R3.124: questions.js free of common mojibake patterns');
-if (qsEncOk3124) pass('R3.124: questions.js encoding integrity');
+  'R3.124: split/course questions free of common mojibake patterns');
+if (qsEncOk3124) pass('R3.124: split/course questions encoding integrity');
 
 // ============================================================
 // R3.127: main package structure & exam paper navigation
@@ -7954,8 +7994,8 @@ check3127(examMenuJs3127.indexOf('goPastExamYear') >= 0,
   'R3.127: exam-menu JS must define goPastExamYear handler');
 check3127(examMenuJs3127.indexOf('wx.navigateTo') >= 0,
   'R3.127: goPastExamYear must call wx.navigateTo');
-check3127(examMenuJs3127.indexOf('/packages/quiz/pages/quiz/quiz') >= 0,
-  'R3.127: goPastExamYear must navigate to subpackage quiz page');
+check3127(examMenuJs3127.indexOf('pastExamIndex.getRoute') >= 0,
+  'R3.127: goPastExamYear must resolve split package quiz route');
 check3127(examMenuJs3127.indexOf('currentTarget.dataset') >= 0,
   'R3.127: goPastExamYear must use currentTarget.dataset (not target.dataset)');
 
@@ -8006,8 +8046,8 @@ check3130(examMenuJs3130.indexOf('currentTarget.dataset') >= 0,
   'R3.130: handler must use currentTarget.dataset');
 check3130(examMenuJs3130.indexOf('fail:') >= 0 || examMenuJs3130.indexOf('fail :') >= 0,
   'R3.130: navigateTo must have fail callback');
-check3130(examMenuJs3130.indexOf('/packages/quiz/pages/quiz/quiz') >= 0,
-  'R3.130: must navigate to quiz subpackage page');
+check3130(examMenuJs3130.indexOf('pastExamIndex.getRoute') >= 0,
+  'R3.130: must navigate through split package route');
 
 // D. quiz.js onLoad must accept exam, sourceType, yearId
 var quizJs3130 = readFile('packages/quiz/pages/quiz/quiz.js');
@@ -8019,9 +8059,10 @@ check3130(quizJs3130.indexOf('options.yearId') >= 0,
   'R3.130: quiz.js onLoad must read options.yearId');
 
 // E. Param name alignment: exam-menu passes yearId, quiz reads yearId
-check3130(examMenuJs3130.indexOf('yearId=') >= 0 && quizJs3130.indexOf('options.yearId') >= 0,
+var splitIndexJs3130 = readFile('packages/quiz/data/past_exam_bank/index.js');
+check3130(splitIndexJs3130.indexOf('yearId=') >= 0 && quizJs3130.indexOf('options.yearId') >= 0,
   'R3.130: exam-menu and quiz.js must use same param name yearId');
-check3130(examMenuJs3130.indexOf('sourceType=past_exam_japanese') >= 0 && quizJs3130.indexOf("'past_exam_japanese'") >= 0,
+check3130(splitIndexJs3130.indexOf('sourceType=past_exam_japanese') >= 0 && quizJs3130.indexOf("'past_exam_japanese'") >= 0,
   'R3.130: exam-menu and quiz.js must use same sourceType value');
 
 // F. project.config.json guard: compileWorklet should be false
@@ -8029,10 +8070,14 @@ var projCfg3130 = JSON.parse(readFile('project.config.json'));
 check3130(projCfg3130.setting && projCfg3130.setting.compileWorklet === false,
   'R3.130: compileWorklet should be false to reduce main package compiled size');
 
-// G. IT Passport and SG both have year data (pastExamFull must exist)
+// G. IT Passport and SG both have year data in the split index
 var fullBankPath3130 = path.join(ROOT, 'packages/quiz/data/past_exam_bank/full_bank.js');
-check3130(fs.existsSync(fullBankPath3130),
-  'R3.130: past_exam_bank/full_bank.js must exist for year chip data');
+check3130(!fs.existsSync(fullBankPath3130),
+  'R3.130: past_exam_bank/full_bank.js must not remain in runtime quiz package');
+check3130(fileExists('packages/quiz/data/past_exam_bank/index.js'),
+  'R3.130: lightweight past exam index must exist for year chip data');
+check3130(split3123.index.getYears ? true : split3123.index.years.length >= 20,
+  'R3.130: split index must expose year chip data');
 
 if (round3130Ok) pass('R3.130: exam year chip navigation chain & main package guard');
 
@@ -8087,16 +8132,15 @@ check3131(quizWxml3131.indexOf('id="kaisetsu"') < 0,
   'R3.131: WXML must not contain kaisetsu ID');
 check3131(quizJs3131.indexOf("'中文解析待补充") < 0,
   'R3.131: quiz.js must NOT contain old fallback "中文解析待补充" (replaced by generated)');
-check3131(quizJs3131.indexOf('explanations_zh') >= 0,
-  'R3.131: quiz.js must load generated Chinese explanations from explanations_zh');
+check3131(quizJs3131.indexOf('full_bank') < 0 && quizJs3131.indexOf('explanations_zh') < 0,
+  'R3.131: lightweight quiz.js must not import full_bank or monolithic explanations_zh');
+var splitQuizJs3131 = readFile('packages/quiz-itpass-1/pages/quiz/quiz.js');
+check3131(splitQuizJs3131.indexOf('generatedZhExplanations') >= 0 &&
+  splitQuizJs3131.indexOf("require('../../data/loader')") >= 0,
+  'R3.131: split quiz page must load generated Chinese explanations from its local data loader');
 
 // Local helper for smoke test data check (uses generated explanations, mirrors quiz.js)
-var generatedZhMap3131;
-try {
-  generatedZhMap3131 = require(path.join(ROOT, 'packages/quiz/data/past_exam_bank/explanations_zh'));
-} catch(e) {
-  generatedZhMap3131 = {};
-}
+var generatedZhMap3131 = split3123.explanations;
 function processQuestionForDisplay3131(q) {
   var raw = q.explanationZh || '';
   var cleaned = raw.replace(/<[^>]+>/g, '').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim();
@@ -8116,7 +8160,7 @@ function processQuestionForDisplay3131(q) {
 }
 
 // F. Data quality: past exam explanationZh should be processed, not raw
-var pastExamBank3131 = require(path.join(ROOT, 'packages/quiz/data/past_exam_bank/full_bank'));
+var pastExamBank3131 = split3123.fullBank;
 var sampleSize3131 = Math.min(10, pastExamBank3131.length);
 var rawHtmlCount3131 = 0;
 for (var i3131 = 0; i3131 < sampleSize3131; i3131++) {
@@ -8135,16 +8179,13 @@ if (round3131Ok) pass('R3.131: main package, warning fix, Chinese explanation pi
 var round3132Ok = true;
 function check3132(cond, msg) { if (!cond) { fail(msg); round3132Ok = false; } }
 
-// A. Generated explanations file exists and covers all past exam questions
-var explMap3132;
-try {
-  explMap3132 = require(path.join(ROOT, 'packages/quiz/data/past_exam_bank/explanations_zh'));
-} catch(e) { explMap3132 = null; }
-check3132(explMap3132 !== null,
-  'R3.132: explanations_zh.js must exist and be loadable');
+// A. Generated explanations split files exist and cover all past exam questions
+var explMap3132 = split3123.explanations;
+check3132(explMap3132 !== null && Object.keys(explMap3132).length === 1945,
+  'R3.132: split explanations_zh.js files must be loadable and total 1945 entries');
 
 if (explMap3132) {
-  var fullBank3132 = require(path.join(ROOT, 'packages/quiz/data/past_exam_bank/full_bank'));
+  var fullBank3132 = split3123.fullBank;
   var missingCount3132 = 0;
   fullBank3132.forEach(function(q) {
     if (!explMap3132[q.id] || explMap3132[q.id].length < 20) missingCount3132++;
@@ -8184,8 +8225,10 @@ if (explMap3132) {
 
 // B. quiz.js loads generated explanations
 var quizJs3132 = readFile('packages/quiz/pages/quiz/quiz.js');
-check3132(quizJs3132.indexOf('generatedZhExplanations') >= 0 || quizJs3132.indexOf('explanations_zh') >= 0,
-  'R3.132: quiz.js must import generated Chinese explanations');
+var splitQuizJs3132 = readFile('packages/quiz-sg-1/pages/quiz/quiz.js');
+check3132(quizJs3132.indexOf('redirectToPastExamPackage') >= 0 &&
+  splitQuizJs3132.indexOf('generatedZhExplanations') >= 0,
+  'R3.132: lightweight quiz.js must redirect and split quiz page must import generated Chinese explanations');
 
 // C. check_quiz_explanations.js exists
 var checkScript3132 = false;
@@ -8216,6 +8259,8 @@ check3132(auditScript3132.indexOf('auxiliary audit') >= 0 &&
 var runChecks3132 = readFile('tools/run_miniprogram_checks.js');
 check3132(runChecks3132.indexOf('tools/check_quiz_explanations.js') >= 0,
   'R3.132: run_miniprogram_checks.js must run quiz explanation quality check');
+check3132(runChecks3132.indexOf('tools/audit_miniprogram_package_size.js') >= 0,
+  'R3.132: run_miniprogram_checks.js must run package size audit');
 
 // G. quiz.wxml uses user-select on review-item-question
 var quizWxml3132 = readFile('packages/quiz/pages/quiz/quiz.wxml');
@@ -8232,6 +8277,67 @@ check3132(projCfg3132.setting && projCfg3132.setting.uploadWithSourceMap === fal
   'R3.132: uploadWithSourceMap should be false for code quality scan');
 
 if (round3132Ok) pass('R3.132: generated Chinese explanations integration & package audit');
+
+// ============================================================
+// R3.133: quiz data subpackage split and package-size guard
+// ============================================================
+var round3133Ok = true;
+function check3133(cond, msg) { if (!cond) { fail(msg); round3133Ok = false; } }
+
+var appJson3133 = JSON.parse(readFile('app.json'));
+var subPkgRoots3133 = (appJson3133.subpackages || []).map(function (pkg) { return pkg.root; });
+var requiredSplitRoots3133 = [
+  'packages/quiz-itpass-1',
+  'packages/quiz-itpass-2',
+  'packages/quiz-itpass-3',
+  'packages/quiz-itpass-4',
+  'packages/quiz-itpass-5',
+  'packages/quiz-sg-1',
+  'packages/quiz-sg-2'
+];
+
+requiredSplitRoots3133.forEach(function (root) {
+  check3133(subPkgRoots3133.indexOf(root) >= 0,
+    'R3.133: app.json must register split quiz data package ' + root);
+  check3133(fileExists(root + '/pages/quiz/quiz.js') &&
+    fileExists(root + '/pages/quiz/quiz.wxml') &&
+    fileExists(root + '/data/questions.js') &&
+    fileExists(root + '/data/explanations_zh.js') &&
+    fileExists(root + '/data/loader.js'),
+    'R3.133: split package files missing for ' + root);
+  check3133(getDirSize(root) < 1.8 * 1024 * 1024,
+    'R3.133: split package must stay under 1.8MB: ' + root);
+});
+
+check3133(getDirSize('packages/quiz') < 1.8 * 1024 * 1024,
+  'R3.133: packages/quiz must stay under 1.8MB after moving data out');
+check3133(!fileExists('packages/quiz/data/past_exam_bank/full_bank.js'),
+  'R3.133: full_bank.js must not remain inside packages/quiz');
+check3133(!fileExists('packages/quiz/data/past_exam_bank/explanations_zh.js'),
+  'R3.133: monolithic explanations_zh.js must not remain inside packages/quiz');
+
+var quizIndex3133 = readFile('packages/quiz/data/past_exam_bank/index.js');
+var examMenuJs3133 = readFile('packages/quiz/pages/exam-menu/exam-menu.js');
+var quizJs3133 = readFile('packages/quiz/pages/quiz/quiz.js');
+check3133(quizIndex3133.indexOf('getYears') >= 0 && quizIndex3133.indexOf('getRoute') >= 0,
+  'R3.133: lightweight past exam index must expose getYears/getRoute');
+check3133(examMenuJs3133.indexOf('pastExamIndex.getYears') >= 0 &&
+  examMenuJs3133.indexOf('pastExamIndex.getRoute') >= 0,
+  'R3.133: exam-menu must use lightweight index for year list and route');
+check3133(quizJs3133.indexOf('full_bank') < 0 && quizJs3133.indexOf('explanations_zh') < 0,
+  'R3.133: lightweight quiz.js must not import old aggregate data');
+
+var runChecks3133 = readFile('tools/run_miniprogram_checks.js');
+check3133(runChecks3133.indexOf('TOTAL_CHECKS = 6') >= 0 &&
+  runChecks3133.indexOf('tools/audit_miniprogram_package_size.js') >= 0 &&
+  runChecks3133.indexOf('tools/check_quiz_explanations.js') >= 0,
+  'R3.133: run_miniprogram_checks must include package audit and quiz explanations');
+
+check3133(split3123.fullBank.length === 1945 &&
+  Object.keys(split3123.explanations).length === 1945,
+  'R3.133: split past exam bank and explanations must stay complete');
+
+if (round3133Ok) pass('R3.133: quiz data subpackage split and package-size guard');
 
 console.log('\n========================================');
 console.log('Passed: ' + passed);

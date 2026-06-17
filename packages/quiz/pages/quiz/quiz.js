@@ -1,7 +1,6 @@
 // pages/quiz/quiz.js
 var questionsModule = require('../../data/questions');
-var pastExamFull = require('../../data/past_exam_bank/full_bank');
-var generatedZhExplanations = require('../../data/past_exam_bank/explanations_zh');
+var pastExamIndex = require('../../data/past_exam_bank/index');
 var storage = require('../../../../utils/storage');
 
 // === P0-3: HTML 清洗 + 日文检测 + 中文解析 fallback ===
@@ -54,17 +53,14 @@ function processQuestionForDisplay(q) {
   if (q.questionZh) result.questionZhClean = stripHtmlTags(q.questionZh);
   if (q.questionJa) result.questionJaClean = stripHtmlTags(q.questionJa);
 
-  // 处理中文解析：优先生成的解释 → 原始真实中文 → 结构化兆底
-  var genExpl = generatedZhExplanations[q.id] || '';
-  if (genExpl && genExpl.length > 10) {
-    // 生成的中文解释（覆盖率为 100%）
-    result.explanationZhClean = genExpl;
+  // 处理中文解析：当前轻量页只处理课程题和本地错题快照；真题解释随年份分包加载。
+  if (q.explanationZhClean && q.explanationZhClean.length > 10) {
+    result.explanationZhClean = q.explanationZhClean;
   } else {
     var zhResult = formatExplanation(q.explanationZh);
     if (!zhResult.isJapanese && zhResult.clean && zhResult.clean.length > 10) {
       result.explanationZhClean = zhResult.clean;
     } else {
-      // 结构化兆底（仅极少数异常题）
       var ans = q.answer || '';
       result.explanationZhClean = '正确答案：' + ans + '。本题考查IT基础知识，该选项最符合题意。';
     }
@@ -75,6 +71,28 @@ function processQuestionForDisplay(q) {
   result.explanationJaClean = jaResult.clean;
 
   return result;
+}
+
+function createWrongQuestionSnapshot(q) {
+  if (!q) return null;
+  return {
+    id: q.id,
+    exam: q.exam,
+    sourceType: q.sourceType,
+    yearId: q.yearId,
+    year: q.year,
+    number: q.number,
+    category: q.category,
+    level: q.level,
+    questionZh: q.questionZhClean || q.questionZh || '',
+    questionJa: q.questionJaClean || q.questionJa || '',
+    options: q.options || [],
+    answer: q.answer,
+    explanationZh: q.explanationZhClean || q.explanationZh || '',
+    explanationJa: q.explanationJaClean || q.explanationJa || '',
+    translationStatus: q.translationStatus || 'complete',
+    explanationStatus: q.explanationStatus || 'complete'
+  };
 }
 
 Page({
@@ -148,14 +166,61 @@ Page({
       return;
     }
 
+    if (sourceType === 'past_exam_japanese') {
+      this.redirectToPastExamPackage(exam, yearId);
+      return;
+    }
+
     this.loadPracticeQuestions(exam, sourceType, yearId);
+  },
+
+  redirectToPastExamPackage: function (exam, yearId) {
+    if (!yearId) {
+      wx.redirectTo({
+        url: '/packages/quiz/pages/exam-menu/exam-menu?exam=' + exam,
+        fail: function (err) {
+          console.error('[quiz] redirect to exam menu failed', err);
+          wx.showToast({ title: '请选择考试年份', icon: 'none' });
+        }
+      });
+      return;
+    }
+
+    var route = pastExamIndex.getRoute(exam, yearId);
+    if (!route || !route.route) {
+      console.warn('[quiz] past exam split route missing', exam, yearId);
+      wx.showToast({ title: '试卷分包缺失', icon: 'none' });
+      this.setData({
+        exam: exam,
+        examTitle: (exam === 'sg' ? 'SG 考试' : 'IT Passport') + ' - 日文题练习',
+        examBadge: exam === 'sg' ? 'SG' : 'IT',
+        sourceType: 'past_exam_japanese',
+        modeLabel: '日文题练习',
+        questions: [],
+        currentQuestion: null,
+        isFinished: true,
+        showResult: false,
+        totalQuestions: 0,
+        showFeedbackTip: false,
+        yearId: yearId
+      });
+      return;
+    }
+
+    wx.redirectTo({
+      url: route.route,
+      fail: function (err) {
+        console.error('[quiz] redirect to split past exam failed', route.route, err);
+        wx.showToast({ title: '打开试卷失败', icon: 'none' });
+      }
+    });
   },
 
   loadPracticeQuestions: function (exam, sourceType, yearId) {
     var examTitle = exam === 'sg' ? 'SG 考试' : 'IT Passport';
     var examBadge = exam === 'sg' ? 'SG' : 'IT';
     var modeLabel = sourceType === 'past_exam_japanese' ? '日文题练习' : '课程练习';
-    var baseQuestions = sourceType === 'past_exam_japanese' ? pastExamFull : questionsModule.questions;
+    var baseQuestions = questionsModule.questions;
     var allQuestions = baseQuestions.filter(function (question) {
       return question.exam === exam && question.sourceType === sourceType;
     });
@@ -164,18 +229,6 @@ Page({
         return question.yearId === yearId;
       });
     }
-    if (allQuestions.length === 0 && sourceType === 'past_exam_japanese') {
-      // fallback already exists in bundled questions
-      allQuestions = questionsModule.questions.filter(function (question) {
-        return question.exam === exam && question.sourceType === sourceType;
-      });
-      if (yearId) {
-        allQuestions = allQuestions.filter(function (question) {
-          return question.yearId === yearId;
-        });
-      }
-    }
-
     if (allQuestions.length > 0) {
       // P0-3: 清洗所有题目的 HTML 并生成中文解析 fallback
       var processed = allQuestions.map(processQuestionForDisplay);
@@ -233,7 +286,8 @@ Page({
       storage.addWrongQuestion(
         this.data.currentQuestion.id,
         attemptExam,
-        key
+        key,
+        createWrongQuestionSnapshot(this.data.currentQuestion)
       );
     }
 

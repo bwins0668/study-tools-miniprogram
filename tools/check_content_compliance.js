@@ -37,6 +37,11 @@ const SKIP_REL_DIRS = new Set([
   'packages/exam/data'
 ]);
 
+function shouldSkipRelDir(rel) {
+  if (SKIP_REL_DIRS.has(rel)) return true;
+  return /^packages\/quiz-(itpass|sg)-\d+\/data(?:\/|$)/.test(rel);
+}
+
 // Files to skip (relative to ROOT) — tool scripts that define blacklist arrays
 const SKIP_FILES = new Set([
   'tools/check_content_compliance.js',
@@ -68,7 +73,7 @@ function collectFiles(dir, relBase) {
       continue;
     }
     if (stat.isDirectory()) {
-      if (SKIP_REL_DIRS.has(rel)) continue;
+      if (shouldSkipRelDir(rel)) continue;
       results = results.concat(collectFiles(full, rel));
     } else if (stat.isFile()) {
       if (SKIP_FILES.has(rel)) continue;

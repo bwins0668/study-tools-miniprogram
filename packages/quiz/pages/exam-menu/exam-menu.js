@@ -1,6 +1,6 @@
 // pages/exam-menu/exam-menu.js
 var storage = require("../../../../utils/storage");
-var pastExamFull = require("../../data/past_exam_bank/full_bank");
+var pastExamIndex = require("../../data/past_exam_bank/index");
 
 var EXAM_INFO = {
   itpass: {
@@ -80,23 +80,8 @@ Page({
       suggestion = { text: '建议先复习基础知识点再继续练习', level: 'review' };
     }
 
-    // 构建过去问年份列表
-    var yearMap = {};
-    (pastExamFull || []).forEach(function (q) {
-      if (q.exam !== exam || q.sourceType !== 'past_exam_japanese') return;
-      var yid = q.yearId;
-      if (!yearMap[yid]) {
-        yearMap[yid] = {
-          yearId: yid,
-          year: q.year,
-          count: 0
-        };
-      }
-      yearMap[yid].count += 1;
-    });
-    var pastExamList = Object.keys(yearMap).sort().map(function (k) {
-      return yearMap[k];
-    });
+    // 构建过去问年份列表：只读轻量索引，不加载真题正文
+    var pastExamList = pastExamIndex.getYears(exam);
 
     this.setData({
       lessonTotal: lessonStats.total || 0,
@@ -126,7 +111,13 @@ Page({
       return;
     }
     this.setData({ activePastExamYearId: yearId });
-    var url = '/packages/quiz/pages/quiz/quiz?exam=' + this.data.exam + '&sourceType=past_exam_japanese&yearId=' + encodeURIComponent(yearId);
+    var route = pastExamIndex.getRoute(this.data.exam, yearId);
+    if (!route || !route.route) {
+      console.warn('[exam-menu] goPastExamYear: route missing', this.data.exam, yearId);
+      wx.showToast({ title: '试卷分包缺失', icon: 'none' });
+      return;
+    }
+    var url = route.route;
     wx.navigateTo({
       url: url,
       fail: function (err) {
@@ -143,8 +134,18 @@ Page({
   },
 
   goPastExam: function () {
+    var first = (this.data.pastExamList || [])[0];
+    if (!first) {
+      wx.showToast({ title: '暂无真题年份', icon: 'none' });
+      return;
+    }
+    var route = pastExamIndex.getRoute(this.data.exam, first.yearId);
+    if (!route || !route.route) {
+      wx.showToast({ title: '试卷分包缺失', icon: 'none' });
+      return;
+    }
     wx.navigateTo({
-      url: '/packages/quiz/pages/quiz/quiz?exam=' + this.data.exam + '&sourceType=past_exam_japanese'
+      url: route.route
     });
   }
 });

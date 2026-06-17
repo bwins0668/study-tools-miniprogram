@@ -3,11 +3,12 @@
  * run_miniprogram_checks.js — One-command gate for all miniprogram maintenance checks.
  *
  * Runs in sequence:
- *   [1/5] Smoke test            (node tools/miniprogram_smoke_test.js)
- *   [2/5] Content compliance    (node tools/check_content_compliance.js)
- *   [3/5] Quiz explanations     (node tools/check_quiz_explanations.js)
- *   [4/5] JS syntax check       (node --check on all project .js files)
- *   [5/5] WXSS escaped newline  (scan for literal backslash+n in .wxss files)
+ *   [1/6] Smoke test            (node tools/miniprogram_smoke_test.js)
+ *   [2/6] Content compliance    (node tools/check_content_compliance.js)
+ *   [3/6] Quiz explanations     (node tools/check_quiz_explanations.js)
+ *   [4/6] Package size audit    (node tools/audit_miniprogram_package_size.js)
+ *   [5/6] JS syntax check       (node --check on all project .js files)
+ *   [6/6] WXSS escaped newline  (scan for literal backslash+n in .wxss files)
  *
  * Exit code: 0 if all pass, 1 if any step fails.
  * No external dependencies.
@@ -20,7 +21,7 @@ var fs = require('fs');
 var path = require('path');
 
 var JSON_MODE = process.argv.indexOf('--json') !== -1;
-var TOTAL_CHECKS = 5;
+var TOTAL_CHECKS = 6;
 
 // --- Helpers ---
 
@@ -51,7 +52,7 @@ function runStep(index, total, title, cmd, args, opts) {
 // --- JS syntax check (inline, same logic as the one-liner) ---
 
 function checkJsSyntax() {
-  var index = 4;
+  var index = 5;
   var total = TOTAL_CHECKS;
   log('\n[' + index + '/' + total + '] JS syntax check');
   log('-'.repeat(40));
@@ -105,7 +106,7 @@ function checkJsSyntax() {
 // --- WXSS escaped newline guard (inline) ---
 
 function checkWxssEscapedNewline() {
-  var index = 5;
+  var index = 6;
   var total = TOTAL_CHECKS;
   log('\n[' + index + '/' + total + '] WXSS escaped newline guard');
   log('-'.repeat(40));
@@ -180,13 +181,17 @@ function main() {
   var r3 = runStep(3, TOTAL_CHECKS, 'Quiz explanations', 'node', ['tools/check_quiz_explanations.js']);
   results.push(r3);
 
-  // [4/5] JS syntax (inline)
-  var r4 = checkJsSyntax();
+  // [4/6] Package size audit
+  var r4 = runStep(4, TOTAL_CHECKS, 'Package size audit', 'node', ['tools/audit_miniprogram_package_size.js']);
   results.push(r4);
 
-  // [5/5] WXSS escaped newline (inline)
-  var r5 = checkWxssEscapedNewline();
+  // [5/6] JS syntax (inline)
+  var r5 = checkJsSyntax();
   results.push(r5);
+
+  // [6/6] WXSS escaped newline (inline)
+  var r6 = checkWxssEscapedNewline();
+  results.push(r6);
 
   // Summary computation
   var totalElapsed = Date.now() - totalStart;

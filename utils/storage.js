@@ -89,15 +89,43 @@ function saveWrongQuestions(list) {
   }
 }
 
-function addWrongQuestion(questionId, exam, lastAnswer) {
+function normalizeQuestionSnapshot(snapshot) {
+  if (!snapshot || typeof snapshot !== 'object') return null;
+  return {
+    id: snapshot.id,
+    exam: snapshot.exam,
+    sourceType: snapshot.sourceType,
+    yearId: snapshot.yearId,
+    year: snapshot.year,
+    number: snapshot.number,
+    category: snapshot.category,
+    level: snapshot.level,
+    questionZh: snapshot.questionZh || '',
+    questionJa: snapshot.questionJa || '',
+    options: Array.isArray(snapshot.options) ? snapshot.options.slice(0, 8) : [],
+    answer: snapshot.answer,
+    explanationZh: snapshot.explanationZh || '',
+    explanationJa: snapshot.explanationJa || '',
+    translationStatus: snapshot.translationStatus,
+    explanationStatus: snapshot.explanationStatus
+  };
+}
+
+function addWrongQuestion(questionId, exam, lastAnswer, questionSnapshot) {
   var list = getWrongQuestions();
   var now = Date.now();
+  var snapshot = normalizeQuestionSnapshot(questionSnapshot);
   // 查找是否已存在
   var found = false;
   for (var i = 0; i < list.length; i++) {
     if (list[i].id === questionId) {
       list[i].wrongAt = now;
       list[i].lastAnswer = lastAnswer;
+      if (snapshot) {
+        list[i].questionSnapshot = snapshot;
+        list[i].sourceType = snapshot.sourceType || list[i].sourceType;
+        list[i].yearId = snapshot.yearId || list[i].yearId;
+      }
       found = true;
       break;
     }
@@ -108,7 +136,10 @@ function addWrongQuestion(questionId, exam, lastAnswer) {
       id: questionId,
       exam: exam,
       wrongAt: now,
-      lastAnswer: lastAnswer
+      lastAnswer: lastAnswer,
+      sourceType: snapshot && snapshot.sourceType,
+      yearId: snapshot && snapshot.yearId,
+      questionSnapshot: snapshot
     });
   }
   saveWrongQuestions(list);

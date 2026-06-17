@@ -1,42 +1,98 @@
+#!/usr/bin/env node
 /**
  * check_quiz_explanations.js
- * 检查 IT Passport / SG 真题中文解释质量
+ * 检查 IT Passport / SG 拆分真题中文解释质量。
  *
  * 用法：node tools/check_quiz_explanations.js
  */
+
+'use strict';
+
 var path = require('path');
-var DATA_PATH = path.join(__dirname, '..', 'packages', 'quiz', 'data', 'past_exam_bank');
+
+var ROOT = path.resolve(__dirname, '..');
+var INDEX_PATH = path.join(ROOT, 'packages', 'quiz', 'data', 'past_exam_bank', 'index');
+
+function loadSplitBank() {
+  var index = require(INDEX_PATH);
+  var fullBank = [];
+  var explanations = {};
+  var packageSummaries = [];
+
+  (index.packages || []).forEach(function (pkg) {
+    var dataRoot = path.join(ROOT, pkg.root, 'data');
+    var questionsModule = require(path.join(dataRoot, 'questions'));
+    var explMap = require(path.join(dataRoot, 'explanations_zh'));
+    var byYear = questionsModule.questionsByYear || {};
+    var count = 0;
+
+    Object.keys(byYear).forEach(function (yearId) {
+      var list = byYear[yearId] || [];
+      count += list.length;
+      fullBank = fullBank.concat(list);
+    });
+    Object.keys(explMap || {}).forEach(function (id) {
+      explanations[id] = explMap[id];
+    });
+    packageSummaries.push({
+      root: pkg.root,
+      exam: pkg.exam,
+      questions: count,
+      explanations: Object.keys(explMap || {}).length
+    });
+  });
+
+  return {
+    index: index,
+    fullBank: fullBank,
+    explanations: explanations,
+    packageSummaries: packageSummaries
+  };
+}
+
+function countKana(text) {
+  var count = 0;
+  if (!text) return count;
+  for (var i = 0; i < text.length; i++) {
+    var code = text.charCodeAt(i);
+    if ((code >= 0x3040 && code <= 0x309F) || (code >= 0x30A0 && code <= 0x30FF)) count++;
+  }
+  return count;
+}
 
 function main() {
-  var fullBank = require(path.join(DATA_PATH, 'full_bank'));
-  var explanations;
-  try {
-    explanations = require(path.join(DATA_PATH, 'explanations_zh'));
-  } catch (e) {
-    console.error('[FAIL] explanations_zh.js 不存在或无法加载');
-    process.exit(1);
-  }
-
+  var data = loadSplitBank();
+  var fullBank = data.fullBank;
+  var explanations = data.explanations;
   var itpass = fullBank.filter(function (q) { return q.exam === 'itpass'; });
   var sg = fullBank.filter(function (q) { return q.exam === 'sg'; });
 
-  var pass = 0, fail = 0;
+  var pass = 0;
+  var fail = 0;
   var failDetails = [];
 
   function check(name, condition, detail) {
-    if (condition) { pass++; }
-    else { fail++; failDetails.push('[FAIL] ' + name + (detail ? ': ' + detail : '')); }
+    if (condition) {
+      pass++;
+    } else {
+      fail++;
+      failDetails.push('[FAIL] ' + name + (detail ? ': ' + detail : ''));
+    }
   }
 
-  function countKana(text) {
-    var count = 0;
-    if (!text) return count;
-    for (var i = 0; i < text.length; i++) {
-      var code = text.charCodeAt(i);
-      if ((code >= 0x3040 && code <= 0x309F) || (code >= 0x30A0 && code <= 0x30FF)) count++;
-    }
-    return count;
-  }
+  var ids = {};
+  var duplicateIds = 0;
+  fullBank.forEach(function (q) {
+    if (ids[q.id]) duplicateIds++;
+    ids[q.id] = true;
+  });
+
+  check('拆分索引存在并包含分包', data.index && data.index.packages && data.index.packages.length >= 7,
+    'packages=' + ((data.index && data.index.packages || []).length));
+  check('总题数为 1945', fullBank.length === 1945, 'got ' + fullBank.length);
+  check('IT Passport 题数为 1500', itpass.length === 1500, 'got ' + itpass.length);
+  check('SG 题数为 445', sg.length === 445, 'got ' + sg.length);
+  check('题目 ID 无重复', duplicateIds === 0, duplicateIds + ' duplicate(s)');
 
   // 1. 覆盖率检查
   var missingZh = 0;
@@ -109,6 +165,11 @@ function main() {
     rfpMissing === 0,
     rfpMissing + '/' + rfpQuestions.length + ' 缺失');
 
+  console.log('\n=== 分包统计 ===');
+  data.packageSummaries.forEach(function (item) {
+    console.log(item.root + ': ' + item.questions + ' 题, ' + item.explanations + ' 条中文解释');
+  });
+
   // 7. 抽样输出
   console.log('\n=== 抽样：IT Passport 5 题 ===');
   [0, 300, 600, 900, 1200].forEach(function (i) {
@@ -137,6 +198,7 @@ function main() {
   console.log('\n=== 统计 ===');
   console.log('总题数:', fullBank.length);
   console.log('IT Passport:', itpass.length, '| SG:', sg.length);
+  console.log('中文解释:', Object.keys(explanations).length);
   console.log('平均解释长度:', avgLen.toFixed(0), '字符');
   console.log('最短:', Math.min.apply(null, lengths), '| 最长:', Math.max.apply(null, lengths));
 
