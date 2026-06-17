@@ -1,6 +1,6 @@
 // pages/quiz/quiz.js
 var questionsModule = require('../../data/questions');
-var pastExamFull = require('../../data/past_exam_full');
+var pastExamFull = require('../../data/past_exam_bank/full_bank');
 var storage = require('../../../../utils/storage');
 
 Page({
