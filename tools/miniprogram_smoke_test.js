@@ -7786,6 +7786,20 @@ check3123(bank3123.indexOf('"exam":"itpass"') >= 0 || bank3123.indexOf('"exam": 
   'R3.123: must contain IT Passport entries');
 
 if (round3123Ok) pass('R3.123: past_exam_bank data integrity');
+// R3.124: questions.js encoding integrity check
+var qs3124 = readFile('packages/quiz/data/questions.js');
+var qsEncOk3124 = true;
+function check3124(cond, msg) { if (!cond) { fail(msg); qsEncOk3124 = false; } }
+var qsContent3124 = qs3124;
+// Verifies questionJa text fields are not mojibake
+check3124(qsContent3124.indexOf('問題') >= 0,
+  'R3.124: questions.js must contain 問題 (kanji for mondai)');
+check3124(qsContent3124.indexOf('令和') >= 0,
+  'R3.124: questions.js must contain 令和 (Reiwa era)');
+check3124(qsContent3124.indexOf('ä»¤') < 0 && qsContent3124.indexOf('ã®') < 0,
+  'R3.124: questions.js free of common mojibake patterns');
+if (qsEncOk3124) pass('R3.124: questions.js encoding integrity');
+
 
 // R3.123: past_exam_bank full_bank data integrity smoke\n// ============================================================\nvar round3123Ok = true;\nfunction check3123(cond, msg) {\n  if (!cond) { fail(msg); round3123Ok = false; }\n}\n\nvar bankPath3123 = 'packages/quiz/data/past_exam_bank/full_bank.js';\nvar bank3123 = readFile(bankPath3123);\ncheck3123(bank3123.length > 5000,\n  'R3.123: full_bank.js must be >5KB, got ' + bank3123.length + ' bytes');\n\nvar bankCount3123 = (bank3123.match(/\"id\": \"/g) || []).length;\ncheck3123(bankCount3123 >= 1900,\n  'R3.123: expected >=1900 entries, got ' + bankCount3123);\n\ncheck3123(bank3123.indexOf('\u4ee4\u548c') >= 0,\n  'R3.123: must contain Reiwa kanji - encoding may be corrupted');\ncheck3123(bank3123.indexOf('\u696d\u52d9') >= 0,\n  'R3.123: must contain gyoumu - encoding may be corrupted');\ncheck3123(bank3123.indexOf('\u8457\u4f5c\u6a29') >= 0,\n  'R3.123: must contain chosakuken - encoding may be corrupted');\n\ncheck3123(bank3123.indexOf('\"yearId\": \"') >= 0,\n  'R3.123: must contain yearId field');\ncheck3123(bank3123.indexOf('\"exam\":\"itpass\"') >= 0 || bank3123.indexOf('\"exam\": \"itpass\"') >= 0,\n  'R3.123: must contain IT Passport entries');\n\nif (round3123Ok) pass('R3.123: past_exam_bank data integrity');\nconsole.log('\n========================================');
 console.log('Passed: ' + passed);
