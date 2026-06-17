@@ -564,7 +564,7 @@ Page({
     }
     return {
       title: title,
-      path: '/packages/quiz/pages/quiz-menu/quiz-menu',
+      path: '/packages/quiz/pages/exam-menu/exam-menu',
       imageUrl: ''
     };
   },

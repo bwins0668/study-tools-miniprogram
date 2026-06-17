@@ -95,21 +95,21 @@ function generateEnhancedSuggestion(wrongCount, favoriteCount, hasLastAttempt, t
   if (favoriteCount > 0) {
     result.text = '已收藏 ' + favoriteCount + ' 个术语';
     result.actionText = '复习收藏';
-    result.actionPath = '/packages/glossary/pages/term-list/term-list';
+    result.actionPath = '/packages/glossary/pages/favorite-review/favorite-review';
     return result;
   }
 
   if (streakCount > 0) {
     result.text = '已连续学习 ' + streakCount + ' 天，继续保持！';
     result.actionText = '继续练习';
-    result.actionPath = '/packages/quiz/pages/quiz-menu/quiz-menu';
+    result.actionPath = '/packages/quiz/pages/exam-menu/exam-menu';
     return result;
   }
 
   if (todayTotal > 0 && hasLastAttempt) {
     result.text = '今天已练习 ' + todayTotal + ' 题';
     result.actionText = '继续练习';
-    result.actionPath = '/packages/quiz/pages/quiz-menu/quiz-menu';
+    result.actionPath = '/packages/quiz/pages/exam-menu/exam-menu';
     return result;
   }
 

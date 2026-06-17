@@ -124,7 +124,9 @@ Page({
         continue;
       }
       var term = glossaryById[favId];
-      term._savedAt = savedAtMap[favId] || null;
+      var rawSavedAt = savedAtMap[favId] || null;
+      term._savedAt = rawSavedAt;
+      term._savedAtFormatted = rawSavedAt ? formatSavedAt(rawSavedAt) : '';
       matched.push(term);
       seenIds[favId] = true;
     }

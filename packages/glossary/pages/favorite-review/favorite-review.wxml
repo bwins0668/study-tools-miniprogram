@@ -64,7 +64,7 @@
               <text wx:if="{{item.ja}}" class="flc-sep">/</text>
               <text wx:if="{{item.ja}}" class="flc-ja">{{item.ja}}</text>
             </view>
-            <text class="flc-saved-at">{{item._savedAt ? ('收藏于 ' + item._savedAt) : '已收藏'}}</text>
+            <text class="flc-saved-at">{{item._savedAtFormatted ? ('收藏于 ' + item._savedAtFormatted) : '已收藏'}}</text>
           </view>
           <view class="flc-actions">
             <view class="flc-unfav-btn" catchtap="unfavoriteFromList" data-id="{{item.id}}">
