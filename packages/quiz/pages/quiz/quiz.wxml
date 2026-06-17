@@ -121,7 +121,7 @@
       </view>
       <text class="result-mode">{{resultModeLabel}}</text>
 
-      <view class="accuracy-block">
+      <view class="accuracy-block accuracy-{{accuracyLevel}}">
         <text class="accuracy-value">{{sessionAccuracy}}%</text>
         <text class="accuracy-label">本次正确率</text>
       </view>
