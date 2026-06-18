@@ -5,6 +5,7 @@ var generatedZhExplanations = pastExamLoader.explanationsById;
 var pastExamFull = pastExamLoader.getAllQuestions();
 var questionsModule = { questions: [] };
 var storage = require('../../../../utils/storage');
+var dedupeQuiz = require('../../../../utils/quiz_dedupe');
 
 function stripHtmlTags(html) {
   if (!html || typeof html !== 'string') return '';
@@ -160,7 +161,7 @@ Page({
     if (yearId) allQuestions = allQuestions.filter(function (question) { return question.yearId === yearId; });
 
     if (allQuestions.length > 0) {
-      var processed = allQuestions.map(processQuestionForDisplay);
+      var processed = dedupeQuiz.dedupeQuestions(allQuestions).map(processQuestionForDisplay);
       var yearTag = yearId ? ('（' + yearId + '）') : '';
       this.setData({
         exam: exam,

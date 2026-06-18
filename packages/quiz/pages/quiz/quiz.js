@@ -2,6 +2,7 @@
 var questionsModule = require('../../data/questions');
 var pastExamIndex = require('../../data/past_exam_bank/index');
 var storage = require('../../../../utils/storage');
+var dedupeQuiz = require('../../../../utils/quiz_dedupe');
 
 // === P0-3: HTML 清洗 + 日文检测 + 中文解析 fallback ===
 function stripHtmlTags(html) {
@@ -231,7 +232,7 @@ Page({
     }
     if (allQuestions.length > 0) {
       // P0-3: 清洗所有题目的 HTML 并生成中文解析 fallback
-      var processed = allQuestions.map(processQuestionForDisplay);
+      var processed = dedupeQuiz.dedupeQuestions(allQuestions).map(processQuestionForDisplay);
       var yearTag = yearId ? ('（' + yearId + '）') : '';
       this.setData({
         exam: exam,

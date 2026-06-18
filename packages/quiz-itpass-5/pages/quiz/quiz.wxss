@@ -447,13 +447,14 @@
 .feedback-correct .feedback-icon,
 .feedback-correct .feedback-text,
 .feedback-correct .feedback-tip {
-  color: var(--color-success);
+  color: #14532d;
   background: transparent;
 }
 
 .feedback-wrong .feedback-icon,
-.feedback-wrong .feedback-text {
-  color: var(--color-error);
+.feedback-wrong .feedback-text,
+.feedback-wrong .feedback-tip {
+  color: #7f1d1d;
   background: transparent;
 }
 
@@ -471,7 +472,6 @@
   display: block;
   margin-top: 6rpx;
   font-size: 24rpx;
-  color: var(--text-hint);
   line-height: 1.4;
 }
 
