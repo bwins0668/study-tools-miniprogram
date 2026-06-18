@@ -575,3 +575,241 @@
     color: #fbbf24;
   }
 }
+
+/* Round UI depth 2: cold monochrome exam gateway */
+.container {
+  background: var(--bg-color);
+  padding: 0 0 72rpx;
+}
+
+.exam-dashboard {
+  padding: 34rpx 28rpx 20rpx;
+  overflow: visible;
+}
+
+.exam-dashboard::before,
+.exam-dashboard::after {
+  display: none;
+}
+
+.dashboard-header {
+  padding: 0;
+  margin-bottom: 22rpx;
+}
+
+.dashboard-title {
+  color: var(--text-primary);
+  font-size: 42rpx;
+  font-weight: 760;
+  letter-spacing: 0;
+  text-shadow: none;
+}
+
+.dashboard-subtitle {
+  color: var(--text-secondary);
+  font-size: 24rpx;
+  line-height: 1.5;
+}
+
+.dashboard-badge {
+  background: var(--card-bg);
+  color: var(--text-secondary);
+  border: 1rpx solid var(--border-color);
+  border-radius: 999rpx;
+  backdrop-filter: none;
+}
+
+.overview-card,
+.new-user-card {
+  background: var(--card-bg);
+  border: 1rpx solid var(--border-color);
+  border-radius: 22rpx;
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: none;
+}
+
+.overview-stat-value,
+.overview-accuracy {
+  color: var(--text-primary);
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+}
+
+.overview-time-text,
+.overview-stat-label {
+  color: var(--text-hint);
+}
+
+.overview-divider {
+  background: var(--divider-color);
+}
+
+.overview-suggestion {
+  background: var(--bg-surface);
+  border: 1rpx solid var(--divider-color);
+  border-left: 5rpx solid var(--border-strong);
+}
+
+.suggestion-symbol {
+  width: 22rpx;
+  height: 22rpx;
+  margin-right: 14rpx;
+  border-radius: 50%;
+  border: 2rpx solid var(--text-secondary);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.suggestion-symbol::after {
+  content: '';
+  position: absolute;
+  width: 8rpx;
+  height: 8rpx;
+  right: -2rpx;
+  bottom: -2rpx;
+  border-radius: 50%;
+  background: var(--text-secondary);
+}
+
+.suggestion-text,
+.new-user-title,
+.new-user-desc {
+  color: var(--text-secondary);
+}
+
+.new-user-symbol {
+  margin-bottom: 14rpx;
+}
+
+.menu-list {
+  padding-top: 4rpx;
+}
+
+.menu-card {
+  margin: 16rpx 28rpx;
+  background: var(--card-bg);
+  border: 1rpx solid var(--border-color);
+  border-radius: 22rpx;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.menu-card:active {
+  transform: translateY(2rpx) scale(0.985);
+  background: var(--press-bg);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-sm);
+}
+
+.menu-card::before {
+  height: 3rpx;
+  background: var(--border-strong) !important;
+}
+
+.menu-card-icon-wrap {
+  width: 68rpx;
+  height: 68rpx;
+  border-radius: 18rpx;
+  background: var(--bg-surface) !important;
+  border: 1rpx solid var(--divider-color);
+  box-shadow: none !important;
+}
+
+.menu-card-symbol {
+  width: 34rpx;
+  height: 34rpx;
+  border: 3rpx solid var(--text-primary);
+  border-radius: 10rpx;
+  position: relative;
+}
+
+.menu-card-symbol::before,
+.menu-card-symbol::after {
+  content: '';
+  position: absolute;
+  background: var(--text-primary);
+}
+
+.symbol-lesson::before {
+  left: 8rpx;
+  top: 7rpx;
+  width: 3rpx;
+  height: 20rpx;
+}
+
+.symbol-lesson::after {
+  right: 8rpx;
+  top: 7rpx;
+  width: 3rpx;
+  height: 20rpx;
+}
+
+.symbol-exam::before {
+  left: 7rpx;
+  right: 7rpx;
+  top: 10rpx;
+  height: 3rpx;
+  box-shadow: 0 9rpx 0 var(--text-primary);
+}
+
+.symbol-exam::after {
+  right: 7rpx;
+  bottom: 5rpx;
+  width: 7rpx;
+  height: 3rpx;
+}
+
+.menu-card-title {
+  color: var(--text-primary);
+  font-size: 31rpx;
+  font-weight: 720;
+}
+
+.menu-card-desc,
+.menu-card-stat-label,
+.past-exam-year-title {
+  color: var(--text-hint);
+}
+
+.menu-card-stat-accent,
+.exam-itpass .menu-card-stat-accent,
+.exam-sg .menu-card-stat-accent {
+  color: var(--text-primary);
+}
+
+.menu-card-progress {
+  background: var(--divider-color);
+}
+
+.menu-card-progress-bar {
+  background: #1f2937 !important;
+  box-shadow: none;
+}
+
+.past-exam-year-section {
+  border-top-color: var(--divider-color);
+}
+
+.past-exam-year-chip {
+  background: var(--bg-surface);
+  border: 1rpx solid var(--border-color);
+  box-shadow: none;
+}
+
+.past-exam-year-chip:active {
+  transform: translateY(2rpx) scale(0.985);
+}
+
+.past-exam-year-chip--active {
+  background: var(--active-bg);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+  box-shadow: none;
+}
+
+.past-exam-year-count,
+.past-exam-year-chip--active .past-exam-year-count {
+  color: var(--text-secondary);
+  background: var(--divider-color);
+}

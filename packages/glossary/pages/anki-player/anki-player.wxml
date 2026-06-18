@@ -1,13 +1,13 @@
 <view class="container">
   <!-- 加载状态 -->
   <view class="loading-section" wx:if="{{isLoading}}">
-    <text class="loading-icon">⏳</text>
+    <view class="loading-symbol"></view>
     <text class="loading-text">正在加载闪卡...</text>
   </view>
 
   <!-- 错误状态 -->
   <view class="error-section" wx:elif="{{errorMsg}}">
-    <text class="error-icon">⚠️</text>
+    <view class="error-symbol"></view>
     <text class="error-text">{{errorMsg}}</text>
     <view class="error-btn" bindtap="restartSession">重试</view>
   </view>
@@ -64,7 +64,7 @@
         <!-- 背面：解析卡 -->
         <view class="card-face card-back">
           <view class="card-back-header">
-            <text class="card-back-icon">📖</text>
+            <view class="card-back-symbol"></view>
             <text class="card-back-label">解析</text>
             <text class="card-index-badge card-index-badge-back">{{currentIndex + 1}}/{{totalCount}}</text>
           </view>
@@ -94,7 +94,7 @@
   </view>
   <view class="complete-section" wx:if="{{!isLoading && !errorMsg && isComplete && totalCount === 0}}">
     <view class="summary-card" wx:if="{{summary}}">
-      <text class="summary-title">🎉 会话结算</text>
+      <text class="summary-title">会话结算</text>
       <view class="summary-grid">
         <view class="summary-item">
           <text class="summary-value summary-value-brand">{{summary.totalCards}}</text>
@@ -114,7 +114,7 @@
         </view>
       </view>
       <view class="summary-timer">
-        <text class="summary-timer-label">⏱ 用时</text>
+        <text class="summary-timer-label">用时</text>
         <text class="summary-timer-value">{{summary.elapsedStr}}</text>
       </view>
       <view class="summary-actions">
@@ -124,7 +124,7 @@
     </view>
   </view>
   <view class="empty-section" wx:elif="{{!isLoading && !errorMsg && totalCount === 0 && !isComplete}}">
-    <text class="empty-icon">📚</text>
+    <view class="empty-symbol"></view>
     <text class="empty-text" wx:if="{{dataSource === 'mistakes'}}">错题本空空如也</text>
     <text class="empty-text" wx:else>暂无待复习术语</text>
     <text class="empty-hint" wx:if="{{dataSource === 'mistakes'}}">太棒了！所有错题已攻克！</text>

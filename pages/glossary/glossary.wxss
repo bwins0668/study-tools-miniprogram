@@ -250,3 +250,167 @@
     box-shadow: 0 3rpx 16rpx rgba(0,0,0,0.2);
   }
 }
+
+/* Round UI depth 6: cold knowledge-base launcher */
+.container {
+  background: var(--bg-color);
+}
+
+.glossary-hero {
+  margin: 28rpx 28rpx 0;
+  padding: 30rpx;
+  background: var(--card-bg);
+  border: 1rpx solid var(--border-color);
+  border-radius: 26rpx;
+  box-shadow: var(--shadow-sm);
+}
+
+.glossary-hero::before,
+.glossary-hero::after {
+  display: none;
+}
+
+.glossary-hero-title {
+  color: var(--text-primary);
+  letter-spacing: 0;
+}
+
+.glossary-hero-subtitle,
+.glossary-footer-hint-text {
+  color: var(--text-secondary);
+}
+
+.glossary-hero-badge {
+  background: var(--bg-surface);
+  border: 1rpx solid var(--border-color);
+  border-radius: 999rpx;
+  backdrop-filter: none;
+}
+
+.glossary-hero-badge-text {
+  color: var(--text-secondary);
+}
+
+.search-entry-card {
+  background: var(--bg-surface);
+  border: 1rpx solid var(--border-color);
+  border-radius: 999rpx;
+  backdrop-filter: none;
+  transition: transform var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.search-entry-card:active {
+  transform: translateY(2rpx) scale(0.985);
+  background: var(--press-bg);
+  border-color: var(--border-strong);
+}
+
+.search-entry-symbol {
+  width: 34rpx;
+  height: 34rpx;
+  margin-right: 16rpx;
+  border: 3rpx solid var(--text-secondary);
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.search-entry-symbol::after {
+  content: '';
+  position: absolute;
+  right: -8rpx;
+  bottom: -5rpx;
+  width: 14rpx;
+  height: 3rpx;
+  border-radius: 999rpx;
+  background: var(--text-secondary);
+  transform: rotate(45deg);
+}
+
+.search-entry-placeholder,
+.search-entry-arrow {
+  color: var(--text-hint);
+}
+
+.glossary-actions {
+  padding: 18rpx 28rpx 0;
+}
+
+.action-grid {
+  gap: 14rpx;
+}
+
+.action-tile {
+  min-height: 206rpx;
+  background: var(--card-bg);
+  border: 1rpx solid var(--border-color);
+  border-radius: 22rpx;
+  box-shadow: var(--shadow-sm);
+}
+
+.action-tile:active {
+  transform: translateY(2rpx) scale(0.985);
+  background: var(--press-bg);
+  box-shadow: var(--shadow-sm);
+}
+
+.action-tile::before {
+  height: 3rpx;
+  background: var(--border-strong) !important;
+}
+
+.action-symbol {
+  width: 54rpx;
+  height: 54rpx;
+  border: 2rpx solid var(--text-primary);
+  border-radius: 16rpx;
+  margin-bottom: 16rpx;
+  position: relative;
+}
+
+.action-symbol::before,
+.action-symbol::after {
+  content: '';
+  position: absolute;
+  background: var(--text-primary);
+}
+
+.symbol-favorite::before {
+  left: 13rpx;
+  right: 13rpx;
+  top: 25rpx;
+  height: 2rpx;
+}
+
+.symbol-favorite::after {
+  left: 25rpx;
+  top: 13rpx;
+  width: 2rpx;
+  height: 28rpx;
+}
+
+.symbol-anki::before {
+  left: 12rpx;
+  top: 12rpx;
+  width: 10rpx;
+  height: 10rpx;
+  box-shadow: 18rpx 0 0 var(--text-primary), 0 18rpx 0 var(--text-primary), 18rpx 18rpx 0 var(--text-primary);
+}
+
+.symbol-random::before {
+  left: 15rpx;
+  top: 15rpx;
+  width: 20rpx;
+  height: 20rpx;
+  border: 2rpx solid var(--text-primary);
+  border-radius: 50%;
+  background: transparent;
+}
+
+.symbol-list::before {
+  left: 13rpx;
+  right: 13rpx;
+  top: 15rpx;
+  height: 2rpx;
+  box-shadow: 0 10rpx 0 var(--text-primary), 0 20rpx 0 var(--text-primary);
+}

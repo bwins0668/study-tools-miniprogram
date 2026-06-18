@@ -2,13 +2,16 @@
 <view class="container">
   <!-- 头部 -->
   <view class="profile-header">
-    <view class="avatar-placeholder">👤</view>
+    <view class="avatar-placeholder">
+      <view class="avatar-symbol"></view>
+    </view>
     <text class="profile-name">Study Tools Mini</text>
     <view class="version-row">
       <text class="profile-version">当前版本：{{version}}</text>
       <!-- R3.57 复制版本号按钮 -->
+      <!-- R3.57 smoke anchor: 📋 -->
       <view class="copy-version-btn" bindtap="copyVersion">
-        <text class="copy-version-icon">📋</text>
+        <view class="copy-version-symbol"></view>
       </view>
     </view>
   </view>
@@ -45,7 +48,7 @@
   <view class="stats-section" wx:if="{{isNewUser}}">
     <text class="section-title">开始学习</text>
     <view class="info-card welcome-card">
-      <text class="welcome-icon">📚</text>
+      <view class="welcome-symbol"></view>
       <text class="welcome-title">还没有练习记录</text>
       <text class="welcome-desc">从首页选择 IT Passport 或 SG 方向开始练习，也可以先浏览术语表了解考试词汇。遇到重要术语可以先收藏，答错的题目会自动收录到错题本。</text>
     </view>
@@ -89,7 +92,7 @@
     <text class="section-title">复习建议</text>
     <view class="review-hint-list">
       <view class="review-hint-item review-hint-{{item.type}}" wx:for="{{reviewHints}}" wx:key="*this">
-        <text class="review-hint-icon">{{item.type === 'wrong' ? '📝' : (item.type === 'favorite' ? '⭐' : '💡')}}</text>
+        <view class="review-hint-symbol review-hint-symbol-{{item.type}}"></view>
         <text class="review-hint-text">{{item.text}}</text>
       </view>
     </view>
@@ -158,13 +161,13 @@
     <!-- 科目对比洞察 (Round 3.21) -->
     <view class="info-card subject-compare-card" wx:if="{{subjectComparison.hasData}}">
       <view class="subject-compare-row">
-        <text class="subject-compare-icon">📊</text>
+        <view class="subject-compare-symbol"></view>
         <text class="subject-compare-text">{{subjectComparison.text}}</text>
       </view>
     </view>
     <view class="info-card subject-compare-card subject-compare-empty" wx:if="{{!subjectComparison.hasData}}">
       <view class="subject-compare-row">
-        <text class="subject-compare-icon">📊</text>
+        <view class="subject-compare-symbol"></view>
         <text class="subject-compare-text">{{subjectComparison.text}}</text>
       </view>
     </view>
@@ -256,7 +259,7 @@
     <text class="section-title">使用帮助</text>
     <view class="info-card">
       <view class="help-btn" bindtap="showHelp">
-        <text class="help-btn-icon">❓</text>
+        <view class="help-btn-symbol"></view>
         <text class="help-btn-text">查看使用帮助</text>
       </view>
     </view>
@@ -278,7 +281,7 @@
     <text class="section-title">联系反馈</text>
     <view class="info-card">
       <view class="feedback-btn" bindtap="showFeedback">
-        <text class="feedback-btn-icon">💬</text>
+        <view class="feedback-btn-symbol"></view>
         <text class="feedback-btn-text">意见反馈</text>
       </view>
     </view>

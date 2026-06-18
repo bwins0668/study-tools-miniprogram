@@ -272,3 +272,117 @@
   font-size: 26rpx;
   color: #ffffff;
 }
+
+/* Round UI depth 8: term detail consistency */
+.page {
+  background: var(--bg-color);
+}
+
+.back-nav {
+  margin: 12rpx 28rpx 8rpx;
+  padding: 18rpx 0;
+}
+
+.back-arrow,
+.back-text {
+  color: var(--text-secondary);
+}
+
+.card,
+.favorite-btn {
+  background: var(--card-bg);
+  border: 1rpx solid var(--border-color);
+  border-radius: 22rpx;
+  box-shadow: var(--shadow-sm);
+}
+
+.card:active,
+.favorite-btn:active,
+.copy-term-btn:active,
+.copy-example-btn:active,
+.note-save-btn:active,
+.related-item:active {
+  transform: translateY(2rpx) scale(0.985);
+  background: var(--press-bg);
+}
+
+.term-title-row {
+  align-items: flex-start;
+}
+
+.term-main,
+.term-line,
+.paragraph,
+.related-trans {
+  word-break: break-word;
+}
+
+.level,
+.category-badge,
+.tag {
+  color: var(--text-secondary);
+  background: var(--bg-surface);
+  border: 1rpx solid var(--divider-color);
+}
+
+.section-title,
+.learning-tip-title,
+.favorite-text {
+  color: var(--text-primary) !important;
+}
+
+.learning-tip-card {
+  border-left: 5rpx solid var(--border-strong);
+}
+
+.copy-term-btn,
+.copy-example-btn {
+  background: var(--bg-surface);
+  border: 1rpx solid var(--border-color);
+  border-radius: 14rpx;
+}
+
+.copy-term-symbol,
+.copy-example-symbol {
+  width: 28rpx;
+  height: 28rpx;
+  border: 2rpx solid var(--text-secondary);
+  border-radius: 8rpx;
+  position: relative;
+}
+
+.copy-example-symbol {
+  margin-right: 10rpx;
+}
+
+.copy-term-symbol::before,
+.copy-example-symbol::before {
+  content: '';
+  position: absolute;
+  left: 7rpx;
+  right: 7rpx;
+  top: 8rpx;
+  height: 2rpx;
+  background: var(--text-secondary);
+  box-shadow: 0 7rpx 0 var(--text-secondary);
+}
+
+.favorite-btn-active {
+  background: var(--active-bg);
+  border-color: var(--border-strong);
+}
+
+.favorite-star {
+  color: var(--text-primary);
+}
+
+.note-input {
+  border-radius: 16rpx;
+  background: var(--bg-surface);
+}
+
+.note-save-btn {
+  background: #111827;
+  border: 1rpx solid #111827;
+  border-radius: 999rpx;
+}

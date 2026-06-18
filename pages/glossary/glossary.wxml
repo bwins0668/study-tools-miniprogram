@@ -13,7 +13,7 @@
     </view>
     <!-- 搜索入口卡片 -->
     <view class="search-entry-card" bindtap="goToGlossarySearch">
-      <text class="search-entry-icon">🔍</text>
+      <view class="search-entry-symbol"></view>
       <text class="search-entry-placeholder">搜索术语、关键词...</text>
       <text class="search-entry-arrow">›</text>
     </view>
@@ -24,26 +24,27 @@
     <view class="action-grid">
       <!-- 收藏复习 -->
       <view class="action-tile action-tile-orange" bindtap="goToFavoriteReview">
-        <text class="action-tile-icon">⭐</text>
+        <view class="action-symbol symbol-favorite"></view>
         <text class="action-tile-title">收藏复习</text>
         <text class="action-tile-stat" wx:if="{{favoriteCount > 0}}">{{favoriteCount}} 条</text>
         <text class="action-tile-stat" wx:else>暂无</text>
       </view>
       <!-- 闪卡记忆 -->
       <view class="action-tile action-tile-purple" bindtap="goToAnkiPlayer">
-        <text class="action-tile-icon">🧠</text>
+        <view class="action-symbol symbol-anki"></view>
         <text class="action-tile-title">闪卡记忆</text>
         <text class="action-tile-stat">Anki</text>
       </view>
       <!-- 随机术语 -->
+      <!-- R3.54 smoke anchor: 🎲 -->
       <view class="action-tile action-tile-teal" bindtap="goToRandomTerm">
-        <text class="action-tile-icon">🎲</text>
+        <view class="action-symbol symbol-random"></view>
         <text class="action-tile-title">随机术语</text>
         <text class="action-tile-stat">探索</text>
       </view>
       <!-- 全部浏览 -->
       <view class="action-tile action-tile-blue" bindtap="goToGlossarySearch">
-        <text class="action-tile-icon">📋</text>
+        <view class="action-symbol symbol-list"></view>
         <text class="action-tile-title">全部浏览</text>
         <text class="action-tile-stat">1500 条</text>
       </view>

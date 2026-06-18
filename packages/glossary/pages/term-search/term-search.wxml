@@ -3,7 +3,7 @@
   <!-- 搜索框 -->
   <view class="search-bar">
     <view class="search-input-wrap">
-      <text class="search-icon">🔍</text>
+      <view class="search-symbol"></view>
       <input
         class="search-input"
         placeholder="搜索术语（英文/中文/日文）"
@@ -99,7 +99,7 @@
 
     <!-- 搜索无结果 (Round 3.21 增强) -->
     <view class="empty-state" wx:if="{{filteredList.length === 0 && keyword}}">
-      <text class="empty-icon">🔍</text>
+      <view class="empty-symbol"></view>
       <text class="empty-text">没有找到相关术语</text>
       <view class="empty-suggestions">
         <text class="empty-suggestion-title">建议尝试：</text>

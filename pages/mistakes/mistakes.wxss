@@ -292,3 +292,177 @@
     box-shadow: 0 3rpx 16rpx rgba(0,0,0,0.2);
   }
 }
+
+/* Round UI depth 7: calm mistakes review hub */
+.container {
+  background: var(--bg-color);
+}
+
+.mistakes-hero {
+  margin: 28rpx 28rpx 0;
+  padding: 30rpx;
+  background: var(--card-bg);
+  border: 1rpx solid var(--border-color);
+  border-radius: 26rpx;
+  box-shadow: var(--shadow-sm);
+}
+
+.mistakes-hero::before,
+.mistakes-hero::after {
+  display: none;
+}
+
+.mistakes-hero-title {
+  color: var(--text-primary);
+  letter-spacing: 0;
+}
+
+.mistakes-hero-subtitle,
+.mistakes-last-time {
+  color: var(--text-secondary);
+}
+
+.mistakes-hero-count {
+  background: var(--color-error-light);
+  border: 1rpx solid rgba(138, 95, 100, 0.26);
+  border-radius: 18rpx;
+  backdrop-filter: none;
+}
+
+.mistakes-hero-count-num,
+.mistakes-hero-count-label {
+  color: var(--color-error);
+}
+
+.mistakes-cat-chip {
+  background: var(--bg-surface);
+  border: 1rpx solid var(--divider-color);
+}
+
+.mistakes-cat-itpass .mistakes-cat-chip-text,
+.mistakes-cat-sg .mistakes-cat-chip-text {
+  color: var(--text-secondary);
+}
+
+.mistakes-actions {
+  padding: 18rpx 28rpx 0;
+}
+
+.action-grid {
+  gap: 14rpx;
+}
+
+.action-tile {
+  min-height: 188rpx;
+  background: var(--card-bg);
+  border: 1rpx solid var(--border-color);
+  border-radius: 22rpx;
+  box-shadow: var(--shadow-sm);
+}
+
+.action-tile:active {
+  transform: translateY(2rpx) scale(0.985);
+  background: var(--press-bg);
+  box-shadow: var(--shadow-sm);
+}
+
+.action-tile::before {
+  height: 3rpx;
+  background: var(--border-strong) !important;
+}
+
+.action-symbol {
+  width: 50rpx;
+  height: 50rpx;
+  border: 2rpx solid var(--text-primary);
+  border-radius: 15rpx;
+  margin-bottom: 14rpx;
+  position: relative;
+}
+
+.action-symbol::before,
+.action-symbol::after {
+  content: '';
+  position: absolute;
+  background: var(--text-primary);
+}
+
+.symbol-list::before {
+  left: 12rpx;
+  right: 12rpx;
+  top: 14rpx;
+  height: 2rpx;
+  box-shadow: 0 9rpx 0 var(--text-primary), 0 18rpx 0 var(--text-primary);
+}
+
+.symbol-anki::before {
+  left: 11rpx;
+  top: 11rpx;
+  width: 9rpx;
+  height: 9rpx;
+  box-shadow: 17rpx 0 0 var(--text-primary), 0 17rpx 0 var(--text-primary), 17rpx 17rpx 0 var(--text-primary);
+}
+
+.symbol-practice::before {
+  left: 12rpx;
+  right: 12rpx;
+  top: 23rpx;
+  height: 2rpx;
+}
+
+.symbol-practice::after {
+  top: 12rpx;
+  bottom: 12rpx;
+  left: 23rpx;
+  width: 2rpx;
+}
+
+.mistakes-empty {
+  margin: 44rpx 28rpx 0;
+  padding: 64rpx 36rpx;
+  background: var(--card-bg);
+  border: 1rpx solid var(--border-color);
+  border-radius: 26rpx;
+  box-shadow: var(--shadow-sm);
+}
+
+.mistakes-empty-symbol {
+  width: 86rpx;
+  height: 86rpx;
+  border: 3rpx solid var(--text-hint);
+  border-radius: 26rpx;
+  margin-bottom: 24rpx;
+  position: relative;
+}
+
+.mistakes-empty-symbol::before,
+.mistakes-empty-symbol::after {
+  content: '';
+  position: absolute;
+  background: var(--text-hint);
+}
+
+.mistakes-empty-symbol::before {
+  left: 22rpx;
+  right: 22rpx;
+  top: 40rpx;
+  height: 3rpx;
+}
+
+.mistakes-empty-symbol::after {
+  top: 22rpx;
+  bottom: 22rpx;
+  left: 40rpx;
+  width: 3rpx;
+}
+
+.mistakes-empty-btn {
+  background: #111827;
+  border: 1rpx solid #111827;
+  box-shadow: 0 14rpx 32rpx rgba(17, 24, 39, 0.16);
+}
+
+.mistakes-empty-btn:active {
+  transform: translateY(2rpx) scale(0.97);
+  opacity: 0.9;
+}

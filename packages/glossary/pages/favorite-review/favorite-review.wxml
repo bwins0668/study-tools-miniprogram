@@ -13,7 +13,7 @@
     <!-- 搜索框 -->
     <view class="search-bar">
       <view class="search-input-wrap">
-        <text class="search-icon">🔍</text>
+        <view class="search-symbol"></view>
         <input
           class="search-input"
           placeholder="搜索收藏术语"
@@ -39,7 +39,7 @@
     <view wx:if="{{mode === 'list'}}">
       <!-- 搜索无结果 -->
       <view class="empty-state" wx:if="{{searchEmpty}}">
-        <text class="empty-icon">🔍</text>
+        <view class="empty-symbol"></view>
         <text class="empty-text">没有匹配的收藏术语</text>
         <text class="empty-hint">试试其他关键词</text>
       </view>
@@ -155,7 +155,7 @@
 
   <!-- 空状态 (无收藏) -->
   <view class="empty-state" wx:if="{{!hasFavorites}}">
-    <text class="empty-icon">⭐</text>
+    <view class="empty-symbol"></view>
     <text class="empty-text">还没有收藏术语</text>
     <text class="empty-hint">当前还没有收藏术语。遇到重要术语时，可以先收藏，之后在这里集中复习。</text>
     <view class="go-search-btn" bindtap="goToGlossary">

@@ -7,7 +7,7 @@
     </view>
     <!-- R3.62 答题计时器 -->
     <view class="timer-section" wx:if="{{!isFinished && timerText}}">
-      <text class="timer-icon">⏱️</text>
+      <text class="timer-icon">T</text>
       <text class="timer-text">{{timerText}}</text>
     </view>
   </view>
@@ -50,7 +50,7 @@
       <!-- R3.60 提示按钮 -->
       <view class="hint-section" wx:if="{{currentQuestion.shared_hint}}">
         <view class="hint-btn {{showHint ? 'hint-btn-active' : ''}}" bindtap="toggleHint">
-          <text class="hint-btn-icon">{{showHint ? '📕' : '💡'}}</text>
+          <view class="hint-btn-symbol {{showHint ? 'hint-btn-symbol-active' : ''}}"></view>
           <text class="hint-btn-text">{{showHint ? '隐藏提示' : '查看提示'}}</text>
         </view>
         <view class="hint-content" wx:if="{{showHint}}">
@@ -116,7 +116,7 @@
       <text class="result-kicker">本次练习完成</text>
       <!-- R3.62 答题用时 -->
       <view class="result-timer" wx:if="{{timerText}}">
-        <text class="result-timer-icon">⏱️</text>
+        <text class="result-timer-icon">T</text>
         <text class="result-timer-text">用时 {{timerText}}</text>
       </view>
       <text class="result-mode">{{resultModeLabel}}</text>
@@ -144,7 +144,7 @@
       <!-- 学习洞察 -->
       <view class="insight-block insight-{{accuracyLevel}}">
         <view class="insight-header">
-          <text class="insight-icon">{{accuracyLevel === 'good' ? '🌟' : (accuracyLevel === 'moderate' ? '📖' : (accuracyLevel === 'low' ? '🎯' : ''))}}</text>
+          <view class="insight-symbol insight-symbol-{{accuracyLevel}}"></view>
           <text class="insight-label">{{encouragementText}}</text>
         </view>
         <text class="insight-hint" wx:if="{{insightHint}}">{{insightHint}}</text>
@@ -152,7 +152,7 @@
 
       <!-- 下一步建议 -->
       <view class="next-action-card" wx:if="{{nextAction}}">
-        <text class="next-action-icon">👉</text>
+        <text class="next-action-icon">→</text>
         <text class="next-action-text">{{nextAction}}</text>
       </view>
 
@@ -162,7 +162,7 @@
         </view>
         <!-- R3.50 重练错题按钮 -->
         <view class="result-btn result-btn-retry" bindtap="retryWrongQuestions" wx:if="{{wrongQuestionIds.length > 0}}">
-          <text class="result-btn-text result-btn-text-retry">🔄 重练错题 ({{wrongQuestionIds.length}}题)</text>
+          <text class="result-btn-text result-btn-text-retry">重练错题 ({{wrongQuestionIds.length}}题)</text>
         </view>
         <view class="result-btn {{hasWrongQuestions ? 'result-btn-wrong' : ''}}" bindtap="goMistakes">
           <text class="result-btn-text {{hasWrongQuestions ? 'result-btn-text-wrong' : ''}}">查看错题{{hasWrongQuestions ? ' (' + sessionWrong + '题)' : ''}}</text>
@@ -172,13 +172,13 @@
         </view>
         <!-- R3.46 分享按钮 -->
         <button class="result-btn share-btn" open-type="share">
-          <text class="result-btn-text share-btn-text">📤 分享成绩</text>
+          <text class="result-btn-text share-btn-text">分享成绩</text>
         </button>
       </view>
 
       <!-- R3.43 答题回顾按钮 -->
       <view class="review-btn" bindtap="toggleReview" wx:if="{{reviewList.length > 0}}">
-        <text class="review-btn-text">📋 回顾本题 ({{reviewList.length}}题)</text>
+        <text class="review-btn-text">回顾本题 ({{reviewList.length}}题)</text>
       </view>
     </view>
   </block>
@@ -207,8 +207,9 @@
             <text class="review-item-correct-answer text-correct">{{item.correctAnswer}}</text>
           </view>
           <!-- R3.48 错题解析 -->
+          <!-- R3.48 smoke anchor: 💡 提示 -->
           <view class="review-item-answer" wx:if="{{item.hint}}">
-            <text class="review-item-label">💡 提示：</text>
+            <text class="review-item-label">提示：</text>
             <text class="review-item-hint">{{item.hint}}</text>
           </view>
         </view>

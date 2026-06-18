@@ -46,14 +46,14 @@
 
   <!-- 复习优先级提示 -->
   <view class="priority-hint" wx:if="{{totalCount > 0}}">
-    <text class="priority-hint-icon">💡</text>
+    <view class="priority-hint-symbol"></view>
     <text class="priority-hint-text">{{priorityHint}}</text>
   </view>
 
   <!-- 搜索框 -->
   <view class="search-section" wx:if="{{totalCount > 0}}">
     <view class="search-bar">
-      <text class="search-icon">🔍</text>
+      <view class="search-symbol"></view>
       <input
         class="search-input"
         placeholder="搜索错题：题干、答案、解析…"
@@ -215,7 +215,7 @@
 
   <!-- 搜索无结果 -->
   <view class="empty-state" wx:if="{{filteredList.length === 0 && searchEmpty}}">
-    <text class="empty-icon">🔍</text>
+    <view class="empty-symbol"></view>
     <text class="empty-text">没有匹配的错题</text>
     <text class="empty-hint">试试其他关键词。</text>
     <view class="empty-action">
@@ -227,7 +227,7 @@
 
   <!-- 空状态 -->
   <view class="empty-state" wx:elif="{{filteredList.length === 0 && !searchEmpty}}">
-    <text class="empty-icon">📋</text>
+    <view class="empty-symbol"></view>
     <text class="empty-text">{{activeFilter === 'all' ? '当前没有错题' : '该分类下没有错题'}}</text>
     <text class="empty-hint">继续练习后会自动记录需要复习的题目。</text>
     <view class="empty-action">

@@ -29,7 +29,7 @@
       </view>
       <!-- 学习建议 -->
       <view class="overview-suggestion suggestion-{{suggestion.level}}" wx:if="{{suggestion.text}}">
-        <text class="suggestion-icon">{{suggestion.level === 'good' ? '✅' : (suggestion.level === 'start' ? '📚' : (suggestion.level === 'moderate' ? '📖' : '🎯'))}}</text>
+        <view class="suggestion-symbol suggestion-icon"></view>
         <text class="suggestion-text">{{suggestion.text}}</text>
       </view>
     </view>
@@ -37,7 +37,7 @@
 
   <!-- 新用户引导 (Round 3.22) -->
   <view class="overview-card card new-user-card" wx:if="{{overallTotal === 0}}">
-    <text class="new-user-icon">📝</text>
+    <view class="new-user-symbol ui-symbol ui-symbol-line"></view>
     <text class="new-user-title">还没有练习记录</text>
     <text class="new-user-desc">选择下方练习方式开始学习，建议先从课程练习入手</text>
   </view>
@@ -48,7 +48,9 @@
     <view class="menu-card menu-card-lesson" bindtap="goLessonQuiz">
       <view class="menu-card-header">
         <view class="menu-card-icon-wrap menu-card-icon-lesson">
-          <text class="menu-card-icon">📚</text>
+          <view class="menu-card-symbol symbol-lesson">
+            <view class="symbol-stem"></view>
+          </view>
         </view>
         <view class="menu-card-body">
           <text class="menu-card-title">课程练习</text>
@@ -75,7 +77,9 @@
     <view class="menu-card menu-card-exam">
       <view class="menu-card-header" bindtap="togglePastExamList">
         <view class="menu-card-icon-wrap menu-card-icon-exam">
-          <text class="menu-card-icon">📝</text>
+          <view class="menu-card-symbol symbol-exam">
+            <view class="symbol-stem"></view>
+          </view>
         </view>
         <view class="menu-card-body">
           <text class="menu-card-title">日文真题</text>
