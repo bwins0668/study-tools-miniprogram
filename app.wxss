@@ -1,5 +1,11 @@
-/* app.wxss - cold monochrome design system */
+/* ============================================================
+   app.wxss — cold monochrome design system
+   Sections: tokens · reset · dark mode · layout · typography
+             · surfaces · buttons · tags · inputs · states
+             · quiz/glossary components · symbols · legacy bars
+   ============================================================ */
 
+/* ---- 1. Design tokens ---- */
 page {
   /* Color tokens */
   --bg-color: #f4f6f8;
@@ -92,6 +98,7 @@ page {
   box-sizing: border-box;
 }
 
+/* ---- 2. Element reset ---- */
 view,
 text,
 button,
@@ -105,6 +112,7 @@ button::after {
   border: none;
 }
 
+/* ---- 3. Dark mode tokens ---- */
 @media (prefers-color-scheme: dark) {
   page {
     --bg-color: #0d1117;
@@ -146,7 +154,7 @@ button::after {
   }
 }
 
-/* Page shells */
+/* ---- 4. Page layout ---- */
 .container {
   min-height: 100vh;
   padding: 20rpx 0;
@@ -165,7 +173,7 @@ button::after {
   margin-top: 24rpx;
 }
 
-/* Typography */
+/* ---- 5. Typography ---- */
 .ui-title {
   display: block;
   font-size: var(--font-2xl);
@@ -190,7 +198,7 @@ button::after {
   line-height: 1.55;
 }
 
-/* Surfaces */
+/* ---- 6. Surfaces / cards ---- */
 .card,
 .ui-card {
   background: var(--card-bg);
@@ -248,7 +256,7 @@ button::after {
   letter-spacing: 0;
 }
 
-/* Buttons */
+/* ---- 7. Buttons ---- */
 .btn-primary,
 .ui-btn-primary {
   display: flex;
@@ -335,7 +343,7 @@ button::after {
   color: var(--text-primary);
 }
 
-/* Tags and pills */
+/* ---- 8. Tags / pills ---- */
 .tag,
 .ui-pill {
   display: inline-flex;
@@ -369,7 +377,7 @@ button::after {
   border-color: var(--border-strong);
 }
 
-/* Inputs */
+/* ---- 9. Inputs / search ---- */
 .ui-input {
   min-height: 84rpx;
   padding: 0 28rpx;
@@ -405,7 +413,7 @@ button::after {
   background: var(--card-bg-elevated);
 }
 
-/* States */
+/* ---- 10. States ---- */
 .is-disabled,
 .ui-disabled {
   opacity: 0.52;
@@ -466,6 +474,7 @@ button::after {
   transition: width var(--transition-slow);
 }
 
+/* ---- 11. Quiz / glossary / review components ---- */
 .ui-question {
   padding: 32rpx;
   border-radius: var(--radius-xl);
@@ -536,7 +545,7 @@ button::after {
   border-radius: var(--radius-lg);
 }
 
-/* Geometric symbol system */
+/* ---- 12. Geometric symbol system ---- */
 .ui-symbol {
   position: relative;
   width: 56rpx;
@@ -603,7 +612,7 @@ button::after {
   border-right: 2rpx solid currentColor;
 }
 
-/* Legacy color-bar hooks kept subdued */
+/* ---- 13. Legacy color-bar hooks (kept subdued) ---- */
 .bar-top {
   position: relative;
   overflow: hidden;

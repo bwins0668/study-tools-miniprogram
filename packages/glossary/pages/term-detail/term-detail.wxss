@@ -1,36 +1,51 @@
+/* packages/glossary/pages/term-detail/term-detail.wxss — monochrome term detail */
+
 .page {
   padding: 20rpx 0 60rpx;
   min-height: 100vh;
+  background: var(--bg-color);
 }
 
-/* 返回导航 (Round 3.23) */
+/* ===== Back nav ===== */
 .back-nav {
   display: flex;
   align-items: center;
-  padding: 20rpx 30rpx;
-  margin-bottom: 8rpx;
+  margin: 12rpx 28rpx 8rpx;
+  padding: 18rpx 0;
 }
 
 .back-arrow {
   font-size: 48rpx;
-  color: #4a90d9;
+  color: var(--text-secondary);
   margin-right: 8rpx;
   line-height: 1;
 }
 
 .back-text {
   font-size: 28rpx;
-  color: #4a90d9;
+  color: var(--text-secondary);
 }
 
+/* ===== Card ===== */
 .card {
-  background-color: #ffffff;
-  border-radius: 16rpx;
+  background: var(--card-bg);
+  border: 1rpx solid var(--border-color);
+  border-radius: 22rpx;
   margin: 16rpx 30rpx;
   padding: 28rpx 32rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm);
 }
 
+.card:active,
+.copy-term-btn:active,
+.copy-example-btn:active,
+.note-save-btn:active,
+.related-item:active {
+  transform: translateY(2rpx) scale(0.985);
+  background: var(--press-bg);
+}
+
+/* ===== Term header ===== */
 .term-header {
   display: flex;
   align-items: center;
@@ -38,12 +53,18 @@
   margin-bottom: 20rpx;
 }
 
-/* R3.56 复制术语按钮 */
 .term-title-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   flex: 1;
   min-width: 0;
+}
+
+.term-main {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: var(--text-primary);
+  word-break: break-word;
 }
 
 .copy-term-btn {
@@ -52,57 +73,45 @@
   justify-content: center;
   padding: 8rpx 12rpx;
   margin-left: 12rpx;
-  background-color: var(--divider-color);
-  border-radius: 8rpx;
+  background: var(--bg-surface);
+  border: 1rpx solid var(--border-color);
+  border-radius: 14rpx;
   flex-shrink: 0;
 }
 
-/* R3.64 复制示例按钮 */
-.copy-example-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12rpx 20rpx;
-  margin-top: 16rpx;
-  background-color: var(--divider-color);
+.copy-term-icon { font-size: 28rpx; }
+
+.copy-term-symbol,
+.copy-example-symbol {
+  width: 28rpx;
+  height: 28rpx;
+  border: 2rpx solid var(--text-secondary);
   border-radius: 8rpx;
-  align-self: flex-start;
+  position: relative;
 }
 
-.copy-example-icon {
-  font-size: 28rpx;
-  margin-right: 8rpx;
+.copy-example-symbol { margin-right: 10rpx; }
+
+.copy-term-symbol::before,
+.copy-example-symbol::before {
+  content: '';
+  position: absolute;
+  left: 7rpx;
+  right: 7rpx;
+  top: 8rpx;
+  height: 2rpx;
+  background: var(--text-secondary);
+  box-shadow: 0 7rpx 0 var(--text-secondary);
 }
 
-.copy-example-text {
-  font-size: 26rpx;
-  color: var(--text-secondary);
-}
-
-.copy-term-icon {
-  font-size: 28rpx;
-}
-
-.term-main {
-  font-size: 44rpx;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-.level {
-  font-size: 22rpx;
-  color: #e8913a;
-  background-color: #fdf4e8;
-  padding: 6rpx 18rpx;
-  border-radius: 20rpx;
-}
-
+/* ===== Term lines ===== */
 .term-line {
   display: block;
   font-size: 28rpx;
   color: var(--text-secondary);
   margin-bottom: 10rpx;
   line-height: 1.6;
+  word-break: break-word;
 }
 
 .category-row {
@@ -111,36 +120,39 @@
   margin-bottom: 8rpx;
 }
 
-.category-badge {
-  font-size: 24rpx;
-  color: #4a90d9;
-  background-color: #eef5fd;
-  padding: 6rpx 20rpx;
-  border-radius: 20rpx;
-  font-weight: 500;
-}
-
 .tag-row {
   display: flex;
   flex-wrap: wrap;
   margin-top: 16rpx;
 }
 
+.level,
+.category-badge,
 .tag {
   font-size: 22rpx;
   color: var(--text-secondary);
-  background-color: var(--divider-color);
+  background: var(--bg-surface);
+  border: 1rpx solid var(--divider-color);
   padding: 6rpx 18rpx;
-  border-radius: 16rpx;
+  border-radius: 20rpx;
+}
+
+.category-badge {
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.tag {
   margin-right: 12rpx;
   margin-bottom: 12rpx;
 }
 
+/* ===== Sections ===== */
 .section-title {
   display: block;
   font-size: 26rpx;
   font-weight: 600;
-  color: #4a90d9;
+  color: var(--text-primary) !important;
   margin-bottom: 16rpx;
 }
 
@@ -148,27 +160,45 @@
   font-size: 28rpx;
   color: var(--text-secondary);
   line-height: 1.8;
+  word-break: break-word;
 }
 
-/* 收藏按钮 */
+/* ===== Copy example ===== */
+.copy-example-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12rpx 20rpx;
+  margin-top: 16rpx;
+  background: var(--bg-surface);
+  border: 1rpx solid var(--border-color);
+  border-radius: 14rpx;
+  align-self: flex-start;
+}
+
+.copy-example-icon { font-size: 28rpx; margin-right: 8rpx; }
+.copy-example-text { font-size: 26rpx; color: var(--text-secondary); }
+
+/* ===== Favorite button ===== */
 .favorite-btn {
   display: flex;
   align-items: center;
-  background-color: #ffffff;
-  border-radius: 16rpx;
+  background: var(--card-bg);
+  border: 1rpx solid var(--border-color);
+  border-radius: 22rpx;
   margin: 40rpx 30rpx;
   padding: 28rpx 32rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm);
 }
 
 .favorite-btn-active {
-  background-color: #fff8e1;
-  border: 1rpx solid #ffe082;
+  background: var(--active-bg);
+  border-color: var(--border-strong);
 }
 
 .favorite-star {
   font-size: 40rpx;
-  color: #e8913a;
+  color: var(--text-primary);
   margin-right: 16rpx;
   flex-shrink: 0;
   width: 48rpx;
@@ -184,7 +214,7 @@
 .favorite-text {
   font-size: 30rpx;
   font-weight: 600;
-  color: #4a90d9;
+  color: var(--text-primary) !important;
   margin-bottom: 4rpx;
 }
 
@@ -194,13 +224,13 @@
   line-height: 1.4;
 }
 
-/* 学习建议卡片 */
+/* ===== Learning tip ===== */
 .learning-tip-card {
-  border-left: 6rpx solid #4a90d9;
+  border-left: 5rpx solid var(--border-strong);
 }
 
 .learning-tip-title {
-  color: #4a90d9 !important;
+  color: var(--text-primary) !important;
 }
 
 .learning-tip-text {
@@ -208,7 +238,7 @@
   font-size: 26rpx !important;
 }
 
-/* R3.39 相关术语推荐 */
+/* ===== Related terms ===== */
 .related-item {
   display: flex;
   align-items: center;
@@ -217,14 +247,9 @@
   border-bottom: 1rpx solid var(--divider-color);
 }
 
-.related-item:last-child {
-  border-bottom: none;
-}
+.related-item:last-child { border-bottom: none; }
 
-.related-main {
-  flex: 1;
-  min-width: 0;
-}
+.related-main { flex: 1; min-width: 0; }
 
 .related-term {
   display: block;
@@ -238,6 +263,7 @@
   display: block;
   font-size: 24rpx;
   color: var(--text-secondary);
+  word-break: break-word;
 }
 
 .related-arrow {
@@ -247,142 +273,30 @@
   margin-left: 12rpx;
 }
 
-/* R3.49 学习笔记 */
+/* ===== Notes ===== */
 .note-input {
   width: 100%;
   min-height: 160rpx;
   padding: 16rpx;
   margin-top: 16rpx;
   border: 1rpx solid var(--border-color);
-  border-radius: 8rpx;
+  border-radius: 16rpx;
   font-size: 26rpx;
   color: var(--text-primary);
+  background: var(--bg-surface);
   box-sizing: border-box;
 }
 
 .note-save-btn {
   margin-top: 16rpx;
   padding: 12rpx 32rpx;
-  background: #4caf50;
-  border-radius: 8rpx;
+  background: #111827;
+  border: 1rpx solid #111827;
+  border-radius: 999rpx;
   text-align: center;
 }
 
 .note-save-text {
   font-size: 26rpx;
   color: #ffffff;
-}
-
-/* Round UI depth 8: term detail consistency */
-.page {
-  background: var(--bg-color);
-}
-
-.back-nav {
-  margin: 12rpx 28rpx 8rpx;
-  padding: 18rpx 0;
-}
-
-.back-arrow,
-.back-text {
-  color: var(--text-secondary);
-}
-
-.card,
-.favorite-btn {
-  background: var(--card-bg);
-  border: 1rpx solid var(--border-color);
-  border-radius: 22rpx;
-  box-shadow: var(--shadow-sm);
-}
-
-.card:active,
-.favorite-btn:active,
-.copy-term-btn:active,
-.copy-example-btn:active,
-.note-save-btn:active,
-.related-item:active {
-  transform: translateY(2rpx) scale(0.985);
-  background: var(--press-bg);
-}
-
-.term-title-row {
-  align-items: flex-start;
-}
-
-.term-main,
-.term-line,
-.paragraph,
-.related-trans {
-  word-break: break-word;
-}
-
-.level,
-.category-badge,
-.tag {
-  color: var(--text-secondary);
-  background: var(--bg-surface);
-  border: 1rpx solid var(--divider-color);
-}
-
-.section-title,
-.learning-tip-title,
-.favorite-text {
-  color: var(--text-primary) !important;
-}
-
-.learning-tip-card {
-  border-left: 5rpx solid var(--border-strong);
-}
-
-.copy-term-btn,
-.copy-example-btn {
-  background: var(--bg-surface);
-  border: 1rpx solid var(--border-color);
-  border-radius: 14rpx;
-}
-
-.copy-term-symbol,
-.copy-example-symbol {
-  width: 28rpx;
-  height: 28rpx;
-  border: 2rpx solid var(--text-secondary);
-  border-radius: 8rpx;
-  position: relative;
-}
-
-.copy-example-symbol {
-  margin-right: 10rpx;
-}
-
-.copy-term-symbol::before,
-.copy-example-symbol::before {
-  content: '';
-  position: absolute;
-  left: 7rpx;
-  right: 7rpx;
-  top: 8rpx;
-  height: 2rpx;
-  background: var(--text-secondary);
-  box-shadow: 0 7rpx 0 var(--text-secondary);
-}
-
-.favorite-btn-active {
-  background: var(--active-bg);
-  border-color: var(--border-strong);
-}
-
-.favorite-star {
-  color: var(--text-primary);
-}
-
-.note-input {
-  border-radius: 16rpx;
-  background: var(--bg-surface);
-}
-
-.note-save-btn {
-  background: #111827;
-  border: 1rpx solid #111827;
-  border-radius: 999rpx;
 }

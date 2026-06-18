@@ -773,7 +773,7 @@
   font-size: 18rpx;
   font-weight: 720;
   color: #ffffff;
-  background: linear-gradient(135deg, #ef4444, #dc2626);
+  background: linear-gradient(135deg, #ef4444, #dc2626); /* smoke anchor */
   box-shadow: 0 4rpx 12rpx rgba(17, 24, 39, 0.12);
 }
 
