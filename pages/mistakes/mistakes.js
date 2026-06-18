@@ -38,6 +38,12 @@ Page({
     });
   },
 
+  goToAnkiMistakes: function () {
+    wx.navigateTo({
+      url: '/packages/glossary/pages/anki-player/anki-player?source=mistakes&from=mistakes'
+    });
+  },
+
   goStudy: function () {
     wx.navigateTo({
       url: '/packages/quiz/pages/exam-menu/exam-menu?exam=itpass'
