@@ -6,7 +6,7 @@
       <text class="page-subtitle">フラッシュカード</text>
     </view>
 
-    <view class="section card">
+    <view class="section">
       <view class="section-title-row">
         <text class="section-title">继续学习</text>
       </view>
@@ -19,9 +19,8 @@
         </view>
         <view class="continue-btn ui-pressable" bindtap="continueLastProgress">继续复习</view>
       </view>
-      <view class="empty-state" wx:else>
-        <view class="empty-dot"></view>
-        <text class="empty-text">先选择课程开始复习</text>
+      <view class="continue-hint" wx:else>
+        <text class="continue-hint-text">先选择课程开始复习</text>
       </view>
     </view>
 
@@ -82,7 +81,7 @@
               <text class="course-stat-label">已收藏</text>
             </view>
             <view class="course-stat">
-              <text class="course-stat-value">--</text>
+              <text class="course-stat-value">0</text>
               <text class="course-stat-label">待复习</text>
             </view>
           </view>

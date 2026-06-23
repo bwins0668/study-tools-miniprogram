@@ -1,4 +1,5 @@
 // packages/quiz/pages/flashcard-quiz/flashcard-quiz.js
+// v2: Async loading, error handling, lazy data load
 var adapter = require('../../data/flashcard_adapter');
 var storage = require('../../../../utils/storage');
 
@@ -28,7 +29,9 @@ Page({
     showFilter: false,
     timerText: '',
     startTime: 0,
-    hasRestored: false
+    hasRestored: false,
+    isLoading: true,
+    loadError: ''
   },
 
   onLoad: function (options) {
@@ -43,8 +46,7 @@ Page({
       filterCategory: filterCategory
     });
 
-    this.loadDeck(course, filterYear, filterCategory);
-    this.startTimer();
+    this.loadDeckAsync(course, filterYear, filterCategory);
   },
 
   onShow: function () {
@@ -75,75 +77,100 @@ Page({
     }
   },
 
-  loadDeck: function (course, yearId, category) {
-    var deck = adapter.getFlashcardDeck(course);
-    var cards = deck.cards;
+  loadDeckAsync: function (course, yearId, category) {
+    var self = this;
+    self.setData({ isLoading: true, loadError: '' });
 
-    if (yearId) {
-      cards = cards.filter(function (c) { return c.yearId === yearId; });
-    }
-    if (category) {
-      cards = cards.filter(function (c) { return c.category === category; });
-    }
+    // Use setTimeout to allow UI to render loading state
+    setTimeout(function () {
+      try {
+        var deck = adapter.getFlashcardDeck(course);
+        var cards = deck.cards;
 
-    var yearOptions = [];
-    var byYear = deck.stats.byYear;
-    var yearsMeta = deck.stats.years || [];
-    for (var i = 0; i < yearsMeta.length; i++) {
-      var y = yearsMeta[i];
-      if (!yearId || y.yearId === yearId) {
-        yearOptions.push({
-          yearId: y.yearId,
-          label: y.label || y.year,
-          count: byYear[y.yearId] || 0
+        if (yearId) {
+          cards = cards.filter(function (c) { return c.yearId === yearId; });
+        }
+        if (category) {
+          cards = cards.filter(function (c) { return c.category === category; });
+        }
+
+        var yearOptions = [];
+        var byYear = deck.stats.byYear;
+        var yearsMeta = deck.stats.years || [];
+        for (var i = 0; i < yearsMeta.length; i++) {
+          var y = yearsMeta[i];
+          if (!yearId || y.yearId === yearId) {
+            yearOptions.push({
+              yearId: y.yearId,
+              label: y.label || y.year,
+              count: byYear[y.yearId] || 0
+            });
+          }
+        }
+
+        var catMap = {};
+        for (var j = 0; j < cards.length; j++) {
+          if (cards[j].category) {
+            if (!catMap[cards[j].category]) catMap[cards[j].category] = 0;
+            catMap[cards[j].category]++;
+          }
+        }
+        var categoryOptions = [];
+        var catKeys = Object.keys(catMap);
+        for (var k = 0; k < catKeys.length; k++) {
+          categoryOptions.push({ label: catKeys[k], count: catMap[catKeys[k]] });
+        }
+
+        if (cards.length > 0) {
+          self.setData({
+            cards: cards,
+            totalCards: cards.length,
+            currentIndex: 0,
+            currentCard: cards[0],
+            deckLabel: (yearId ? (yearId + ' ') : '') + (category || '年度模拟'),
+            progressPercent: Math.round(1 / cards.length * 100) || 0,
+            yearOptions: yearOptions,
+            categoryOptions: categoryOptions,
+            isFinished: false,
+            hasAnswered: false,
+            selectedKey: '',
+            isCorrect: false,
+            showBack: false,
+            answeredList: [],
+            wrongIds: [],
+            sessionCorrect: 0,
+            sessionWrong: 0,
+            isLoading: false
+          });
+          self.startTimer();
+        } else {
+          self.setData({
+            cards: [],
+            totalCards: 0,
+            currentCard: null,
+            isFinished: true,
+            deckLabel: '无可用题目',
+            yearOptions: yearOptions,
+            categoryOptions: categoryOptions,
+            isLoading: false
+          });
+        }
+      } catch (e) {
+        console.error('[flashcard-quiz] loadDeck failed:', e);
+        self.setData({
+          isLoading: false,
+          loadError: '题目加载失败，请重试',
+          cards: [],
+          totalCards: 0,
+          currentCard: null,
+          isFinished: true
         });
       }
-    }
+    }, 50);
+  },
 
-    var catMap = {};
-    for (var j = 0; j < cards.length; j++) {
-      if (cards[j].category) {
-        if (!catMap[cards[j].category]) catMap[cards[j].category] = 0;
-        catMap[cards[j].category]++;
-      }
-    }
-    var categoryOptions = [];
-    var catKeys = Object.keys(catMap);
-    for (var k = 0; k < catKeys.length; k++) {
-      categoryOptions.push({ label: catKeys[k], count: catMap[catKeys[k]] });
-    }
-
-    if (cards.length > 0) {
-      this.setData({
-        cards: cards,
-        totalCards: cards.length,
-        currentIndex: 0,
-        currentCard: cards[0],
-        deckLabel: (yearId ? (yearId + ' ') : '') + (category || '年度模拟'),
-        progressPercent: Math.round(1 / cards.length * 100) || 0,
-        yearOptions: yearOptions,
-        categoryOptions: categoryOptions,
-        isFinished: false,
-        hasAnswered: false,
-        selectedKey: '',
-        isCorrect: false,
-        showBack: false,
-        answeredList: [],
-        wrongIds: [],
-        sessionCorrect: 0,
-        sessionWrong: 0
-      });
-    } else {
-      this.setData({
-        cards: [],
-        totalCards: 0,
-        currentCard: null,
-        isFinished: true,
-        deckLabel: '无可用题目',
-        yearOptions: yearOptions,
-        categoryOptions: categoryOptions
-      });
-    }
+  retryLoad: function () {
+    this.loadDeckAsync(this.data.course, this.data.filterYear, this.data.filterCategory);
   },
 
   tryRestoreProgress: function () {
@@ -343,21 +370,18 @@ Page({
   selectYearFilter: function (event) {
     var yearId = event.currentTarget.dataset.yearId || '';
     this.setData({ filterYear: yearId, showFilter: false });
-    this.loadDeck(this.data.course, yearId, this.data.filterCategory);
-    this.startTimer();
+    this.loadDeckAsync(this.data.course, yearId, this.data.filterCategory);
   },
 
   selectCategoryFilter: function (event) {
     var cat = event.currentTarget.dataset.category || '';
     this.setData({ filterCategory: cat, showFilter: false });
-    this.loadDeck(this.data.course, this.data.filterYear, cat);
-    this.startTimer();
+    this.loadDeckAsync(this.data.course, this.data.filterYear, cat);
   },
 
   clearFilters: function () {
     this.setData({ filterYear: '', filterCategory: '', showFilter: false });
-    this.loadDeck(this.data.course, '', '');
-    this.startTimer();
+    this.loadDeckAsync(this.data.course, '', '');
   },
 
   goMistakes: function () {
@@ -371,6 +395,11 @@ Page({
   },
 
   goBack: function () {
-    wx.navigateBack();
+    wx.navigateBack({
+      delta: 1,
+      fail: function () {
+        wx.switchTab({ url: '/pages/flashcards/flashcards' });
+      }
+    });
   }
 });
