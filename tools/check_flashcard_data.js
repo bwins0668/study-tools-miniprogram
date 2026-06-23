@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // tools/check_flashcard_data.js
 // Validates flashcard data adapter output for completeness and correctness.
+// v2: Rejects pseudo-bilingual content (Japanese masquerading as Chinese).
 // Usage: node tools/check_flashcard_data.js
 
 var path = require('path');
@@ -27,13 +28,45 @@ var totalIssues = 0;
 var totalCards = 0;
 var totalFiltered = 0;
 
-function report(exam, stats, cards, issues) {
+function hasJapaneseKana(text) {
+  if (!text) return false;
+  return /[\u3040-\u309F\u30A0-\u30FF]/.test(text);
+}
+
+function isGenuineChinese(text) {
+  if (!text || text.length < 3) return false;
+  var hasChinese = false;
+  var hasKana = false;
+  for (var i = 0; i < text.length; i++) {
+    var c = text.charCodeAt(i);
+    if (c >= 0x4E00 && c <= 0x9FFF) hasChinese = true;
+    if ((c >= 0x3040 && c <= 0x309F) || (c >= 0x30A0 && c <= 0x30FF)) hasKana = true;
+  }
+  if (hasChinese && !hasKana) return true;
+  if (hasChinese) {
+    var chineseCount = 0;
+    var kanaCount = 0;
+    for (var j = 0; j < text.length; j++) {
+      var cc = text.charCodeAt(j);
+      if (cc >= 0x4E00 && cc <= 0x9FFF) chineseCount++;
+      if ((cc >= 0x3040 && cc <= 0x309F) || (cc >= 0x30A0 && cc <= 0x30FF)) kanaCount++;
+    }
+    return chineseCount > kanaCount * 3;
+  }
+  return false;
+}
+
+function report(exam, stats) {
   console.log('\n=== ' + exam.toUpperCase() + ' ===');
   console.log('  Raw questions loaded:    ' + stats.total);
   console.log('  After normalization:     ' + stats.normalized);
   console.log('  Filtered out:            ' + stats.filtered);
   console.log('  After dedup:             ' + stats.deduped);
   console.log('  Dedup removed:           ' + stats.dedupCount);
+  console.log('  Content status:');
+  console.log('    Japanese only:         ' + (stats.contentStatus.japanese_only || 0));
+  console.log('    Bilingual partial:     ' + (stats.contentStatus.bilingual_partial || 0));
+  console.log('    Bilingual complete:    ' + (stats.contentStatus.bilingual_complete || 0));
 
   var yearKeys = Object.keys(stats.byYear);
   console.log('  Years:');
@@ -55,7 +88,9 @@ function report(exam, stats, cards, issues) {
 
 function validateCard(card) {
   var issues = [];
+  var warnings = [];
 
+  // Basic structural validation
   if (!card.id || typeof card.id !== 'string') {
     issues.push('Missing or invalid id');
   }
@@ -65,9 +100,14 @@ function validateCard(card) {
   if (!card.questionJa || card.questionJa.length < 2) {
     issues.push('Missing or too short questionJa');
   }
-  if (!card.questionZh || card.questionZh.length < 2) {
-    issues.push('Missing or too short questionZh');
+  if (!card.answer) {
+    issues.push('Missing answer key');
   }
+  if (card.sourceType === 'past_exam_japanese' && !card.examYear) {
+    issues.push('Missing examYear for past exam question');
+  }
+
+  // Options validation
   if (!Array.isArray(card.options) || card.options.length < 2) {
     issues.push('Insufficient options: ' + (card.options ? card.options.length : 0));
   } else {
@@ -78,48 +118,68 @@ function validateCard(card) {
       if (!opt.textJa || opt.textJa.length < 1) {
         issues.push('Option ' + opt.key + ' missing textJa');
       }
-      if (!opt.textZh || opt.textZh.length < 1) {
-        issues.push('Option ' + opt.key + ' missing textZh');
-      }
-      if (!opt.explanationJa || opt.explanationJa.length < 2) {
-        // Not a hard fail for legacy data, just note
-      }
-      if (!opt.explanationZh || opt.explanationZh.length < 2) {
-        // Not a hard fail for legacy data, just note
-      }
       if (opt.isCorrect) correctCount++;
     }
     if (correctCount !== 1) {
       issues.push('Expected exactly 1 correct answer, found ' + correctCount);
     }
   }
-  if (!card.answer) {
-    issues.push('Missing answer key');
-  }
-  if (!card.explanationZh || card.explanationZh.length < 5) {
-    issues.push('Missing or too short explanationZh');
-  }
-  if (!card.explanationJa || card.explanationJa.length < 5) {
-    issues.push('Missing or too short explanationJa');
-  }
-  if (card.sourceType === 'past_exam_japanese' && !card.examYear) {
-    issues.push('Missing examYear for past exam question');
-  }
 
-  // Check non-official source labeling
-  if (card.sourceType === 'past_exam_japanese' && card.sourceReference) {
-    if (card.sourceReference.indexOf('official') >= 0 || card.sourceReference.indexOf('公') >= 0) {
-      // This is fine - it IS from official past exams
+  // Pseudo-bilingual detection
+  if (card.contentStatus === 'bilingual_complete') {
+    // Check questionZh is genuine Chinese
+    if (!card.questionZh || card.questionZh === card.questionJa) {
+      issues.push('bilingual_complete but questionZh is same as questionJa');
+    } else if (!isGenuineChinese(card.questionZh)) {
+      issues.push('bilingual_complete but questionZh is not genuine Chinese');
+    }
+
+    // Check options have genuine Chinese
+    if (card.options) {
+      for (var j = 0; j < card.options.length; j++) {
+        var o = card.options[j];
+        if (!o.textZh || o.textZh === o.textJa) {
+          issues.push('bilingual_complete but option ' + o.key + ' textZh is same as textJa');
+        } else if (!isGenuineChinese(o.textZh)) {
+          issues.push('bilingual_complete but option ' + o.key + ' textZh is not genuine Chinese');
+        }
+        if (!o.explanationJa || o.explanationJa.length < 5) {
+          warnings.push('bilingual_complete but option ' + o.key + ' missing explanationJa');
+        }
+        if (!o.explanationZh || o.explanationZh.length < 5) {
+          warnings.push('bilingual_complete but option ' + o.key + ' missing explanationZh');
+        }
+      }
+    }
+
+    // Check explanations
+    if (!card.explanationZh || card.explanationZh === card.explanationJa) {
+      issues.push('bilingual_complete but explanationZh is same as explanationJa');
+    } else if (!isGenuineChinese(card.explanationZh)) {
+      issues.push('bilingual_complete but explanationZh is not genuine Chinese');
+    }
+
+    // Check mnemonics
+    if (!card.mnemonicJa && !card.mnemonicZh) {
+      warnings.push('bilingual_complete but no mnemonics');
     }
   }
 
-  return issues;
+  // Warnings for japanese_only
+  if (card.contentStatus === 'japanese_only') {
+    if (card.questionZh && card.questionZh !== card.questionJa && isGenuineChinese(card.questionZh)) {
+      warnings.push('japanese_only but has genuine Chinese questionZh');
+    }
+  }
+
+  return { issues: issues, warnings: warnings };
 }
 
 console.log('=== Flashcard Data Validation ===');
 console.log('Adapter: ' + adapterPath);
 
 var allIssues = [];
+var allWarnings = [];
 var idSet = {};
 var duplicateIds = 0;
 
@@ -127,7 +187,7 @@ for (var e = 0; e < EXAMS.length; e++) {
   var exam = EXAMS[e];
   var deck = adapter.getFlashcardDeck(exam);
 
-  report(exam, deck.stats, deck.cards, []);
+  report(exam, deck.stats);
 
   for (var c = 0; c < deck.cards.length; c++) {
     var card = deck.cards[c];
@@ -136,9 +196,12 @@ for (var e = 0; e < EXAMS.length; e++) {
     }
     idSet[card.id] = true;
 
-    var issues = validateCard(card);
-    if (issues.length > 0) {
-      allIssues.push({ id: card.id, issues: issues });
+    var result = validateCard(card);
+    if (result.issues.length > 0) {
+      allIssues.push({ id: card.id, issues: result.issues });
+    }
+    if (result.warnings.length > 0) {
+      allWarnings.push({ id: card.id, warnings: result.warnings });
     }
   }
 }
@@ -148,6 +211,7 @@ console.log('Total flashcard questions: ' + totalCards);
 console.log('Total filtered out:        ' + totalFiltered);
 console.log('Duplicate IDs found:       ' + duplicateIds);
 console.log('Cards with issues:         ' + allIssues.length);
+console.log('Cards with warnings:       ' + allWarnings.length);
 
 if (allIssues.length > 0) {
   console.log('\n=== Issues (first 50) ===');
@@ -163,25 +227,24 @@ if (allIssues.length > 0) {
   }
 }
 
+if (allWarnings.length > 0) {
+  console.log('\n=== Warnings (first 30) ===');
+  var shownW = Math.min(allWarnings.length, 30);
+  for (var w = 0; w < shownW; w++) {
+    console.log('  ' + allWarnings[w].id + ':');
+    for (var w2 = 0; w2 < allWarnings[w].warnings.length; w2++) {
+      console.log('    - ' + allWarnings[w].warnings[w2]);
+    }
+  }
+}
+
 console.log('\n=== Pass Criteria ===');
 var pass = duplicateIds === 0 && allIssues.length === 0;
 if (pass) {
   console.log('PASS');
 } else {
-  console.log('WARN: ' + allIssues.length + ' cards have validation issues');
-  // Don't fail the build for missing per-option explanations (legacy data)
-  // Only fail for structural issues
-  var structuralIssues = allIssues.filter(function (item) {
-    return item.issues.some(function (issue) {
-      return issue.indexOf('Missing') >= 0 && issue.indexOf('explanation') < 0;
-    });
-  });
-  if (structuralIssues.length > 0) {
-    console.log('FAIL: ' + structuralIssues.length + ' cards have structural issues');
-    process.exit(1);
-  } else {
-    console.log('PASS (warnings only)');
-  }
+  console.log('FAIL: ' + allIssues.length + ' cards have validation issues');
+  process.exit(1);
 }
 
 process.exit(0);
