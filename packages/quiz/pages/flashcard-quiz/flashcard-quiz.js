@@ -151,7 +151,20 @@ Page({
     var progress = adapter.getFlashcardProgress();
     if (!progress || progress.course !== this.data.course) return;
     if (!progress.answeredList || progress.answeredList.length === 0) return;
-    this.setData({ hasRestored: true });
+    var cards = this.data.cards;
+    var total = cards.length;
+    if (total === 0) return;
+    var restoreIndex = Math.min(progress.currentIndex || 0, total - 1);
+    this.setData({
+      hasRestored: true,
+      currentIndex: restoreIndex,
+      currentCard: cards[restoreIndex],
+      progressPercent: Math.round((restoreIndex + 1) / total * 100) || 0,
+      answeredList: progress.answeredList || [],
+      wrongIds: progress.wrongIds || [],
+      sessionCorrect: progress.sessionCorrect || 0,
+      sessionWrong: progress.sessionWrong || 0
+    });
   },
 
   saveProgress: function () {
@@ -320,6 +333,7 @@ Page({
       deckLabel: '错题重练'
     });
     this.startTimer();
+    this.saveProgress();
   },
 
   toggleFilter: function () {
