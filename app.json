@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/home/home",
+    "pages/flashcards/flashcards",
     "pages/glossary/glossary",
     "pages/mistakes/mistakes",
     "pages/profile/profile"
@@ -94,10 +95,10 @@
         "selectedIconPath": "images/tab/home_active.png"
       },
       {
-        "pagePath": "pages/glossary/glossary",
-        "text": "术语",
-        "iconPath": "images/tab/glossary.png",
-        "selectedIconPath": "images/tab/glossary_active.png"
+        "pagePath": "pages/flashcards/flashcards",
+        "text": "闪卡",
+        "iconPath": "images/tab/flashcards.png",
+        "selectedIconPath": "images/tab/flashcards_active.png"
       },
       {
         "pagePath": "pages/mistakes/mistakes",
@@ -118,6 +119,18 @@
     "pages/home/home": {
       "packages": [
         "glossary"
+      ]
+    },
+    "pages/flashcards/flashcards": {
+      "packages": [
+        "quiz",
+        "quiz-itpass-1",
+        "quiz-itpass-2",
+        "quiz-itpass-3",
+        "quiz-itpass-4",
+        "quiz-itpass-5",
+        "quiz-sg-1",
+        "quiz-sg-2"
       ]
     },
     "pages/glossary/glossary": {

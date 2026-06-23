@@ -29,6 +29,11 @@ function formatTimeAgo(ts) {
   return Math.floor(days / 30) + ' 个月前';
 }
 
+function countCategories(exam) {
+  var years = pastExamIndex.getYears(exam) || [];
+  return years.length;
+}
+
 Page({
   data: {
     exam: '',
@@ -44,7 +49,9 @@ Page({
     suggestion: { text: '', level: '' },
     pastExamList: [],
     pastExamExpanded: false,
-    activePastExamYearId: ''
+    activePastExamYearId: '',
+    flashcardTotal: '--',
+    flashcardCategoryCount: '--'
   },
 
   onLoad: function (options) {
@@ -80,8 +87,10 @@ Page({
       suggestion = { text: '建议先复习基础知识点再继续练习', level: 'review' };
     }
 
-    // 构建过去问年份列表：只读轻量索引，不加载真题正文
     var pastExamList = pastExamIndex.getYears(exam);
+    var flashcardCategoryCount = countCategories(exam);
+    var firstYear = pastExamList && pastExamList[0];
+    var flashcardTotal = firstYear ? firstYear.count : '--';
 
     this.setData({
       lessonTotal: lessonStats.total || 0,
@@ -92,7 +101,9 @@ Page({
       overallAccuracy: overallAccuracy,
       lastPracticeText: lastText,
       suggestion: suggestion,
-      pastExamList: pastExamList
+      pastExamList: pastExamList,
+      flashcardTotal: flashcardTotal,
+      flashcardCategoryCount: flashcardCategoryCount
     });
   },
 
@@ -100,6 +111,28 @@ Page({
     this.setData({
       pastExamExpanded: !this.data.pastExamExpanded
     });
+  },
+
+  goFlashcardCourse: function () {
+    var exam = this.data.exam || 'itpass';
+    var years = pastExamIndex.getYears(exam);
+    if (years && years.length > 0) {
+      // First year's past exam subpackage page with a flashcard-friendly label
+      var first = years[0];
+      var route = pastExamIndex.getRoute(exam, first.yearId);
+      if (route && route.route) {
+        var sep = route.route.indexOf('?') >= 0 ? '&' : '?';
+        wx.navigateTo({
+          url: route.route + sep + 'mode=flashcard',
+          fail: function () {
+            wx.showToast({ title: '闪卡启动失败', icon: 'none' });
+          }
+        });
+        return;
+      }
+    }
+    // Fallback: expand the year list so user can pick
+    this.setData({ pastExamExpanded: true });
   },
 
   goPastExamYear: function (event) {

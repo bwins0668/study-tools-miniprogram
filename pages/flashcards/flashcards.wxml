@@ -1,0 +1,101 @@
+<!--pages/flashcards/flashcards.wxml-->
+<view class="page">
+  <view class="container">
+    <view class="page-header">
+      <text class="page-title">闪卡中心</text>
+      <text class="page-subtitle">フラッシュカード</text>
+    </view>
+
+    <view class="section card">
+      <view class="section-title-row">
+        <text class="section-title">继续学习</text>
+      </view>
+      <view class="continue-card" wx:if="{{hasLastProgress}}">
+        <view class="continue-body">
+          <text class="continue-course">{{lastProgress.examTitle}}</text>
+          <text class="continue-sub">{{lastProgress.deckLabel}}</text>
+          <text class="continue-meta">第 {{lastProgress.currentIndex + 1}} / {{lastProgress.total}} 题</text>
+          <text class="continue-time">{{lastProgress.lastTimeText}}</text>
+        </view>
+        <view class="continue-btn ui-pressable" bindtap="continueLastProgress">继续复习</view>
+      </view>
+      <view class="empty-state" wx:else>
+        <view class="empty-dot"></view>
+        <text class="empty-text">先选择课程开始复习</text>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title-row">
+        <text class="section-title">课程入口</text>
+      </view>
+      <view class="course-grid">
+        <view class="course-card card ui-pressable" wx:for="{{courses}}" wx:key="exam" bindtap="openCourse" data-exam="{{item.exam}}">
+          <view class="course-header">
+            <view class="course-icon-wrap course-icon-{{item.exam}}">
+              <view class="course-icon-symbol"></view>
+            </view>
+            <view class="course-title-wrap">
+              <text class="course-title">{{item.title}}</text>
+              <text class="course-desc">{{item.desc}}</text>
+            </view>
+          </view>
+          <view class="course-stats">
+            <view class="course-stat">
+              <text class="course-stat-value">{{item.mockCount}}</text>
+              <text class="course-stat-label">可复习题数</text>
+            </view>
+            <view class="course-stat">
+              <text class="course-stat-value">{{item.mastered}}</text>
+              <text class="course-stat-label">已掌握</text>
+            </view>
+            <view class="course-stat">
+              <text class="course-stat-value">{{item.pending}}</text>
+              <text class="course-stat-label">待复习</text>
+            </view>
+          </view>
+          <view class="course-footer">
+            <view class="course-tags">
+              <text class="course-tag" wx:for="{{item.tags}}" wx:key="*this">{{item}}</text>
+            </view>
+            <view class="course-arrow">›</view>
+          </view>
+        </view>
+
+        <view class="course-card card ui-pressable" bindtap="openAnkiFromFlashcards">
+          <view class="course-header">
+            <view class="course-icon-wrap course-icon-anki">
+              <view class="course-icon-symbol"></view>
+            </view>
+            <view class="course-title-wrap">
+              <text class="course-title">知识记忆卡</text>
+              <text class="course-desc">术语记忆 / 收藏复习</text>
+            </view>
+          </view>
+          <view class="course-stats">
+            <view class="course-stat">
+              <text class="course-stat-value">1500</text>
+              <text class="course-stat-label">术语库</text>
+            </view>
+            <view class="course-stat">
+              <text class="course-stat-value">{{ankiFavoriteCount || 0}}</text>
+              <text class="course-stat-label">已收藏</text>
+            </view>
+            <view class="course-stat">
+              <text class="course-stat-value">--</text>
+              <text class="course-stat-label">待复习</text>
+            </view>
+          </view>
+          <view class="course-footer">
+            <view class="course-tags">
+              <text class="course-tag">术语</text>
+              <text class="course-tag">日语</text>
+              <text class="course-tag">中文</text>
+            </view>
+            <view class="course-arrow">›</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
