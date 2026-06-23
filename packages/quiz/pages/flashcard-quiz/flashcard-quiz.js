@@ -1,7 +1,19 @@
 // packages/quiz/pages/flashcard-quiz/flashcard-quiz.js
-// v2: Async loading, error handling, lazy data load
-var adapter = require('../../data/flashcard_adapter');
-var storage = require('../../../../utils/storage');
+// v3: Bulletproof loading, structured logging, guaranteed 3-state UI
+var adapter;
+try {
+  adapter = require('../../data/flashcard_adapter');
+} catch (e) {
+  console.error('[flashcard-quiz] CRITICAL: adapter require failed', e);
+  adapter = null;
+}
+var storage;
+try {
+  storage = require('../../../../utils/storage');
+} catch (e) {
+  console.error('[flashcard-quiz] CRITICAL: storage require failed', e);
+  storage = null;
+}
 
 Page({
   data: {
@@ -31,10 +43,12 @@ Page({
     startTime: 0,
     hasRestored: false,
     isLoading: true,
-    loadError: ''
+    loadError: '',
+    loadingMsg: '正在准备闪卡...'
   },
 
   onLoad: function (options) {
+    console.log('[flashcard-quiz] onLoad', options);
     var course = options.course || options.exam || 'itpass';
     var filterYear = options.yearId || '';
     var filterCategory = options.category || '';
@@ -42,11 +56,12 @@ Page({
     this.setData({
       course: course,
       courseLabel: course === 'sg' ? 'SG 闪卡' : 'IT Passport 闪卡',
+      loadingMsg: '正在准备' + (course === 'sg' ? 'SG' : 'IT Passport') + '闪卡...',
       filterYear: filterYear,
       filterCategory: filterCategory
     });
 
-    this.loadDeckAsync(course, filterYear, filterCategory);
+    this.loadDeckSafe(course, filterYear, filterCategory);
   },
 
   onShow: function () {
@@ -77,14 +92,28 @@ Page({
     }
   },
 
-  loadDeckAsync: function (course, yearId, category) {
+  loadDeckSafe: function (course, yearId, category) {
     var self = this;
-    self.setData({ isLoading: true, loadError: '' });
+    console.log('[flashcard-quiz] loadDeckSafe start', { course: course, yearId: yearId, category: category });
 
-    // Use setTimeout to allow UI to render loading state
+    if (!adapter) {
+      console.error('[flashcard-quiz] adapter not loaded');
+      self.setData({ isLoading: false, loadError: '模块加载失败，请退出重进' });
+      return;
+    }
+
+    self.setData({ isLoading: true, loadError: '', loadingMsg: '正在加载题目...' });
+
     setTimeout(function () {
       try {
+        console.log('[flashcard-quiz] calling getFlashcardDeck', course);
         var deck = adapter.getFlashcardDeck(course);
+        console.log('[flashcard-quiz] getFlashcardDeck returned', {
+          total: deck.stats.total,
+          deduped: deck.stats.deduped,
+          years: deck.stats.years ? deck.stats.years.length : 0
+        });
+
         var cards = deck.cards;
 
         if (yearId) {
@@ -93,6 +122,8 @@ Page({
         if (category) {
           cards = cards.filter(function (c) { return c.category === category; });
         }
+
+        console.log('[flashcard-quiz] filtered cards:', cards.length);
 
         var yearOptions = [];
         var byYear = deck.stats.byYear;
@@ -122,6 +153,7 @@ Page({
         }
 
         if (cards.length > 0) {
+          console.log('[flashcard-quiz] loading', cards.length, 'cards');
           self.setData({
             cards: cards,
             totalCards: cards.length,
@@ -143,7 +175,9 @@ Page({
             isLoading: false
           });
           self.startTimer();
+          console.log('[flashcard-quiz] loaded successfully');
         } else {
+          console.log('[flashcard-quiz] no cards found');
           self.setData({
             cards: [],
             totalCards: 0,
@@ -156,10 +190,12 @@ Page({
           });
         }
       } catch (e) {
-        console.error('[flashcard-quiz] loadDeck failed:', e);
+        console.error('[flashcard-quiz] loadDeckSafe FAILED:', e);
+        console.error('[flashcard-quiz] error message:', e && e.message);
+        console.error('[flashcard-quiz] error stack:', e && e.stack);
         self.setData({
           isLoading: false,
-          loadError: '题目加载失败，请重试',
+          loadError: '题目加载失败: ' + (e && e.message ? e.message : '未知错误'),
           cards: [],
           totalCards: 0,
           currentCard: null,
@@ -170,44 +206,54 @@ Page({
   },
 
   retryLoad: function () {
-    this.loadDeckAsync(this.data.course, this.data.filterYear, this.data.filterCategory);
+    this.loadDeckSafe(this.data.course, this.data.filterYear, this.data.filterCategory);
   },
 
   tryRestoreProgress: function () {
     if (this.data.hasRestored) return;
-    var progress = adapter.getFlashcardProgress();
-    if (!progress || progress.course !== this.data.course) return;
-    if (!progress.answeredList || progress.answeredList.length === 0) return;
-    var cards = this.data.cards;
-    var total = cards.length;
-    if (total === 0) return;
-    var restoreIndex = Math.min(progress.currentIndex || 0, total - 1);
-    this.setData({
-      hasRestored: true,
-      currentIndex: restoreIndex,
-      currentCard: cards[restoreIndex],
-      progressPercent: Math.round((restoreIndex + 1) / total * 100) || 0,
-      answeredList: progress.answeredList || [],
-      wrongIds: progress.wrongIds || [],
-      sessionCorrect: progress.sessionCorrect || 0,
-      sessionWrong: progress.sessionWrong || 0
-    });
+    try {
+      if (!adapter) return;
+      var progress = adapter.getFlashcardProgress();
+      if (!progress || progress.course !== this.data.course) return;
+      if (!progress.answeredList || progress.answeredList.length === 0) return;
+      var cards = this.data.cards;
+      var total = cards.length;
+      if (total === 0) return;
+      var restoreIndex = Math.min(progress.currentIndex || 0, total - 1);
+      this.setData({
+        hasRestored: true,
+        currentIndex: restoreIndex,
+        currentCard: cards[restoreIndex],
+        progressPercent: Math.round((restoreIndex + 1) / total * 100) || 0,
+        answeredList: progress.answeredList || [],
+        wrongIds: progress.wrongIds || [],
+        sessionCorrect: progress.sessionCorrect || 0,
+        sessionWrong: progress.sessionWrong || 0
+      });
+    } catch (e) {
+      console.warn('[flashcard-quiz] tryRestoreProgress failed:', e);
+    }
   },
 
   saveProgress: function () {
-    var progress = {
-      course: this.data.course,
-      examTitle: this.data.courseLabel,
-      deckLabel: this.data.deckLabel,
-      currentIndex: this.data.currentIndex,
-      total: this.data.totalCards,
-      answeredList: this.data.answeredList,
-      wrongIds: this.data.wrongIds,
-      sessionCorrect: this.data.sessionCorrect,
-      sessionWrong: this.data.sessionWrong,
-      updatedAt: Date.now()
-    };
-    adapter.saveFlashcardProgress(progress);
+    try {
+      if (!adapter) return;
+      var progress = {
+        course: this.data.course,
+        examTitle: this.data.courseLabel,
+        deckLabel: this.data.deckLabel,
+        currentIndex: this.data.currentIndex,
+        total: this.data.totalCards,
+        answeredList: this.data.answeredList,
+        wrongIds: this.data.wrongIds,
+        sessionCorrect: this.data.sessionCorrect,
+        sessionWrong: this.data.sessionWrong,
+        updatedAt: Date.now()
+      };
+      adapter.saveFlashcardProgress(progress);
+    } catch (e) {
+      console.warn('[flashcard-quiz] saveProgress failed:', e);
+    }
   },
 
   selectAnswer: function (event) {
@@ -233,31 +279,37 @@ Page({
     var wrongIds = this.data.wrongIds.slice();
     if (!isCorrect) {
       wrongIds.push(card.id);
-      storage.addWrongQuestion(
-        card.sourceId,
-        card.course,
-        key,
-        {
-          id: card.sourceId,
-          exam: card.course,
-          sourceType: card.sourceType,
-          yearId: card.yearId,
-          year: card.examYear,
-          number: card.number,
-          category: card.category,
-          level: card.level,
-          questionZh: card.questionZh,
-          questionJa: card.questionJa,
-          options: card.options.map(function (o) {
-            return { key: o.key, textZh: o.textZh, textJa: o.textJa };
-          }),
-          answer: card.answer,
-          explanationZh: card.explanationZh,
-          explanationJa: card.explanationJa,
-          translationStatus: card.translationStatus,
-          explanationStatus: card.explanationStatus
+      try {
+        if (storage) {
+          storage.addWrongQuestion(
+            card.sourceId,
+            card.course,
+            key,
+            {
+              id: card.sourceId,
+              exam: card.course,
+              sourceType: card.sourceType,
+              yearId: card.yearId,
+              year: card.examYear,
+              number: card.number,
+              category: card.category,
+              level: card.level,
+              questionZh: card.questionZh,
+              questionJa: card.questionJa,
+              options: card.options.map(function (o) {
+                return { key: o.key, textZh: o.textZh, textJa: o.textJa };
+              }),
+              answer: card.answer,
+              explanationZh: card.explanationZh,
+              explanationJa: card.explanationJa,
+              translationStatus: card.translationStatus,
+              explanationStatus: card.explanationStatus
+            }
+          );
         }
-      );
+      } catch (e) {
+        console.warn('[flashcard-quiz] addWrongQuestion failed:', e);
+      }
     }
 
     this.setData({
@@ -370,18 +422,18 @@ Page({
   selectYearFilter: function (event) {
     var yearId = event.currentTarget.dataset.yearId || '';
     this.setData({ filterYear: yearId, showFilter: false });
-    this.loadDeckAsync(this.data.course, yearId, this.data.filterCategory);
+    this.loadDeckSafe(this.data.course, yearId, this.data.filterCategory);
   },
 
   selectCategoryFilter: function (event) {
     var cat = event.currentTarget.dataset.category || '';
     this.setData({ filterCategory: cat, showFilter: false });
-    this.loadDeckAsync(this.data.course, this.data.filterYear, cat);
+    this.loadDeckSafe(this.data.course, this.data.filterYear, cat);
   },
 
   clearFilters: function () {
     this.setData({ filterYear: '', filterCategory: '', showFilter: false });
-    this.loadDeckAsync(this.data.course, '', '');
+    this.loadDeckSafe(this.data.course, '', '');
   },
 
   goMistakes: function () {

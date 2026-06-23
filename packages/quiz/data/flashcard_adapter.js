@@ -205,12 +205,19 @@ function applyEnrichment(card, enrich) {
 // ---- Load all questions from a split subpackage ----
 function loadSplitQuestions(packageKey) {
   var root = getPackageRoot(packageKey);
-  if (!root) return [];
+  if (!root) {
+    console.warn('[flashcard_adapter] no root for packageKey:', packageKey);
+    return [];
+  }
   try {
+    console.log('[flashcard_adapter] loading package:', packageKey, '->', root);
     var loader = require('../../' + root + '/data/loader');
-    return loader.getAllQuestions();
+    var questions = loader.getAllQuestions();
+    console.log('[flashcard_adapter] loaded', questions.length, 'questions from', packageKey);
+    return questions;
   } catch (e) {
-    console.warn('[flashcard_adapter] failed to load', packageKey, e.message);
+    console.error('[flashcard_adapter] FAILED to load', packageKey, ':', e.message);
+    console.error('[flashcard_adapter] stack:', e.stack);
     return [];
   }
 }
@@ -259,7 +266,9 @@ function dedupeCards(cards) {
  * Now loads enrichment data and detects content status.
  */
 function getFlashcardDeck(exam) {
+  console.log('[flashcard_adapter] getFlashcardDeck start, exam=' + exam);
   var years = pastExamIndex.getYears(exam);
+  console.log('[flashcard_adapter] years:', years.length);
   var allRaw = [];
   var loadedPackages = {};
 
@@ -276,6 +285,7 @@ function getFlashcardDeck(exam) {
       }
     }
   }
+  console.log('[flashcard_adapter] allRaw:', allRaw.length);
 
   // Load all enrichment chunks for this course
   enrichment.loadAllChunksForCourse(exam);
@@ -319,6 +329,13 @@ function getFlashcardDeck(exam) {
       contentStats[c.contentStatus]++;
     }
   }
+
+  console.log('[flashcard_adapter] getFlashcardDeck done:', {
+    exam: exam,
+    total: allRaw.length,
+    deduped: deduped.length,
+    byYear: Object.keys(byYear).length
+  });
 
   return {
     cards: deduped,
