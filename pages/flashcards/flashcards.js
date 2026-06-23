@@ -142,18 +142,18 @@ Page({
     self.setData({ isNavigating: true });
 
     wx.navigateTo({
-      url: '/packages/quiz/pages/flashcard-quiz/flashcard-quiz?course=' + course,
+      url: '/packages/quiz/pages/flashcard-deck-select/flashcard-deck-select?course=' + course,
       success: function () {
         self.setData({ isNavigating: false });
       },
       fail: function (err) {
-        console.error('[flashcards] navigate failed:', err);
+        console.error('[flashcards] navigate to deck-select failed:', err);
         self.setData({ isNavigating: false });
-        // Try alternative: go to exam-menu first
+        // Fallback: try old direct route
         wx.navigateTo({
           url: '/packages/quiz/pages/exam-menu/exam-menu?exam=' + course,
           fail: function (err2) {
-            console.error('[flashcards] exam-menu navigate also failed:', err2);
+            console.error('[flashcards] fallback navigate also failed:', err2);
             wx.showToast({ title: '页面暂时无法打开，请重试', icon: 'none' });
           }
         });

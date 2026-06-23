@@ -1,5 +1,6 @@
 // packages/quiz/pages/flashcard-quiz/flashcard-quiz.js
-// v3: Bulletproof loading, structured logging, guaranteed 3-state UI
+// v4: Async subpackage loading via loadDeckAsync. Deck-specific (course + yearId).
+// Loading → Error → Empty → Content: four mutually exclusive states.
 var adapter;
 try {
   adapter = require('../../data/flashcard_adapter');
@@ -20,6 +21,8 @@ Page({
     course: '',
     courseLabel: '',
     deckLabel: '',
+    yearId: '',
+    packageName: '',
     cards: [],
     totalCards: 0,
     currentIndex: 0,
@@ -34,34 +37,61 @@ Page({
     showBack: false,
     isFinished: false,
     progressPercent: 0,
-    filterYear: '',
-    filterCategory: '',
-    yearOptions: [],
-    categoryOptions: [],
-    showFilter: false,
     timerText: '',
     startTime: 0,
     hasRestored: false,
+
+    // === Four-state machine (mutually exclusive) ===
     isLoading: true,
     loadError: '',
-    loadingMsg: '正在准备闪卡...'
+    isEmpty: false,
+    loadingMsg: '正在准备闪卡...',
+    // Error details for error card
+    errorCourse: '',
+    errorDeckLabel: '',
+    errorYearId: '',
+    errorPackageName: '',
+    errorDetail: ''
   },
 
   onLoad: function (options) {
     console.log('[flashcard-quiz] onLoad', options);
+
     var course = options.course || options.exam || 'itpass';
-    var filterYear = options.yearId || '';
-    var filterCategory = options.category || '';
+    var yearId = options.yearId || '';
+    var deckLabel = options.deckLabel || yearId || '年度模拟';
+    var courseLabel = course === 'sg' ? 'SG 闪卡' : 'IT Passport 闪卡';
 
     this.setData({
       course: course,
-      courseLabel: course === 'sg' ? 'SG 闪卡' : 'IT Passport 闪卡',
-      loadingMsg: '正在准备' + (course === 'sg' ? 'SG' : 'IT Passport') + '闪卡...',
-      filterYear: filterYear,
-      filterCategory: filterCategory
+      courseLabel: courseLabel,
+      deckLabel: deckLabel,
+      yearId: yearId,
+      errorCourse: course,
+      errorDeckLabel: deckLabel,
+      errorYearId: yearId,
+      loadingMsg: '正在加载 ' + deckLabel + '...'
     });
 
-    this.loadDeckSafe(course, filterYear, filterCategory);
+    if (!yearId) {
+      this.setData({
+        isLoading: false,
+        loadError: '缺少牌组参数 (yearId)',
+        errorDetail: '请从牌组选择页进入闪卡'
+      });
+      return;
+    }
+
+    if (!adapter) {
+      this.setData({
+        isLoading: false,
+        loadError: '闪卡模块加载失败',
+        errorDetail: '请退出重试'
+      });
+      return;
+    }
+
+    this.loadDeck(course, yearId);
   },
 
   onShow: function () {
@@ -70,6 +100,79 @@ Page({
 
   onUnload: function () {
     this.stopTimer();
+  },
+
+  loadDeck: function (course, yearId) {
+    var self = this;
+    console.log('[flashcard-quiz] loadDeck', { course: course, yearId: yearId });
+
+    self.setData({
+      isLoading: true,
+      loadError: '',
+      isEmpty: false,
+      loadingMsg: '正在加载 ' + (self.data.deckLabel || yearId) + '...'
+    });
+
+    adapter.loadDeckAsync(course, yearId).then(function (deck) {
+      console.log('[flashcard-quiz] loadDeckAsync resolved', {
+        total: deck.stats.total,
+        deduped: deck.stats.deduped
+      });
+
+      var cards = deck.cards;
+
+      if (!cards || cards.length === 0) {
+        console.log('[flashcard-quiz] no cards in result');
+        self.setData({
+          isLoading: false,
+          isEmpty: true,
+          totalCards: 0,
+          currentCard: null,
+          cards: []
+        });
+        return;
+      }
+
+      console.log('[flashcard-quiz] loaded', cards.length, 'cards');
+      self.setData({
+        cards: cards,
+        totalCards: cards.length,
+        currentIndex: 0,
+        currentCard: cards[0],
+        progressPercent: Math.round(1 / cards.length * 100) || 0,
+        isFinished: false,
+        hasAnswered: false,
+        selectedKey: '',
+        isCorrect: false,
+        showBack: false,
+        answeredList: [],
+        wrongIds: [],
+        sessionCorrect: 0,
+        sessionWrong: 0,
+        isLoading: false,
+        loadError: '',
+        isEmpty: false
+      });
+      self.startTimer();
+      console.log('[flashcard-quiz] loaded successfully');
+    }).catch(function (err) {
+      console.error('[flashcard-quiz] loadDeckAsync FAILED:', err);
+      console.error('[flashcard-quiz] error message:', err && err.message);
+      console.error('[flashcard-quiz] error stack:', err && err.stack);
+      self.setData({
+        isLoading: false,
+        loadError: '闪卡数据加载失败',
+        errorDetail: (err && err.message) || '未知错误',
+        cards: [],
+        totalCards: 0,
+        currentCard: null,
+        isFinished: true
+      });
+    });
+  },
+
+  retryLoad: function () {
+    this.loadDeck(this.data.course, this.data.yearId);
   },
 
   startTimer: function () {
@@ -90,123 +193,6 @@ Page({
       clearInterval(this._timerInterval);
       this._timerInterval = null;
     }
-  },
-
-  loadDeckSafe: function (course, yearId, category) {
-    var self = this;
-    console.log('[flashcard-quiz] loadDeckSafe start', { course: course, yearId: yearId, category: category });
-
-    if (!adapter) {
-      console.error('[flashcard-quiz] adapter not loaded');
-      self.setData({ isLoading: false, loadError: '模块加载失败，请退出重进' });
-      return;
-    }
-
-    self.setData({ isLoading: true, loadError: '', loadingMsg: '正在加载题目...' });
-
-    setTimeout(function () {
-      try {
-        console.log('[flashcard-quiz] calling getFlashcardDeck', course);
-        var deck = adapter.getFlashcardDeck(course);
-        console.log('[flashcard-quiz] getFlashcardDeck returned', {
-          total: deck.stats.total,
-          deduped: deck.stats.deduped,
-          years: deck.stats.years ? deck.stats.years.length : 0
-        });
-
-        var cards = deck.cards;
-
-        if (yearId) {
-          cards = cards.filter(function (c) { return c.yearId === yearId; });
-        }
-        if (category) {
-          cards = cards.filter(function (c) { return c.category === category; });
-        }
-
-        console.log('[flashcard-quiz] filtered cards:', cards.length);
-
-        var yearOptions = [];
-        var byYear = deck.stats.byYear;
-        var yearsMeta = deck.stats.years || [];
-        for (var i = 0; i < yearsMeta.length; i++) {
-          var y = yearsMeta[i];
-          if (!yearId || y.yearId === yearId) {
-            yearOptions.push({
-              yearId: y.yearId,
-              label: y.label || y.year,
-              count: byYear[y.yearId] || 0
-            });
-          }
-        }
-
-        var catMap = {};
-        for (var j = 0; j < cards.length; j++) {
-          if (cards[j].category) {
-            if (!catMap[cards[j].category]) catMap[cards[j].category] = 0;
-            catMap[cards[j].category]++;
-          }
-        }
-        var categoryOptions = [];
-        var catKeys = Object.keys(catMap);
-        for (var k = 0; k < catKeys.length; k++) {
-          categoryOptions.push({ label: catKeys[k], count: catMap[catKeys[k]] });
-        }
-
-        if (cards.length > 0) {
-          console.log('[flashcard-quiz] loading', cards.length, 'cards');
-          self.setData({
-            cards: cards,
-            totalCards: cards.length,
-            currentIndex: 0,
-            currentCard: cards[0],
-            deckLabel: (yearId ? (yearId + ' ') : '') + (category || '年度模拟'),
-            progressPercent: Math.round(1 / cards.length * 100) || 0,
-            yearOptions: yearOptions,
-            categoryOptions: categoryOptions,
-            isFinished: false,
-            hasAnswered: false,
-            selectedKey: '',
-            isCorrect: false,
-            showBack: false,
-            answeredList: [],
-            wrongIds: [],
-            sessionCorrect: 0,
-            sessionWrong: 0,
-            isLoading: false
-          });
-          self.startTimer();
-          console.log('[flashcard-quiz] loaded successfully');
-        } else {
-          console.log('[flashcard-quiz] no cards found');
-          self.setData({
-            cards: [],
-            totalCards: 0,
-            currentCard: null,
-            isFinished: true,
-            deckLabel: '无可用题目',
-            yearOptions: yearOptions,
-            categoryOptions: categoryOptions,
-            isLoading: false
-          });
-        }
-      } catch (e) {
-        console.error('[flashcard-quiz] loadDeckSafe FAILED:', e);
-        console.error('[flashcard-quiz] error message:', e && e.message);
-        console.error('[flashcard-quiz] error stack:', e && e.stack);
-        self.setData({
-          isLoading: false,
-          loadError: '题目加载失败: ' + (e && e.message ? e.message : '未知错误'),
-          cards: [],
-          totalCards: 0,
-          currentCard: null,
-          isFinished: true
-        });
-      }
-    }, 50);
-  },
-
-  retryLoad: function () {
-    this.loadDeckSafe(this.data.course, this.data.filterYear, this.data.filterCategory);
   },
 
   tryRestoreProgress: function () {
@@ -242,6 +228,7 @@ Page({
         course: this.data.course,
         examTitle: this.data.courseLabel,
         deckLabel: this.data.deckLabel,
+        yearId: this.data.yearId,
         currentIndex: this.data.currentIndex,
         total: this.data.totalCards,
         answeredList: this.data.answeredList,
@@ -413,33 +400,6 @@ Page({
     });
     this.startTimer();
     this.saveProgress();
-  },
-
-  toggleFilter: function () {
-    this.setData({ showFilter: !this.data.showFilter });
-  },
-
-  selectYearFilter: function (event) {
-    var yearId = event.currentTarget.dataset.yearId || '';
-    this.setData({ filterYear: yearId, showFilter: false });
-    this.loadDeckSafe(this.data.course, yearId, this.data.filterCategory);
-  },
-
-  selectCategoryFilter: function (event) {
-    var cat = event.currentTarget.dataset.category || '';
-    this.setData({ filterCategory: cat, showFilter: false });
-    this.loadDeckSafe(this.data.course, this.data.filterYear, cat);
-  },
-
-  clearFilters: function () {
-    this.setData({ filterYear: '', filterCategory: '', showFilter: false });
-    this.loadDeckSafe(this.data.course, '', '');
-  },
-
-  goMistakes: function () {
-    wx.navigateTo({
-      url: '/packages/quiz/pages/mistakes/mistakes'
-    });
   },
 
   goHome: function () {
