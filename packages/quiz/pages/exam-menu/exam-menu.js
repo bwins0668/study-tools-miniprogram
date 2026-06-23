@@ -115,24 +115,12 @@ Page({
 
   goFlashcardCourse: function () {
     var exam = this.data.exam || 'itpass';
-    var years = pastExamIndex.getYears(exam);
-    if (years && years.length > 0) {
-      // First year's past exam subpackage page with a flashcard-friendly label
-      var first = years[0];
-      var route = pastExamIndex.getRoute(exam, first.yearId);
-      if (route && route.route) {
-        var sep = route.route.indexOf('?') >= 0 ? '&' : '?';
-        wx.navigateTo({
-          url: route.route + sep + 'mode=flashcard',
-          fail: function () {
-            wx.showToast({ title: '闪卡启动失败', icon: 'none' });
-          }
-        });
-        return;
+    wx.navigateTo({
+      url: '/packages/quiz/pages/flashcard-quiz/flashcard-quiz?course=' + exam,
+      fail: function () {
+        wx.showToast({ title: '闪卡启动失败', icon: 'none' });
       }
-    }
-    // Fallback: expand the year list so user can pick
-    this.setData({ pastExamExpanded: true });
+    });
   },
 
   goPastExamYear: function (event) {

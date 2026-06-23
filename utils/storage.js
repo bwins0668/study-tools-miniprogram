@@ -452,6 +452,8 @@ function validateLocalBackup(backup) {
 function exportLocalBackup() {
   var ankiStatus = {};
   try { ankiStatus = wx.getStorageSync(ANKI_STATUS_KEY) || {}; } catch (e) {}
+  var flashcardProgress = null;
+  try { flashcardProgress = wx.getStorageSync('flashcard_progress_v1') || null; } catch (e) {}
   return {
     app: 'study-tools-mini',
     version: 'v0.23.0',
@@ -461,7 +463,8 @@ function exportLocalBackup() {
       wrongQuestions: getWrongQuestions(),
       quizAttempts: getQuizAttempts()
     },
-    ankiStatus: ankiStatus
+    ankiStatus: ankiStatus,
+    flashcardProgress: flashcardProgress
   };
 }
 
@@ -472,6 +475,9 @@ function importLocalBackup(backup) {
   saveQuizAttempts(backup.data.quizAttempts);
   if (backup.ankiStatus) {
     try { wx.setStorageSync(ANKI_STATUS_KEY, backup.ankiStatus); } catch (e) {}
+  }
+  if (backup.flashcardProgress) {
+    try { wx.setStorageSync('flashcard_progress_v1', backup.flashcardProgress); } catch (e) {}
   }
   return true;
 }

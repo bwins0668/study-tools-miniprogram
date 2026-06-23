@@ -25,6 +25,8 @@ Page({
       this.setData({
         hasLastProgress: true,
         lastProgress: {
+          course: progress.course || progress.exam || '',
+          exam: progress.course || progress.exam || '',
           examTitle: progress.examTitle || '',
           deckLabel: progress.deckLabel || '年度模拟',
           currentIndex: progress.currentIndex || 0,
@@ -90,9 +92,9 @@ Page({
   continueLastProgress: function () {
     var p = this.data.lastProgress;
     if (!p) return;
-    var exam = p.exam || '';
+    var course = p.course || p.exam || 'itpass';
     wx.navigateTo({
-      url: '/packages/quiz/pages/exam-menu/exam-menu?exam=' + exam,
+      url: '/packages/quiz/pages/flashcard-quiz/flashcard-quiz?course=' + course,
       fail: function () { wx.showToast({ title: '打开失败', icon: 'none' }); }
     });
   },
@@ -101,7 +103,7 @@ Page({
     var exam = e.currentTarget.dataset.exam;
     if (!exam) return;
     wx.navigateTo({
-      url: '/packages/quiz/pages/exam-menu/exam-menu?exam=' + exam,
+      url: '/packages/quiz/pages/flashcard-quiz/flashcard-quiz?course=' + exam,
       fail: function () { wx.showToast({ title: '打开失败', icon: 'none' }); }
     });
   },

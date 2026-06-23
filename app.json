@@ -17,15 +17,16 @@
         "pages/anki-player/anki-player"
       ]
     },
-    {
-      "root": "packages/quiz",
-      "name": "quiz",
-      "pages": [
-        "pages/exam-menu/exam-menu",
-        "pages/quiz/quiz",
-        "pages/mistakes/mistakes"
-      ]
-    },
+      {
+        "root": "packages/quiz",
+        "name": "quiz",
+        "pages": [
+          "pages/exam-menu/exam-menu",
+          "pages/quiz/quiz",
+          "pages/mistakes/mistakes",
+          "pages/flashcard-quiz/flashcard-quiz"
+        ]
+      },
     {
       "root": "packages/quiz-itpass-1",
       "name": "quiz-itpass-1",
