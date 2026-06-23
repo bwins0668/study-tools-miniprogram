@@ -64,6 +64,13 @@
     <text class="fc-deck-timer" wx:if="{{timerText}}">T {{timerText}}</text>
   </view>
 
+  <!-- Content Status Badge -->
+  <view class="fc-content-status" wx:if="{{!isFinished && currentCard}}">
+    <text class="fc-status-badge fc-status-{{currentCard.contentStatus}}">
+      {{currentCard.contentStatus === 'bilingual_complete' ? '中日双语' : (currentCard.contentStatus === 'bilingual_partial' ? '部分双语' : '日文练习版')}}
+    </text>
+  </view>
+
   <!-- Progress Bar -->
   <view class="fc-progress" wx:if="{{!isFinished && totalCards > 0}}">
     <view class="fc-progress-bar" style="width: {{progressPercent}}%"></view>
@@ -83,7 +90,7 @@
         <text>第 {{currentIndex + 1}} 题</text>
       </view>
       <view class="fc-question-text" user-select="true">
-        <text>{{currentCard.questionJa || currentCard.questionZh}}</text>
+        <text>{{currentCard.questionJa}}</text>
       </view>
     </view>
 
@@ -98,7 +105,7 @@
       >
         <view class="fc-option-key">{{item.key}}</view>
         <view class="fc-option-text">
-          <text user-select="true">{{item.textJa || item.textZh}}</text>
+          <text user-select="true">{{item.textJa}}</text>
         </view>
         <view class="fc-option-status" wx:if="{{hasAnswered && item.isCorrect}}">
           <text class="fc-status-correct">✓ 正解</text>
@@ -132,11 +139,12 @@
     <view class="fc-card fc-back">
       <view class="fc-back-section">
         <text class="fc-back-label">日文题干</text>
-        <text class="fc-back-ja" user-select="true">{{currentCard.questionJa || currentCard.questionZh}}</text>
+        <text class="fc-back-ja" user-select="true">{{currentCard.questionJa}}</text>
       </view>
       <view class="fc-back-section">
         <text class="fc-back-label">中文题干</text>
-        <text class="fc-back-zh" user-select="true">{{currentCard.questionZh || currentCard.questionJa}}</text>
+        <text class="fc-back-zh" wx:if="{{currentCard.contentStatus !== 'japanese_only' && currentCard.questionZh !== currentCard.questionJa}}" user-select="true">{{currentCard.questionZh}}</text>
+        <text class="fc-back-placeholder" wx:else>中文翻译准备中</text>
       </view>
     </view>
 
@@ -157,17 +165,24 @@
         <view class="fc-back-option-body">
           <view class="fc-back-option-text-ja" user-select="true">
             <text class="fc-back-text-label">JA:</text>
-            <text>{{item.textJa || item.textZh}}</text>
+            <text>{{item.textJa}}</text>
           </view>
-          <view class="fc-back-option-text-zh" user-select="true">
+          <view class="fc-back-option-text-zh" wx:if="{{currentCard.contentStatus !== 'japanese_only' && item.textZh !== item.textJa}}" user-select="true">
             <text class="fc-back-text-label">ZH:</text>
-            <text>{{item.textZh || item.textJa}}</text>
+            <text>{{item.textZh}}</text>
+          </view>
+          <view class="fc-back-placeholder" wx:else>
+            <text class="fc-back-text-label">ZH:</text>
+            <text>选项翻译准备中</text>
           </view>
           <view class="fc-back-option-explain" wx:if="{{item.explanationJa || item.explanationZh}}">
-            <text class="fc-back-text-label">解説 JA:</text>
-            <text user-select="true">{{item.explanationJa || '—'}}</text>
-            <text class="fc-back-text-label">解説 ZH:</text>
-            <text user-select="true">{{item.explanationZh || '—'}}</text>
+            <text class="fc-back-text-label" wx:if="{{item.explanationJa}}">解説 JA:</text>
+            <text user-select="true" wx:if="{{item.explanationJa}}">{{item.explanationJa}}</text>
+            <text class="fc-back-text-label" wx:if="{{item.explanationZh && item.explanationZh !== item.explanationJa}}">解説 ZH:</text>
+            <text user-select="true" wx:if="{{item.explanationZh && item.explanationZh !== item.explanationJa}}">{{item.explanationZh}}</text>
+          </view>
+          <view class="fc-back-placeholder" wx:if="{{!item.explanationJa && !item.explanationZh}}">
+            <text>选项解析准备中</text>
           </view>
         </view>
       </view>
@@ -179,9 +194,12 @@
         <text class="fc-back-label">日文解析</text>
         <text class="fc-back-explain-text" user-select="true">{{currentCard.explanationJa}}</text>
       </view>
-      <view class="fc-back-section" wx:if="{{currentCard.explanationZh}}">
+      <view class="fc-back-section" wx:if="{{currentCard.explanationZh && currentCard.explanationZh !== currentCard.explanationJa}}">
         <text class="fc-back-label">中文解析</text>
         <text class="fc-back-explain-text" user-select="true">{{currentCard.explanationZh}}</text>
+      </view>
+      <view class="fc-back-placeholder" wx:if="{{!currentCard.explanationZh || currentCard.explanationZh === currentCard.explanationJa}}">
+        <text>中文解析准备中</text>
       </view>
     </view>
 
@@ -195,6 +213,9 @@
         <text class="fc-back-label">助记 ZH</text>
         <text class="fc-back-explain-text" user-select="true">{{currentCard.mnemonicZh}}</text>
       </view>
+    </view>
+    <view class="fc-back-placeholder" wx:if="{{!currentCard.mnemonicJa && !currentCard.mnemonicZh}}">
+      <text>助记准备中</text>
     </view>
 
     <!-- Shared hint -->

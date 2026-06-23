@@ -528,3 +528,38 @@
 .fc-result-actions .fc-btn {
   flex: none;
 }
+
+/* Content Status Badge */
+.fc-content-status {
+  margin-bottom: 12rpx;
+}
+.fc-status-badge {
+  display: inline-block;
+  padding: 6rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+.fc-status-bilingual_complete {
+  background: #d1fae5;
+  color: #065f46;
+}
+.fc-status-bilingual_partial {
+  background: #fef3c7;
+  color: #92400e;
+}
+.fc-status-japanese_only {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+/* Placeholder for missing content */
+.fc-back-placeholder {
+  font-size: 26rpx;
+  color: #9ca3af;
+  font-style: italic;
+  padding: 8rpx 0;
+}
+.fc-back-placeholder .fc-back-text-label {
+  color: #9ca3af;
+}

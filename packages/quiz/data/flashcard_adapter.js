@@ -1,8 +1,10 @@
 // packages/quiz/data/flashcard_adapter.js
 // Unified flashcard data adapter: normalizes questions from all sources
 // into a consistent bilingual flashcard format.
+// v2: Adds content status detection and enrichment data loading.
 
 var pastExamIndex = require('./past_exam_bank/index');
+var enrichment = require('./flashcard-enrichment/index');
 
 var FLASHCARD_STATUS_KEY = 'flashcard_progress_v1';
 
@@ -41,14 +43,65 @@ function isMostlyJapanese(text) {
   return count / text.length > 0.3;
 }
 
-function autoDetectLang(text) {
-  if (!text) return 'zh';
-  if (hasJapaneseKana(text) || isMostlyJapanese(text)) return 'ja';
-  return 'zh';
+function isGenuineChinese(text) {
+  if (!text || text.length < 3) return false;
+  // Check if text has Chinese characters but NOT Japanese kana
+  var hasChinese = false;
+  var hasKana = false;
+  for (var i = 0; i < text.length; i++) {
+    var c = text.charCodeAt(i);
+    if (c >= 0x4E00 && c <= 0x9FFF) hasChinese = true;
+    if ((c >= 0x3040 && c <= 0x309F) || (c >= 0x30A0 && c <= 0x30FF)) hasKana = true;
+  }
+  // Genuine Chinese: has Chinese chars, no kana, or very few kana
+  if (hasChinese && !hasKana) return true;
+  // Allow some kana if Chinese chars dominate
+  if (hasChinese) {
+    var chineseCount = 0;
+    var kanaCount = 0;
+    for (var j = 0; j < text.length; j++) {
+      var cc = text.charCodeAt(j);
+      if (cc >= 0x4E00 && cc <= 0x9FFF) chineseCount++;
+      if ((cc >= 0x3040 && cc <= 0x309F) || (cc >= 0x30A0 && cc <= 0x30FF)) kanaCount++;
+    }
+    return chineseCount > kanaCount * 3;
+  }
+  return false;
+}
+
+// ---- Content status detection ----
+function detectContentStatus(card) {
+  var hasRealZhQuestion = card.questionZh && card.questionZh !== card.questionJa && isGenuineChinese(card.questionZh);
+  var hasRealZhOptions = false;
+  var hasOptionExplanations = false;
+  var hasMnemonic = !!(card.mnemonicJa || card.mnemonicZh);
+
+  if (card.options && card.options.length > 0) {
+    var zhOptCount = 0;
+    var explCount = 0;
+    for (var i = 0; i < card.options.length; i++) {
+      var o = card.options[i];
+      if (o.textZh && o.textZh !== o.textJa && isGenuineChinese(o.textZh)) zhOptCount++;
+      if (o.explanationJa || o.explanationZh) explCount++;
+    }
+    hasRealZhOptions = zhOptCount === card.options.length;
+    hasOptionExplanations = explCount === card.options.length;
+  }
+
+  var hasRealZhExplanation = card.explanationZh && card.explanationZh !== card.explanationJa && isGenuineChinese(card.explanationZh);
+  var hasRealMnemonic = (card.mnemonicJa && card.mnemonicJa.length > 5) || (card.mnemonicZh && isGenuineChinese(card.mnemonicZh));
+
+  if (hasRealZhQuestion && hasRealZhOptions && hasOptionExplanations && hasRealZhExplanation && hasRealMnemonic) {
+    return 'bilingual_complete';
+  }
+  if (hasRealZhQuestion || hasRealZhOptions || hasRealZhExplanation) {
+    return 'bilingual_partial';
+  }
+  return 'japanese_only';
 }
 
 // ---- Normalize a single raw question into flashcard format ----
-function normalizeQuestion(raw, fallbackLang) {
+function normalizeQuestion(raw) {
   if (!raw || !raw.id) return null;
 
   var qJa = stripHtmlTags(raw.questionJa || '');
@@ -114,8 +167,39 @@ function normalizeQuestion(raw, fallbackLang) {
     mnemonicZh: raw.mnemonicZh || '',
     translationStatus: raw.translationStatus || '',
     explanationStatus: raw.explanationStatus || '',
-    sharedHint: raw.shared_hint || ''
+    sharedHint: raw.shared_hint || '',
+    contentStatus: 'japanese_only',
+    contentOrigin: 'source',
+    reviewStatus: 'pending'
   };
+}
+
+// ---- Apply enrichment data to a card ----
+function applyEnrichment(card, enrich) {
+  if (!enrich) return card;
+
+  var merged = {};
+  for (var k in card) { merged[k] = card[k]; }
+
+  // Override with enrichment data if present
+  if (enrich.questionZh) merged.questionZh = enrich.questionZh;
+  if (enrich.options && Array.isArray(enrich.options)) {
+    for (var i = 0; i < merged.options.length && i < enrich.options.length; i++) {
+      var eo = enrich.options[i];
+      if (eo.textZh) merged.options[i].textZh = eo.textZh;
+      if (eo.explanationJa) merged.options[i].explanationJa = eo.explanationJa;
+      if (eo.explanationZh) merged.options[i].explanationZh = eo.explanationZh;
+    }
+  }
+  if (enrich.explanationJa) merged.explanationJa = enrich.explanationJa;
+  if (enrich.explanationZh) merged.explanationZh = enrich.explanationZh;
+  if (enrich.mnemonicJa) merged.mnemonicJa = enrich.mnemonicJa;
+  if (enrich.mnemonicZh) merged.mnemonicZh = enrich.mnemonicZh;
+  if (enrich.contentStatus) merged.contentStatus = enrich.contentStatus;
+  if (enrich.contentOrigin) merged.contentOrigin = enrich.contentOrigin;
+  if (enrich.reviewStatus) merged.reviewStatus = enrich.reviewStatus;
+
+  return merged;
 }
 
 // ---- Load all questions from a split subpackage ----
@@ -172,8 +256,7 @@ function dedupeCards(cards) {
 
 /**
  * Get all flashcard data for a given exam type.
- * @param {string} exam - 'itpass' or 'sg'
- * @returns {Object} { cards: [...], stats: { total, filtered, categories, byYear } }
+ * Now loads enrichment data and detects content status.
  */
 function getFlashcardDeck(exam) {
   var years = pastExamIndex.getYears(exam);
@@ -194,12 +277,23 @@ function getFlashcardDeck(exam) {
     }
   }
 
+  // Load all enrichment chunks for this course
+  enrichment.loadAllChunksForCourse(exam);
+
   var normalized = [];
   var filtered = 0;
-  var filterReasons = {};
   for (var k = 0; k < allRaw.length; k++) {
     var card = normalizeQuestion(allRaw[k]);
     if (card) {
+      // Try to apply enrichment
+      var enrich = enrichment.getEnrichmentForCard(exam, card.sourceId);
+      if (enrich) {
+        card = applyEnrichment(card, enrich);
+      }
+      // Detect content status if not set by enrichment
+      if (card.contentStatus === 'japanese_only') {
+        card.contentStatus = detectContentStatus(card);
+      }
       normalized.push(card);
     } else {
       filtered++;
@@ -211,6 +305,7 @@ function getFlashcardDeck(exam) {
 
   var byYear = {};
   var categories = {};
+  var contentStats = { japanese_only: 0, bilingual_partial: 0, bilingual_complete: 0 };
   for (var m = 0; m < deduped.length; m++) {
     var c = deduped[m];
     var yk = c.examYear || c.yearId || 'unknown';
@@ -219,6 +314,9 @@ function getFlashcardDeck(exam) {
     if (c.category) {
       if (!categories[c.category]) categories[c.category] = 0;
       categories[c.category]++;
+    }
+    if (contentStats[c.contentStatus] !== undefined) {
+      contentStats[c.contentStatus]++;
     }
   }
 
@@ -232,14 +330,12 @@ function getFlashcardDeck(exam) {
       dedupCount: dedupCount,
       categories: categories,
       byYear: byYear,
-      years: years
+      years: years,
+      contentStatus: contentStats
     }
   };
 }
 
-/**
- * Get flashcard deck filtered by yearId.
- */
 function getFlashcardDeckByYear(exam, yearId) {
   var deck = getFlashcardDeck(exam);
   if (!yearId) return deck;
@@ -250,9 +346,6 @@ function getFlashcardDeckByYear(exam, yearId) {
   return deck;
 }
 
-/**
- * Get flashcard deck filtered by category.
- */
 function getFlashcardDeckByCategory(exam, category) {
   var deck = getFlashcardDeck(exam);
   if (!category) return deck;
@@ -263,9 +356,6 @@ function getFlashcardDeckByCategory(exam, category) {
   return deck;
 }
 
-/**
- * Get flashcard progress.
- */
 function getFlashcardProgress() {
   try {
     var raw = wx.getStorageSync(FLASHCARD_STATUS_KEY);
@@ -274,9 +364,6 @@ function getFlashcardProgress() {
   return null;
 }
 
-/**
- * Save flashcard progress.
- */
 function saveFlashcardProgress(progress) {
   try {
     wx.setStorageSync(FLASHCARD_STATUS_KEY, progress);
@@ -285,9 +372,6 @@ function saveFlashcardProgress(progress) {
   }
 }
 
-/**
- * Initialize default progress if none exists.
- */
 function initFlashcardProgress(exam, deckLabel) {
   var existing = getFlashcardProgress();
   if (existing) return existing;
@@ -318,5 +402,7 @@ module.exports = {
   getFlashcardProgress: getFlashcardProgress,
   saveFlashcardProgress: saveFlashcardProgress,
   initFlashcardProgress: initFlashcardProgress,
-  FLASHCARD_STATUS_KEY: FLASHCARD_STATUS_KEY
+  FLASHCARD_STATUS_KEY: FLASHCARD_STATUS_KEY,
+  detectContentStatus: detectContentStatus,
+  isGenuineChinese: isGenuineChinese
 };
