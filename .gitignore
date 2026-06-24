@@ -10,3 +10,7 @@ package-lock.json
 *.log
 *.tmp
 tools/test-artifacts/
+
+# Python bytecode
+__pycache__/
+*.pyc
