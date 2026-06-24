@@ -3,12 +3,13 @@
  * run_miniprogram_checks.js — One-command gate for all miniprogram maintenance checks.
  *
  * Runs in sequence:
- *   [1/6] Smoke test            (node tools/miniprogram_smoke_test.js)
- *   [2/6] Content compliance    (node tools/check_content_compliance.js)
- *   [3/6] Quiz explanations     (node tools/check_quiz_explanations.js)
- *   [4/6] Package size audit    (node tools/audit_miniprogram_package_size.js)
- *   [5/6] JS syntax check       (node --check on all project .js files)
- *   [6/6] WXSS escaped newline  (scan for literal backslash+n in .wxss files)
+ *   [1/7] Subpackage registry   (node tools/check_subpackage_registry.js)
+ *   [2/7] Smoke test            (node tools/miniprogram_smoke_test.js)
+ *   [3/7] Content compliance    (node tools/check_content_compliance.js)
+ *   [4/7] Quiz explanations     (node tools/check_quiz_explanations.js)
+ *   [5/7] Package size audit    (node tools/audit_miniprogram_package_size.js)
+ *   [6/7] JS syntax check       (node --check on all project .js files)
+ *   [7/7] WXSS escaped newline  (scan for literal backslash+n in .wxss files)
  *
  * Exit code: 0 if all pass, 1 if any step fails.
  * No external dependencies.
@@ -21,7 +22,7 @@ var fs = require('fs');
 var path = require('path');
 
 var JSON_MODE = process.argv.indexOf('--json') !== -1;
-var TOTAL_CHECKS = 6;
+var TOTAL_CHECKS = 7;
 
 // Prevent circular R3.91 calls when running in --json mode
 if (JSON_MODE && !process.env.CODEX_JSON_CONTRACT) {
@@ -57,7 +58,7 @@ function runStep(index, total, title, cmd, args, opts) {
 // --- JS syntax check (inline, same logic as the one-liner) ---
 
 function checkJsSyntax() {
-  var index = 5;
+  var index = 6;
   var total = TOTAL_CHECKS;
   log('\n[' + index + '/' + total + '] JS syntax check');
   log('-'.repeat(40));
@@ -111,7 +112,7 @@ function checkJsSyntax() {
 // --- WXSS escaped newline guard (inline) ---
 
 function checkWxssEscapedNewline() {
-  var index = 6;
+  var index = 7;
   var total = TOTAL_CHECKS;
   log('\n[' + index + '/' + total + '] WXSS escaped newline guard');
   log('-'.repeat(40));
@@ -174,27 +175,31 @@ function main() {
 
   var results = [];
 
-  // [1/5] Smoke test
-  var r1 = runStep(1, TOTAL_CHECKS, 'Smoke test', 'node', ['tools/miniprogram_smoke_test.js']);
+  // [1/7] Subpackage registry
+  var r0 = runStep(1, TOTAL_CHECKS, 'Subpackage registry', 'node', ['tools/check_subpackage_registry.js']);
+  results.push(r0);
+
+  // [2/7] Smoke test
+  var r1 = runStep(2, TOTAL_CHECKS, 'Smoke test', 'node', ['tools/miniprogram_smoke_test.js']);
   results.push(r1);
 
-  // [2/5] Content compliance
-  var r2 = runStep(2, TOTAL_CHECKS, 'Content compliance', 'node', ['tools/check_content_compliance.js']);
+  // [3/7] Content compliance
+  var r2 = runStep(3, TOTAL_CHECKS, 'Content compliance', 'node', ['tools/check_content_compliance.js']);
   results.push(r2);
 
-  // [3/5] Quiz explanation quality
-  var r3 = runStep(3, TOTAL_CHECKS, 'Quiz explanations', 'node', ['tools/check_quiz_explanations.js']);
+  // [4/7] Quiz explanation quality
+  var r3 = runStep(4, TOTAL_CHECKS, 'Quiz explanations', 'node', ['tools/check_quiz_explanations.js']);
   results.push(r3);
 
-  // [4/6] Package size audit
-  var r4 = runStep(4, TOTAL_CHECKS, 'Package size audit', 'node', ['tools/audit_miniprogram_package_size.js']);
+  // [5/7] Package size audit
+  var r4 = runStep(5, TOTAL_CHECKS, 'Package size audit', 'node', ['tools/audit_miniprogram_package_size.js']);
   results.push(r4);
 
-  // [5/6] JS syntax (inline)
+  // [6/7] JS syntax (inline)
   var r5 = checkJsSyntax();
   results.push(r5);
 
-  // [6/6] WXSS escaped newline (inline)
+  // [7/7] WXSS escaped newline (inline)
   var r6 = checkWxssEscapedNewline();
   results.push(r6);
 

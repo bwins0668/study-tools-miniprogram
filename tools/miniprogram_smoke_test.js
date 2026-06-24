@@ -8328,10 +8328,11 @@ check3133(quizJs3133.indexOf('full_bank') < 0 && quizJs3133.indexOf('explanation
   'R3.133: lightweight quiz.js must not import old aggregate data');
 
 var runChecks3133 = readFile('tools/run_miniprogram_checks.js');
-check3133(runChecks3133.indexOf('TOTAL_CHECKS = 6') >= 0 &&
+check3133(runChecks3133.indexOf('TOTAL_CHECKS = 7') >= 0 &&
+  runChecks3133.indexOf('tools/check_subpackage_registry.js') >= 0 &&
   runChecks3133.indexOf('tools/audit_miniprogram_package_size.js') >= 0 &&
   runChecks3133.indexOf('tools/check_quiz_explanations.js') >= 0,
-  'R3.133: run_miniprogram_checks must include package audit and quiz explanations');
+  'R3.133: run_miniprogram_checks must include subpackage registry, package audit and quiz explanations');
 
 check3133(split3123.fullBank.length === 1945 &&
   Object.keys(split3123.explanations).length === 1945,
