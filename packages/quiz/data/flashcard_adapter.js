@@ -262,71 +262,66 @@ function loadDeckAsync(course, yearId) {
       return;
     }
 
-    console.log('[flashcard_adapter] deck info:', deckInfo);
+    console.log('[flashcard_adapter] deck info:', JSON.stringify(deckInfo));
 
-    // First check if data is already cached (hot path / retry)
+    // Step 0: Check cache
     var cached = getCachedQuestions(deckInfo.packageKey);
     if (cached && cached.length > 0) {
-      console.log('[flashcard_adapter] using cached data for', deckInfo.packageKey, cached.length, 'questions');
+      console.log('[flashcard_adapter] HIT cache:', deckInfo.packageKey, cached.length);
       processRawQuestions(cached, course, yearId, resolve, reject);
       return;
     }
 
-    console.log('[flashcard_adapter] loading subpackage:', deckInfo.packageName);
-
-    // Step 1: Load the subpackage (makes its JS modules available)
+    // Step 1: Load subpackage
+    console.log('[flashcard_adapter] loadSubPackage:', deckInfo.packageName);
     wx.loadSubPackage({
       name: deckInfo.packageName,
       success: function () {
-        console.log('[flashcard_adapter] subpackage loaded:', deckInfo.packageName);
+        console.log('[flashcard_adapter] subpackage loaded:', deckInfo.packageKey);
 
-        // Check if cache is already populated (preloadRule or previous load)
-        var earlyCached = getCachedQuestions(deckInfo.packageKey);
-        if (earlyCached && earlyCached.length > 0) {
-          console.log('[flashcard_adapter] cache already populated:', earlyCached.length);
-          processRawQuestions(earlyCached, course, yearId, resolve, reject);
+        // Step 2: Check cache again
+        var early = getCachedQuestions(deckInfo.packageKey);
+        if (early && early.length > 0) {
+          console.log('[flashcard_adapter] cache ready:', early.length);
+          processRawQuestions(early, course, yearId, resolve, reject);
           return;
         }
 
-        // Navigate to bridge page to trigger flashcard-export.js module execution.
-        // The bridge requires its LOCAL flashcard-export.js at module level, which
-        // populates getApp().globalData.__flashcard_cache. The bridge may stay as
-        // root page (after reLaunch) — that's fine, adapter will poll for cache.
-        console.log('[flashcard_adapter] navigating to bridge:', deckInfo.bridgeRoute);
+        // Step 3: Try to require flashcard-export directly from this context.
+        // After loadSubPackage, the subpackage's JS is loaded.
+        // Relative path from packages/quiz/data/ → ../../quiz-sg-1/data/flashcard-export
+        var pkgDir = deckInfo.packageRoot.replace('packages/', '');
+        try {
+          require('../../' + pkgDir + '/data/flashcard-export');
+          console.log('[flashcard_adapter] export require OK');
+        } catch (e) {
+          console.log('[flashcard_adapter] export require failed:', e.message);
+        }
+
+        // Step 4: Check cache after direct require
+        var after = getCachedQuestions(deckInfo.packageKey);
+        if (after && after.length > 0) {
+          console.log('[flashcard_adapter] cache after export require:', after.length);
+          processRawQuestions(after, course, yearId, resolve, reject);
+          return;
+        }
+
+        // Step 5: Navigate to player page inside the data subpackage
+        // The player requires its LOCAL flashcard-export.js at module level.
+        console.log('[flashcard_adapter] navigateTo player:', deckInfo.playerRoute);
         wx.navigateTo({
-          url: deckInfo.bridgeRoute,
-          success: function (navRes) {
-            // Try EventChannel first (fast path)
-            if (navRes && navRes.eventChannel) {
-              navRes.eventChannel.on('flashcardDataReady', function (data) {
-                console.log('[flashcard_adapter] bridge event:', data);
-                var bridgeCached = getCachedQuestions(deckInfo.packageKey);
-                if (bridgeCached && bridgeCached.length > 0) {
-                  processRawQuestions(bridgeCached, course, yearId, resolve, reject);
-                } else {
-                  pollForCache(deckInfo.packageKey, course, yearId, resolve, reject, 0);
-                }
-              });
-              // Safety: also poll in case event is missed
-              setTimeout(function () {
-                var check = getCachedQuestions(deckInfo.packageKey);
-                if (check && check.length > 0) {
-                  processRawQuestions(check, course, yearId, resolve, reject);
-                }
-              }, 2000);
-            }
-            // Always poll as fallback (handles root page / eventChannel missing)
+          url: deckInfo.playerRoute + '?course=' + encodeURIComponent(course) + '&yearId=' + encodeURIComponent(yearId) + '&deckLabel=' + encodeURIComponent(deckInfo.label) + '&cacheKey=' + encodeURIComponent(deckInfo.packageKey),
+          success: function () {
             pollForCache(deckInfo.packageKey, course, yearId, resolve, reject, 0);
           },
-          fail: function (navErr) {
-            console.error('[flashcard_adapter] bridge navigate failed:', navErr);
+          fail: function (err) {
+            console.error('[flashcard_adapter] player nav failed:', err);
             pollForCache(deckInfo.packageKey, course, yearId, resolve, reject, 0);
           }
         });
       },
       fail: function (err) {
-        console.error('[flashcard_adapter] loadSubPackage failed:', err);
-        reject(new Error('subpackage 加载失败: ' + deckInfo.packageName + ' - ' + (err.errMsg || err.message || 'unknown')));
+        reject(new Error('subpackage 加载失败: ' + deckInfo.packageName));
       }
     });
   });
@@ -336,43 +331,29 @@ function loadDeckAsync(course, yearId) {
  * Poll for cached questions after bridge page populates globalData.__flashcard_cache.
  */
 function pollForCache(packageKey, course, yearId, resolve, reject, attempt) {
-  var maxAttempts = 30; // 6 seconds total
+  var maxAttempts = 40; // 8 seconds total
   var interval = 200;
+  if (attempt === 0) {
+    console.log('[flashcard_adapter] pollForCache start for', packageKey);
+  }
   if (attempt >= maxAttempts) {
-    console.error('[flashcard_adapter] pollForCache timeout for', packageKey, 'after', attempt, 'attempts');
+    console.error('[flashcard_adapter] pollForCache TIMEOUT for', packageKey, 'after', attempt, 'attempts');
+    console.error('[flashcard_adapter] globalData keys:', Object.keys(getApp().globalData.__flashcard_cache || {}));
     reject(new Error('闪卡数据加载超时: ' + packageKey + ' (bridge 未回传数据)'));
     return;
   }
   var cached = getCachedQuestions(packageKey);
   if (cached && cached.length > 0) {
-    console.log('[flashcard_adapter] pollForCache found', cached.length, 'questions for', packageKey, 'at attempt', attempt);
+    console.log('[flashcard_adapter] pollForCache FOUND', cached.length, 'questions at attempt', attempt);
     processRawQuestions(cached, course, yearId, resolve, reject);
     return;
+  }
+  if (attempt % 10 === 0) {
+    console.log('[flashcard_adapter] pollForCache still waiting...', attempt, 'cache keys:', Object.keys(getApp().globalData.__flashcard_cache || {}));
   }
   setTimeout(function () {
     pollForCache(packageKey, course, yearId, resolve, reject, attempt + 1);
   }, interval);
-}
-
-/**
- * Fallback: poll __flashcard_cache after bridge page triggers navigateBack.
- */
-function waitForCache(packageKey, course, yearId, resolve, reject, attempt, maxAttempts) {
-  maxAttempts = maxAttempts || 20;
-  if (attempt > maxAttempts) {
-    console.error('[flashcard_adapter] waitForCache timeout for', packageKey, 'after', attempt, 'polls');
-    reject(new Error('闪卡数据加载超时: ' + packageKey));
-    return;
-  }
-  var cached = getCachedQuestions(packageKey);
-  if (cached && cached.length > 0) {
-    console.log('[flashcard_adapter] waitForCache found', cached.length, 'questions for', packageKey, 'after', attempt, 'polls');
-    processRawQuestions(cached, course, yearId, resolve, reject);
-    return;
-  }
-  setTimeout(function () {
-    waitForCache(packageKey, course, yearId, resolve, reject, attempt + 1);
-  }, 200);
 }
 
 /**

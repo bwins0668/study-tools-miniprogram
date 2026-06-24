@@ -8404,10 +8404,10 @@ if (crossPkgPattern.test(loadDeckAsyncBody)) {
 checkFlashcard(!hasCrossPkgRequire,
   'Flashcard: loadDeckAsync does NOT directly require sibling subpackage loaders');
 
-// 6. loadDeckAsync uses bridge navigation (not cross-pkg require)
+// 6. loadDeckAsync uses player navigation (not cross-pkg require)
 checkFlashcard(
-  loadDeckAsyncBody.indexOf('wx.navigateTo') >= 0 && loadDeckAsyncBody.indexOf('bridgeRoute') >= 0,
-  'Flashcard: loadDeckAsync navigates to bridge page for data loading'
+  loadDeckAsyncBody.indexOf('wx.navigateTo') >= 0 && loadDeckAsyncBody.indexOf('playerRoute') >= 0,
+  'Flashcard: loadDeckAsync navigates to player page for data loading'
 );
 
 // 7. manifest has correct structure

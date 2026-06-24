@@ -33,7 +33,8 @@ function getDeckInfo(course, yearId) {
         yearId: y.yearId,
         label: y.label || y.year,
         count: y.count || 0,
-        bridgeRoute: '/' + pkg.packageRoot + '/pages/flashcard-bridge/flashcard-bridge'
+        bridgeRoute: '/' + pkg.packageRoot + '/pages/flashcard-bridge/flashcard-bridge',
+        playerRoute: '/' + pkg.packageRoot + '/pages/flashcard-player/flashcard-player'
       };
     }
   }
