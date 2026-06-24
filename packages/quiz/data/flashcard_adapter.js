@@ -264,7 +264,7 @@ function loadDeckAsync(course, yearId) {
 
     console.log('[flashcard_adapter] deck info:', deckInfo);
 
-    // First check if data is already cached
+    // First check if data is already cached (hot path / retry)
     var cached = getCachedQuestions(deckInfo.packageKey);
     if (cached && cached.length > 0) {
       console.log('[flashcard_adapter] using cached data for', deckInfo.packageKey, cached.length, 'questions');
@@ -274,37 +274,55 @@ function loadDeckAsync(course, yearId) {
 
     console.log('[flashcard_adapter] loading subpackage:', deckInfo.packageName);
 
-    // Load the subpackage
+    // Step 1: Load the subpackage (makes its JS modules available)
     wx.loadSubPackage({
       name: deckInfo.packageName,
       success: function () {
         console.log('[flashcard_adapter] subpackage loaded:', deckInfo.packageName);
 
-        // Wait for subpackage modules to fully load, then require loader
-        setTimeout(function () {
-          try {
-            var pkgName = deckInfo.packageRoot.replace('packages/', '');
-            var loaderPath = '../../' + pkgName + '/data/loader';
-            console.log('[flashcard_adapter] requiring loader:', loaderPath);
-            var loaderRequire = require(loaderPath);
-            var questions = loaderRequire.getAllQuestions();
-            console.log('[flashcard_adapter] loaded', questions.length, 'questions from loader');
+        // Check if cache is already populated (preloadRule or previous load)
+        var earlyCached = getCachedQuestions(deckInfo.packageKey);
+        if (earlyCached && earlyCached.length > 0) {
+          console.log('[flashcard_adapter] cache already populated:', earlyCached.length);
+          processRawQuestions(earlyCached, course, yearId, resolve, reject);
+          return;
+        }
 
-            // Cache in globalData
-            var app = getApp();
-            if (app) {
-              app.globalData.__flashcard_cache = app.globalData.__flashcard_cache || {};
-              app.globalData.__flashcard_cache[deckInfo.packageKey] = questions;
-              console.log('[flashcard_adapter] cached', questions.length, 'questions for', deckInfo.packageKey);
+        // Navigate to bridge page to trigger flashcard-export.js module execution.
+        // The bridge requires its LOCAL flashcard-export.js at module level, which
+        // populates getApp().globalData.__flashcard_cache. The bridge may stay as
+        // root page (after reLaunch) — that's fine, adapter will poll for cache.
+        console.log('[flashcard_adapter] navigating to bridge:', deckInfo.bridgeRoute);
+        wx.navigateTo({
+          url: deckInfo.bridgeRoute,
+          success: function (navRes) {
+            // Try EventChannel first (fast path)
+            if (navRes && navRes.eventChannel) {
+              navRes.eventChannel.on('flashcardDataReady', function (data) {
+                console.log('[flashcard_adapter] bridge event:', data);
+                var bridgeCached = getCachedQuestions(deckInfo.packageKey);
+                if (bridgeCached && bridgeCached.length > 0) {
+                  processRawQuestions(bridgeCached, course, yearId, resolve, reject);
+                } else {
+                  pollForCache(deckInfo.packageKey, course, yearId, resolve, reject, 0);
+                }
+              });
+              // Safety: also poll in case event is missed
+              setTimeout(function () {
+                var check = getCachedQuestions(deckInfo.packageKey);
+                if (check && check.length > 0) {
+                  processRawQuestions(check, course, yearId, resolve, reject);
+                }
+              }, 2000);
             }
-
-            // Process immediately
-            processRawQuestions(questions, course, yearId, resolve, reject);
-          } catch (e) {
-            console.error('[flashcard_adapter] loader require failed:', e.message, e.stack);
-            reject(new Error('无法加载闪卡数据: ' + (e.message || 'unknown')));
+            // Always poll as fallback (handles root page / eventChannel missing)
+            pollForCache(deckInfo.packageKey, course, yearId, resolve, reject, 0);
+          },
+          fail: function (navErr) {
+            console.error('[flashcard_adapter] bridge navigate failed:', navErr);
+            pollForCache(deckInfo.packageKey, course, yearId, resolve, reject, 0);
           }
-        }, 500);
+        });
       },
       fail: function (err) {
         console.error('[flashcard_adapter] loadSubPackage failed:', err);
@@ -312,6 +330,28 @@ function loadDeckAsync(course, yearId) {
       }
     });
   });
+}
+
+/**
+ * Poll for cached questions after bridge page populates globalData.__flashcard_cache.
+ */
+function pollForCache(packageKey, course, yearId, resolve, reject, attempt) {
+  var maxAttempts = 30; // 6 seconds total
+  var interval = 200;
+  if (attempt >= maxAttempts) {
+    console.error('[flashcard_adapter] pollForCache timeout for', packageKey, 'after', attempt, 'attempts');
+    reject(new Error('闪卡数据加载超时: ' + packageKey + ' (bridge 未回传数据)'));
+    return;
+  }
+  var cached = getCachedQuestions(packageKey);
+  if (cached && cached.length > 0) {
+    console.log('[flashcard_adapter] pollForCache found', cached.length, 'questions for', packageKey, 'at attempt', attempt);
+    processRawQuestions(cached, course, yearId, resolve, reject);
+    return;
+  }
+  setTimeout(function () {
+    pollForCache(packageKey, course, yearId, resolve, reject, attempt + 1);
+  }, interval);
 }
 
 /**

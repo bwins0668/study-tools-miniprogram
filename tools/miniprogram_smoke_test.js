@@ -8339,6 +8339,129 @@ check3133(split3123.fullBank.length === 1945 &&
 
 if (round3133Ok) pass('R3.133: quiz data subpackage split and package-size guard');
 
+// ============================================================
+// Flashcard cold-start reliability checks
+// ============================================================
+console.log('\n--- Flashcard cold-start reliability checks ---');
+var roundFlashcardOk = true;
+function checkFlashcard(cond, msg) {
+  if (!cond) { fail(msg); roundFlashcardOk = false; } else { pass(msg); }
+}
+
+// 1. flashcard-quiz route is registered
+var appJsonFlash = JSON.parse(readFile('app.json'));
+var quizPkg = appJsonFlash.subpackages.find(function(p) { return p.name === 'quiz'; });
+checkFlashcard(
+  quizPkg && quizPkg.pages.indexOf('pages/flashcard-quiz/flashcard-quiz') >= 0,
+  'Flashcard: flashcard-quiz route registered in quiz subpackage'
+);
+
+// 2. flashcard-deck-select route is registered
+checkFlashcard(
+  quizPkg && quizPkg.pages.indexOf('pages/flashcard-deck-select/flashcard-deck-select') >= 0,
+  'Flashcard: flashcard-deck-select route registered'
+);
+
+// 3. Bridge pages exist for all data subpackages
+var bridgeSubpackages = ['quiz-itpass-1', 'quiz-itpass-2', 'quiz-itpass-3', 'quiz-itpass-4', 'quiz-itpass-5', 'quiz-sg-1', 'quiz-sg-2'];
+var allBridgesExist = true;
+bridgeSubpackages.forEach(function(sp) {
+  var bridgePath = 'packages/' + sp + '/pages/flashcard-bridge/flashcard-bridge.js';
+  if (!fileExists(bridgePath)) {
+    allBridgesExist = false;
+    fail('Flashcard: bridge missing for ' + sp);
+    roundFlashcardOk = false;
+  }
+});
+if (allBridgesExist) pass('Flashcard: all 7 bridge pages exist');
+
+// 4. flashcard-export.js exists for all data subpackages
+var allExportsExist = true;
+bridgeSubpackages.forEach(function(sp) {
+  var exportPath = 'packages/' + sp + '/data/flashcard-export.js';
+  if (!fileExists(exportPath)) {
+    allExportsExist = false;
+    fail('Flashcard: flashcard-export missing for ' + sp);
+    roundFlashcardOk = false;
+  }
+});
+if (allExportsExist) pass('Flashcard: all 7 flashcard-export.js exist');
+
+// 5. flashcard-quiz doesn't directly require sibling subpackage loaders
+var quizAdapter = readFile('packages/quiz/data/flashcard_adapter.js');
+var hasCrossPkgRequire = false;
+// Check for patterns like require('../../quiz-sg-1/...') or require('../../quiz-itpass-1/...')
+var crossPkgPattern = /require\(['"]\.\.\/\.\.\/(quiz-(?:sg|itpass)-\d)/;
+var crossPkgMatch = quizAdapter.match(crossPkgPattern);
+// The DEPRECATED shim (getFlashcardDeck) is allowed to have cross-pkg require
+// Only loadDeckAsync must NOT have it
+var loadDeckAsyncStart = quizAdapter.indexOf('function loadDeckAsync');
+var loadDeckAsyncEnd = quizAdapter.indexOf('function pollForCache');
+var loadDeckAsyncBody = quizAdapter.substring(loadDeckAsyncStart, loadDeckAsyncEnd);
+if (crossPkgPattern.test(loadDeckAsyncBody)) {
+  hasCrossPkgRequire = true;
+}
+checkFlashcard(!hasCrossPkgRequire,
+  'Flashcard: loadDeckAsync does NOT directly require sibling subpackage loaders');
+
+// 6. loadDeckAsync uses bridge navigation (not cross-pkg require)
+checkFlashcard(
+  loadDeckAsyncBody.indexOf('wx.navigateTo') >= 0 && loadDeckAsyncBody.indexOf('bridgeRoute') >= 0,
+  'Flashcard: loadDeckAsync navigates to bridge page for data loading'
+);
+
+// 7. manifest has correct structure
+var manifest = readFile('packages/quiz/data/flashcard-manifest.js');
+checkFlashcard(
+  manifest.indexOf('getDeckInfo') >= 0 && manifest.indexOf('getDecksForCourse') >= 0,
+  'Flashcard: manifest has getDeckInfo and getDecksForCourse'
+);
+checkFlashcard(
+  manifest.indexOf("'quiz-sg-1'") >= 0 && manifest.indexOf("'quiz-itpass-1'") >= 0,
+  'Flashcard: manifest maps sg-1 and itpass-1 packages'
+);
+
+// 8. flashcard-quiz WXML has loading/error/empty/content states
+var quizWxml = readFile('packages/quiz/pages/flashcard-quiz/flashcard-quiz.wxml');
+checkFlashcard(quizWxml.indexOf('isLoading') >= 0, 'Flashcard: WXML has isLoading state');
+checkFlashcard(quizWxml.indexOf('loadError') >= 0, 'Flashcard: WXML has loadError state');
+checkFlashcard(quizWxml.indexOf('isEmpty') >= 0 || quizWxml.indexOf('暂无') >= 0, 'Flashcard: WXML has empty state');
+checkFlashcard(quizWxml.indexOf('currentCard') >= 0, 'Flashcard: WXML has content state');
+
+// 9. flashcard-quiz has error handling in loadDeck
+var flashQuizJs = readFile('packages/quiz/pages/flashcard-quiz/flashcard-quiz.js');
+checkFlashcard(
+  flashQuizJs.indexOf('.catch') >= 0 && flashQuizJs.indexOf('loadError') >= 0,
+  'Flashcard: loadDeck has .catch and sets loadError'
+);
+checkFlashcard(
+  flashQuizJs.indexOf('retryLoad') >= 0,
+  'Flashcard: loadDeck has retryLoad handler'
+);
+
+// 10. Bridge pages use local require (not cross-pkg)
+var bridgeSg1 = readFile('packages/quiz-sg-1/pages/flashcard-bridge/flashcard-bridge.js');
+checkFlashcard(
+  bridgeSg1.indexOf("require('../../data/flashcard-export')") >= 0,
+  'Flashcard: bridge uses local flashcard-export require'
+);
+
+// 11. flashcard-export uses local loader require
+var exportSg1 = readFile('packages/quiz-sg-1/data/flashcard-export.js');
+checkFlashcard(
+  exportSg1.indexOf("require('./loader')") >= 0,
+  'Flashcard: flashcard-export uses local loader require'
+);
+
+// 12. PreloadRule includes flashcard data subpackages for flashcards tab
+var preloadStr = JSON.stringify(appJsonFlash.preloadRule);
+checkFlashcard(
+  preloadStr.indexOf('quiz-sg-1') >= 0 && preloadStr.indexOf('quiz-itpass-1') >= 0,
+  'Flashcard: preloadRule includes data subpackages for flashcards tab'
+);
+
+if (roundFlashcardOk) pass('Flashcard cold-start reliability checks');
+
 console.log('\n========================================');
 console.log('Passed: ' + passed);
 console.log('Failed: ' + failed);
