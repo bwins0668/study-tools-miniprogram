@@ -133,8 +133,8 @@ Page({
     errorYearId: '',
     errorPackageName: '',
     errorDetail: '',
-    expectedCount: 0,
-    actualCount: 0
+    rawLoadedCount: 0,
+    renderableCardCount: 0
   },
 
   onLoad: function (options) {
@@ -182,10 +182,10 @@ Page({
       errorDeckLabel: deckLabel,
       errorYearId: deckInfo.yearId,
       errorPackageName: deckInfo.deckId,
-      expectedCount: deckInfo.expectedCount,
+      rawLoadedCount: deckInfo.rawExpectedCount,
       loadingMsg: '正在加载「' + deckLabel + '」' + courseLabel + '…'
     });
-    this.loadCards(course, deckInfo.yearId, deckInfo.expectedCount);
+    this.loadCards(course, deckInfo.yearId, deckInfo.rawExpectedCount);
   },
 
   loadCards: function (course, yearId, expectedCount) {
@@ -194,9 +194,9 @@ Page({
     try {
       var rawQuestions = loader.getQuestionsByYear(course, yearId);
       console.log('[flashcard-player] loader.getQuestionsByYear returned', rawQuestions ? rawQuestions.length : 0);
-      this.setData({ actualCount: rawQuestions ? rawQuestions.length : 0 });
+      self.setData({ rawLoadedCount: rawQuestions ? rawQuestions.length : 0 });
       if (!rawQuestions || rawQuestions.length === 0) {
-        self.setData({ isLoading: false, loadError: '闪卡数据加载失败', errorDetail: '该牌组 (' + yearId + ') 在分包内未找到题目, expectedCount=' + expectedCount + ' actualCount=0', isEmpty: true });
+        self.setData({ isLoading: false, loadError: '闪卡数据加载失败', errorDetail: '该牌组 (' + yearId + ') 在分包内未找到题目, rawExpectedCount=' + expectedCount + ' rawLoadedCount=0', isEmpty: true });
         return;
       }
       var cards = [];
@@ -213,6 +213,7 @@ Page({
         isLoading: false,
         cards: cards,
         totalCards: cards.length,
+        renderableCardCount: cards.length,
         currentIndex: 0,
         currentCard: cards[0],
         progressPercent: Math.round(1 / cards.length * 100) || 0
@@ -221,7 +222,7 @@ Page({
       console.log('[flashcard-player] loaded successfully:', cards.length, 'cards');
     } catch (e) {
       console.error('[flashcard-player] loadCards error:', e);
-      self.setData({ isLoading: false, loadError: '闪卡数据加载失败', errorDetail: e.message || '未知错误', actualCount: 0, isEmpty: true });
+      self.setData({ isLoading: false, loadError: '闪卡数据加载失败', errorDetail: e.message || '未知错误', rawLoadedCount: 0, isEmpty: true });
     }
   },
 
