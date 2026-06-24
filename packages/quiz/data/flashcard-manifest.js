@@ -21,11 +21,16 @@ var PACKAGE_MAP = {
  */
 function getDeckInfo(course, yearId) {
   var years = pastExamIndex.getYears(course);
+  console.log('[flashcard-manifest] getDeckInfo course=' + course + ' yearId=' + yearId + ' yearsCount=' + years.length);
   for (var i = 0; i < years.length; i++) {
     var y = years[i];
+    console.log('[flashcard-manifest] checking year[' + i + ']: yearId=' + y.yearId + ' match=' + (y.yearId === yearId));
     if (y.yearId === yearId) {
       var pkg = PACKAGE_MAP[y.packageKey];
-      if (!pkg) return null;
+      if (!pkg) {
+        console.error('[flashcard-manifest] PACKAGE_MAP missing key:', y.packageKey);
+        return null;
+      }
       return {
         packageKey: y.packageKey,
         packageName: pkg.packageName,
@@ -38,6 +43,7 @@ function getDeckInfo(course, yearId) {
       };
     }
   }
+  console.error('[flashcard-manifest] NO MATCH for yearId=' + yearId + ' in', years.map(function(y) { return y.yearId; }));
   return null;
 }
 
