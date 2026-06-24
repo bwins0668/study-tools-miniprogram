@@ -15,6 +15,17 @@ Page({
   },
 
   onLoad: function (options) {
+    if (typeof wx.loadSubPackage !== 'function') {
+      console.warn('[flashcard-deck-select] wx.loadSubPackage missing — installing shim (preloadRule handles actual loading)');
+      wx.loadSubPackage = function (opts) {
+        var name = opts && opts.name ? opts.name : '';
+        console.log('[flashcard-deck-select] loadSubPackage shim called for:', name);
+        setTimeout(function () {
+          if (opts && typeof opts.success === 'function') opts.success();
+        }, 50);
+      };
+    }
+
     var course = options.course || options.exam || 'itpass';
     var courseLabel = course === 'sg' ? 'SG 闪卡' : 'IT Passport 闪卡';
     var courseDesc = course === 'sg' ? '情報セキュリティマネジメント' : 'IT パスポート試験';
@@ -59,30 +70,67 @@ Page({
   },
 
   selectDeck: function (e) {
-    var dataset = e.currentTarget.dataset || {};
-    var yearId = dataset.yearId;
-    var label = dataset.label || yearId || '年度模拟';
-    var course = this.data.course;
+    try {
+      // VISIBLE MARKER: toggle a data field so automation can confirm event fired
+      this.setData({ _lastTap: Date.now() });
 
-    if (!yearId) {
-      console.warn('[flashcard-deck-select] selectDeck: missing yearId');
-      wx.showToast({ title: '牌组信息缺失', icon: 'none' });
-      return;
-    }
+      console.log('[deck-nav:tap]', JSON.stringify({
+        eventType: e && e.type,
+        hasCurrentTarget: !!e.currentTarget,
+        hasTarget: !!e.target,
+        currentTargetTag: e && e.currentTarget ? e.currentTarget.tagName : 'N/A',
+        currentTargetId: e && e.currentTarget ? e.currentTarget.id : 'N/A',
+        fullDataset: e && e.currentTarget ? e.currentTarget.dataset : null,
+      }));
 
-    console.log('[flashcard-deck-select] navigating to flashcard-quiz', {
-      course: course,
-      yearId: yearId,
-      deckLabel: label
-    });
+      var dataset = (e && e.currentTarget && e.currentTarget.dataset) || {};
+      var yearId = dataset.yearId;
+      var label = dataset.label || yearId || '年度模拟';
+      var course = this.data.course;
 
-    wx.navigateTo({
-      url: '/packages/quiz/pages/flashcard-quiz/flashcard-quiz?course=' + course + '&yearId=' + yearId + '&deckLabel=' + encodeURIComponent(label),
-      fail: function (err) {
-        console.error('[flashcard-deck-select] navigate failed:', err);
-        wx.showToast({ title: '打开闪卡失败', icon: 'none' });
+      console.log('[deck-nav:parsed]', JSON.stringify({
+        yearId: yearId,
+        yearIdType: typeof yearId,
+        label: label,
+        course: course,
+        courseEmpty: !course,
+        decksCount: this.data.decks ? this.data.decks.length : 0
+      }));
+
+      if (!course) {
+        console.warn('[deck-nav:blocked] reason=course_empty', JSON.stringify({ course: course }));
+        wx.showToast({ title: '课程信息缺失', icon: 'none' });
+        return;
       }
-    });
+
+      if (!yearId) {
+        console.warn('[deck-nav:blocked] reason=yearId_empty', JSON.stringify({ yearId: yearId, dataset: dataset }));
+        wx.showToast({ title: '牌组信息缺失', icon: 'none' });
+        return;
+      }
+
+      var navUrl = '/packages/quiz/pages/flashcard-quiz/flashcard-quiz?course=' + encodeURIComponent(course) + '&yearId=' + encodeURIComponent(yearId) + '&deckLabel=' + encodeURIComponent(label);
+      console.log('[deck-nav:url]', navUrl);
+      console.log('[deck-nav:calling-navigateTo]', navUrl);
+
+      // Navigate to flashcard-quiz (redirectTo replaces deck-select in stack)
+      console.log('[deck-nav:redirect-to-quiz]', navUrl);
+      wx.redirectTo({
+        url: navUrl,
+        success: function (res) {
+          console.log('[deck-nav:redirect-success]', JSON.stringify({ errMsg: res && res.errMsg }));
+        },
+        fail: function (err) {
+          console.error('[deck-nav:redirect-fail]', JSON.stringify({ errMsg: err && err.errMsg }));
+        },
+        complete: function (res) {
+          console.log('[deck-nav:redirect-complete]', JSON.stringify({ errMsg: res && res.errMsg }));
+        }
+      });
+    } catch (ex) {
+      console.error('[deck-nav:exception]', ex && ex.message, ex && ex.stack);
+      this.setData({ _error: ex && ex.message });
+    }
   },
 
   goBack: function () {

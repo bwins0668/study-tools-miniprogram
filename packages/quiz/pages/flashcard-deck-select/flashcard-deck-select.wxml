@@ -30,6 +30,8 @@
         bindtap="selectDeck"
         data-year-id="{{item.yearId}}"
         data-label="{{item.label}}"
+        data-deck-id="{{item.deckId}}"
+        data-package-name="{{item.packageName}}"
       >
         <view class="fds-deck-info">
           <text class="fds-deck-label">{{item.label}}</text>
