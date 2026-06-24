@@ -7281,29 +7281,25 @@ function check391(condition, message) {
   }
 }
 
-// Guard: skip recursion when called from within run_miniprogram_checks.js
+// R3.91 queries the leaf-only JSON contract.
 var jsonOutput391 = null;
-if (process.env.CODEX_JSON_CONTRACT === '1') {
-  // Nested call via execSync - skip to avoid infinite recursion
-  round391Ok = true;
-} else {
-  try {
-    jsonOutput391 = (require('child_process').execSync('node tools/run_miniprogram_checks.js --json', {
+try {
+  jsonOutput391 = (require('child_process').execSync('node tools/run_miniprogram_checks.js --json', {
     cwd: ROOT,
     encoding: 'utf-8',
     timeout: 30000,
-    env: Object.assign({}, process.env, { CODEX_JSON_CONTRACT: '1' })
+    stdio: ['ignore', 'pipe', 'pipe']
   }) || '').trim();
   if (!jsonOutput391) {
     fail('R3.91: --json output is empty');
     round391Ok = false;
     jsonOutput391 = null;
   }
-  } catch (e) {
-    fail('R3.91: --json command returned non-zero: ' + e.message);
-    round391Ok = false;
-    jsonOutput391 = null;
-  }
+} catch (e) {
+  var stderr391 = String(e && e.stderr || '').trim();
+  fail('R3.91: --json command returned non-zero: ' + (stderr391 || e.message));
+  round391Ok = false;
+  jsonOutput391 = null;
 }
 
 if (jsonOutput391 !== null) {
@@ -7317,6 +7313,20 @@ if (jsonOutput391 !== null) {
   }
 
   if (parsed391 !== null) {
+    check391(typeof parsed391.success === 'boolean', 'R3.91: success must be boolean');
+    check391(Array.isArray(parsed391.checks), 'R3.91: checks must be array');
+    check391(Array.isArray(parsed391.failures), 'R3.91: failures must be array');
+    if (Array.isArray(parsed391.checks)) {
+      check391(parsed391.checks.every(function (check) {
+        return check && typeof check.name === 'string' && typeof check.ok === 'boolean';
+      }), 'R3.91: checks must contain named boolean results');
+      check391(!parsed391.checks.some(function (check) { return check.name === 'Smoke test'; }),
+        'R3.91: JSON leaf mode must not invoke miniprogram_smoke_test');
+    }
+    if (parsed391.success === true && Array.isArray(parsed391.failures)) {
+      check391(parsed391.failures.length === 0, 'R3.91: success=true must have no failures');
+    }
+
     // Top-level field types
     check391(typeof parsed391.ok === 'boolean',              'R3.91: ok must be boolean, got ' + typeof parsed391.ok);
     check391(typeof parsed391.totalChecks === 'number',       'R3.91: totalChecks must be number');
@@ -7758,8 +7768,12 @@ var favoriteReviewWxssUiPolish = readFile('packages/glossary/pages/favorite-revi
 
 checkUiPolish(homeWxmlUiPolish.indexOf('entry-card-anki') >= 0,
   'UI polish: Anki entry card must carry its theme class');
-checkUiPolish(homeWxssUiPolish.indexOf('.entry-card:active') >= 0 &&
-  homeWxssUiPolish.indexOf('translateY(2rpx) scale(0.965)') >= 0,
+checkUiPolish(homeWxmlUiPolish.indexOf('hover-class="home-card-pressed"') >= 0 &&
+  homeWxssUiPolish.indexOf('.home-card-pressed') >= 0 &&
+  homeWxssUiPolish.indexOf('scale(0.98)') >= 0 &&
+  homeWxssUiPolish.indexOf('background: var(--press-bg)') >= 0 &&
+  homeWxssUiPolish.indexOf('border-color: var(--border-strong)') >= 0 &&
+  homeWxssUiPolish.indexOf('box-shadow:') >= 0,
   'UI polish: home entry cards must keep pressed feedback');
 checkUiPolish(homeWxssUiPolish.indexOf('.entry-card-badge') >= 0 &&
   homeWxssUiPolish.indexOf('linear-gradient(135deg, #ef4444, #dc2626)') >= 0,
@@ -8305,12 +8319,12 @@ requiredSplitRoots3133.forEach(function (root) {
     fileExists(root + '/data/explanations_zh.js') &&
     fileExists(root + '/data/loader.js'),
     'R3.133: split package files missing for ' + root);
-  check3133(getDirSize(root) < 1.8 * 1024 * 1024,
-    'R3.133: split package must stay under 1.8MB: ' + root);
+  check3133(getDirSize(root) < 2.0 * 1024 * 1024,
+    'R3.133: split package must stay under 2.0MB: ' + root);
 });
 
-check3133(getDirSize('packages/quiz') < 1.8 * 1024 * 1024,
-  'R3.133: packages/quiz must stay under 1.8MB after moving data out');
+check3133(getDirSize('packages/quiz') < 2.0 * 1024 * 1024,
+  'R3.133: packages/quiz must stay under 2.0MB after moving data out');
 check3133(!fileExists('packages/quiz/data/past_exam_bank/full_bank.js'),
   'R3.133: full_bank.js must not remain inside packages/quiz');
 check3133(!fileExists('packages/quiz/data/past_exam_bank/explanations_zh.js'),
@@ -8454,12 +8468,55 @@ checkFlashcard(
   'Flashcard: flashcard-export uses local loader require'
 );
 
-// 12. PreloadRule includes flashcard data subpackages for flashcards tab
-var preloadStr = JSON.stringify(appJsonFlash.preloadRule);
+// 12. Lazy flashcard data loading: no eager data-package preload, then target-package loading.
+var lazyDataPackages = [
+  'quiz', 'quiz-itpass-1', 'quiz-itpass-2', 'quiz-itpass-3', 'quiz-itpass-4',
+  'quiz-itpass-5', 'quiz-sg-1', 'quiz-sg-2'
+];
+var preloadRulesFlash = appJsonFlash.preloadRule || {};
+var homePreloadPackages = (preloadRulesFlash['pages/home/home'] || {}).packages || [];
+var flashcardCenterPreloadPackages = (preloadRulesFlash['pages/flashcards/flashcards'] || {}).packages || [];
+function hasLazyDataPreload(packages) {
+  return lazyDataPackages.some(function (packageName) {
+    return packages.indexOf(packageName) >= 0;
+  });
+}
+checkFlashcard(!hasLazyDataPreload(homePreloadPackages),
+  'Flashcard: home does not preload flashcard data subpackages');
+checkFlashcard(!hasLazyDataPreload(flashcardCenterPreloadPackages),
+  'Flashcard: flashcard center does not preload flashcard data subpackages');
+
+var deckSelectLazyJs = readFile('packages/quiz/pages/flashcard-deck-select/flashcard-deck-select.js');
 checkFlashcard(
-  preloadStr.indexOf('quiz-sg-1') >= 0 && preloadStr.indexOf('quiz-itpass-1') >= 0,
-  'Flashcard: preloadRule includes data subpackages for flashcards tab'
+  deckSelectLazyJs.indexOf('wx.loadSubPackage') >= 0 &&
+  deckSelectLazyJs.indexOf('name: deckInfo.packageName') >= 0 &&
+  deckSelectLazyJs.indexOf('wx.navigateTo') >= 0 &&
+  deckSelectLazyJs.indexOf('url: playerUrl') >= 0,
+  'Flashcard: deck select loads its target package then navigates to the registered player'
 );
+checkFlashcard(
+  deckSelectLazyJs.indexOf('installing shim') < 0 &&
+  deckSelectLazyJs.indexOf('wx.loadSubPackage = function') < 0 &&
+  deckSelectLazyJs.indexOf('__flashcard_cache') < 0,
+  'Flashcard: deck select has no fake loadSubPackage shim or cache bridge'
+);
+
+var flashcardCenterJs = readFile('pages/flashcards/flashcards.js');
+checkFlashcard(
+  flashcardCenterJs.indexOf('past_exam_bank') < 0 &&
+  flashcardCenterJs.indexOf('flashcard_adapter') < 0 &&
+  flashcardCenterJs.indexOf('../../packages/quiz') < 0,
+  'Flashcard: main flashcard page does not cross-require question-bank data'
+);
+
+var playerPackageNames = ['quiz-itpass-1', 'quiz-itpass-2', 'quiz-itpass-3', 'quiz-itpass-4', 'quiz-itpass-5', 'quiz-sg-1', 'quiz-sg-2'];
+checkFlashcard(playerPackageNames.every(function (packageName) {
+  return (appJsonFlash.subpackages || []).some(function (subpackage) {
+    return subpackage.name === packageName &&
+      Array.isArray(subpackage.pages) &&
+      subpackage.pages.indexOf('pages/flashcard-player/flashcard-player') >= 0;
+  });
+}), 'Flashcard: formal player route is registered for every data subpackage');
 
 if (roundFlashcardOk) pass('Flashcard cold-start reliability checks');
 

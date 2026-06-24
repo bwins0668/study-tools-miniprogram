@@ -442,11 +442,31 @@
 }
 
 .entry-card:active {
-  transform: translateY(2rpx) scale(0.965);
+  transform: translateY(1rpx) scale(0.98);
   background: var(--press-bg);
   border-color: var(--border-strong);
   box-shadow: 0 4rpx 14rpx rgba(15, 23, 42, 0.08);
   opacity: 0.94;
+}
+
+.entry-card.home-card-pressed {
+  transform: translateY(1rpx) scale(0.98);
+  background: var(--press-bg);
+  border-color: var(--border-strong);
+  box-shadow: 0 4rpx 14rpx rgba(15, 23, 42, 0.08);
+  opacity: 0.94;
+}
+
+.home-button-pressed {
+  transform: translateY(1rpx) scale(0.98);
+  opacity: 0.92;
+}
+
+.entry-card.home-card-navigating {
+  transform: translateY(1rpx) scale(0.985);
+  border-color: var(--border-strong);
+  box-shadow: 0 3rpx 10rpx rgba(15, 23, 42, 0.08);
+  opacity: 0.78;
 }
 
 .entry-card::before {
@@ -475,11 +495,6 @@
   background: #fbfcfd;
   border-color: var(--border-strong);
   box-shadow: var(--shadow-md);
-}
-
-.entry-card-primary::before {
-  background: #111827;
-  border-color: #111827;
 }
 
 .entry-card-icon-wrap {
@@ -1272,10 +1287,5 @@
 
   .entry-card-primary {
     background: var(--card-bg-elevated);
-  }
-
-  .entry-card-primary::before {
-    background: #edf1f6;
-    border-color: #edf1f6;
   }
 }

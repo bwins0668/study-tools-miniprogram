@@ -29,10 +29,10 @@
         <text class="hero-focus-desc" wx:if="{{hasLastAttempt}}">{{lastExamLabel}} · {{lastSourceLabel}}</text>
         <text class="hero-focus-desc" wx:else>建议从 IT Passport 课程练习入手</text>
       </view>
-      <view class="hero-focus-action ui-pressable" wx:if="{{hasLastAttempt}}" bindtap="continueLearning">
+      <view class="hero-focus-action ui-pressable" wx:if="{{hasLastAttempt}}" bindtap="continueLearning" hover-class="home-button-pressed" hover-start-time="20" hover-stay-time="150">
         <text class="hero-focus-action-text">继续练习</text>
       </view>
-      <view class="hero-focus-action ui-pressable" wx:else bindtap="quickStart">
+      <view class="hero-focus-action ui-pressable" wx:else bindtap="quickStart" hover-class="home-button-pressed" hover-start-time="20" hover-stay-time="150">
         <text class="hero-focus-action-text">开始练习</text>
       </view>
     </view>
@@ -73,7 +73,7 @@
 
   <!-- ===== 核心入口矩阵（2×3） ===== -->
   <view class="entry-grid card-list">
-    <view class="entry-card card card-entry entry-card-anki ui-pressable" bindtap="goToAnki">
+    <view class="entry-card card card-entry entry-card-anki ui-pressable {{navigationTarget === 'anki' ? 'home-card-navigating' : ''}}" bindtap="goToAnki" hover-class="home-card-pressed" hover-start-time="20" hover-stay-time="150">
       <view class="entry-card-icon-wrap entry-icon-anki">
         <view class="entry-symbol symbol-anki">
           <view class="symbol-line symbol-line-a"></view>
@@ -87,7 +87,7 @@
       <view class="card-badge entry-card-badge" wx:if="{{favoriteCount > 0}}">{{favoriteCount}}</view>
     </view>
 
-    <view class="entry-card card card-entry entry-card-itpass entry-card-primary ui-pressable" bindtap="goToItPassport">
+    <view class="entry-card card card-entry entry-card-itpass entry-card-primary ui-pressable {{navigationTarget === 'itpass' ? 'home-card-navigating' : ''}}" bindtap="goToItPassport" hover-class="home-card-pressed" hover-start-time="20" hover-stay-time="150">
       <view class="entry-card-icon-wrap entry-icon-itpass">
         <view class="entry-symbol symbol-itpass">
           <view class="symbol-frame"></view>
@@ -108,7 +108,7 @@
       <text class="card-last-time" wx:if="{{itpassLastTime}}">最近：{{itpassLastTime}}</text>
     </view>
 
-    <view class="entry-card card card-entry entry-card-sg ui-pressable" bindtap="goToSG">
+    <view class="entry-card card card-entry entry-card-sg ui-pressable {{navigationTarget === 'sg' ? 'home-card-navigating' : ''}}" bindtap="goToSG" hover-class="home-card-pressed" hover-start-time="20" hover-stay-time="150">
       <view class="entry-card-icon-wrap entry-icon-sg">
         <view class="entry-symbol symbol-sg">
           <view class="symbol-shield"></view>
@@ -127,7 +127,7 @@
       <text class="card-last-time" wx:if="{{sgLastTime}}">最近：{{sgLastTime}}</text>
     </view>
 
-    <view class="entry-card card card-entry entry-card-glossary ui-pressable" bindtap="goToGlossary">
+    <view class="entry-card card card-entry entry-card-glossary ui-pressable {{navigationTarget === 'glossary' ? 'home-card-navigating' : ''}}" bindtap="goToGlossary" hover-class="home-card-pressed" hover-start-time="20" hover-stay-time="150">
       <view class="entry-card-icon-wrap entry-icon-glossary">
         <view class="entry-symbol symbol-glossary">
           <view class="symbol-frame"></view>
@@ -139,7 +139,7 @@
       <text class="entry-card-desc">查词 / 中日英对照</text>
     </view>
 
-    <view class="entry-card card card-entry entry-card-mistakes ui-pressable" bindtap="goToMistakes">
+    <view class="entry-card card card-entry entry-card-mistakes ui-pressable {{navigationTarget === 'mistakes' ? 'home-card-navigating' : ''}}" bindtap="goToMistakes" hover-class="home-card-pressed" hover-start-time="20" hover-stay-time="150">
       <view class="entry-card-icon-wrap entry-icon-mistakes">
         <view class="entry-symbol symbol-mistakes">
           <view class="symbol-frame"></view>
@@ -152,7 +152,7 @@
       <view class="card-badge entry-card-badge" wx:if="{{wrongQuestionCount > 0}}">{{wrongQuestionCount}}</view>
     </view>
 
-    <view class="entry-card card card-entry card-entry-profile entry-card-profile ui-pressable" bindtap="goToProfile">
+    <view class="entry-card card card-entry card-entry-profile entry-card-profile ui-pressable {{navigationTarget === 'profile' ? 'home-card-navigating' : ''}}" bindtap="goToProfile" hover-class="home-card-pressed" hover-start-time="20" hover-stay-time="150">
       <view class="entry-card-icon-wrap entry-icon-profile">
         <view class="entry-symbol symbol-profile">
           <view class="symbol-bar symbol-bar-a"></view>
@@ -182,7 +182,7 @@
   <!-- ===== 继续学习 / 快速开始 ===== -->
   <view class="continue-section" wx:if="{{hasLastAttempt}}">
     <text class="section-title">{{sectionTitle}}</text>
-    <view class="continue-card ui-pressable" bindtap="continueLearning">
+    <view class="continue-card ui-pressable" bindtap="continueLearning" hover-class="home-card-pressed" hover-start-time="20" hover-stay-time="150">
       <view class="continue-icon-wrap">
         <view class="mini-symbol mini-symbol-continue"></view>
       </view>
@@ -206,7 +206,7 @@
       <view class="empty-mark"></view>
       <text class="continue-empty-text">还没有学习记录</text>
       <text class="continue-empty-hint">建议先从 IT Passport 课程练习入手，也欢迎浏览术语表积累词汇</text>
-      <view class="quick-start-btn ui-pressable" bindtap="quickStart">快速开始 · IT Passport 课程练习</view>
+      <view class="quick-start-btn ui-pressable" bindtap="quickStart" hover-class="home-button-pressed" hover-start-time="20" hover-stay-time="150">快速开始 · IT Passport 课程练习</view>
       <view class="empty-guide-chips">
         <view class="empty-chip ui-pressable" bindtap="goToGlossary">浏览术语表</view>
         <view class="empty-chip ui-pressable" bindtap="quickStart">开始练习</view>

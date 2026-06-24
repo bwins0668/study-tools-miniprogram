@@ -8,10 +8,12 @@ Page({
     ankiFavoriteCount: 0,
     itpassCount: 0,
     sgCount: 0,
-    isNavigating: false
+    isNavigating: false,
+    navigatingCourse: ''
   },
 
   onShow: function () {
+    this._clearNavigationLock();
     this.loadLastProgress();
     this.loadCourses();
     this.loadAnkiStats();
@@ -65,6 +67,7 @@ Page({
       courses: [
         {
           exam: 'itpass',
+          iconKey: 'document',
           title: 'IT Passport 闪卡',
           desc: '年度模拟 / 分类 / 错题 / 收藏',
           tags: ['IT', '年度模拟', '日语'],
@@ -74,6 +77,7 @@ Page({
         },
         {
           exam: 'sg',
+          iconKey: 'shield',
           title: 'SG 闪卡',
           desc: '年度模拟 / 分类 / 错题 / 收藏',
           tags: ['SG', '年度模拟', '日语'],
@@ -95,31 +99,43 @@ Page({
   },
 
   loadDeckStats: function () {
+    try {
+      var summary = require('../../data/flashcard-summary-manifest');
+      this.setData({
+        itpassCount: summary.itpass.playableCount,
+        sgCount: summary.sg.playableCount
+      });
+      this.loadCourses();
+    } catch (e) {
+      console.warn('[flashcards] loadDeckStats failed:', e);
+      this.setData({ itpassCount: 0, sgCount: 0 });
+    }
+  },
+
+  onHide: function () {
+    this._clearNavigationLock();
+  },
+
+  onUnload: function () {
+    this._clearNavigationLock();
+  },
+
+  _clearNavigationLock: function () {
+    if (this._navigationUnlockTimer) {
+      clearTimeout(this._navigationUnlockTimer);
+      this._navigationUnlockTimer = null;
+    }
+    if (this.data.isNavigating || this.data.navigatingCourse) {
+      this.setData({ isNavigating: false, navigatingCourse: '' });
+    }
+  },
+
+  _releaseNavigationSoon: function () {
     var self = this;
-    // Load stats asynchronously to avoid blocking UI
-    setTimeout(function () {
-      try {
-        var pastExamIndex = require('../../packages/quiz/data/past_exam_bank/index');
-        var itpassYears = pastExamIndex.getYears('itpass') || [];
-        var sgYears = pastExamIndex.getYears('sg') || [];
-        var itpassTotal = 0;
-        var sgTotal = 0;
-        for (var i = 0; i < itpassYears.length; i++) {
-          itpassTotal += itpassYears[i].count || 0;
-        }
-        for (var j = 0; j < sgYears.length; j++) {
-          sgTotal += sgYears[j].count || 0;
-        }
-        self.setData({
-          itpassCount: itpassTotal,
-          sgCount: sgTotal
-        });
-        // Update courses with real counts
-        self.loadCourses();
-      } catch (e) {
-        console.warn('[flashcards] loadDeckStats failed:', e);
-      }
-    }, 100);
+    if (self._navigationUnlockTimer) clearTimeout(self._navigationUnlockTimer);
+    self._navigationUnlockTimer = setTimeout(function () {
+      self._clearNavigationLock();
+    }, 600);
   },
 
   continueLastProgress: function () {
@@ -139,24 +155,17 @@ Page({
 
   navigateToFlashcard: function (course) {
     var self = this;
-    self.setData({ isNavigating: true });
+    self.setData({ isNavigating: true, navigatingCourse: course });
 
     wx.navigateTo({
       url: '/packages/quiz/pages/flashcard-deck-select/flashcard-deck-select?course=' + course,
       success: function () {
-        self.setData({ isNavigating: false });
+        self._releaseNavigationSoon();
       },
       fail: function (err) {
         console.error('[flashcards] navigate to deck-select failed:', err);
-        self.setData({ isNavigating: false });
-        // Fallback: try old direct route
-        wx.navigateTo({
-          url: '/packages/quiz/pages/exam-menu/exam-menu?exam=' + course,
-          fail: function (err2) {
-            console.error('[flashcards] fallback navigate also failed:', err2);
-            wx.showToast({ title: '页面暂时无法打开，请重试', icon: 'none' });
-          }
-        });
+        self._clearNavigationLock();
+        wx.showToast({ title: '闪卡入口暂时无法打开，请重试', icon: 'none' });
       }
     });
   },
@@ -164,16 +173,16 @@ Page({
   openAnkiFromFlashcards: function () {
     if (this.data.isNavigating) return;
     var self = this;
-    self.setData({ isNavigating: true });
+    self.setData({ isNavigating: true, navigatingCourse: 'anki' });
 
     wx.navigateTo({
       url: '/packages/glossary/pages/anki-player/anki-player?from=flashcards',
       success: function () {
-        self.setData({ isNavigating: false });
+        self._releaseNavigationSoon();
       },
       fail: function (err) {
         console.error('[flashcards] anki navigate failed:', err);
-        self.setData({ isNavigating: false });
+        self._clearNavigationLock();
         wx.showToast({ title: '页面暂时无法打开，请重试', icon: 'none' });
       }
     });

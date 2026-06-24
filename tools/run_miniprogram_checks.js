@@ -2,16 +2,11 @@
 /**
  * run_miniprogram_checks.js — One-command gate for all miniprogram maintenance checks.
  *
- * Runs in sequence:
- *   [1/7] Subpackage registry   (node tools/check_subpackage_registry.js)
- *   [2/7] Smoke test            (node tools/miniprogram_smoke_test.js)
- *   [3/7] Content compliance    (node tools/check_content_compliance.js)
- *   [4/7] Quiz explanations     (node tools/check_quiz_explanations.js)
- *   [5/7] Package size audit    (node tools/audit_miniprogram_package_size.js)
- *   [6/7] JS syntax check       (node --check on all project .js files)
- *   [7/7] WXSS escaped newline  (scan for literal backslash+n in .wxss files)
+ * Normal mode runs seven checks, including miniprogram_smoke_test.js.
+ * JSON mode is intentionally leaf-only: it excludes the smoke test so R3.91
+ * can query this command without spawning the smoke test again.
  *
- * Exit code: 0 if all pass, 1 if any step fails.
+ * Exit code: 0 if all checks pass, 1 if any leaf or normal-mode check fails.
  * No external dependencies.
  */
 
@@ -22,12 +17,8 @@ var fs = require('fs');
 var path = require('path');
 
 var JSON_MODE = process.argv.indexOf('--json') !== -1;
-var TOTAL_CHECKS = 7;
-
-// Prevent circular R3.91 calls when running in --json mode
-if (JSON_MODE && !process.env.CODEX_JSON_CONTRACT) {
-  process.env.CODEX_JSON_CONTRACT = '1';
-}
+var FULL_TOTAL_CHECKS = 7;
+var TOTAL_CHECKS = JSON_MODE ? 6 : FULL_TOTAL_CHECKS;
 
 // --- Helpers ---
 
@@ -37,8 +28,13 @@ function log() {
   }
 }
 
+function boundedOutput(value) {
+  return String(value || '').trim().slice(0, 12000);
+}
+
 function runStep(index, total, title, cmd, args, opts) {
   var label = '[' + index + '/' + total + '] ' + title;
+  var command = cmd + ' ' + args.join(' ');
   log('\n' + label);
   log('-'.repeat(40));
   var start = Date.now();
@@ -47,19 +43,35 @@ function runStep(index, total, title, cmd, args, opts) {
     child_process.execFileSync(cmd, args, execOpts);
   } catch (e) {
     var elapsed = Date.now() - start;
+    var stdout = boundedOutput(e && e.stdout);
+    var stderr = boundedOutput(e && e.stderr);
+    var error = String(e && e.message || 'unknown child-process failure');
+    if (!JSON_MODE) {
+      if (stdout) console.log(stdout);
+      if (stderr) console.error(stderr);
+    }
     log(label + ' ... FAIL (' + elapsed + ' ms)');
-    return { pass: false, title: title, elapsed: elapsed, command: cmd + ' ' + args.join(' ') };
+    return {
+      pass: false,
+      title: title,
+      elapsed: elapsed,
+      command: command,
+      exitCode: typeof e.status === 'number' ? e.status : null,
+      stdout: stdout,
+      stderr: stderr,
+      error: error
+    };
   }
   var elapsed2 = Date.now() - start;
   log(label + ' ... PASS (' + elapsed2 + ' ms)');
-  return { pass: true, title: title, elapsed: elapsed2, command: cmd + ' ' + args.join(' ') };
+  return { pass: true, title: title, elapsed: elapsed2, command: command };
 }
 
 // --- JS syntax check (inline, same logic as the one-liner) ---
 
 function checkJsSyntax() {
-  var index = 6;
-  var total = TOTAL_CHECKS;
+  var index = arguments.length > 0 ? arguments[0] : 6;
+  var total = arguments.length > 1 ? arguments[1] : TOTAL_CHECKS;
   log('\n[' + index + '/' + total + '] JS syntax check');
   log('-'.repeat(40));
   var start = Date.now();
@@ -101,7 +113,16 @@ function checkJsSyntax() {
   if (failed.length > 0) {
     log('[' + index + '/' + total + '] JS syntax check ... FAIL (' + elapsed + ' ms)');
     log('JS syntax FAILED: ' + failed.length + ' file(s)');
-    return { pass: false, title: 'JS syntax', elapsed: elapsed, command: 'node --check (inline)' };
+    return {
+      pass: false,
+      title: 'JS syntax',
+      elapsed: elapsed,
+      command: 'node --check (inline)',
+      exitCode: 1,
+      stdout: '',
+      stderr: 'Syntax errors: ' + failed.join(', '),
+      error: 'JavaScript syntax check failed'
+    };
   }
 
   log('[' + index + '/' + total + '] JS syntax check ... PASS (' + elapsed + ' ms)');
@@ -112,8 +133,8 @@ function checkJsSyntax() {
 // --- WXSS escaped newline guard (inline) ---
 
 function checkWxssEscapedNewline() {
-  var index = 7;
-  var total = TOTAL_CHECKS;
+  var index = arguments.length > 0 ? arguments[0] : 7;
+  var total = arguments.length > 1 ? arguments[1] : TOTAL_CHECKS;
   log('\n[' + index + '/' + total + '] WXSS escaped newline guard');
   log('-'.repeat(40));
   var start = Date.now();
@@ -152,7 +173,16 @@ function checkWxssEscapedNewline() {
     for (var k = 0; k < badFiles.length; k++) {
       log('  ' + badFiles[k]);
     }
-    return { pass: false, title: 'WXSS \\n guard', elapsed: elapsed, command: 'fs scan (inline)' };
+    return {
+      pass: false,
+      title: 'WXSS \\n guard',
+      elapsed: elapsed,
+      command: 'fs scan (inline)',
+      exitCode: 1,
+      stdout: '',
+      stderr: 'WXSS literal backslash+n found in: ' + badFiles.join(', '),
+      error: 'WXSS escaped newline guard failed'
+    };
   }
 
   log('[' + index + '/' + total + '] WXSS escaped newline guard ... PASS (' + elapsed + ' ms)');
@@ -174,34 +204,26 @@ function main() {
   log('');
 
   var results = [];
+  var checkIndex = 1;
 
-  // [1/7] Subpackage registry
-  var r0 = runStep(1, TOTAL_CHECKS, 'Subpackage registry', 'node', ['tools/check_subpackage_registry.js']);
-  results.push(r0);
+  results.push(runStep(checkIndex++, TOTAL_CHECKS,
+    'Subpackage registry', 'node', ['tools/check_subpackage_registry.js']));
 
-  // [2/7] Smoke test
-  var r1 = runStep(2, TOTAL_CHECKS, 'Smoke test', 'node', ['tools/miniprogram_smoke_test.js']);
-  results.push(r1);
+  // JSON is the leaf-only contract queried by R3.91. Running smoke here would
+  // re-enter R3.91 and turn a contract check into a process cycle.
+  if (!JSON_MODE) {
+    results.push(runStep(checkIndex++, TOTAL_CHECKS,
+      'Smoke test', 'node', ['tools/miniprogram_smoke_test.js']));
+  }
 
-  // [3/7] Content compliance
-  var r2 = runStep(3, TOTAL_CHECKS, 'Content compliance', 'node', ['tools/check_content_compliance.js']);
-  results.push(r2);
-
-  // [4/7] Quiz explanation quality
-  var r3 = runStep(4, TOTAL_CHECKS, 'Quiz explanations', 'node', ['tools/check_quiz_explanations.js']);
-  results.push(r3);
-
-  // [5/7] Package size audit
-  var r4 = runStep(5, TOTAL_CHECKS, 'Package size audit', 'node', ['tools/audit_miniprogram_package_size.js']);
-  results.push(r4);
-
-  // [6/7] JS syntax (inline)
-  var r5 = checkJsSyntax();
-  results.push(r5);
-
-  // [7/7] WXSS escaped newline (inline)
-  var r6 = checkWxssEscapedNewline();
-  results.push(r6);
+  results.push(runStep(checkIndex++, TOTAL_CHECKS,
+    'Content compliance', 'node', ['tools/check_content_compliance.js']));
+  results.push(runStep(checkIndex++, TOTAL_CHECKS,
+    'Quiz explanations', 'node', ['tools/check_quiz_explanations.js']));
+  results.push(runStep(checkIndex++, TOTAL_CHECKS,
+    'Package size audit', 'node', ['tools/audit_miniprogram_package_size.js']));
+  results.push(checkJsSyntax(checkIndex++, TOTAL_CHECKS));
+  results.push(checkWxssEscapedNewline(checkIndex++, TOTAL_CHECKS));
 
   // Summary computation
   var totalElapsed = Date.now() - totalStart;
@@ -220,18 +242,32 @@ function main() {
 
   // --- JSON mode output ---
   if (JSON_MODE) {
-    var steps = [];
+    var checks = [];
+    var failures = [];
     for (var j = 0; j < results.length; j++) {
-      steps.push({
+      var result = results[j];
+      checks.push({
         index: j + 1,
-        name: results[j].title,
-        ok: results[j].pass,
-        durationMs: results[j].elapsed,
-        command: results[j].command
+        name: result.title,
+        ok: result.pass,
+        durationMs: result.elapsed,
+        command: result.command
       });
+      if (!result.pass) {
+        failures.push({
+          index: j + 1,
+          name: result.title,
+          command: result.command,
+          exitCode: typeof result.exitCode === 'number' ? result.exitCode : 1,
+          stdout: result.stdout || '',
+          stderr: result.stderr || '',
+          error: result.error || ('Check failed: ' + result.title)
+        });
+      }
     }
 
     var jsonResult = {
+      success: allPassed,
       ok: allPassed,
       totalChecks: results.length,
       passedChecks: passedCount,
@@ -241,7 +277,9 @@ function main() {
         node: process.version,
         cwd: process.cwd()
       },
-      steps: steps
+      checks: checks,
+      steps: checks,
+      failures: failures
     };
 
     if (!allPassed) {
