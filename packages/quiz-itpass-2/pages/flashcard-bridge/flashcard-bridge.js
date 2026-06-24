@@ -17,6 +17,17 @@ Page({
         success: true
       });
     }
-    wx.navigateBack({ delta: 1 });
+            if (questions.length > 0) {
+      try {
+        var pages = getCurrentPages();
+        if (pages && pages.length > 1) {
+          wx.navigateBack({ delta: 1 });
+        }
+      } catch (e) {
+        console.error('[flashcard-bridge] navigation error:', e);
+      }
+    };
   }
 });
+
+

@@ -279,41 +279,32 @@ function loadDeckAsync(course, yearId) {
       name: deckInfo.packageName,
       success: function () {
         console.log('[flashcard_adapter] subpackage loaded:', deckInfo.packageName);
-        // Navigate to bridge page to trigger module registration
-        wx.navigateTo({
-          url: deckInfo.bridgeRoute,
-          success: function (res) {
-            // Listen for data-ready event from bridge page
-            if (res && res.eventChannel) {
-              res.eventChannel.on('flashcardDataReady', function (data) {
-                console.log('[flashcard_adapter] bridge data ready:', data);
-                // Read cached data
-                var questions = getCachedQuestions(deckInfo.packageKey);
-                if (questions && questions.length > 0) {
-                  processRawQuestions(questions, course, yearId, resolve, reject);
-                } else {
-                  // Maybe onShow will catch it after navigateBack
-                  setTimeout(function () {
-                    var retry = getCachedQuestions(deckInfo.packageKey);
-                    if (retry && retry.length > 0) {
-                      processRawQuestions(retry, course, yearId, resolve, reject);
-                    } else {
-                      reject(new Error('数据加载后缓存仍为空: ' + deckInfo.packageKey));
-                    }
-                  }, 300);
-                }
-              });
-            } else {
-              // Fallback: poll for cached data after bridge page loads and navigates back
-              console.log('[flashcard_adapter] no eventChannel, using fallback poll');
-              waitForCache(deckInfo.packageKey, course, yearId, resolve, reject, 0);
+
+        // Wait for subpackage modules to fully load, then require loader
+        setTimeout(function () {
+          try {
+            var pkgName = deckInfo.packageRoot.replace('packages/', '');
+            var loaderPath = '../../' + pkgName + '/data/loader';
+            console.log('[flashcard_adapter] requiring loader:', loaderPath);
+            var loaderRequire = require(loaderPath);
+            var questions = loaderRequire.getAllQuestions();
+            console.log('[flashcard_adapter] loaded', questions.length, 'questions from loader');
+
+            // Cache in globalData
+            var app = getApp();
+            if (app) {
+              app.globalData.__flashcard_cache = app.globalData.__flashcard_cache || {};
+              app.globalData.__flashcard_cache[deckInfo.packageKey] = questions;
+              console.log('[flashcard_adapter] cached', questions.length, 'questions for', deckInfo.packageKey);
             }
-          },
-          fail: function (err) {
-            console.error('[flashcard_adapter] navigate to bridge failed:', err);
-            reject(new Error('无法加载闪卡模块: ' + (err.errMsg || err.message || 'unknown')));
+
+            // Process immediately
+            processRawQuestions(questions, course, yearId, resolve, reject);
+          } catch (e) {
+            console.error('[flashcard_adapter] loader require failed:', e.message, e.stack);
+            reject(new Error('无法加载闪卡数据: ' + (e.message || 'unknown')));
           }
-        });
+        }, 500);
       },
       fail: function (err) {
         console.error('[flashcard_adapter] loadSubPackage failed:', err);
@@ -326,10 +317,11 @@ function loadDeckAsync(course, yearId) {
 /**
  * Fallback: poll __flashcard_cache after bridge page triggers navigateBack.
  */
-function waitForCache(packageKey, course, yearId, resolve, reject, attempt) {
-  if (attempt > 20) {  // max ~4 seconds
-    console.error('[flashcard_adapter] waitForCache timeout for', packageKey);
-    reject(new Error('闪卡数据加载超时'));
+function waitForCache(packageKey, course, yearId, resolve, reject, attempt, maxAttempts) {
+  maxAttempts = maxAttempts || 20;
+  if (attempt > maxAttempts) {
+    console.error('[flashcard_adapter] waitForCache timeout for', packageKey, 'after', attempt, 'polls');
+    reject(new Error('闪卡数据加载超时: ' + packageKey));
     return;
   }
   var cached = getCachedQuestions(packageKey);
