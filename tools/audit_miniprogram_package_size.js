@@ -41,7 +41,8 @@ function formatSize(bytes) {
 function isSkippedRel(rel) {
   return rel === '.git' || rel.indexOf('.git/') === 0 ||
     rel === '.workbuddy' || rel.indexOf('.workbuddy/') === 0 ||
-    rel === 'node_modules' || rel.indexOf('node_modules/') === 0;
+    rel === 'node_modules' || rel.indexOf('node_modules/') === 0 ||
+    rel === 'tools/test-artifacts' || rel.indexOf('tools/test-artifacts/') === 0;
 }
 
 function walk(dir, files) {

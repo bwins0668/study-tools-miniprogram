@@ -23,6 +23,11 @@ var path = require('path');
 var JSON_MODE = process.argv.indexOf('--json') !== -1;
 var TOTAL_CHECKS = 6;
 
+// Prevent circular R3.91 calls when running in --json mode
+if (JSON_MODE && !process.env.CODEX_JSON_CONTRACT) {
+  process.env.CODEX_JSON_CONTRACT = '1';
+}
+
 // --- Helpers ---
 
 function log() {

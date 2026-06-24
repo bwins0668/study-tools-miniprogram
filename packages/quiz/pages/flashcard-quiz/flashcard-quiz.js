@@ -16,6 +16,11 @@ try {
   storage = null;
 }
 
+function getContentStatusLevel(card) {
+  if (!card || !card.contentStatus) return 'japanese_only';
+  return card.contentStatus;
+}
+
 Page({
   data: {
     course: '',
@@ -40,6 +45,10 @@ Page({
     timerText: '',
     startTime: 0,
     hasRestored: false,
+    contentStatusLevel: 'japanese_only',
+    userChoice: '',
+    correctAnswer: '',
+    optionExplanations: [],
 
     // === Four-state machine (mutually exclusive) ===
     isLoading: true,
@@ -120,6 +129,9 @@ Page({
       });
 
       var cards = deck.cards;
+      for (var ci = 0; ci < cards.length; ci++) {
+        cards[ci].showContentStatusTag = !!cards[ci].contentStatus;
+      }
 
       if (!cards || cards.length === 0) {
         console.log('[flashcard-quiz] no cards in result');
@@ -139,6 +151,7 @@ Page({
         totalCards: cards.length,
         currentIndex: 0,
         currentCard: cards[0],
+        contentStatusLevel: getContentStatusLevel(cards[0]),
         progressPercent: Math.round(1 / cards.length * 100) || 0,
         isFinished: false,
         hasAnswered: false,
@@ -210,6 +223,7 @@ Page({
         hasRestored: true,
         currentIndex: restoreIndex,
         currentCard: cards[restoreIndex],
+        contentStatusLevel: getContentStatusLevel(cards[restoreIndex]),
         progressPercent: Math.round((restoreIndex + 1) / total * 100) || 0,
         answeredList: progress.answeredList || [],
         wrongIds: progress.wrongIds || [],
@@ -302,6 +316,7 @@ Page({
     this.setData({
       hasAnswered: true,
       selectedKey: key,
+      userChoice: key,
       isCorrect: isCorrect,
       answeredList: answeredList,
       wrongIds: wrongIds,
@@ -313,7 +328,24 @@ Page({
   },
 
   showExplanation: function () {
-    this.setData({ showBack: true });
+    var card = this.data.currentCard;
+    var correctKey = '';
+    var explanations = [];
+    if (card && card.options) {
+      for (var i = 0; i < card.options.length; i++) {
+        if (card.options[i].isCorrect) {
+          correctKey = card.options[i].key;
+        }
+      }
+      if (card.optionExplanations && card.optionExplanations.length > 0) {
+        explanations = card.optionExplanations;
+      }
+    }
+    this.setData({
+      showBack: true,
+      correctAnswer: correctKey,
+      optionExplanations: explanations
+    });
   },
 
   nextCard: function () {
@@ -326,9 +358,13 @@ Page({
     this.setData({
       currentIndex: nextIndex,
       currentCard: this.data.cards[nextIndex],
+      contentStatusLevel: getContentStatusLevel(this.data.cards[nextIndex]),
       progressPercent: Math.round((nextIndex + 1) / this.data.totalCards * 100) || 0,
       hasAnswered: false,
       selectedKey: '',
+      userChoice: '',
+      correctAnswer: '',
+      optionExplanations: [],
       isCorrect: false,
       showBack: false
     });
@@ -349,9 +385,13 @@ Page({
     this.setData({
       currentIndex: 0,
       currentCard: this.data.cards[0],
+      contentStatusLevel: getContentStatusLevel(this.data.cards[0]),
       progressPercent: Math.round(1 / this.data.totalCards * 100) || 0,
       hasAnswered: false,
       selectedKey: '',
+      userChoice: '',
+      correctAnswer: '',
+      optionExplanations: [],
       isCorrect: false,
       showBack: false,
       isFinished: false,
@@ -386,9 +426,13 @@ Page({
       totalCards: wrongCards.length,
       currentIndex: 0,
       currentCard: wrongCards[0],
+      contentStatusLevel: getContentStatusLevel(wrongCards[0]),
       progressPercent: Math.round(1 / wrongCards.length * 100) || 0,
       hasAnswered: false,
       selectedKey: '',
+      userChoice: '',
+      correctAnswer: '',
+      optionExplanations: [],
       isCorrect: false,
       showBack: false,
       isFinished: false,
