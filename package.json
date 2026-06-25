@@ -1,7 +1,28 @@
-﻿{
+{
   "name": "study-tools-miniprogram",
   "private": true,
   "scripts": {
-    "prepare": "node scripts/setup-git-hooks.js"
+    "prepare": "node scripts/setup-git-hooks.js",
+    "test": "node tools/check_flashcard_p0_contract.js",
+    "test:miniprogram-checks": "node tools/run_miniprogram_checks.js",
+    "test:miniprogram-checks-json": "node tools/run_miniprogram_checks.js --json",
+    "test:smoke": "node tools/miniprogram_smoke_test.js",
+    "test:p0-release-closure": "node tools/check_p0_release_dependency_closure.js",
+    "test:runtime": "node tools/run_flashcard_runtime_e2e.js",
+    "test:decks": "node tools/check_flashcard_deck_integrity.js",
+    "test:registry": "node tools/check_subpackage_registry.js",
+    "test:size": "node tools/audit_miniprogram_package_size.js",
+    "test:minium:syntax": "python -m py_compile tools/minium_flashcard_runtime_test.py",
+    "test:minium:runtime": "python tools/minium_flashcard_runtime_test.py",
+    "test:minium:itpass": "set \"MINIUM_FLASHCARD_COURSE=itpass\" && set \"MINIUM_FLASHCARD_REPORT_NAME=minium-itpass-report.json\" && python tools/minium_flashcard_runtime_test.py",
+    "test:minium:sg": "set \"MINIUM_FLASHCARD_COURSE=sg\" && set \"MINIUM_FLASHCARD_REPORT_NAME=minium-sg-report.json\" && python tools/minium_flashcard_runtime_test.py",
+    "test:bilingual": "node tools/check_flashcard_bilingual_integrity.js",
+    "test:prepare-bilingual-batch": "node tools/prepare_flashcard_bilingual_review_batch.js",
+    "test:bilingual-budget": "node tools/report_flashcard_bilingual_batch_budget.js",
+    "test:ui": "node tools/check_ui_visual_contract.js",
+    "test:ui-runtime": "node tools/run_ui_polish_today_e2e.js",
+    "test:ui-capture": "python tools/capture_ui_polish_today.py",
+    "test:syntax": "node tools/check_javascript_syntax.js",
+    "test:content-compliance": "node tools/check_content_compliance.js"
   }
 }
