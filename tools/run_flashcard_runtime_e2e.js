@@ -29,8 +29,64 @@ const net = require('net');
 const ROOT = path.resolve(__dirname, '..');
 const AUTOMATION_WS_PORT = 9421;
 const HTTP_API_PORT = 9420;
+const AUTOMATOR_PACKAGE = 'miniprogram-automator';
+const AUTOMATOR_PATH_ENV = 'MINIPROGRAM_AUTOMATOR_NODE_PATH';
 
 // ------- Helpers -------
+
+function splitNodePath(value) {
+  return String(value || '').split(path.delimiter).map(item => item.trim()).filter(Boolean);
+}
+
+function findPackageDirectory(entryPath, packageName) {
+  let cursor = path.dirname(entryPath);
+  while (cursor && cursor !== path.dirname(cursor)) {
+    if (path.basename(cursor) === packageName && fs.existsSync(path.join(cursor, 'package.json'))) return cursor;
+    cursor = path.dirname(cursor);
+  }
+  return null;
+}
+
+function automatorSearchRoots() {
+  const parent = path.dirname(ROOT);
+  const roots = [
+    ROOT,
+    ...splitNodePath(process.env[AUTOMATOR_PATH_ENV]),
+    path.join(parent, 'study-tools-miniprogram'),
+    path.join(parent, 'study-tools-miniprogram-release-v028-0fd6d4f')
+  ];
+  const devTools = findDevToolsDir();
+  if (devTools) roots.push(devTools);
+  return roots.filter((root, index, all) => root && all.indexOf(root) === index);
+}
+
+function resolveAutomator() {
+  const tried = [];
+  for (const root of automatorSearchRoots()) {
+    try {
+      const entryPath = require.resolve(AUTOMATOR_PACKAGE, { paths: [root] });
+      const packageDirectory = findPackageDirectory(entryPath, AUTOMATOR_PACKAGE);
+      if (!packageDirectory) throw new Error('package directory could not be derived from ' + entryPath);
+      return {
+        ok: true,
+        entryPath,
+        packageDirectory,
+        nodeModulesDirectory: path.dirname(packageDirectory),
+        root
+      };
+    } catch (error) {
+      tried.push({ root, reason: error && error.message ? error.message : String(error) });
+    }
+  }
+  return { ok: false, tried };
+}
+
+function childRuntimeEnv(automatorResolution) {
+  const nodePathEntries = [automatorResolution.nodeModulesDirectory]
+    .concat(splitNodePath(process.env.NODE_PATH));
+  const uniqueEntries = nodePathEntries.filter((entry, index, all) => all.indexOf(entry) === index);
+  return Object.assign({}, process.env, { NODE_PATH: uniqueEntries.join(path.delimiter) });
+}
 
 function findDevToolsDir() {
   const d = 'I:\\微信web开发者工具';
@@ -178,6 +234,14 @@ async function main() {
     console.log(`[e2e] FATAL: ${msg}`); process.exit(1);
   }
 
+  const automatorResolution = resolveAutomator();
+  if (!automatorResolution.ok) {
+    console.log(`[e2e] FATAL: ${AUTOMATOR_PACKAGE} could not be resolved from existing local environments.`);
+    automatorResolution.tried.forEach(item => console.log(`[e2e]   tried: ${item.root} (${item.reason})`));
+    process.exit(1);
+  }
+  console.log(`[e2e] miniprogram-automator resolved from: ${automatorResolution.packageDirectory}`);
+
   // ----- 2. Check automation WS port 9421 first (reuse if alive) -----
   let autoPortAlive = await isPortListening(AUTOMATION_WS_PORT);
   console.log(`[detect] automation WS ${AUTOMATION_WS_PORT}: ${autoPortAlive ? 'ALIVE' : 'CLOSED'}`);
@@ -248,6 +312,7 @@ async function main() {
     timeout: 180000,
     encoding: 'utf-8',
     stdio: 'inherit',
+    env: childRuntimeEnv(automatorResolution),
   });
 
   console.log(`\n[e2e] Test exit code: ${testResult.status}`);

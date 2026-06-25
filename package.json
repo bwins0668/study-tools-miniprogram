@@ -4,6 +4,7 @@
   "scripts": {
     "prepare": "node scripts/setup-git-hooks.js",
     "test": "node tools/check_flashcard_p0_contract.js",
+    "test:spaced-foundation": "node tools/run_spaced_repetition_foundation_checks.js",
     "test:miniprogram-checks": "node tools/run_miniprogram_checks.js",
     "test:miniprogram-checks-json": "node tools/run_miniprogram_checks.js --json",
     "test:smoke": "node tools/miniprogram_smoke_test.js",
