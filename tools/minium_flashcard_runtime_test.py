@@ -228,11 +228,14 @@ def page_stack(mini):
 
 
 def connect_session():
+    cli_path = r'I:\微信web开发者工具\cli.bat'
+    auto_port = os.environ.get('MINIUM_TEST_PORT', '9420')
     mini = minium.Minium({
         'project_path': PROJECT,
-        'dev_tool_path': r'I:\微信web开发者工具\cli.bat',
+        'dev_tool_path': cli_path,
         'platform': 'ide',
-        'debug_mode': 'error'
+        'debug_mode': 'error',
+        'test_port': int(auto_port)
     })
     ACTIVE_SESSIONS.append(mini)
     return mini

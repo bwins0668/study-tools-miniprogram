@@ -37,7 +37,7 @@ helpers.run('test_spaced_repetition_scheduler', function () {
   helpers.assert(relearnGood.item.intervalDays >= 1, 'RELEARNING_INTERVAL');
 
   var stable = schema.clone(firstGood.item);
-  stable.stepIndex = 5;
+  stable.stepIndex = 6;
   stable.intervalDays = 60;
   stable.dueAt = now;
   var stableGood = scheduler.applyGrade(stable, constants.GRADES.GOOD, now);

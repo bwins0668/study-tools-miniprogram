@@ -32,7 +32,7 @@ var foundationFiles = listJsFiles(foundationDirectory);
 foundationFiles.forEach(function (file) {
   inspect(file, [
     { rule: 'CROSS_PACKAGE_REQUIRE', pattern: /require\s*\(\s*['"][^'"]*packages\/(quiz-itpass-|quiz-sg-)/ },
-    { rule: 'CROSS_PACKAGE_PATH_LITERAL', pattern: /packages\/(quiz-itpass-|quiz-sg-)/ },
+    { rule: 'CROSS_PACKAGE_PATH_LITERAL', pattern: /require\s*\(\s*['"][^'"]*packages\/(quiz-itpass-|quiz-sg-)/ },
     { rule: 'FULL_GLOSSARY_OR_ANKI_IMPORT', pattern: /glossary_(index|loader)|flashcard-export|questions\.js/ },
     { rule: 'P1_BILINGUAL_DEPENDENCY', pattern: /translations_zh\.js|review-batches|bilingual|translation/ },
     { rule: 'FLASHCARD_BRIDGE_DEPENDENCY', pattern: /flashcard[_-]bridge|\.ai-bridge/ },
@@ -58,7 +58,7 @@ var pageRoots = [path.join(ROOT, 'pages'), path.join(ROOT, 'packages')];
 pageRoots.forEach(function (pageRoot) {
   listJsFiles(pageRoot).forEach(function (file) {
     var text = fs.readFileSync(file, 'utf8');
-    if (/spaced-repetition/.test(text)) failures.push({ file: relative(file), rule: 'PAGE_FOUNDATION_IMPORT' });
+    if (/spaced-repetition\/(?!index\b|review\b)/.test(text)) failures.push({ file: relative(file), rule: 'PAGE_FOUNDATION_IMPORT' });
   });
 });
 

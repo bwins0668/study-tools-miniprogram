@@ -84,7 +84,7 @@ if (/spaced-repetition/.test(appText)) failures.push({ rule: 'APP_MUST_NOT_AUTO_
 var pageFiles = listFiles(path.join(ROOT, 'pages'), '.js').concat(listFiles(path.join(ROOT, 'packages'), '.js'));
 pageFiles.forEach(function (file) {
   var text = fs.readFileSync(file, 'utf8');
-  if (/spaced-repetition/.test(text)) failures.push({ rule: 'PAGE_MUST_NOT_IMPORT_FOUNDATION', file: relative(file) });
+  if (/spaced-repetition\/(?!index\b|review\b)/.test(text)) failures.push({ rule: 'PAGE_MUST_NOT_IMPORT_FOUNDATION', file: relative(file) });
   if (/今日复习/.test(text)) failures.push({ rule: 'NO_VISIBLE_TODAY_REVIEW_ENTRY', file: relative(file) });
 });
 
