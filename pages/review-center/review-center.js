@@ -41,23 +41,18 @@ Page({
     var deckId = dataset.deckId;
     if (!course || !deckId) return;
 
-    // Build item IDs for this group
     var group = (this.data.groups || []).find(function (g) {
       return g.course === course && g.deckId === deckId;
     });
     if (!group || !group.count) return;
 
-    // Create review session
     var session = sr.review.createReviewSession(course, deckId, group.itemIds, '/pages/review-center/review-center');
 
-    // Determine player path from the first item
-    var decoder = require('../../packages/quiz/data/flashcard-manifest');
-    var parts = deckId.indexOf('_') >= 0 ? [course, deckId.replace(course + '_', '')] : [course, deckId];
-    var deckInfo = decoder.getDeckInfo ? decoder.getDeckInfo(course, parts[1] || deckId) : null;
-    if (!deckInfo || !deckInfo.playerRoute) return;
+    var playerRoute = sr.review.getPlayerRoute(course, deckId);
+    if (!playerRoute) return;
 
-    var playerUrl = deckInfo.playerRoute +
-      '?deckId=' + encodeURIComponent(course + '/' + (parts[1] || deckId)) +
+    var playerUrl = playerRoute +
+      '?deckId=' + encodeURIComponent(course + '/' + deckId) +
       '&backCourse=' + encodeURIComponent(course) +
       '&backPath=' + encodeURIComponent('/packages/quiz/pages/flashcard-deck-select/flashcard-deck-select?course=' + encodeURIComponent(course)) +
       '&mode=due' +

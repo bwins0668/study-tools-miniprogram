@@ -14,6 +14,33 @@ var summary = require('./summary');
 var SESSION_KEY = 'study_tools_review_session_v1';
 var SESSION_TTL_MS = 2 * 60 * 60 * 1000; // 2 hours
 
+// ── Player route lookup (avoids cross-package require) ─────────────
+var PLAYER_ROUTES = {
+  'itpass-1': '/packages/quiz-itpass-1/pages/flashcard-player/flashcard-player',
+  'itpass-2': '/packages/quiz-itpass-2/pages/flashcard-player/flashcard-player',
+  'itpass-3': '/packages/quiz-itpass-3/pages/flashcard-player/flashcard-player',
+  'itpass-4': '/packages/quiz-itpass-4/pages/flashcard-player/flashcard-player',
+  'itpass-5': '/packages/quiz-itpass-5/pages/flashcard-player/flashcard-player',
+  'sg-1': '/packages/quiz-sg-1/pages/flashcard-player/flashcard-player',
+  'sg-2': '/packages/quiz-sg-2/pages/flashcard-player/flashcard-player'
+};
+
+var PACKAGE_MAP = {
+  'itpass/01_aki': 'itpass-1', 'itpass/02_aki': 'itpass-1', 'itpass/03_haru': 'itpass-1',
+  'itpass/04_haru': 'itpass-2', 'itpass/05_haru': 'itpass-2', 'itpass/06_haru': 'itpass-2',
+  'itpass/07_haru': 'itpass-3', 'itpass/08_haru': 'itpass-3', 'itpass/28_aki': 'itpass-3',
+  'itpass/28_haru': 'itpass-4', 'itpass/29_aki': 'itpass-4', 'itpass/29_haru': 'itpass-4',
+  'itpass/30_aki': 'itpass-5', 'itpass/30_haru': 'itpass-5', 'itpass/31_haru': 'itpass-5',
+  'sg/sg_01_aki': 'sg-1', 'sg/sg_05_haru': 'sg-1', 'sg/sg_06_haru': 'sg-1', 'sg/sg_07_haru': 'sg-1', 'sg/sg_28_aki': 'sg-1',
+  'sg/sg_28_haru': 'sg-2', 'sg/sg_29_aki': 'sg-2', 'sg/sg_29_haru': 'sg-2',
+  'sg/sg_30_aki': 'sg-2', 'sg/sg_30_haru': 'sg-2', 'sg/sg_31_haru': 'sg-2'
+};
+
+function getPlayerRoute(course, deckId) {
+  var pkgKey = PACKAGE_MAP[deckId] || PACKAGE_MAP[course + '/' + deckId] || null;
+  return pkgKey ? PLAYER_ROUTES[pkgKey] : null;
+}
+
 function _getStorage() {
   try { return wx.getStorageSync || null; } catch(e) { return null; }
 }
@@ -266,5 +293,6 @@ module.exports = {
   recordReviewDecision: recordReviewDecision,
   getTodayReviewSummary: getTodayReviewSummary,
   formatNextReview: formatNextReview,
-  formatStage: formatStage
+  formatStage: formatStage,
+  getPlayerRoute: getPlayerRoute
 };

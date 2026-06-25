@@ -177,6 +177,11 @@ Page({
 
   onLoad: function (options) {
     this._loadOptions = options || {};
+    if (options.mode === 'due' && options.reviewSessionId) {
+      this._isDueMode = true;
+      this._reviewSessionId = options.reviewSessionId;
+      this._dueCompletedCount = 0;
+    }
     this.loadDeck(this._loadOptions);
   },
 
@@ -366,6 +371,30 @@ Page({
           });
         }
       } catch (_) { /* non-critical */ }
+      // ── Due mode: filter to review session items ──
+      if (this._isDueMode) {
+        try {
+          var review2 = require('../../../../utils/spaced-repetition/review');
+          var session2 = review2.getReviewSession();
+          if (session2 && session2.itemIds && session2.itemIds.length > 0) {
+            var itemIdSet = {};
+            session2.itemIds.forEach(function (id) { itemIdSet[id] = true; });
+            cards = cards.filter(function (c) { return itemIdSet['sr:v1:exam:' + course + ':' + yearId + ':' + c.id]; });
+            diagnostic.playableCountActual = cards.length;
+            diagnostic.actualCount = cards.length;
+            if (cards.length === 0) {
+              this.setData({
+                viewState: 'empty', isLoading: false, isEmpty: true,
+                loadError: '本组复习已完成或已过期', dueMode: true,
+                course: course, courseLabel: course === 'sg' ? 'SG 闪卡' : 'IT Passport 闪卡',
+                deckId: deckId, deckLabel: '间隔复习', yearId: yearId
+              });
+              return;
+            }
+          }
+        } catch (e2) { console.warn('[flashcard-player] due filter failed:', e2); }
+      }
+
       console.log('[flashcard-player] loaded', diagnostic);
     } catch (error) {
       this.failLoad(error && error.message ? error.message : '本地 loader 发生未知错误。', {
@@ -462,6 +491,14 @@ Page({
         }, grade, Date.now(), this._reviewSessionId || null);
         this._reviewCommitted = this.data.currentCard.id;
       } catch (e) { console.warn('review record failed:', e); }
+    }
+    // ── Due mode: complete session item ──
+    if (this._isDueMode) {
+      try {
+        var reviewMod = require('../../../../utils/spaced-repetition/review');
+        reviewMod.completeReviewSessionItem(this.data.currentCard.id);
+        this._dueCompletedCount = (this._dueCompletedCount || 0) + 1;
+      } catch (e3) { console.warn('due complete failed:', e3); }
     }
   },
 
