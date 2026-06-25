@@ -1,0 +1,51 @@
+<view class="rc-container">
+  <view class="rc-header">
+    <text class="rc-title">间隔复习</text>
+    <text class="rc-subtitle">艾宾浩斯启发</text>
+  </view>
+
+  <view class="rc-stats">
+    <view class="rc-stat">
+      <text class="rc-stat-value">{{dueCount}}</text>
+      <text class="rc-stat-label">已到期</text>
+    </view>
+    <view class="rc-stat">
+      <text class="rc-stat-value">{{todayCompleted}}</text>
+      <text class="rc-stat-label">今日完成</text>
+    </view>
+    <view class="rc-stat">
+      <text class="rc-stat-value">{{estimatedMinutes}}</text>
+      <text class="rc-stat-label">预计分钟</text>
+    </view>
+    <view class="rc-stat" wx:if="{{streak > 0}}">
+      <text class="rc-stat-value">{{streak}}</text>
+      <text class="rc-stat-label">连续天数</text>
+    </view>
+  </view>
+
+  <!-- Empty state -->
+  <view class="rc-empty" wx:if="{{isEmpty}}">
+    <text class="rc-empty-icon">✓</text>
+    <text class="rc-empty-title">今天的间隔复习已完成</text>
+    <text class="rc-empty-detail" wx:if="{{nextReviewText}}">下一次复习：{{nextReviewText}}</text>
+    <text class="rc-empty-detail" wx:else>暂无复习计划</text>
+    <view class="rc-btn rc-btn-ghost" bindtap="goFlashcards">
+      <text>继续学习新内容</text>
+    </view>
+  </view>
+
+  <!-- Groups -->
+  <view class="rc-groups" wx:else>
+    <view class="rc-group" wx:for="{{groups}}" wx:key="deckId">
+      <view class="rc-group-course">{{item.courseLabel}}</view>
+      <view class="rc-group-deck">{{item.deckLabel}}</view>
+      <view class="rc-group-meta">
+        <text class="rc-group-count">{{item.count}} 张</text>
+        <text class="rc-group-time">约 {{item.estimatedMinutes}} 分钟</text>
+      </view>
+      <view class="rc-btn rc-btn-primary" bindtap="startReview" data-course="{{item.course}}" data-deck-id="{{item.deckId}}">
+        <text>开始复习</text>
+      </view>
+    </view>
+  </view>
+</view>

@@ -2,6 +2,7 @@
   "pages": [
     "pages/home/home",
     "pages/flashcards/flashcards",
+    "pages/review-center/review-center",
     "pages/glossary/glossary",
     "pages/mistakes/mistakes",
     "pages/profile/profile"

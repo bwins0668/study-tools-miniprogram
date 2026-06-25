@@ -8,6 +8,8 @@ Page({
     ankiFavoriteCount: 0,
     itpassCount: 0,
     sgCount: 0,
+    reviewDueCount: 0,
+    reviewTodayDone: 0,
     isNavigating: false,
     navigatingCourse: ''
   },
@@ -18,6 +20,7 @@ Page({
     this.loadCourses();
     this.loadAnkiStats();
     this.loadDeckStats();
+    this.loadReviewSummary();
   },
 
   loadLastProgress: function () {
@@ -110,6 +113,23 @@ Page({
       console.warn('[flashcards] loadDeckStats failed:', e);
       this.setData({ itpassCount: 0, sgCount: 0 });
     }
+  },
+
+  loadReviewSummary: function () {
+    try {
+      var sr = require('../../utils/spaced-repetition/index');
+      var s = sr.review.getTodayReviewSummary();
+      this.setData({
+        reviewDueCount: s.dueCount,
+        reviewTodayDone: s.todayCompleted
+      });
+    } catch (e) {
+      console.warn('[flashcards] loadReviewSummary failed:', e);
+    }
+  },
+
+  openReviewCenter: function () {
+    wx.navigateTo({ url: '/pages/review-center/review-center' });
   },
 
   onHide: function () {

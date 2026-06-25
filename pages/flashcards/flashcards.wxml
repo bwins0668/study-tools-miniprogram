@@ -2,11 +2,23 @@
 <view class="page">
   <view class="container">
     <view class="page-header">
-      <text class="page-title">闪卡中心</text>
-      <text class="page-subtitle">フラッシュカード</text>
-    </view>
+          <text class="page-title">闪卡中心</text>
+          <text class="page-subtitle">フラッシュカード</text>
+        </view>
 
-    <view class="section">
+        <view class="review-entry" bindtap="openReviewCenter" hover-class="flashcard-card-pressed">
+          <view class="review-entry-left">
+            <text class="review-entry-title">间隔复习</text>
+            <text class="review-entry-desc" wx:if="{{reviewDueCount > 0}}">已到期 {{reviewDueCount}} 张</text>
+            <text class="review-entry-desc" wx:else>今天已完成</text>
+          </view>
+          <view class="review-entry-right">
+            <text class="review-entry-count" wx:if="{{reviewDueCount > 0}}">{{reviewDueCount}}</text>
+            <text class="review-entry-arrow">→</text>
+          </view>
+        </view>
+
+        <view class="section">
       <view class="section-title-row">
         <text class="section-title">继续学习</text>
       </view>

@@ -349,6 +349,23 @@ Page({
         playableCountActual: playableCountActual,
         progressPercent: Math.round(100 / playableCountActual)
       });
+
+      // ── Player onLoad receipt for deck-select navigation transaction ─
+      try {
+        var pages = getCurrentPages();
+        var prev = pages.length >= 2 ? pages[pages.length - 2] : null;
+        if (prev && typeof prev.onPlayerLoaded === 'function') {
+          prev.onPlayerLoaded({
+            deckId: course + '/' + yearId,
+            transactionId: '',
+            playerPath: getRoute(),
+            localManifestFound: true,
+            actualCount: cards.length,
+            expectedCount: playableCountExpected,
+            route: getRoute()
+          });
+        }
+      } catch (_) { /* non-critical */ }
       console.log('[flashcard-player] loaded', diagnostic);
     } catch (error) {
       this.failLoad(error && error.message ? error.message : '本地 loader 发生未知错误。', {
@@ -434,6 +451,18 @@ Page({
       sessionWrong: this.data.sessionWrong + (isCorrect ? 0 : 1),
       wrongIds: wrongIds
     });
+    if (!this._reviewCommitted || this._reviewCommitted !== this.data.currentCard.id) {
+      try {
+        var sr = require('../../../../utils/spaced-repetition/index');
+        var grade = isCorrect ? 'GOOD' : 'AGAIN';
+        sr.review.recordReviewDecision({
+          course: this.data.course,
+          deckId: this.data.deckId.split('/').pop(),
+          questionId: this.data.currentCard.id
+        }, grade, Date.now(), this._reviewSessionId || null);
+        this._reviewCommitted = this.data.currentCard.id;
+      } catch (e) { console.warn('review record failed:', e); }
+    }
   },
 
   showExplanation: function () {

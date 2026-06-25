@@ -180,6 +180,23 @@ Page({
         currentCard: cards[0], totalCards: cards.length, sourceCountActual: diagnostic.sourceCountActual,
         playableCountActual: cards.length, progressPercent: Math.round(100 / cards.length)
       });
+
+      // ── Player onLoad receipt for deck-select navigation transaction ─
+      try {
+        var pages = getCurrentPages();
+        var prev = pages.length >= 2 ? pages[pages.length - 2] : null;
+        if (prev && typeof prev.onPlayerLoaded === 'function') {
+          prev.onPlayerLoaded({
+            deckId: course + '/' + yearId,
+            transactionId: '',
+            playerPath: getRoute(),
+            localManifestFound: true,
+            actualCount: cards.length,
+            expectedCount: playableCountExpected,
+            route: getRoute()
+          });
+        }
+      } catch (_) { /* non-critical */ }
       console.log('[flashcard-player] loaded', diagnostic);
     } catch (error) {
       diagnostic.stack = error && error.stack ? error.stack : '';
@@ -226,6 +243,18 @@ Page({
       isCorrect: isCorrect, sessionCorrect: this.data.sessionCorrect + (isCorrect ? 1 : 0),
       sessionWrong: this.data.sessionWrong + (isCorrect ? 0 : 1), wrongIds: wrongIds
     });
+    if (!this._reviewCommitted || this._reviewCommitted !== this.data.currentCard.id) {
+      try {
+        var sr2 = require('../../../../utils/spaced-repetition/index');
+        var grade2 = isCorrect ? 'GOOD' : 'AGAIN';
+        sr2.review.recordReviewDecision({
+          course: this.data.course,
+          deckId: this.data.deckId.split('/').pop(),
+          questionId: this.data.currentCard.id
+        }, grade2, Date.now(), this._reviewSessionId || null);
+        this._reviewCommitted = this.data.currentCard.id;
+      } catch (e) { console.warn('review record failed:', e); }
+    }
   },
 
   showExplanation: function () { if (this.data.hasAnswered) this.setData({ showBack: true }); },
