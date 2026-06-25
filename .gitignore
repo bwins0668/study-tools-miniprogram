@@ -14,3 +14,8 @@ tools/test-artifacts/
 # Python bytecode
 __pycache__/
 *.pyc
+
+# Local handoffs and review drafts
+.ai-bridge/
+.gpt-handoff/
+tools/review-batches/

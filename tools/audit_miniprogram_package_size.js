@@ -13,6 +13,7 @@
 
 'use strict';
 
+var childProcess = require('child_process');
 var fs = require('fs');
 var path = require('path');
 
@@ -24,6 +25,16 @@ var MAIN_FAIL = 1.5 * ONE_MB;
 var PACKAGE_WARN = 1.5 * ONE_MB;
 var PACKAGE_FAIL = 1.8 * ONE_MB;
 var HARD_LIMIT = 2 * ONE_MB;
+var P1_TRANSLATION_HOLD_PATHS = [
+  'packages/quiz-itpass-1/data/translations_zh.js',
+  'packages/quiz-itpass-2/data/translations_zh.js',
+  'packages/quiz-itpass-3/data/translations_zh.js',
+  'packages/quiz-itpass-4/data/translations_zh.js',
+  'packages/quiz-itpass-5/data/translations_zh.js',
+  'packages/quiz-sg-1/data/translations_zh.js',
+  'packages/quiz-sg-2/data/translations_zh.js'
+];
+var excludedUntrackedP1Holds = [];
 
 function toRel(file) {
   return path.relative(ROOT, file).replace(/\\/g, '/');
@@ -38,11 +49,30 @@ function formatSize(bytes) {
   return (bytes / ONE_KB).toFixed(1) + ' KB';
 }
 
+function isUntrackedP1TranslationHold(rel) {
+  if (P1_TRANSLATION_HOLD_PATHS.indexOf(rel) === -1) return false;
+  var result = childProcess.spawnSync('git', ['ls-files', '--error-unmatch', '--', rel], {
+    cwd: ROOT,
+    encoding: 'utf8'
+  });
+  if (result.status === 0) return false;
+  if (excludedUntrackedP1Holds.indexOf(rel) === -1) excludedUntrackedP1Holds.push(rel);
+  return true;
+}
+
 function isSkippedRel(rel) {
+  if (isUntrackedP1TranslationHold(rel)) return true;
   return rel === '.git' || rel.indexOf('.git/') === 0 ||
     rel === '.workbuddy' || rel.indexOf('.workbuddy/') === 0 ||
+    rel === '.ai-bridge' || rel.indexOf('.ai-bridge/') === 0 ||
+    rel === '.gpt-handoff' || rel.indexOf('.gpt-handoff/') === 0 ||
     rel === 'node_modules' || rel.indexOf('node_modules/') === 0 ||
-    rel === 'tools/test-artifacts' || rel.indexOf('tools/test-artifacts/') === 0;
+    rel === 'outputs' || rel.indexOf('outputs/') === 0 ||
+    rel === 'tools/test-artifacts' || rel.indexOf('tools/test-artifacts/') === 0 ||
+    rel === 'tools/review-batches' || rel.indexOf('tools/review-batches/') === 0 ||
+    /^tools\/(?:.*\/)?__pycache__(?:\/|$)/.test(rel) ||
+    rel === 'project.private.config.json' ||
+    /(^|\/)devtools-.*\.log$/i.test(rel) || /\.patch$/i.test(rel) || /\.pyc$/i.test(rel);
 }
 
 function walk(dir, files) {
@@ -161,8 +191,11 @@ function main() {
 
   console.log('=== Miniprogram Package Size Audit ===');
   console.log('Root:', ROOT);
-  console.log('Mode: DevTools-like auxiliary audit');
+  console.log('Mode: P0 release-candidate auxiliary audit');
   console.log('Subpackages:', subRoots.join(', '));
+  if (excludedUntrackedP1Holds.length > 0) {
+    console.log('Excluded untracked P1 translation holds:', excludedUntrackedP1Holds.join(', '));
+  }
 
   console.log('\n--- Size Summary ---');
   console.log('total local code estimate:', formatSize(totalSize), '(' + allFiles.length + ' files)');

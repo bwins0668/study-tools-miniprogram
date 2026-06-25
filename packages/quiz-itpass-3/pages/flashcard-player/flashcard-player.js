@@ -1,374 +1,509 @@
 'use strict';
+
 var deckManifest = require('../../data/deck-manifest');
 var loader = require('../../data/loader');
 
-function stripHtml(html) {
-  if (!html || typeof html !== 'string') return '';
-  return html.replace(/<br\s*\/?>/gi, '\n').replace(/<\/p>/gi, '\n').replace(/<\/div>/gi, '\n').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/\n{3,}/g, '\n\n').trim();
+function stripHtml(value) {
+  if (!value || typeof value !== 'string') return '';
+  return value
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/p>/gi, '\n')
+    .replace(/<\/div>/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
 }
 
-function hasKana(text) {
-  if (!text) return false;
-  return /[\u3040-\u309F\u30A0-\u30FF]/.test(text);
+function normalizeDeckId(value) {
+  var raw = String(value || '').trim();
+  if (!raw) return '';
+  try {
+    return decodeURIComponent(raw).trim().replace(/^\/+|\/+$/g, '');
+  } catch (error) {
+    return raw.replace(/^\/+|\/+$/g, '');
+  }
 }
 
-function isGenuineChinese(text) {
-  if (!text || text.length < 3) return false;
-  var hasChinese = false;
-  var hasKana = false;
-  for (var i = 0; i < text.length; i++) {
-    var c = text.charCodeAt(i);
-    if (c >= 0x4E00 && c <= 0x9FFF) hasChinese = true;
-    if ((c >= 0x3040 && c <= 0x309F) || (c >= 0x30A0 && c <= 0x30FF)) hasKana = true;
-  }
-  if (hasChinese && !hasKana) return true;
-  if (hasChinese) {
-    var chineseCount = 0;
-    var kanaCount = 0;
-    for (var j = 0; j < text.length; j++) {
-      var cc = text.charCodeAt(j);
-      if (cc >= 0x4E00 && cc <= 0x9FFF) chineseCount++;
-      if ((cc >= 0x3040 && cc <= 0x309F) || (cc >= 0x30A0 && cc <= 0x30FF)) kanaCount++;
-    }
-    return chineseCount > kanaCount * 3;
-  }
-  return false;
+function countMatches(value, pattern) {
+  var matches = String(value || '').match(pattern);
+  return matches ? matches.length : 0;
 }
 
-function detectContentStatus(card) {
-  var hasRealZhQuestion = card.questionZh && card.questionZh !== card.questionJa && isGenuineChinese(card.questionZh);
-  var hasRealZhOptions = false;
-  var hasOptionExplanations = false;
-  if (card.options && card.options.length > 0) {
-    var zhOptCount = 0;
-    var explCount = 0;
-    for (var i = 0; i < card.options.length; i++) {
-      if (card.options[i].textZh && card.options[i].textZh !== card.options[i].textJa && isGenuineChinese(card.options[i].textZh)) zhOptCount++;
-      if (card.options[i].explanationJa || card.options[i].explanationZh) explCount++;
-    }
-    hasRealZhOptions = zhOptCount === card.options.length;
-    hasOptionExplanations = explCount === card.options.length;
+function hasVerifiedZhText(textZh, textJa) {
+  var zh = stripHtml(textZh);
+  var ja = stripHtml(textJa);
+  if (!zh || !ja || zh === ja) return false;
+
+  var compact = zh.replace(/\s/g, '');
+  if (compact.length < 2) return false;
+
+  var chineseCount = countMatches(compact, /[\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]/g);
+  var kanaCount = countMatches(compact, /[\u3040-\u309F\u30A0-\u30FF]/g);
+  var chineseRatio = chineseCount / compact.length;
+  var kanaRatio = kanaCount / compact.length;
+
+  return chineseCount >= 2 && chineseRatio >= 0.2 && kanaRatio <= 0.15 && chineseRatio >= kanaRatio;
+}
+
+function verifiedZh(textZh, textJa) {
+  var text = stripHtml(textZh);
+  return hasVerifiedZhText(text, textJa) ? text : '';
+}
+
+function findOption(options, key) {
+  for (var i = 0; i < options.length; i++) {
+    if (options[i].key === key) return options[i];
   }
-  var hasRealZhExplanation = card.explanationZh && card.explanationZh !== card.explanationJa && isGenuineChinese(card.explanationZh);
-  var hasRealMnemonic = (card.mnemonicJa && card.mnemonicJa.length > 5) || (card.mnemonicZh && isGenuineChinese(card.mnemonicZh));
-  if (hasRealZhQuestion && hasRealZhOptions && hasOptionExplanations && hasRealZhExplanation && hasRealMnemonic) return 'bilingual_complete';
-  if (hasRealZhQuestion || hasRealZhOptions || hasRealZhExplanation) return 'bilingual_partial';
-  return 'japanese_only';
+  return null;
 }
 
 function normalizeCard(raw, course, yearId) {
   if (!raw || !raw.id) return null;
-  var qJa = stripHtml(raw.questionJa || '');
-  var qZh = stripHtml(raw.questionZh || '');
-  if (!qJa && !qZh) return null;
-  var options = Array.isArray(raw.options) ? raw.options : [];
-  if (options.length < 2) return null;
-  var normalizedOptions = [];
-  var hasCorrect = false;
-  for (var i = 0; i < options.length; i++) {
-    var o = options[i];
-    var oJa = stripHtml(o.textJa || o.text || '');
-    var oZh = stripHtml(o.textZh || o.text || '');
-    if (!oJa && !oZh) continue;
-    var isCorrect = o.key === raw.answer || o.isCorrect === true;
-    if (isCorrect) hasCorrect = true;
-    normalizedOptions.push({
-      key: o.key || String.fromCharCode(65 + i),
-      textJa: oJa,
-      textZh: oZh,
-      isCorrect: isCorrect,
-      explanationJa: stripHtml(o.explanationJa || ''),
-      explanationZh: stripHtml(o.explanationZh || '')
+
+  var questionJa = stripHtml(raw.questionJa || '');
+  var sourceOptions = Array.isArray(raw.options) ? raw.options : [];
+  var answerId = String(raw.answerId || raw.answer || '');
+  if (!questionJa || sourceOptions.length < 2 || !answerId) return null;
+
+  var questionZh = verifiedZh(raw.questionZh, questionJa);
+  var options = [];
+  for (var i = 0; i < sourceOptions.length; i++) {
+    var source = sourceOptions[i] || {};
+    var key = String(source.id || source.key || String.fromCharCode(65 + i));
+    var textJa = stripHtml(source.textJa || source.text || '');
+    if (!textJa) return null;
+
+    var textZh = verifiedZh(source.textZh, textJa);
+    var explanationJa = stripHtml(source.explanationJa || '');
+    var explanationZh = verifiedZh(source.explanationZh, explanationJa);
+    options.push({
+      id: key,
+      key: key,
+      textJa: textJa,
+      textZh: textZh,
+      hasTextZh: !!textZh,
+      explanationJa: explanationJa,
+      explanationZh: explanationZh,
+      hasExplanationZh: !!explanationZh,
+      isCorrect: key === answerId
     });
   }
-  if (!hasCorrect || normalizedOptions.length < 2) return null;
-  var card = {
-    id: 'fc_' + raw.id,
-    questionJa: qJa || qZh,
-    questionZh: qZh || qJa,
-    options: normalizedOptions,
-    answer: raw.answer || '',
-    explanationJa: stripHtml(raw.explanationJa || ''),
-    explanationZh: stripHtml(raw.explanationZh || ''),
-    mnemonicJa: raw.mnemonicJa || '',
-    mnemonicZh: raw.mnemonicZh || '',
-    contentStatus: 'japanese_only'
+
+  var correctOption = findOption(options, answerId);
+  if (!correctOption) return null;
+
+  var explanationJa = stripHtml(raw.explanationJa || '');
+  var explanationZh = verifiedZh(raw.explanationZh, explanationJa);
+  var mnemonicJa = stripHtml(raw.mnemonicJa || '');
+  var mnemonicZh = verifiedZh(raw.mnemonicZh, mnemonicJa);
+
+  return {
+    id: String(raw.id),
+    deckId: course + '/' + yearId,
+    course: course,
+    yearId: yearId,
+    questionJa: questionJa,
+    questionZh: questionZh,
+    hasQuestionZh: !!questionZh,
+    options: options,
+    answerId: answerId,
+    answer: answerId,
+    explanationJa: explanationJa,
+    explanationZh: explanationZh,
+    hasExplanationZh: !!explanationZh,
+    mnemonicJa: mnemonicJa,
+    mnemonicZh: mnemonicZh,
+    hasMnemonicZh: !!mnemonicZh,
+    sourceRef: raw.sourceRef || raw.id
   };
-  card.contentStatus = detectContentStatus(card);
-  return card;
+}
+
+function getRoute() {
+  try {
+    var pages = getCurrentPages();
+    return pages.length ? '/' + pages[pages.length - 1].route : '';
+  } catch (error) {
+    return '';
+  }
+}
+
+function getLocalDecks() {
+  return deckManifest.getAllLocalDecks ? deckManifest.getAllLocalDecks() : [];
 }
 
 Page({
   data: {
+    viewState: 'loading',
+    isLoading: true,
+    isEmpty: false,
+    loadError: '',
+    loadingMsg: '正在加载闪卡…',
     course: '',
     courseLabel: '',
+    deckId: '',
     deckLabel: '',
     yearId: '',
-    deckId: '',
+    packageName: '',
+    playerPath: '',
+    sourceCountExpected: 0,
+    sourceCountActual: 0,
+    playableCountExpected: 0,
+    playableCountActual: 0,
+    knownLocalDeckIds: '',
+    errorDetail: '',
+    route: '',
     cards: [],
-    totalCards: 0,
     currentIndex: 0,
     currentCard: null,
-    answeredList: [],
-    wrongIds: [],
-    sessionCorrect: 0,
-    sessionWrong: 0,
+    totalCards: 0,
     hasAnswered: false,
     selectedKey: '',
+    selectedOption: null,
+    correctOption: null,
     isCorrect: false,
     showBack: false,
     isFinished: false,
-    progressPercent: 0,
-    timerText: '',
-    startTime: 0,
-    userChoice: '',
-    correctAnswer: '',
-    optionExplanations: [],
-    isLoading: true,
-    loadError: '',
-    isEmpty: false,
-    loadingMsg: '正在准备闪卡...',
-    errorCourse: '',
-    errorDeckLabel: '',
-    errorYearId: '',
-    errorPackageName: '',
-    errorDetail: '',
-    rawLoadedCount: 0,
-    renderableCardCount: 0
+    sessionCorrect: 0,
+    sessionWrong: 0,
+    wrongIds: [],
+    progressPercent: 0
   },
 
   onLoad: function (options) {
-    console.log('[flashcard-player] onLoad', JSON.stringify(options));
-    var deckId = options.deckId || '';
-    var backCourse = options.backCourse || '';
-    var backPath = options.backPath || '';
-    this.setData({ backCourse: backCourse, backPath: backPath });
-    if (!deckId) {
-      this.setData({ isLoading: false, loadError: '缺少牌组参数 (deckId)', errorDetail: '请从牌组选择页进入闪卡' });
+    this._loadOptions = options || {};
+    this.loadDeck(this._loadOptions);
+  },
+
+  loadDeck: function (options) {
+    options = options || {};
+    var rawDeckId = options.deckId || '';
+    var canonicalDeckId = normalizeDeckId(rawDeckId);
+    var packageMeta = loader.meta || {};
+    var localDecks = getLocalDecks();
+    var knownLocalDeckIds = localDecks.map(function (deck) { return deck.deckId; }).join(', ');
+    var fallbackPackageName = packageMeta.packageRoot || packageMeta.packageKey || 'local-package';
+    var fallbackPlayerPath = packageMeta.packageRoot
+      ? '/' + packageMeta.packageRoot + '/pages/flashcard-player/flashcard-player'
+      : getRoute();
+
+    this.setData({
+      viewState: 'loading',
+      isLoading: true,
+      isEmpty: false,
+      loadError: '',
+      loadingMsg: '正在加载闪卡…',
+      errorDetail: '',
+      cards: [],
+      currentCard: null,
+      totalCards: 0,
+      sourceCountActual: 0,
+      playableCountActual: 0,
+      selectedKey: '',
+      selectedOption: null,
+      correctOption: null,
+      hasAnswered: false,
+      isFinished: false,
+      showBack: false,
+      packageName: fallbackPackageName,
+      playerPath: fallbackPlayerPath,
+      knownLocalDeckIds: knownLocalDeckIds,
+      route: getRoute()
+    });
+
+    if (!canonicalDeckId) {
+      this.failLoad('缺少 deckId。请从牌组选择页重新进入。', {
+        deckId: '',
+        course: '',
+        yearId: '',
+        deckLabel: '',
+        packageName: fallbackPackageName,
+        playerPath: fallbackPlayerPath,
+        sourceCountExpected: 0,
+        sourceCountActual: 0,
+        playableCountExpected: 0,
+        playableCountActual: 0,
+        knownLocalDeckIds: knownLocalDeckIds,
+        route: getRoute(),
+        stack: ''
+      });
       return;
     }
-    var parts = deckId.split('/');
-    var course = parts[0] || 'itpass';
-    var yearId = parts[1] || '';
-    if (!yearId) {
-      this.setData({ isLoading: false, loadError: '无效的牌组参数', errorDetail: 'deckId=' + deckId });
-      return;
-    }
-    var deckInfo = deckManifest.getDeckInfo(deckId);
-    if (!deckInfo) {
-      this.setData({
-        isLoading: false,
-        loadError: '闪卡数据加载失败',
-        errorDetail: '找不到牌组信息: ' + deckId,
-        errorCourse: course,
-        errorYearId: yearId,
-        errorPackageName: '',
+
+    var deckInfo = deckManifest.getDeckInfo ? deckManifest.getDeckInfo(canonicalDeckId) : null;
+    var parts = canonicalDeckId.split('/');
+    var course = parts[0] || '';
+    var yearId = parts.slice(1).join('/');
+    if (!deckInfo || !course || !yearId) {
+      this.failLoad('当前数据分包不拥有此牌组。', {
+        deckId: canonicalDeckId,
         course: course,
         yearId: yearId,
-        deckLabel: yearId
+        deckLabel: yearId,
+        packageName: fallbackPackageName,
+        playerPath: fallbackPlayerPath,
+        sourceCountExpected: 0,
+        sourceCountActual: 0,
+        playableCountExpected: 0,
+        playableCountActual: 0,
+        knownLocalDeckIds: knownLocalDeckIds,
+        route: getRoute(),
+        stack: ''
       });
-      console.error('[flashcard-player] deckId not found in local manifest:', deckId, 'known:', JSON.stringify(deckManifest.getAllLocalDecks().map(function(d) { return d.deckId; })));
       return;
     }
+
+    course = deckInfo.course || course;
+    yearId = deckInfo.yearId || yearId;
+    var sourceCountExpected = Number(deckInfo.sourceCountExpected || deckInfo.rawExpectedCount || 0);
+    var playableCountExpected = Number(deckInfo.playableCountExpected || deckInfo.renderableExpectedCount || 0);
     var courseLabel = course === 'sg' ? 'SG 闪卡' : 'IT Passport 闪卡';
     var deckLabel = deckInfo.yearLabel || yearId;
+    var packageName = deckInfo.packageName || fallbackPackageName;
+    var playerPath = deckInfo.playerPath || fallbackPlayerPath;
+
     this.setData({
       course: course,
       courseLabel: courseLabel,
+      deckId: canonicalDeckId,
       deckLabel: deckLabel,
-      yearId: deckInfo.yearId,
-      deckId: deckId,
-      errorCourse: course,
-      errorDeckLabel: deckLabel,
-      errorYearId: deckInfo.yearId,
-      errorPackageName: deckInfo.deckId,
-      rawLoadedCount: deckInfo.rawExpectedCount,
-      loadingMsg: '正在加载「' + deckLabel + '」' + courseLabel + '…'
+      yearId: yearId,
+      packageName: packageName,
+      playerPath: playerPath,
+      sourceCountExpected: sourceCountExpected,
+      playableCountExpected: playableCountExpected,
+      loadingMsg: '正在加载「' + deckLabel + '」' + courseLabel + ' 闪卡…'
     });
-    this.loadCards(course, deckInfo.yearId, deckInfo.rawExpectedCount);
-  },
 
-  loadCards: function (course, yearId, expectedCount) {
-    var self = this;
-    console.log('[flashcard-player] loadCards', { course: course, yearId: yearId, expectedCount: expectedCount });
+    var sourceCountActual = 0;
+    var playableCountActual = 0;
     try {
-      var rawQuestions = loader.getQuestionsByYear(course, yearId);
-      console.log('[flashcard-player] loader.getQuestionsByYear returned', rawQuestions ? rawQuestions.length : 0);
-      self.setData({ rawLoadedCount: rawQuestions ? rawQuestions.length : 0 });
-      if (!rawQuestions || rawQuestions.length === 0) {
-        self.setData({ isLoading: false, loadError: '闪卡数据加载失败', errorDetail: '该牌组 (' + yearId + ') 在分包内未找到题目, rawExpectedCount=' + expectedCount + ' rawLoadedCount=0', isEmpty: true });
-        return;
+      var sourceCards = loader.getQuestionsByYear(course, yearId);
+      if (!Array.isArray(sourceCards)) {
+        throw new Error('本地 loader 未返回题目数组。');
       }
+      sourceCountActual = sourceCards.length;
       var cards = [];
-      for (var i = 0; i < rawQuestions.length; i++) {
-        var card = normalizeCard(rawQuestions[i], course, yearId);
+      for (var i = 0; i < sourceCountActual; i++) {
+        var card = normalizeCard(sourceCards[i], course, yearId);
         if (card) cards.push(card);
       }
-      console.log('[flashcard-player] normalized', cards.length, 'of', rawQuestions.length);
-      if (cards.length === 0) {
-        self.setData({ isLoading: false, isEmpty: true, loadError: '该牌组无可用闪卡', errorDetail: '年份 ' + yearId + ' 的题目无法转换为闪卡格式' });
+      playableCountActual = cards.length;
+      var diagnostic = {
+        course: course,
+        deckId: canonicalDeckId,
+        yearId: yearId,
+        packageName: packageName,
+        playerPath: playerPath,
+        expectedCount: playableCountExpected,
+        actualCount: playableCountActual,
+        sourceCountExpected: sourceCountExpected,
+        sourceCountActual: sourceCountActual,
+        playableCountExpected: playableCountExpected,
+        playableCountActual: playableCountActual,
+        knownLocalDeckIds: knownLocalDeckIds,
+        route: getRoute(),
+        deckLabel: deckLabel,
+        stack: ''
+      };
+
+      if (sourceCountActual !== sourceCountExpected) {
+        this.failLoad('原始题目数不符合牌组契约。', diagnostic);
         return;
       }
-      self.setData({
+      if (playableCountActual !== playableCountExpected) {
+        this.failLoad('可答闪卡数不符合牌组契约。', diagnostic);
+        return;
+      }
+      if (playableCountActual === 0) {
+        if (sourceCountExpected === 0 && playableCountExpected === 0 && sourceCountActual === 0) {
+          this.setData({
+            viewState: 'empty',
+            isLoading: false,
+            isEmpty: true,
+            loadError: '',
+            sourceCountActual: sourceCountActual,
+            playableCountActual: playableCountActual
+          });
+        } else {
+          this.failLoad('牌组应有可答闪卡，但规范化后为零。', diagnostic);
+        }
+        return;
+      }
+
+      this.setData({
+        viewState: 'content',
         isLoading: false,
+        isEmpty: false,
+        loadError: '',
         cards: cards,
-        totalCards: cards.length,
-        renderableCardCount: cards.length,
         currentIndex: 0,
         currentCard: cards[0],
-        progressPercent: Math.round(1 / cards.length * 100) || 0
+        totalCards: playableCountActual,
+        sourceCountActual: sourceCountActual,
+        playableCountActual: playableCountActual,
+        progressPercent: Math.round(100 / playableCountActual)
       });
-      self.startTimer();
-      console.log('[flashcard-player] loaded successfully:', cards.length, 'cards');
-    } catch (e) {
-      console.error('[flashcard-player] loadCards error:', e);
-      self.setData({ isLoading: false, loadError: '闪卡数据加载失败', errorDetail: e.message || '未知错误', rawLoadedCount: 0, isEmpty: true });
+      console.log('[flashcard-player] loaded', diagnostic);
+    } catch (error) {
+      this.failLoad(error && error.message ? error.message : '本地 loader 发生未知错误。', {
+        course: course,
+        deckId: canonicalDeckId,
+        yearId: yearId,
+        packageName: packageName,
+        playerPath: playerPath,
+        expectedCount: playableCountExpected,
+        actualCount: playableCountActual,
+        sourceCountExpected: sourceCountExpected,
+        sourceCountActual: sourceCountActual,
+        playableCountExpected: playableCountExpected,
+        playableCountActual: playableCountActual,
+        knownLocalDeckIds: knownLocalDeckIds,
+        route: getRoute(),
+        deckLabel: deckLabel,
+        stack: error && error.stack ? error.stack : ''
+      });
     }
   },
 
-  startTimer: function () {
-    var startTime = Date.now();
-    this.setData({ startTime: startTime });
-    this._timerInterval = setInterval(function () {
-      var diffSec = Math.floor((Date.now() - startTime) / 1000);
-      var minutes = Math.floor(diffSec / 60);
-      var seconds = diffSec % 60;
-      this.setData({ timerText: (minutes < 10 ? '0' + minutes : minutes) + ':' + (seconds < 10 ? '0' + seconds : seconds) });
-    }.bind(this), 1000);
+  failLoad: function (reason, diagnostic) {
+    var detail = {
+      course: diagnostic.course || '',
+      deckId: diagnostic.deckId || '',
+      packageName: diagnostic.packageName || '',
+      playerPath: diagnostic.playerPath || '',
+      expectedCount: Number(diagnostic.expectedCount || diagnostic.playableCountExpected || 0),
+      actualCount: Number(diagnostic.actualCount || diagnostic.playableCountActual || 0),
+      sourceCountExpected: Number(diagnostic.sourceCountExpected || 0),
+      sourceCountActual: Number(diagnostic.sourceCountActual || 0),
+      playableCountExpected: Number(diagnostic.playableCountExpected || 0),
+      playableCountActual: Number(diagnostic.playableCountActual || 0),
+      knownLocalDeckIds: diagnostic.knownLocalDeckIds || '',
+      route: diagnostic.route || getRoute(),
+      stack: diagnostic.stack || ''
+    };
+    console.error('[flashcard-player] load failed:', reason, detail);
+    this.setData({
+      viewState: 'error',
+      isLoading: false,
+      isEmpty: false,
+      loadError: reason,
+      errorDetail: reason,
+      course: detail.course || this.data.course,
+      courseLabel: detail.course === 'sg' ? 'SG 闪卡' : (detail.course ? 'IT Passport 闪卡' : this.data.courseLabel),
+      yearId: diagnostic.yearId || this.data.yearId,
+      deckId: detail.deckId || this.data.deckId,
+      deckLabel: diagnostic.deckLabel || this.data.deckLabel || diagnostic.yearId || '',
+      packageName: detail.packageName || this.data.packageName,
+      playerPath: detail.playerPath || this.data.playerPath,
+      sourceCountExpected: detail.sourceCountExpected,
+      sourceCountActual: detail.sourceCountActual,
+      playableCountExpected: detail.playableCountExpected,
+      playableCountActual: detail.playableCountActual,
+      knownLocalDeckIds: detail.knownLocalDeckIds,
+      route: detail.route
+    });
   },
 
-  stopTimer: function () {
-    if (this._timerInterval) {
-      clearInterval(this._timerInterval);
-      this._timerInterval = null;
-    }
+  retryLoad: function () {
+    this.loadDeck(this._loadOptions || {});
   },
 
-  onUnload: function () {
-    this.stopTimer();
-  },
-
-  selectAnswer: function (e) {
+  selectAnswer: function (event) {
     if (this.data.hasAnswered || !this.data.currentCard) return;
-    var key = e.currentTarget.dataset.key;
-    var card = this.data.currentCard;
-    var isCorrect = false;
-    for (var i = 0; i < card.options.length; i++) {
-      if (card.options[i].key === key && card.options[i].isCorrect) {
-        isCorrect = true;
-        break;
-      }
-    }
-    var answeredList = this.data.answeredList.slice();
-    answeredList.push({ cardId: card.id, selectedKey: key, isCorrect: isCorrect });
+    var key = String(event.currentTarget.dataset.key || '');
+    var selectedOption = findOption(this.data.currentCard.options, key);
+    if (!selectedOption) return;
+    var correctOption = findOption(this.data.currentCard.options, this.data.currentCard.answerId);
+    var isCorrect = !!correctOption && selectedOption.key === correctOption.key;
     var wrongIds = this.data.wrongIds.slice();
-    if (!isCorrect) wrongIds.push(card.id);
+    if (!isCorrect && wrongIds.indexOf(this.data.currentCard.id) < 0) wrongIds.push(this.data.currentCard.id);
+
     this.setData({
       hasAnswered: true,
       selectedKey: key,
-      userChoice: key,
+      selectedOption: selectedOption,
+      correctOption: correctOption,
       isCorrect: isCorrect,
-      answeredList: answeredList,
-      wrongIds: wrongIds,
       sessionCorrect: this.data.sessionCorrect + (isCorrect ? 1 : 0),
-      sessionWrong: this.data.sessionWrong + (isCorrect ? 0 : 1)
+      sessionWrong: this.data.sessionWrong + (isCorrect ? 0 : 1),
+      wrongIds: wrongIds
     });
   },
 
   showExplanation: function () {
-    var card = this.data.currentCard;
-    var correctKey = '';
-    var explanations = [];
-    if (card && card.options) {
-      for (var i = 0; i < card.options.length; i++) {
-        if (card.options[i].isCorrect) correctKey = card.options[i].key;
-      }
-    }
-    this.setData({ showBack: true, correctAnswer: correctKey, optionExplanations: explanations });
+    if (this.data.hasAnswered) this.setData({ showBack: true });
   },
 
   nextCard: function () {
     var nextIndex = this.data.currentIndex + 1;
     if (nextIndex >= this.data.totalCards) {
-      this.finishDeck();
+      this.setData({ isFinished: true, showBack: false });
       return;
     }
     this.setData({
       currentIndex: nextIndex,
       currentCard: this.data.cards[nextIndex],
-      progressPercent: Math.round((nextIndex + 1) / this.data.totalCards * 100) || 0,
       hasAnswered: false,
       selectedKey: '',
-      userChoice: '',
-      correctAnswer: '',
-      optionExplanations: [],
+      selectedOption: null,
+      correctOption: null,
       isCorrect: false,
-      showBack: false
+      showBack: false,
+      progressPercent: Math.round((nextIndex + 1) * 100 / this.data.totalCards)
     });
-  },
-
-  finishDeck: function () {
-    this.stopTimer();
-    this.setData({ isFinished: true, showBack: false });
   },
 
   restartDeck: function () {
+    if (!this.data.cards.length) return;
     this.setData({
+      viewState: 'content',
       currentIndex: 0,
       currentCard: this.data.cards[0],
-      progressPercent: Math.round(1 / this.data.totalCards * 100) || 0,
       hasAnswered: false,
       selectedKey: '',
-      userChoice: '',
-      correctAnswer: '',
-      optionExplanations: [],
+      selectedOption: null,
+      correctOption: null,
       isCorrect: false,
       showBack: false,
       isFinished: false,
-      answeredList: [],
-      wrongIds: [],
       sessionCorrect: 0,
-      sessionWrong: 0
+      sessionWrong: 0,
+      wrongIds: [],
+      progressPercent: Math.round(100 / this.data.cards.length)
     });
-    this.startTimer();
   },
 
   retryWrongCards: function () {
-    var wrongIds = this.data.wrongIds.slice();
-    if (wrongIds.length === 0) {
-      wx.showToast({ title: '本次没有错题', icon: 'none' });
-      return;
-    }
+    if (!this.data.wrongIds.length) return;
     var wrongCards = [];
     for (var i = 0; i < this.data.cards.length; i++) {
-      if (wrongIds.indexOf(this.data.cards[i].id) >= 0) wrongCards.push(this.data.cards[i]);
+      if (this.data.wrongIds.indexOf(this.data.cards[i].id) >= 0) wrongCards.push(this.data.cards[i]);
     }
-    if (wrongCards.length === 0) {
-      wx.showToast({ title: '未找到错题', icon: 'none' });
-      return;
-    }
-    this.stopTimer();
+    if (!wrongCards.length) return;
     this.setData({
+      viewState: 'content',
       cards: wrongCards,
-      totalCards: wrongCards.length,
       currentIndex: 0,
       currentCard: wrongCards[0],
-      progressPercent: Math.round(1 / wrongCards.length * 100) || 0,
+      totalCards: wrongCards.length,
       hasAnswered: false,
       selectedKey: '',
-      userChoice: '',
-      correctAnswer: '',
-      optionExplanations: [],
+      selectedOption: null,
+      correctOption: null,
       isCorrect: false,
       showBack: false,
       isFinished: false,
-      answeredList: [],
-      wrongIds: [],
       sessionCorrect: 0,
       sessionWrong: 0,
-      deckLabel: '错题重练'
+      wrongIds: [],
+      progressPercent: Math.round(100 / wrongCards.length)
     });
-    this.startTimer();
   },
 
   goHome: function () {
@@ -376,17 +511,11 @@ Page({
   },
 
   goBack: function () {
-    var bp = this.data.backPath;
-    if (bp) {
-      wx.redirectTo({ url: bp, fail: function () {
-        wx.navigateBack({ delta: 1, fail: function () {
-          wx.switchTab({ url: '/pages/flashcards/flashcards' });
-        }});
-      }});
-    } else {
-      wx.navigateBack({ delta: 1, fail: function () {
+    wx.navigateBack({
+      delta: 1,
+      fail: function () {
         wx.switchTab({ url: '/pages/flashcards/flashcards' });
-      }});
-    }
+      }
+    });
   }
 });

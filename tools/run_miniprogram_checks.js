@@ -17,17 +17,20 @@ var fs = require('fs');
 var path = require('path');
 
 var JSON_MODE = process.argv.indexOf('--json') !== -1;
-// JSON mode executes exactly six leaf checks. Normal mode adds one smoke check
+// JSON mode executes each leaf check once. Normal mode adds one smoke check
 // that verifies the JSON leaf contract without recursively invoking itself.
 var LEAF_CHECKS = [
   { title: 'Subpackage registry', command: 'node tools/check_subpackage_registry.js', cmd: 'node', args: ['tools/check_subpackage_registry.js'] },
   { title: 'P0 release dependency closure', command: 'node tools/check_p0_release_dependency_closure.js', cmd: 'node', args: ['tools/check_p0_release_dependency_closure.js'] },
+  { title: 'P0 content truthfulness', command: 'node tools/check_flashcard_p0_content_truthfulness.js', cmd: 'node', args: ['tools/check_flashcard_p0_content_truthfulness.js'] },
   { title: 'Content compliance', command: 'node tools/check_content_compliance.js', cmd: 'node', args: ['tools/check_content_compliance.js'] },
   { title: 'Quiz explanations', command: 'node tools/check_quiz_explanations.js', cmd: 'node', args: ['tools/check_quiz_explanations.js'] },
   { title: 'Package size audit', command: 'node tools/audit_miniprogram_package_size.js', cmd: 'node', args: ['tools/audit_miniprogram_package_size.js'] }
 ];
-var LEAF_TOTAL_CHECKS = 6;
-var TOTAL_CHECKS = 7;
+// Six external leaf checks plus the inline JavaScript syntax leaf.
+var LEAF_TOTAL_CHECKS = 7;
+// Normal mode additionally runs smoke, which verifies the JSON leaf contract.
+var TOTAL_CHECKS = 8;
 if (JSON_MODE) TOTAL_CHECKS = LEAF_TOTAL_CHECKS;
 
 // --- Helpers ---

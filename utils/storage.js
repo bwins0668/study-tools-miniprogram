@@ -456,7 +456,7 @@ function exportLocalBackup() {
   try { flashcardProgress = wx.getStorageSync('flashcard_progress_v1') || null; } catch (e) {}
   return {
     app: 'study-tools-mini',
-    version: 'v0.24.0',
+    version: 'v0.28.0',
     exportedAt: Date.now(),
     data: {
       favoriteTerms: getFavoriteTerms(),

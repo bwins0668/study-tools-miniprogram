@@ -332,7 +332,7 @@ def answer_explain_next_back(mini, deck):
     answer_bilingual = bool(selected.get('textJa') and selected.get('textZh') and correct.get('textJa') and correct.get('textZh'))
 
     page = current_page(mini)
-    buttons = page.get_elements('.fc-btn') if page else []
+    buttons = page.get_elements('.fc-action-row .fc-btn') if page else []
     if not buttons:
         return False, {'reason': 'explanation_button_missing', 'data': data}
     try:
@@ -350,7 +350,7 @@ def answer_explain_next_back(mini, deck):
 
     before = int(data.get('currentIndex') or 0)
     page = current_page(mini)
-    buttons = page.get_elements('.fc-btn') if page else []
+    buttons = page.get_elements('.fc-action-row .fc-btn') if page else []
     if not buttons:
         return False, {'reason': 'next_button_missing', 'data': data}
     try:
@@ -480,15 +480,29 @@ def run_matrix(decks):
         for attempt in range(1, MAX_ATTEMPTS + 1):
             if mini is None:
                 mini = connect_session()
-            final = one_case(mini, deck, attempt)
+            try:
+                final = one_case(mini, deck, attempt)
+            except Exception as error:
+                final = {
+                    'course': deck['course'],
+                    'deckId': deck['deckId'],
+                    'year': deck.get('yearLabel', ''),
+                    'package': deck['packageName'],
+                    'attempt': attempt,
+                    'status': 'FAIL',
+                    'failure': 'sessionException',
+                    'steps': {'sessionException': {'error': str(error), 'traceback': traceback.format_exc()}},
+                    'elapsedMs': 0
+                }
             if final.get('status') == 'PASS':
                 break
-            # A failed home reset makes every following click untrusted.
-            # Tear down and reconnect before the only permitted retry.
-            if final.get('failure') == 'homeReset' and attempt < MAX_ATTEMPTS:
+            # A broken reset or a destroyed Minium page invalidates the session,
+            # not the deck contract. Reconnect for the single permitted retry.
+            if final.get('failure') in ('homeReset', 'sessionException'):
                 close_session(mini)
                 mini = None
-                continue
+                if attempt < MAX_ATTEMPTS:
+                    continue
             break
         REPORT['decks'].append(final)
     close_session(mini)
@@ -539,6 +553,16 @@ def main():
                 )
         elif len(decks) != 26:
             raise RuntimeError('expected 26 decks, got %d' % len(decks))
+
+        requested_deck_ids = [
+            value.strip() for value in os.environ.get('MINIUM_FLASHCARD_DECK_IDS', '').split(',') if value.strip()
+        ]
+        if requested_deck_ids:
+            lookup = {deck['deckId']: deck for deck in decks}
+            missing = [deck_id for deck_id in requested_deck_ids if deck_id not in lookup]
+            if missing:
+                raise RuntimeError('unknown requested deckId(s): %s' % ', '.join(missing))
+            decks = [lookup[deck_id] for deck_id in requested_deck_ids]
         run_matrix(decks)
         if os.environ.get('MINIUM_FLASHCARD_RUN_HOT_PATH') == '1':
             run_hot_path(decks)

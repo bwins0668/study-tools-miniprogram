@@ -20,6 +20,6 @@ App({
   },
 
   globalData: {
-    version: 'v0.24.0'
+    version: 'v0.28.0'
   }
 });

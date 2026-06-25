@@ -1,6 +1,6 @@
 # Study Tools 小程序 50 轮后维护说明
 
-适用版本：v0.24.0
+适用版本：v0.28.0
 
 适用范围：微信小程序原生版 `study-tools-miniprogram`。本文只记录小程序仓库的维护边界，不适用于 Windows 完整版或 Web 公开版。
 
