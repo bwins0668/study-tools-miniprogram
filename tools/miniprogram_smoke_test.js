@@ -1104,13 +1104,13 @@ console.log('\n--- 版本号检查 ---');
 let versionOk = true;
 const appJsContent = readFile('app.js');
 const storageContent = readFile('utils/storage.js');
-if (!appJsContent.includes('v0.23.0')) {
-  fail('version: app.js does not contain v0.23.0');
+if (!appJsContent.includes('v0.24.0')) {
+  fail('version: app.js does not contain v0.24.0');
   versionOk = false;
 }
 
-if (!storageContent.includes("version: 'v0.23.0'")) {
-  fail('version: utils/storage.js exportLocalBackup does not contain v0.23.0');
+if (!storageContent.includes("version: 'v0.24.0'")) {
+  fail('version: utils/storage.js exportLocalBackup does not contain v0.24.0');
   versionOk = false;
 }
 
@@ -1127,7 +1127,7 @@ if (!profileJs.includes('globalData.version')) {
   fail('version: profile.js does not read from globalData.version');
   versionOk = false;
 }
-if (versionOk) pass('version check v0.23.0');
+if (versionOk) pass('version check v0.24.0');
 
 // ============================================================
 // 十一、Check Round 2.0 新功能
@@ -1602,12 +1602,12 @@ var profileWxml32 = readFile('pages/profile/profile.wxml');
 var profileWxss32 = readFile('pages/profile/profile.wxss');
 
   // 1. 版本号 v0.21.0
-  if (!appJsContent.includes('v0.23.0')) {
-    fail('Round 3.2: app.js missing v0.23.0');
+  if (!appJsContent.includes('v0.24.0')) {
+    fail('Round 3.2: app.js missing v0.24.0');
     round32Ok = false;
   }
-  if (!storageContent.includes("version: 'v0.23.0'")) {
-    fail('Round 3.2: storage.js exportLocalBackup missing v0.23.0');
+  if (!storageContent.includes("version: 'v0.24.0'")) {
+    fail('Round 3.2: storage.js exportLocalBackup missing v0.24.0');
     round32Ok = false;
   }
 
@@ -1709,12 +1709,12 @@ var favReviewWxml33 = readFile('packages/glossary/pages/favorite-review/favorite
 var favReviewWxss33 = readFile('packages/glossary/pages/favorite-review/favorite-review.wxss');
 
   // 1. 版本号 v0.21.0
-  if (!appJsContent.includes('v0.23.0')) {
-    fail('Round 3.3: app.js missing v0.23.0');
+  if (!appJsContent.includes('v0.24.0')) {
+    fail('Round 3.3: app.js missing v0.24.0');
     round33Ok = false;
   }
-  if (!storageContent.includes("version: 'v0.23.0'")) {
-    fail('Round 3.3: storage.js exportLocalBackup missing v0.23.0');
+  if (!storageContent.includes("version: 'v0.24.0'")) {
+    fail('Round 3.3: storage.js exportLocalBackup missing v0.24.0');
     round33Ok = false;
   }
 
@@ -1789,7 +1789,7 @@ if (!profileJs33.includes('getFavoriteTermCount') || !profileJs33.includes('favo
 }
 
   // 10. 备份导出/恢复版本同步到 v0.21.0
-  if (!storageContent.includes("version: 'v0.23.0'")) {
+  if (!storageContent.includes("version: 'v0.24.0'")) {
     fail('Round 3.3: storage.js exportLocalBackup version not synced to v0.21.0');
     round33Ok = false;
   }
@@ -1829,12 +1829,12 @@ var mistakesWxml34 = readFile('packages/quiz/pages/mistakes/mistakes.wxml');
 var mistakesWxss34 = readFile('packages/quiz/pages/mistakes/mistakes.wxss');
 
   // 1. 版本号 v0.21.0
-  if (!appJsContent.includes('v0.23.0')) {
-    fail('Round 3.4: app.js missing v0.23.0');
+  if (!appJsContent.includes('v0.24.0')) {
+    fail('Round 3.4: app.js missing v0.24.0');
     round34Ok = false;
   }
-  if (!storageContent.includes("version: 'v0.23.0'")) {
-    fail('Round 3.4: storage.js exportLocalBackup missing v0.23.0');
+  if (!storageContent.includes("version: 'v0.24.0'")) {
+    fail('Round 3.4: storage.js exportLocalBackup missing v0.24.0');
     round34Ok = false;
   }
 
@@ -2002,12 +2002,12 @@ var homeWxml35 = readFile('pages/home/home.wxml');
 var homeWxss35 = readFile('pages/home/home.wxss');
 
   // 1. 版本号 v0.21.0
-  if (!appJsContent.includes('v0.23.0')) {
-    fail('Round 3.5: app.js missing v0.23.0');
+  if (!appJsContent.includes('v0.24.0')) {
+    fail('Round 3.5: app.js missing v0.24.0');
     round35Ok = false;
   }
-  if (!storageContent.includes("version: 'v0.23.0'")) {
-    fail('Round 3.5: storage.js exportLocalBackup missing v0.23.0');
+  if (!storageContent.includes("version: 'v0.24.0'")) {
+    fail('Round 3.5: storage.js exportLocalBackup missing v0.24.0');
     round35Ok = false;
   }
 
@@ -2164,14 +2164,14 @@ var profileWxml36 = readFile('pages/profile/profile.wxml');
 var profileWxss36 = readFile('pages/profile/profile.wxss');
 
 // 1. app.js 版本为 v0.21.0
-if (!appJs36.includes('v0.23.0')) {
-  fail('Round 3.6: app.js missing v0.23.0');
+if (!appJs36.includes('v0.24.0')) {
+  fail('Round 3.6: app.js missing v0.24.0');
   round36Ok = false;
 }
 
 // 2. exportLocalBackup 版本为 v0.21.0
-if (!storage36.includes("version: 'v0.23.0'")) {
-  fail('Round 3.6: storage.js exportLocalBackup missing v0.23.0');
+if (!storage36.includes("version: 'v0.24.0'")) {
+  fail('Round 3.6: storage.js exportLocalBackup missing v0.24.0');
   round36Ok = false;
 }
 
@@ -2313,14 +2313,14 @@ var homeWxml37 = readFile('pages/home/home.wxml');
 var homeWxss37 = readFile('pages/home/home.wxss');
 
 // 1. app.js 版本为 v0.21.0
-if (!appJs37.includes('v0.23.0')) {
-  fail('Round 3.7: app.js missing v0.23.0');
+if (!appJs37.includes('v0.24.0')) {
+  fail('Round 3.7: app.js missing v0.24.0');
   round37Ok = false;
 }
 
 // 2. exportLocalBackup 版本为 v0.21.0
-if (!storage37.includes("version: 'v0.23.0'")) {
-  fail('Round 3.7: storage.js exportLocalBackup missing v0.23.0');
+if (!storage37.includes("version: 'v0.24.0'")) {
+  fail('Round 3.7: storage.js exportLocalBackup missing v0.24.0');
   round37Ok = false;
 }
 
@@ -2485,14 +2485,14 @@ var profileWxml39 = readFile('pages/profile/profile.wxml');
 var profileWxss39 = readFile('pages/profile/profile.wxss');
 
 // 1. app.js 版本为 v0.21.0
-if (!appJs39.includes('v0.23.0')) {
-  fail('Round 3.9: app.js missing v0.23.0');
+if (!appJs39.includes('v0.24.0')) {
+  fail('Round 3.9: app.js missing v0.24.0');
   round39Ok = false;
 }
 
 // 2. exportLocalBackup 版本为 v0.21.0
-if (!storage39.includes("version: 'v0.23.0'")) {
-  fail('Round 3.9: storage.js exportLocalBackup missing v0.23.0');
+if (!storage39.includes("version: 'v0.24.0'")) {
+  fail('Round 3.9: storage.js exportLocalBackup missing v0.24.0');
   round39Ok = false;
 }
 
@@ -2700,14 +2700,14 @@ var profileWxml317 = readFile('pages/profile/profile.wxml');
 var profileWxss317 = readFile('pages/profile/profile.wxss');
 
 // 1. 版本号 v0.21.0
-if (!appJs317.includes('v0.23.0')) {
-  fail('Round 3.17: app.js missing v0.23.0');
+if (!appJs317.includes('v0.24.0')) {
+  fail('Round 3.17: app.js missing v0.24.0');
   round317Ok = false;
 }
 
 // 2. exportLocalBackup 版本同步
-if (!storage317.includes("version: 'v0.23.0'")) {
-  fail('Round 3.17: storage.js exportLocalBackup missing v0.23.0');
+if (!storage317.includes("version: 'v0.24.0'")) {
+  fail('Round 3.17: storage.js exportLocalBackup missing v0.24.0');
   round317Ok = false;
 }
 
@@ -2870,8 +2870,8 @@ var homeWxml318 = readFile('pages/home/home.wxml');
 var homeWxss318 = readFile('pages/home/home.wxss');
 
 // 1. 版本号保持 v0.21.0
-if (!appJs318.includes('v0.23.0')) {
-  fail('Round 3.18: app.js missing v0.23.0');
+if (!appJs318.includes('v0.24.0')) {
+  fail('Round 3.18: app.js missing v0.24.0');
   round318Ok = false;
 }
 
@@ -2979,8 +2979,8 @@ for (var a318 = 0; a318 < forbiddenAPIs318.length; a318++) {
 }
 
 // 18. exportLocalBackup 版本保持 v0.21.0
-if (!storage318.includes("version: 'v0.23.0'")) {
-  fail('Round 3.18: storage.js backup version not v0.23.0');
+if (!storage318.includes("version: 'v0.24.0'")) {
+  fail('Round 3.18: storage.js backup version not v0.24.0');
   round318Ok = false;
 }
 
@@ -3059,8 +3059,8 @@ var favReviewWxml319 = readFile('packages/glossary/pages/favorite-review/favorit
 var favReviewWxss319 = readFile('packages/glossary/pages/favorite-review/favorite-review.wxss');
 
 // 1. 版本号保持 v0.21.0
-if (!appJs319.includes('v0.23.0')) {
-  fail('Round 3.19: app.js missing v0.23.0');
+if (!appJs319.includes('v0.24.0')) {
+  fail('Round 3.19: app.js missing v0.24.0');
   round319Ok = false;
 }
 
@@ -3138,8 +3138,8 @@ if (STORAGE_KEY_RX.test(storage319)) {
 }
 
 // 11. exportLocalBackup 版本保持 v0.21.0
-if (!storage319.includes("version: 'v0.23.0'")) {
-  fail('Round 3.19: storage.js backup version not v0.23.0');
+if (!storage319.includes("version: 'v0.24.0'")) {
+  fail('Round 3.19: storage.js backup version not v0.24.0');
   round319Ok = false;
 }
 
@@ -3229,8 +3229,8 @@ var quizWxml320 = readFile('packages/quiz/pages/quiz/quiz.wxml');
 var quizWxss320 = readFile('packages/quiz/pages/quiz/quiz.wxss');
 
 // === 版本号 ===
-if (!appJs320.includes('v0.23.0')) {
-  fail('Round 3.20: app.js missing v0.23.0');
+if (!appJs320.includes('v0.24.0')) {
+  fail('Round 3.20: app.js missing v0.24.0');
   round320Ok = false;
 }
 
@@ -3393,8 +3393,8 @@ if (STORAGE_KEY_RX.test(storage320)) {
 }
 
 // 24. exportLocalBackup 版本保持 v0.21.0
-if (!storage320.includes("version: 'v0.23.0'")) {
-  fail('Round 3.20: storage.js backup version not v0.23.0');
+if (!storage320.includes("version: 'v0.24.0'")) {
+  fail('Round 3.20: storage.js backup version not v0.24.0');
   round320Ok = false;
 }
 
@@ -3476,8 +3476,8 @@ var termSearchWxml321 = readFile('packages/glossary/pages/term-search/term-searc
 var termSearchWxss321 = readFile('packages/glossary/pages/term-search/term-search.wxss');
 
 // === 版本号 ===
-if (!appJs321.includes('v0.23.0')) {
-  fail('Round 3.21: app.js missing v0.23.0');
+if (!appJs321.includes('v0.24.0')) {
+  fail('Round 3.21: app.js missing v0.24.0');
   round321Ok = false;
 }
 
@@ -3652,8 +3652,8 @@ if (STORAGE_KEY_RX.test(storage321)) {
 }
 
 // 27. exportLocalBackup 版本保持 v0.21.0
-if (!storage321.includes("version: 'v0.23.0'")) {
-  fail('Round 3.21: storage.js backup version not v0.23.0');
+if (!storage321.includes("version: 'v0.24.0'")) {
+  fail('Round 3.21: storage.js backup version not v0.24.0');
   round321Ok = false;
 }
 
@@ -3891,8 +3891,8 @@ if (!examMenuWxss322.includes('new-user-card') || !examMenuWxss322.includes('new
 
 // === D. 合规检查 ===
 // 20. 版本号 v0.21.0
-if (!appJs322.includes('v0.23.0')) {
-  fail('Round 3.22: app.js version not v0.23.0');
+if (!appJs322.includes('v0.24.0')) {
+  fail('Round 3.22: app.js version not v0.24.0');
   round322Ok = false;
 }
 
@@ -4092,8 +4092,8 @@ if (!termDetailWxml323.includes('术语不存在')) {
 
 // === E. 合规检查 ===
 // 17. 版本号 v0.21.0
-if (!appJs323.includes('v0.23.0')) {
-  fail('Round 3.23: app.js version not v0.23.0');
+if (!appJs323.includes('v0.24.0')) {
+  fail('Round 3.23: app.js version not v0.24.0');
   round323Ok = false;
 }
 
@@ -4185,8 +4185,8 @@ var appJson324 = readFile('app.json');
 
 // === A. 版本号与配置稳定性 ===
 // 1. 版本号 v0.21.0
-if (!appJs324.includes('v0.23.0')) {
-  fail('Round 3.24: version not v0.23.0');
+if (!appJs324.includes('v0.24.0')) {
+  fail('Round 3.24: version not v0.24.0');
   round324Ok = false;
 }
 
@@ -4211,7 +4211,7 @@ if (!appJson324.includes('"root": "packages/quiz"') ||
 
 // === B. Storage 数据格式稳定性 ===
 // 4. backup version 保持 v0.21.0
-if (!storage324.includes("version: 'v0.23.0'")) {
+if (!storage324.includes("version: 'v0.24.0'")) {
   fail('Round 3.24: storage backup version changed');
   round324Ok = false;
 }
@@ -4806,7 +4806,7 @@ try {
   round330Ok = false;
 }
 
-// B. v0.23.0 跨轮功能共存验证
+// B. v0.24.0 跨轮功能共存验证
 var allJsFiles330 = [];
 ['pages', 'packages', 'utils'].forEach(function(dir) {
   function walk(d) {
@@ -5037,7 +5037,7 @@ if (navBroken331.length > 0) {
   round331Ok = false;
 }
 
-// C. v0.23.0 功能边界测试
+// C. v0.24.0 功能边界测试
 // C1: examBadge 边界（未知考试方向 fallback）
 var quizJs331 = readFile('packages/quiz/pages/quiz/quiz.js');
 var hasDefaultBadge = quizJs331.indexOf('examBadge') >= 0 &&
@@ -5059,7 +5059,7 @@ if (!hasDefaultBadge && !hasProgressGuard) { fail('R3.31: boundary guard missing
 if (!hasAllActions) { fail('R3.31: nextAction coverage incomplete'); round331Ok = false; }
 if (!hasCatFallback) { fail('R3.31: categoryLabel fallback missing'); round331Ok = false; }
 
-// D. v0.23.0 全轮共存完整性
+// D. v0.24.0 全轮共存完整性
 var v022Features = [
   // R3.27
   { file: 'packages/quiz/pages/quiz/quiz.js', checks: ['examBadge', 'progressPercent', 'feedbackTip', 'showFeedbackTip'] },
@@ -5079,7 +5079,7 @@ for (var fi = 0; fi < v022Features.length; fi++) {
     var fc = readFile(v022Features[fi].file);
     for (var ci = 0; ci < v022Features[fi].checks.length; ci++) {
       if (fc.indexOf(v022Features[fi].checks[ci]) < 0) {
-        fail('R3.31: v0.23.0 feature missing in ' + v022Features[fi].file + ': ' + v022Features[fi].checks[ci]);
+        fail('R3.31: v0.24.0 feature missing in ' + v022Features[fi].file + ': ' + v022Features[fi].checks[ci]);
         round331Ok = false;
       }
     }
@@ -7060,7 +7060,7 @@ if (!fileExists(maintenanceDocPath383)) {
 } else {
   var maintenanceDoc383 = readFile(maintenanceDocPath383);
   var maintenanceRequired383 = [
-    "v0.23.0",
+    "v0.24.0",
     "本地数据边界",
     "Storage Key 清单",
     "study-tools-mini-favorite-terms-v1",
@@ -7363,8 +7363,8 @@ if (jsonOutput391 !== null) {
     // Success scenario invariants
     if (parsed391.ok === true) {
       var checksContent391 = readFile("tools/run_miniprogram_checks.js");
-      var totalMatch391 = checksContent391.match(/var TOTAL_CHECKS = (\d+)/);
-      var expectedTotal391 = totalMatch391 ? Number(totalMatch391[1]) : parsed391.totalChecks;
+      var leafMatch391 = checksContent391.match(/var LEAF_TOTAL_CHECKS = (\d+)/);
+      var expectedTotal391 = leafMatch391 ? Number(leafMatch391[1]) : parsed391.totalChecks;
       check391(parsed391.failedChecks === 0,
                'R3.91: ok=true but failedChecks=' + parsed391.failedChecks);
       check391(parsed391.passedChecks === parsed391.totalChecks,
@@ -8404,6 +8404,7 @@ if (allExportsExist) pass('Flashcard: all 7 flashcard-export.js exist');
 
 // 5. flashcard-quiz doesn't directly require sibling subpackage loaders
 var quizAdapter = readFile('packages/quiz/data/flashcard_adapter.js');
+var deckSelectFlash = readFile('packages/quiz/pages/flashcard-deck-select/flashcard-deck-select.js');
 var hasCrossPkgRequire = false;
 // Check for patterns like require('../../quiz-sg-1/...') or require('../../quiz-itpass-1/...')
 var crossPkgPattern = /require\(['"]\.\.\/\.\.\/(quiz-(?:sg|itpass)-\d)/;
@@ -8421,8 +8422,14 @@ checkFlashcard(!hasCrossPkgRequire,
 
 // 6. loadDeckAsync uses player navigation (not cross-pkg require)
 checkFlashcard(
-  loadDeckAsyncBody.indexOf('wx.navigateTo') >= 0 && loadDeckAsyncBody.indexOf('playerRoute') >= 0,
-  'Flashcard: loadDeckAsync navigates to player page for data loading'
+  deckSelectFlash.indexOf('wx.loadSubPackage') >= 0 &&
+  deckSelectFlash.indexOf('name: deckInfo.packageName') >= 0 &&
+  deckSelectFlash.indexOf('navigateToPlayer') >= 0 &&
+  deckSelectFlash.indexOf('playerRoute') >= 0 &&
+  quizAdapter.indexOf('FLASHCARD_RUNTIME_BRIDGE_REMOVED') >= 0 &&
+  quizAdapter.indexOf('__flashcard_cache') < 0 &&
+  quizAdapter.indexOf('function pollForCache') < 0,
+  'Flashcard: deck select loads its target package before player navigation'
 );
 
 // 7. manifest has correct structure

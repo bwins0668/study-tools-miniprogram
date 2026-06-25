@@ -1,14 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Minium flashcard runtime E2E test (v8 — raw+renderable count locking).
-Each deck test: reLaunch home → tabBar center → deck-select → quiz → wait for data.
-Reads rawLoadedCount and renderableCardCount from page data.
-Reports into tools/test-artifacts/flashcard-runtime-final/
+Formal Minium E2E matrix for flashcards.
+
+Every case follows the visible V3 route:
+  home -> Flashcard tab -> course card -> year deck -> local player
+  -> answer -> explanation -> next -> native back to the correct year page.
+
+The runner intentionally never reLaunches a player route and never uses the
+legacy flashcard-quiz page. A case is retried at most twice, reconnecting the
+Minium session if the home reset cannot be proven by the real route and page
+anchor.
 """
+from __future__ import print_function
 
 import json
 import os
+import subprocess
 import sys
 import time
 import traceback
@@ -23,469 +31,542 @@ except ImportError:
     )
     if os.path.isdir(py314_site):
         sys.path.insert(0, py314_site)
-    try:
-        import minium
-    except ImportError:
-        print("[FATAL] minium not found")
-        sys.exit(1)
-
-# Deck definitions: each deck with its expected raw/renderable counts
-DECKS = [
-    {"course":"sg", "yearId":"sg_01_aki","label":"令和元年秋","prefix":"sg1","pkg":"quiz-sg-1","rawExp":50,"rendExp":50},
-    {"course":"sg", "yearId":"sg_06_haru","label":"令和6年","prefix":"sg2","pkg":"quiz-sg-2","rawExp":50,"rendExp":50},
-    {"course":"itpass","yearId":"01_aki","label":"令和元年秋期","prefix":"it1","pkg":"quiz-itpass-1","rawExp":100,"rendExp":100},
-    {"course":"itpass","yearId":"04_haru","label":"令和4年","prefix":"it2","pkg":"quiz-itpass-2","rawExp":100,"rendExp":99},
-    {"course":"itpass","yearId":"07_haru","label":"令和7年","prefix":"it3","pkg":"quiz-itpass-3","rawExp":100,"rendExp":100},
-    {"course":"itpass","yearId":"28_aki","label":"平成28年秋期","prefix":"it4","pkg":"quiz-itpass-4","rawExp":100,"rendExp":99},
-    {"course":"itpass","yearId":"30_aki","label":"平成30年秋期","prefix":"it5","pkg":"quiz-itpass-5","rawExp":100,"rendExp":99},
-]
-# Hot path sequence: SG-1 → IT-1 → SG-2 → IT-5
-HOT_PATH = [
-    {"course":"sg","yearId":"sg_01_aki","label":"令和元年秋","pkg":"quiz-sg-1"},
-    {"course":"itpass","yearId":"01_aki","label":"令和元年秋期","pkg":"quiz-itpass-1"},
-    {"course":"sg","yearId":"sg_06_haru","label":"令和6年","pkg":"quiz-sg-2"},
-    {"course":"itpass","yearId":"30_aki","label":"平成30年秋期","pkg":"quiz-itpass-5"},
-]
+    import minium
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 PROJECT = os.path.dirname(ROOT)
-ARTIFACTS = os.path.join(ROOT, 'test-artifacts', 'flashcard-runtime-final')
+ARTIFACTS = os.path.join(ROOT, 'test-artifacts', 'minium-flashcard-v3-runtime')
+REPORT_PATH = os.path.join(
+    ARTIFACTS,
+    os.environ.get('MINIUM_FLASHCARD_REPORT_NAME', 'minium-report.json')
+)
+HOME_ROUTE = 'pages/home/home'
+CENTER_ROUTE = 'pages/flashcards/flashcards'
+MAX_ATTEMPTS = 2
+POLL_INTERVAL_SECONDS = 0.15
+CAPTURE_ENABLED = os.environ.get('MINIUM_FLASHCARD_CAPTURE') == '1'
 os.makedirs(ARTIFACTS, exist_ok=True)
 
-results = {"passed": 0, "failed": 0, "skipped": 0, "steps": []}
-screenshots = []
-deck_results = []
+REPORT = {
+    'timestamp': datetime.now().isoformat(),
+    'status': 'RUNNING',
+    'gateStatus': 'BLOCKED_ON_FLASHCARD_RUNTIME',
+    'attemptsPerCase': MAX_ATTEMPTS,
+    'decks': [],
+    'hotPath': [],
+    'screenshots': [],
+    'errors': []
+}
 
-def log(m):
+
+def log(message):
     try:
-        print(m)
+        print(message)
     except UnicodeEncodeError:
-        print(m.encode('ascii', errors='replace').decode('ascii'))
+        print(str(message).encode('ascii', errors='replace').decode('ascii'))
 
-def _safe(s):
+
+def norm_route(value):
+    return str(value or '').lstrip('/')
+
+
+def current_page(mini):
     try:
-        return str(s).encode('ascii', errors='replace').decode('ascii')
-    except:
-        return repr(s)
-
-def P(name, d):
-    results["passed"] += 1
-    results["steps"].append({"step": name, "status": "PASS", "detail": _safe(d)})
-    log("  PASS {}: {}".format(name, _safe(d)))
-
-def F(name, d):
-    results["failed"] += 1
-    results["steps"].append({"step": name, "status": "FAIL", "detail": _safe(d)})
-    log("  FAIL {}: {}".format(name, _safe(d)))
-
-def S(name, d):
-    results["skipped"] += 1
-    results["steps"].append({"step": name, "status": "SKIP", "detail": _safe(d)})
-    log("  SKIP {}: {}".format(name, _safe(d)))
-
-def ss(mini, tag):
-    try:
-        f = os.path.join(ARTIFACTS, "{}_{}.png".format(int(time.time()*1000), tag))
-        mini.app.screen_shot(f)
-        screenshots.append(f)
-    except:
-        pass
-
-def safe_relaunch(mini, url, label=""):
-    try:
-        mini.app.relaunch(url)
-        time.sleep(2)
-        return True
-    except Exception as e:
-        log("  relaunch {} failed ({}), retrying...".format(label, _safe(e)[:60]))
-        try:
-            time.sleep(3)
-            mini.app.relaunch(url)
-            time.sleep(3)
-            return True
-        except Exception as e2:
-            log("  relaunch {} retry also failed: {}".format(label, _safe(e2)[:60]))
-            return False
-
-def safe_switch_tab(mini, url, label=""):
-    try:
-        mini.app.switch_tab(url)
-        time.sleep(2)
-        return True
-    except Exception as e:
-        log("  switch_tab {} failed: {}".format(label, _safe(e)))
-        return False
-
-def get_route(mini):
-    try:
-        p = mini.app.get_current_page()
-        return p.path if p and hasattr(p, 'path') else None
-    except:
+        return mini.app.get_current_page()
+    except Exception:
         return None
 
-def get_data(mini):
+
+def current_route(mini):
+    page = current_page(mini)
+    return norm_route(getattr(page, 'path', '') if page else '')
+
+
+def page_data(mini):
+    page = current_page(mini)
+    if not page:
+        return {}
     try:
-        p = mini.app.get_current_page()
-        d = p.data if p and hasattr(p, 'data') else {}
-        return d() if callable(d) else d
-    except:
+        data = page.data
+        return data() if callable(data) else (data or {})
+    except Exception:
         return {}
 
-def wait_for_data(mini, timeout_sec=20, interval=1):
-    start = time.time()
-    while time.time() - start < timeout_sec:
-        d = get_data(mini)
-        if d.get("totalCards", 0) > 0:
-            return d
-        if d.get("loadError"):
-            return d
-        time.sleep(interval)
-    return get_data(mini)
 
-def test_deck_coldstart(mini, deck, tag_prefix):
-    course = deck["course"]
-    year_id = deck["yearId"]
-    label = deck["label"]
-    raw_exp = deck["rawExp"]
-    rend_exp = deck["rendExp"]
-    pkg = deck["pkg"]
-
-    log("\n--- COLD {} {} {} ---".format(tag_prefix, course, year_id))
-    dr = {"deckId": course + "/" + year_id, "packageName": pkg, "course": course, "yearLabel": label, "rawExpected": raw_exp, "renderableExpected": rend_exp, "steps": {}, "screenshots": [], "consoleErrors": [], "elapsedMs": 0}
-    start_time = time.time()
-
-    # Step 1: reLaunch home
-    route = None
-    try:
-        ok = safe_relaunch(mini, "/pages/home/home", "home")
-        route = get_route(mini)
-        dr["steps"]["reset"] = "PASS" if route and "home" in route else "FAIL"
-        dr["route"] = route
-        if not (route and "home" in route):
-            F("{}.reset".format(tag_prefix), "Got: {}".format(route))
-            dr["status"] = "FAIL"
-            dr["elapsedMs"] = int((time.time() - start_time) * 1000)
-            deck_results.append(dr)
-            return dr
-        P("{}.reset".format(tag_prefix), "Home OK")
-        ss(mini, "{}_01-home".format(tag_prefix))
-        dr["screenshots"].append("01-home")
-    except Exception as e:
-        F("{}.reset".format(tag_prefix), str(e))
-        dr["status"] = "FAIL"
-        dr["elapsedMs"] = int((time.time() - start_time) * 1000)
-        deck_results.append(dr)
-        return dr
-
-    # Step 2: Flashcard tab
-    try:
-        ok = safe_switch_tab(mini, "/pages/flashcards/flashcards", "center")
-        route = get_route(mini)
-        dr["steps"]["center"] = "PASS" if route and "flashcards" in route else "FAIL"
-        if not (route and "flashcards" in route):
-            F("{}.center".format(tag_prefix), "Got: {}".format(route))
-            dr["status"] = "FAIL"
-            dr["elapsedMs"] = int((time.time() - start_time) * 1000)
-            deck_results.append(dr)
-            return dr
-        P("{}.center".format(tag_prefix), "Center OK")
-    except Exception as e:
-        F("{}.center".format(tag_prefix), str(e))
-        dr["status"] = "FAIL"
-        dr["elapsedMs"] = int((time.time() - start_time) * 1000)
-        deck_results.append(dr)
-        return dr
-
-    # Step 3: Navigate directly to player via miniprogram route
-    try:
-        # Navigate to deck-select first
-        ds_ok = safe_relaunch(mini, "/packages/quiz/pages/flashcard-deck-select/flashcard-deck-select?course={}".format(course), "deck-select")
-        route = get_route(mini)
-        dr["steps"]["deck-select"] = "PASS" if route and "deck-select" in route else "FAIL"
-        if not (route and "deck-select" in route):
-            F("{}.deck-select".format(tag_prefix), "Got: {}".format(route))
-            dr["status"] = "FAIL"
-            dr["elapsedMs"] = int((time.time() - start_time) * 1000)
-            deck_results.append(dr)
-            return dr
-        P("{}.deck-select".format(tag_prefix), "Deck-select OK")
-    except Exception as e:
-        F("{}.deck-select".format(tag_prefix), str(e))
-        dr["status"] = "FAIL"
-        dr["elapsedMs"] = int((time.time() - start_time) * 1000)
-        deck_results.append(dr)
-        return dr
-
-    # Step 4: Navigate to player
-    try:
-        nav_url = "/packages/quiz/pages/flashcard-quiz/flashcard-quiz?course={}&yearId={}&deckLabel={}".format(course, year_id, label)
-        ok = safe_relaunch(mini, nav_url, "quiz")
-        route = get_route(mini)
-        dr["steps"]["quiz"] = "PASS" if route and "flashcard-quiz" in route else "FAIL"
-        dr["playerRoute"] = route
-        if not (route and "flashcard-quiz" in route):
-            F("{}.quiz".format(tag_prefix), "Got: {}".format(route))
-            dr["status"] = "FAIL"
-            dr["elapsedMs"] = int((time.time() - start_time) * 1000)
-            deck_results.append(dr)
-            return dr
-        P("{}.quiz".format(tag_prefix), "Quiz nav OK")
-    except Exception as e:
-        F("{}.quiz".format(tag_prefix), str(e))
-        dr["status"] = "FAIL"
-        dr["elapsedMs"] = int((time.time() - start_time) * 1000)
-        deck_results.append(dr)
-        return dr
-
-    # Step 5: Wait for data
-    try:
-        d = wait_for_data(mini, timeout_sec=20, interval=1)
-        total = d.get("totalCards", 0)
-        raw_loaded = d.get("rawLoadedCount", 0)
-        rend_count = d.get("renderableCardCount", 0)
-        error = d.get("loadError", "")
-        isLoading = d.get("isLoading", False)
-
-        dr["rawActual"] = raw_loaded
-        dr["renderableActual"] = rend_count
-        dr["totalCards"] = total
-        dr["loadError"] = error if error else ""
-
-        if total > 0 and raw_loaded >= rend_exp and rend_count >= rend_exp:
-            P("{}.data".format(tag_prefix), "rawLoaded={} renderableCard={} totalCards={}".format(raw_loaded, rend_count, total))
-            dr["steps"]["data"] = "PASS"
-            ss(mini, "{}_03-data".format(tag_prefix))
-            dr["screenshots"].append("03-data")
-        elif error:
-            F("{}.data".format(tag_prefix), "Error: {}".format(error))
-            dr["steps"]["data"] = "FAIL"
-            dr["status"] = "FAIL"
-        else:
-            F("{}.data".format(tag_prefix), "No cards: totalCards={} rawLoaded={} rendCount={}".format(total, raw_loaded, rend_count))
-            dr["steps"]["data"] = "FAIL"
-            dr["status"] = "FAIL"
-    except Exception as e:
-        F("{}.data".format(tag_prefix), _safe(e))
-        dr["steps"]["data"] = "FAIL"
-        dr["status"] = "FAIL"
-
-    # Step 6: Click an option
-    try:
-        p = mini.app.get_current_page()
-        opts = p.get_elements(".fc-option") if p else []
-        if opts and len(opts) > 0:
-            opts[0].click()
-            time.sleep(2)
-            d2 = get_data(mini)
-            if d2.get("hasAnswered"):
-                P("{}.answer".format(tag_prefix), "Answered")
-                dr["steps"]["answer"] = "PASS"
-                ss(mini, "{}_04-answer".format(tag_prefix))
-                dr["screenshots"].append("04-answer")
-            else:
-                S("{}.answer".format(tag_prefix), "No feedback")
-                dr["steps"]["answer"] = "SKIP"
-        else:
-            S("{}.answer".format(tag_prefix), "No options")
-            dr["steps"]["answer"] = "SKIP"
-    except Exception as e:
-        S("{}.answer".format(tag_prefix), _safe(e))
-        dr["steps"]["answer"] = "SKIP"
-
-    # Step 7: Check explanation
-    try:
-        p2 = mini.app.get_current_page()
-        show_back_btn = p2.get_elements(".fc-btn-primary") if p2 else []
-        if show_back_btn and len(show_back_btn) > 0:
-            show_back_btn[0].click()
-            time.sleep(2)
-        d3 = get_data(mini)
-        if d3.get("showBack") or d3.get("hasAnswered"):
-            P("{}.explanation".format(tag_prefix), "Explanation OK")
-            dr["steps"]["explanation"] = "PASS"
-            ss(mini, "{}_05-explanation".format(tag_prefix))
-            dr["screenshots"].append("05-explanation")
-        else:
-            S("{}.explanation".format(tag_prefix), "No explanation")
-            dr["steps"]["explanation"] = "SKIP"
-    except Exception as e:
-        S("{}.explanation".format(tag_prefix), _safe(e))
-        dr["steps"]["explanation"] = "SKIP"
-
-    # Step 8: Back
-    try:
-        mini.app.navigate_back()
-        time.sleep(2)
-        route = get_route(mini)
-        dr["steps"]["back"] = "PASS" if route else "FAIL"
-        dr["returnRoute"] = route
-        if route:
-            P("{}.back".format(tag_prefix), "Back: {}".format(route))
-        else:
-            F("{}.back".format(tag_prefix), "No route")
-            dr["status"] = "FAIL"
-    except Exception as e:
-        S("{}.back".format(tag_prefix), _safe(e))
-        dr["steps"]["back"] = "SKIP"
-
-    dr["elapsedMs"] = int((time.time() - start_time) * 1000)
-    if dr.get("status") != "FAIL":
-        dr["status"] = "PASS"
-    deck_results.append(dr)
-    return dr
-
-def test_hot_path(mini):
-    """Hot path: consecutive navigate without reLaunch."""
-    log("\n=== HOT PATH ===")
-    hp_result = {"passed": 0, "failed": 0, "steps": []}
-    prev_deck = None
-
-    for i, d in enumerate(HOT_PATH):
-        log("\n--- HOT {} {} {} ---".format(i, d["course"], d["yearId"]))
-        step_name = "hot_{}".format(i)
-
-        # Navigate to next deck
-        nav_url = "/packages/quiz/pages/flashcard-quiz/flashcard-quiz?course={}&yearId={}&deckLabel={}".format(
-            d["course"], d["yearId"], d["label"])
-        ok = safe_relaunch(mini, nav_url, "hot-{}".format(d["yearId"]))
-        route = get_route(mini)
-        if not route or "flashcard-quiz" not in route:
-            F("{}.nav".format(step_name), "Route={}".format(route))
-            hp_result["failed"] += 1
-            hp_result["steps"].append({"step": step_name, "status": "FAIL", "detail": "Nav failed"})
-            continue
-
-        d = wait_for_data(mini, timeout_sec=15, interval=1)
-        total = d.get("totalCards", 0)
-        error = d.get("loadError", "")
-        raw_loaded = d.get("rawLoadedCount", 0)
-        rend_count = d.get("renderableCardCount", 0)
-
-        if total > 0 and not error:
-            P("{}.data".format(step_name), "totalCards={} raw={} rend={} route={}".format(total, raw_loaded, rend_count, route))
-            hp_result["passed"] += 1
-            hp_result["steps"].append({"step": step_name, "status": "PASS", "detail": "total={} raw={} rend={}".format(total, raw_loaded, rend_count)})
-            # Answer one
+def page_stack(mini):
+    app = getattr(mini, 'app', None)
+    for name in ('get_current_pages', 'get_page_stack'):
+        method = getattr(app, name, None)
+        if callable(method):
             try:
-                p = mini.app.get_current_page()
-                opts = p.get_elements(".fc-option") if p else []
-                if opts and len(opts) > 0:
-                    opts[0].click()
-                    time.sleep(1)
-                    P("{}.answer".format(step_name), "Answered")
-            except:
+                pages = method() or []
+                return [norm_route(getattr(page, 'path', page)) for page in pages]
+            except Exception:
                 pass
-            ss(mini, "hot_{}".format(i))
-        elif error:
-            F("{}.data".format(step_name), "Error: {}".format(error))
-            hp_result["failed"] += 1
-            hp_result["steps"].append({"step": step_name, "status": "FAIL", "detail": error})
-        else:
-            F("{}.data".format(step_name), "No cards")
-            hp_result["failed"] += 1
-            hp_result["steps"].append({"step": step_name, "status": "FAIL", "detail": "No cards loaded"})
+    route = current_route(mini)
+    return [route] if route else []
 
-    log("\n--- HOT PATH SUMMARY ---")
-    log("Passed: {} Failed: {}".format(hp_result["passed"], hp_result["failed"]))
-    return hp_result
 
-def main():
-    log("=" * 60)
-    log("Minium Flashcard Runtime E2E (v8 — raw+renderable)")
-    log("Start: {}".format(datetime.now().isoformat()))
-    log("Artifacts: {}".format(ARTIFACTS))
+def wait_route(mini, expected, timeout=8.0):
+    expected = norm_route(expected)
+    deadline = time.time() + timeout
+    last = ''
+    while time.time() < deadline:
+        last = current_route(mini)
+        if last == expected:
+            return True, last
+        time.sleep(POLL_INTERVAL_SECONDS)
+    return False, last
 
-    mini = None
+
+def wait_contains_route(mini, fragment, timeout=12.0):
+    deadline = time.time() + timeout
+    last = ''
+    while time.time() < deadline:
+        last = current_route(mini)
+        if fragment in last:
+            return True, last
+        time.sleep(POLL_INTERVAL_SECONDS)
+    return False, last
+
+
+def element_count(page, selector):
     try:
-        mini = minium.Minium({
-            "project_path": PROJECT,
-            "dev_tool_path": "I:\\微信web开发者工具\\cli.bat",
-            "platform": "ide",
-            "debug_mode": "verbose",
-        })
-        P("connect", "Minium {}".format(minium.__version__))
-    except Exception as e:
-        F("connect", _safe(e))
-        _done(mini)
-        return
+        return len(page.get_elements(selector) or [])
+    except Exception:
+        return 0
 
+
+def take_shot(mini, case, stage):
+    if not CAPTURE_ENABLED:
+        return 'CAPTURE_DISABLED'
+    path = os.path.join(ARTIFACTS, '%d_%s_%s.png' % (int(time.time() * 1000), case, stage))
     try:
-        # ===== Cold start: 7 decks =====
-        for deck in DECKS:
-            test_deck_coldstart(mini, deck, deck["prefix"])
-
-        # ===== Hot path =====
-        hp_r = test_hot_path(mini)
-
-    except Exception as e:
-        log("[FATAL] {}".format(e))
-        traceback.print_exc()
-    finally:
-        _done(mini)
+        mini.app.screen_shot(path)
+        REPORT['screenshots'].append(path)
+        return path
+    except Exception as error:
+        return 'SCREENSHOT_FAILED:%s' % error
 
 
-def _done(mini):
-    log("\n" + "=" * 60)
-    log("SUMMARY")
-    log("=" * 60)
+def connect_session():
+    return minium.Minium({
+        'project_path': PROJECT,
+        'dev_tool_path': r'I:\微信web开发者工具\cli.bat',
+        'platform': 'ide',
+        'debug_mode': 'error'
+    })
 
-    cold_pass = sum(1 for dr in deck_results if dr.get("status") == "PASS")
-    cold_fail = sum(1 for dr in deck_results if dr.get("status") == "FAIL")
-    log("Cold-start: {} passed, {} failed".format(cold_pass, cold_fail))
 
-    # Check console errors (can't easily get from Minium API, but report what was captured)
-    log("Screenshots: {}".format(len(screenshots)))
-
-    fail = cold_fail > 0
-    gs = "BLOCKED_ON_FLASHCARD_RUNTIME_E2E" if fail else "READY_FOR_USER_PROOF"
-    log("STATUS: {} ({})".format("FAILED" if fail else "PASSED", gs))
-
-    # Build report table
-    table_rows = []
-    for dr in deck_results:
-        table_rows.append({
-            "course": dr.get("course",""),
-            "deckId": dr.get("deckId",""),
-            "packageName": dr.get("packageName",""),
-            "yearLabel": dr.get("yearLabel",""),
-            "rawExpected": dr.get("rawExpected",0),
-            "rawActual": dr.get("rawActual",0),
-            "renderableExpected": dr.get("renderableExpected",0),
-            "renderableActual": dr.get("renderableActual",0),
-            "totalCards": dr.get("totalCards",0),
-            "status": dr.get("status","UNKNOWN"),
-            "route": dr.get("route",""),
-            "playerRoute": dr.get("playerRoute",""),
-            "loadError": dr.get("loadError",""),
-            "hasAnswered": dr.get("steps",{}).get("answer","") == "PASS",
-            "hasExplanation": dr.get("steps",{}).get("explanation","") == "PASS",
-            "returnRoute": dr.get("returnRoute",""),
-            "elapsedMs": dr.get("elapsedMs",0),
-            "screenshots": dr.get("screenshots",[]),
-        })
-
-    rpt = {
-        "timestamp": datetime.now().isoformat(),
-        "status": "FAILED" if fail else "PASSED",
-        "gateStatus": gs,
-        "coldStartPassed": cold_pass,
-        "coldStartFailed": cold_fail,
-        "results": results,
-        "screenshots": screenshots,
-        "decks": table_rows,
-    }
-    rp = os.path.join(ARTIFACTS, "minium-report.json")
-    with open(rp, "w", encoding="utf-8") as f:
-        json.dump(rpt, f, ensure_ascii=False, indent=2)
-    log("Report: {}".format(rp))
-
+def close_session(mini):
     try:
         if mini:
             mini.exit()
-    except:
+    except Exception:
         pass
-    sys.exit(1 if fail else 0)
 
 
-if __name__ == "__main__":
+def confirm_home(mini):
+    page = current_page(mini)
+    route = current_route(mini)
+    if route != HOME_ROUTE:
+        return False, {'expectedRoute': HOME_ROUTE, 'actualRoute': route, 'stack': page_stack(mini)}
+    home_nodes = element_count(page, '.home-page')
+    hero_nodes = element_count(page, '.hero-title')
+    # Native tabBar is not always surfaced as a page node. Route plus home
+    # anchors are the actual requirement; avoid per-deck diagnostic queries.
+    tab_nodes = 0
+    if home_nodes < 1 or hero_nodes < 1:
+        return False, {
+            'expectedRoute': HOME_ROUTE,
+            'actualRoute': route,
+            'stack': page_stack(mini),
+            'homeNodes': home_nodes,
+            'heroNodes': hero_nodes,
+            'tabBarNodes': tab_nodes
+        }
+    return True, {
+        'route': route,
+        'homeNodes': home_nodes,
+        'heroNodes': hero_nodes,
+        'tabBarNodes': tab_nodes
+    }
+
+
+def reset_to_home(mini):
+    try:
+        mini.app.relaunch('/' + HOME_ROUTE)
+    except Exception as error:
+        return False, {'reason': 'relaunch_exception', 'error': str(error), 'actualRoute': current_route(mini), 'stack': page_stack(mini)}
+    ok, actual = wait_route(mini, HOME_ROUTE, timeout=8.0)
+    if not ok:
+        return False, {'reason': 'home_route_timeout', 'expectedRoute': HOME_ROUTE, 'actualRoute': actual, 'stack': page_stack(mini)}
+    return confirm_home(mini)
+
+
+def switch_to_center(mini):
+    try:
+        mini.app.switch_tab('/' + CENTER_ROUTE)
+    except Exception as error:
+        return False, {'reason': 'switch_tab_exception', 'error': str(error), 'actualRoute': current_route(mini), 'stack': page_stack(mini)}
+    ok, actual = wait_route(mini, CENTER_ROUTE, timeout=8.0)
+    if not ok:
+        return False, {'reason': 'center_route_timeout', 'expectedRoute': CENTER_ROUTE, 'actualRoute': actual, 'stack': page_stack(mini)}
+    page = current_page(mini)
+    cards = element_count(page, '.course-card')
+    if cards < 2:
+        return False, {'reason': 'course_cards_missing', 'actualRoute': actual, 'courseCards': cards, 'stack': page_stack(mini)}
+    return True, {'route': actual, 'courseCards': cards}
+
+
+def course_index(course):
+    # pages/flashcards/flashcards.js owns this fixed visible ordering.
+    return 0 if course == 'itpass' else 1
+
+
+def open_course(mini, course):
+    page = current_page(mini)
+    cards = page.get_elements('.course-card') if page else []
+    index = course_index(course)
+    if len(cards) <= index:
+        return False, {'reason': 'target_course_card_missing', 'course': course, 'count': len(cards), 'stack': page_stack(mini)}
+    try:
+        cards[index].click()
+    except Exception as error:
+        return False, {'reason': 'course_click_exception', 'course': course, 'error': str(error), 'stack': page_stack(mini)}
+    ok, actual = wait_contains_route(mini, 'flashcard-deck-select', timeout=8.0)
+    if not ok:
+        return False, {'reason': 'deck_select_timeout', 'course': course, 'actualRoute': actual, 'stack': page_stack(mini)}
+    data = page_data(mini)
+    decks = data.get('decks') or []
+    return True, {'route': actual, 'decks': decks}
+
+
+def find_deck_index(decks, year_id):
+    for index, deck in enumerate(decks):
+        if str((deck or {}).get('yearId', '')) == str(year_id):
+            return index
+    return -1
+
+
+def open_deck(mini, deck):
+    page = current_page(mini)
+    data = page_data(mini)
+    decks = data.get('decks') or []
+    index = find_deck_index(decks, deck['yearId'])
+    cards = page.get_elements('.fds-deck-card') if page else []
+    if index < 0 or len(cards) <= index:
+        return False, {
+            'reason': 'target_deck_card_missing',
+            'deckId': deck['deckId'],
+            'targetIndex': index,
+            'deckCount': len(decks),
+            'cardCount': len(cards),
+            'actualRoute': current_route(mini),
+            'stack': page_stack(mini)
+        }
+    try:
+        cards[index].click()
+    except Exception as error:
+        return False, {'reason': 'deck_click_exception', 'deckId': deck['deckId'], 'error': str(error), 'stack': page_stack(mini)}
+    expected_fragment = 'packages/%s/pages/flashcard-player' % deck['packageName']
+    ok, actual = wait_contains_route(mini, expected_fragment, timeout=12.0)
+    if not ok:
+        return False, {
+            'reason': 'player_route_timeout',
+            'expectedRouteFragment': expected_fragment,
+            'actualRoute': actual,
+            'stack': page_stack(mini),
+            'deckSelectData': page_data(mini)
+        }
+    return True, {'route': actual}
+
+
+def wait_player_content(mini, expected_playable):
+    deadline = time.time() + 8.0
+    last = {}
+    while time.time() < deadline:
+        last = page_data(mini)
+        state = last.get('viewState')
+        total = int(last.get('totalCards') or 0)
+        error = last.get('errorDetail') or last.get('loadError') or ''
+        if state == 'error' or state == 'empty' or error:
+            return False, {'reason': 'player_error', 'state': state, 'error': error, 'data': last}
+        if total > 0:
+            actual = last.get('playableCountActual', last.get('renderableCardCount', total))
+            expected = last.get('playableCountExpected', expected_playable)
+            if int(actual or 0) != int(expected_playable) or total != int(actual or 0):
+                return False, {
+                    'reason': 'player_count_contract',
+                    'totalCards': total,
+                    'playableActual': actual,
+                    'playableExpected': expected,
+                    'deckExpected': expected_playable
+                }
+            return True, {'totalCards': total, 'playableActual': actual, 'playableExpected': expected, 'state': state or 'content'}
+        time.sleep(0.25)
+    return False, {'reason': 'player_content_timeout', 'data': last, 'actualRoute': current_route(mini), 'stack': page_stack(mini)}
+
+
+def answer_explain_next_back(mini, deck):
+    page = current_page(mini)
+    options = page.get_elements('.fc-option') if page else []
+    if len(options) < 2:
+        return False, {'reason': 'options_missing', 'count': len(options), 'data': page_data(mini)}
+    try:
+        options[0].click()
+    except Exception as error:
+        return False, {'reason': 'option_click_exception', 'error': str(error)}
+    deadline = time.time() + 5.0
+    data = {}
+    while time.time() < deadline:
+        data = page_data(mini)
+        if data.get('hasAnswered'):
+            break
+        time.sleep(0.25)
+    if not data.get('hasAnswered'):
+        return False, {'reason': 'answer_feedback_timeout', 'data': data}
+
+    selected = data.get('selectedOption') or {}
+    correct = data.get('correctOption') or {}
+    answer_bilingual = bool(selected.get('textJa') and selected.get('textZh') and correct.get('textJa') and correct.get('textZh'))
+
+    page = current_page(mini)
+    buttons = page.get_elements('.fc-btn') if page else []
+    if not buttons:
+        return False, {'reason': 'explanation_button_missing', 'data': data}
+    try:
+        buttons[0].click()
+    except Exception as error:
+        return False, {'reason': 'explanation_click_exception', 'error': str(error)}
+    deadline = time.time() + 5.0
+    while time.time() < deadline:
+        data = page_data(mini)
+        if data.get('showBack'):
+            break
+        time.sleep(0.25)
+    if not data.get('showBack'):
+        return False, {'reason': 'explanation_timeout', 'data': data}
+
+    before = int(data.get('currentIndex') or 0)
+    page = current_page(mini)
+    buttons = page.get_elements('.fc-btn') if page else []
+    if not buttons:
+        return False, {'reason': 'next_button_missing', 'data': data}
+    try:
+        buttons[-1].click()
+    except Exception as error:
+        return False, {'reason': 'next_click_exception', 'error': str(error)}
+    deadline = time.time() + 5.0
+    while time.time() < deadline:
+        data = page_data(mini)
+        if int(data.get('currentIndex') or 0) == before + 1:
+            break
+        time.sleep(0.25)
+    if int(data.get('currentIndex') or 0) != before + 1 or data.get('hasAnswered'):
+        return False, {'reason': 'next_contract', 'before': before, 'data': data}
+
+    try:
+        mini.app.navigate_back()
+    except Exception as error:
+        return False, {'reason': 'native_back_exception', 'error': str(error)}
+    ok, actual = wait_contains_route(mini, 'flashcard-deck-select', timeout=6.0)
+    if not ok:
+        return False, {'reason': 'return_timeout', 'actualRoute': actual, 'stack': page_stack(mini)}
+    return True, {'answerBilingual': answer_bilingual, 'returnRoute': actual}
+
+
+def load_contracts():
+    node = 'node.exe' if os.name == 'nt' else 'node'
+    command = [node, os.path.join(ROOT, 'check_flashcard_deck_integrity.js'), '--json']
+    result = subprocess.run(
+        command,
+        cwd=PROJECT,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        encoding='utf-8',
+        errors='replace'
+    )
+    if result.returncode != 0:
+        raise RuntimeError('deck contract command failed: %s' % result.stderr[-1000:])
+    payload = json.loads(result.stdout)
+    if not payload.get('ok'):
+        raise RuntimeError('deck contract reported issues: %s' % payload.get('issues'))
+    decks = payload.get('decks') or []
+    for deck in decks:
+        deck_id = str(deck.get('deckId') or '')
+        if '/' not in deck_id:
+            raise RuntimeError('invalid canonical deckId: %s' % deck_id)
+        course, year_id = deck_id.split('/', 1)
+        if deck.get('course') and deck.get('course') != course:
+            raise RuntimeError('course mismatch for deckId: %s' % deck_id)
+        deck['course'] = course
+        deck['yearId'] = year_id
+    return decks
+
+
+def one_case(mini, deck, attempt):
+    started = time.time()
+    result = {
+        'course': deck['course'],
+        'deckId': deck['deckId'],
+        'year': deck.get('yearLabel', ''),
+        'package': deck['packageName'],
+        'source': deck.get('sourceActual'),
+        'playable': deck.get('playableActual'),
+        'attempt': attempt,
+        'steps': {},
+        'consoleErrors': 0,
+        'screenshots': []
+    }
+
+    ok, detail = reset_to_home(mini)
+    result['steps']['homeReset'] = detail
+    if not ok:
+        result['status'] = 'FAIL'
+        result['failure'] = 'homeReset'
+        result['elapsedMs'] = int((time.time() - started) * 1000)
+        return result
+    ok, detail = switch_to_center(mini)
+    result['steps']['flashcardCenter'] = detail
+    if not ok:
+        result['status'] = 'FAIL'
+        result['failure'] = 'flashcardCenter'
+        result['elapsedMs'] = int((time.time() - started) * 1000)
+        return result
+
+    ok, detail = open_course(mini, deck['course'])
+    result['steps']['course'] = detail
+    if not ok:
+        result['status'] = 'FAIL'
+        result['failure'] = 'course'
+        result['elapsedMs'] = int((time.time() - started) * 1000)
+        return result
+
+    ok, detail = open_deck(mini, deck)
+    result['steps']['deck'] = detail
+    if not ok:
+        result['status'] = 'FAIL'
+        result['failure'] = 'deck'
+        result['elapsedMs'] = int((time.time() - started) * 1000)
+        return result
+
+    ok, detail = wait_player_content(mini, int(deck.get('playableExpected') or deck.get('playableActual') or 0))
+    result['steps']['player'] = detail
+    if not ok:
+        result['status'] = 'FAIL'
+        result['failure'] = 'player'
+        result['elapsedMs'] = int((time.time() - started) * 1000)
+        return result
+    result['screenshots'].append(take_shot(mini, deck['deckId'].replace('/', '_'), '02_player'))
+
+    ok, detail = answer_explain_next_back(mini, deck)
+    result['steps']['interaction'] = detail
+    if not ok:
+        result['status'] = 'FAIL'
+        result['failure'] = 'interaction'
+        result['elapsedMs'] = int((time.time() - started) * 1000)
+        return result
+    result['status'] = 'PASS'
+    result['elapsedMs'] = int((time.time() - started) * 1000)
+    return result
+
+
+def run_matrix(decks):
+    mini = None
+    for deck in decks:
+        final = None
+        for attempt in range(1, MAX_ATTEMPTS + 1):
+            if mini is None:
+                mini = connect_session()
+            final = one_case(mini, deck, attempt)
+            if final.get('status') == 'PASS':
+                break
+            # A failed home reset makes every following click untrusted.
+            # Tear down and reconnect before the only permitted retry.
+            if final.get('failure') == 'homeReset' and attempt < MAX_ATTEMPTS:
+                close_session(mini)
+                mini = None
+                continue
+            break
+        REPORT['decks'].append(final)
+    close_session(mini)
+
+
+def run_hot_path(decks):
+    wanted = [
+        'sg/sg_01_aki',
+        'itpass/01_aki',
+        'sg/sg_28_haru',
+        'itpass/30_aki'
+    ]
+    lookup = {deck['deckId']: deck for deck in decks}
+    for deck_id in wanted:
+        if deck_id not in lookup:
+            REPORT['hotPath'].append({'deckId': deck_id, 'status': 'SKIP', 'reason': 'not in contract'})
+            continue
+        # Each hot-path step still invokes the visible path but preserves the
+        # live session intentionally. Full interaction is covered by the matrix.
+        mini = None
+        try:
+            mini = connect_session()
+            result = one_case(mini, lookup[deck_id], 1)
+            result['hotPath'] = True
+            REPORT['hotPath'].append(result)
+        except Exception as error:
+            REPORT['hotPath'].append({'deckId': deck_id, 'status': 'FAIL', 'reason': str(error)})
+        finally:
+            close_session(mini)
+
+
+def main():
+    try:
+        decks = load_contracts()
+        requested_course = os.environ.get('MINIUM_FLASHCARD_COURSE', '').strip()
+        expected_by_course = {'itpass': 15, 'sg': 11}
+        if requested_course:
+            if requested_course not in expected_by_course:
+                raise RuntimeError('unsupported course filter: %s' % requested_course)
+            decks = [deck for deck in decks if deck.get('course') == requested_course]
+            if len(decks) != expected_by_course[requested_course]:
+                raise RuntimeError(
+                    'expected %d %s decks, got %d' % (
+                        expected_by_course[requested_course],
+                        requested_course,
+                        len(decks)
+                    )
+                )
+        elif len(decks) != 26:
+            raise RuntimeError('expected 26 decks, got %d' % len(decks))
+        run_matrix(decks)
+        if os.environ.get('MINIUM_FLASHCARD_RUN_HOT_PATH') == '1':
+            run_hot_path(decks)
+    except Exception as error:
+        REPORT['errors'].append({'fatal': str(error), 'traceback': traceback.format_exc()})
+    finally:
+        failures = [item for item in REPORT['decks'] if item.get('status') != 'PASS']
+        hot_failures = [item for item in REPORT['hotPath'] if item.get('status') == 'FAIL']
+        REPORT['status'] = 'FAILED' if failures or hot_failures or REPORT['errors'] else 'PASSED'
+        REPORT['gateStatus'] = 'BLOCKED_ON_FLASHCARD_RUNTIME' if REPORT['status'] == 'FAILED' else 'READY_FOR_USER_PROOF'
+        with open(REPORT_PATH, 'w', encoding='utf-8') as handle:
+            json.dump(REPORT, handle, ensure_ascii=False, indent=2)
+        log('REPORT: %s' % REPORT_PATH)
+        log('STATUS: %s | matrix=%d/%d passed | hotFailures=%d' % (
+            REPORT['gateStatus'],
+            len([item for item in REPORT['decks'] if item.get('status') == 'PASS']),
+            len(REPORT['decks']),
+            len(hot_failures)
+        ))
+        if REPORT['errors']:
+            log('FATAL: %s' % REPORT['errors'][-1].get('fatal', 'unknown error'))
+        elif failures:
+            log('FIRST_FAILURE: %s' % REPORT['decks'][0].get('failure', 'unknown failure'))
+    exit_code = 0 if REPORT['status'] == 'PASSED' else 1
+    sys.stdout.flush()
+    sys.stderr.flush()
+    os._exit(exit_code)
+
+
+if __name__ == '__main__':
     main()

@@ -1,413 +1,340 @@
 #!/usr/bin/env node
-/**
- * tools/e2e_flashcard_runtime_test.js
- * E2E test for flashcard loading via WeChat DevTools automation.
- *
- * Strategy: ALL wx.* calls go through mp.evaluate() (fire-and-forget).
- * callWxMethod is UNRELIABLE — sometimes times out, sometimes drops connection.
- * evaluate() runs JS in the page context and is more stable.
- *
- * Usage: node tools/e2e_flashcard_runtime_test.js
- */
-
 'use strict';
 
-const path = require('path');
+/*
+ * Real WeChat DevTools E2E for the V2 flashcard formal path.
+ * It deliberately uses the visible course/deck controls rather than the legacy
+ * flashcard-quiz route. Artifacts are ignored by Git.
+ */
+
 const fs = require('fs');
-
+const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
-const ARTIFACTS = path.join(ROOT, 'tools', 'test-artifacts', 'flashcard-runtime');
+const ARTIFACTS = path.join(ROOT, 'tools', 'test-artifacts', 'flashcard-v2-runtime');
 const REPORT_FILE = path.join(ARTIFACTS, 'e2e-report.json');
+const SENTINELS = [
+  { course: 'sg', title: 'SG', packageRoot: 'packages/quiz-sg-1', expectedMin: 1 },
+  { course: 'itpass', title: 'IT Passport', packageRoot: 'packages/quiz-itpass-1', expectedMin: 1 }
+];
 
-if (!fs.existsSync(ARTIFACTS)) {
-  fs.mkdirSync(ARTIFACTS, { recursive: true });
-}
-
-const results = { passed: 0, failed: 0, skipped: 0, steps: [] };
-const screenshotPaths = [];
-const errors = [];
-
-function log(msg) { console.log(msg); }
-function fail(step, detail) {
-  results.failed++; results.steps.push({ step, status: 'FAIL', detail: String(detail || 'unknown') });
-  errors.push(String(detail || '')); log('  FAIL ' + step + ': ' + String(detail || ''));
-}
-function pass(step, detail) {
-  results.passed++; results.steps.push({ step, status: 'PASS', detail });
-  log('  PASS ' + step + ': ' + detail);
-}
-function skip(step, detail) {
-  results.skipped++; results.steps.push({ step, status: 'SKIPPED', detail: String(detail || '') });
-  log('  SKIP ' + step + ': ' + String(detail || ''));
-}
+if (!fs.existsSync(ARTIFACTS)) fs.mkdirSync(ARTIFACTS, { recursive: true });
 
 let automator;
-try { automator = require('miniprogram-automator'); } catch (e) {
-  console.error('[FATAL] miniprogram-automator not found');
+try {
+  automator = require('miniprogram-automator');
+} catch (error) {
+  console.error('[FATAL] miniprogram-automator not found: ' + error.message);
   process.exit(1);
 }
 
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+const report = {
+  timestamp: new Date().toISOString(),
+  status: 'RUNNING',
+  gateStatus: 'BLOCKED_ON_FLASHCARD_RUNTIME',
+  passed: 0,
+  failed: 0,
+  skipped: 0,
+  steps: [],
+  screenshots: [],
+  consoleErrors: []
+};
 
-/**
- * Reliable navigation: tries callWxMethod first, then evaluate, with retry.
- * Tab operations (switchTab, reLaunch) use callWxMethod.
- * Subpackage navigation uses evaluate(wx.redirectTo).
- */
-async function ensurePage(mp, url, timeoutMs) {
-  timeoutMs = timeoutMs || 10000;
-  var isTab = url.indexOf('/pages/home/') >= 0 || url.indexOf('/pages/flashcards/') >= 0 ||
-              url.indexOf('/pages/mistakes/') >= 0 || url.indexOf('/pages/profile/') >= 0 ||
-              url.indexOf('/pages/glossary/') >= 0;
+function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+function withTimeout(promise, timeoutMs, label) {
+  return Promise.race([
+    promise,
+    new Promise(function (_, reject) {
+      setTimeout(function () { reject(new Error((label || 'operation') + ' timeout')); }, timeoutMs);
+    })
+  ]);
+}
+function record(status, step, detail) {
+  report[status.toLowerCase()]++;
+  report.steps.push({ status, step, detail: String(detail || '') });
+  console.log('[' + status + '] ' + step + (detail ? ': ' + detail : ''));
+}
+function pass(step, detail) { record('PASSED', step, detail); }
+function fail(step, detail) { record('FAILED', step, detail); }
+function skip(step, detail) { record('SKIPPED', step, detail); }
 
-  if (isTab) {
-    // Tab page: use callWxMethod
-    var method = url.indexOf('/pages/home/') >= 0 ? 'reLaunch' : 'switchTab';
-    try {
-      await Promise.race([
-        mp.callWxMethod(method, { url: url }),
-        new Promise((_, rej) => setTimeout(() => rej(new Error('TIMEOUT')), timeoutMs))
-      ]);
-      return true;
-    } catch (e) {
-      log('  ensurePage callWxMethod(' + method + '): ' + e.message);
+async function currentPath(mp) {
+  const page = await mp.currentPage();
+  return page && page.path ? page.path : '';
+}
+
+async function waitForPath(mp, fragment, timeoutMs) {
+  const deadline = Date.now() + timeoutMs;
+  let page = null;
+  while (Date.now() < deadline) {
+    page = await mp.currentPage();
+    if (page && String(page.path || '').indexOf(fragment) >= 0) return page;
+    await sleep(500);
+  }
+  return page || await mp.currentPage();
+}
+
+async function waitForData(page, key, predicate, timeoutMs) {
+  const deadline = Date.now() + timeoutMs;
+  let value;
+  while (Date.now() < deadline) {
+    try { value = await page.data(key); } catch (_) { value = undefined; }
+    if (predicate(value)) return { ok: true, value };
+    await sleep(400);
+  }
+  return { ok: false, value };
+}
+
+async function takeScreenshot(mp, name) {
+  if (process.env.FLASHCARD_E2E_CAPTURE !== '1') {
+    skip('screenshot-' + name, 'disabled for runtime stability; Minium runner captures evidence');
+    return;
+  }
+  try {
+    const blob = await withTimeout(mp.screenshot(), 8000, 'screenshot');
+    const file = path.join(ARTIFACTS, Date.now() + '_' + name.replace(/[^a-zA-Z0-9_-]/g, '_') + '.png');
+    fs.writeFileSync(file, blob, 'base64');
+    report.screenshots.push(file);
+    console.log('[SHOT] ' + file);
+  } catch (error) {
+    skip('screenshot-' + name, error.message || error);
+  }
+}
+
+async function switchToFlashcardCenter(mp) {
+  await mp.evaluate(() => new Promise(resolve => wx.reLaunch({ url: '/pages/home/home', complete: resolve })));
+  let page = await waitForPath(mp, 'pages/home/home', 8000);
+  if (String(page && page.path || '').indexOf('pages/home/home') < 0) {
+    await mp.callWxMethod('reLaunch', { url: '/pages/home/home' });
+    page = await waitForPath(mp, 'pages/home/home', 8000);
+  }
+  if (String(page && page.path || '').indexOf('pages/home/home') < 0) {
+    throw new Error('did not reach home before flashcard center: ' + (page && page.path || 'none'));
+  }
+  await mp.evaluate(() => new Promise(resolve => wx.switchTab({ url: '/pages/flashcards/flashcards', complete: resolve })));
+  page = await waitForPath(mp, 'pages/flashcards/flashcards', 8000);
+  if (String(page && page.path || '').indexOf('pages/flashcards/flashcards') < 0) {
+    await mp.callWxMethod('switchTab', { url: '/pages/flashcards/flashcards' });
+    page = await waitForPath(mp, 'pages/flashcards/flashcards', 8000);
+  }
+  if (String(page && page.path || '').indexOf('pages/flashcards/flashcards') < 0) {
+    throw new Error('did not reach flashcard center: ' + (page && page.path || 'none'));
+  }
+  return page;
+}
+
+async function tapCourse(page, course) {
+  const cards = await page.$$('.course-card');
+  if (!cards || !cards.length) throw new Error('course cards not found');
+  const matcher = course === 'sg' ? /(^|\s)SG(\s|$)|SG 闪卡/ : /IT Passport|IT\s*闪卡/;
+  for (let i = 0; i < cards.length; i++) {
+    const text = await cards[i].text();
+    if (matcher.test(String(text || ''))) {
+      await cards[i].tap();
+      return;
     }
-    // Fallback: evaluate
-    try {
-      await Promise.race([
-        mp.evaluate((m, u) => { return new Promise(r => { wx[m]({ url: u, complete: () => r() }); }); }, method, url),
-        new Promise((_, rej) => setTimeout(() => rej(new Error('TIMEOUT')), timeoutMs))
-      ]);
+  }
+  throw new Error('course card not found for ' + course);
+}
+
+async function tapFirstDeck(mp) {
+  const page = await mp.currentPage();
+  const decks = await page[String.fromCharCode(36, 36)]('.fds-deck-card');
+  if (!decks || !decks.length) throw new Error('deck cards not found');
+  const label = String(await decks[0].text() || '');
+  await decks[0].tap();
+  await sleep(300);
+  return { page: page, label: label };
+}
+
+async function tapButtonContaining(page, fragment) {
+  const buttons = await page.$$('.fc-btn');
+  for (let i = 0; i < (buttons || []).length; i++) {
+    const text = String(await buttons[i].text() || '');
+    if (text.indexOf(fragment) >= 0) {
+      await buttons[i].tap();
       return true;
-    } catch (e) {
-      log('  ensurePage evaluate(' + method + '): ' + e.message);
-    }
-  } else {
-    // Subpackage page: use evaluate(wx.redirectTo)
-    try {
-      await Promise.race([
-        mp.evaluate((u) => { return new Promise(r => { wx.redirectTo({ url: u, complete: () => r() }); }); }, url),
-        new Promise((_, rej) => setTimeout(() => rej(new Error('TIMEOUT')), timeoutMs))
-      ]);
-      return true;
-    } catch (e) {
-      log('  ensurePage evaluate(redirectTo): ' + e.message);
-    }
-    // Fallback: navigateTo via evaluate
-    try {
-      await Promise.race([
-        mp.evaluate((u) => { return new Promise(r => { wx.navigateTo({ url: u, complete: () => r() }); }); }, url),
-        new Promise((_, rej) => setTimeout(() => rej(new Error('TIMEOUT')), timeoutMs))
-      ]);
-      return true;
-    } catch (e) {
-      log('  ensurePage evaluate(navigateTo): ' + e.message);
     }
   }
   return false;
 }
 
-async function takeScreenshot(desc, mp) {
+async function runSentinel(mp, sentinel) {
+  const prefix = sentinel.course;
+  let page;
   try {
-    var ts = Date.now();
-    var safeName = desc.replace(/[^a-zA-Z0-9\u4e00-\u9fff_-]/g, '_').substring(0, 60);
-    var filePath = path.join(ARTIFACTS, ts + '_' + safeName + '.png');
-    var data = await Promise.race([
-      mp.screenshot(),
-      new Promise((_, reject) => setTimeout(reject, 10000))
-    ]);
-    if (data) {
-      fs.writeFileSync(filePath, data, 'base64');
-      screenshotPaths.push(filePath);
-      log('  [screenshot] ' + filePath);
+    page = await switchToFlashcardCenter(mp);
+    pass(prefix + '-center', 'flashcard center visible');
+    await takeScreenshot(mp, prefix + '_01_center');
+  } catch (error) {
+    fail(prefix + '-center', error.message || error);
+    return;
+  }
+
+  try {
+    await tapCourse(page, sentinel.course);
+    page = await waitForPath(mp, 'flashcard-deck-select', 8000);
+    if (String(page && page.path || '').indexOf('flashcard-deck-select') < 0) throw new Error('deck select path=' + (page && page.path || 'none'));
+    const decks = await waitForData(page, 'decks', value => Array.isArray(value) && value.length > 0, 6000);
+    if (!decks.ok) throw new Error('deck data unavailable');
+    pass(prefix + '-deck-select', 'visible decks=' + decks.value.length);
+    await takeScreenshot(mp, prefix + '_02_deck_select');
+  } catch (error) {
+    fail(prefix + '-deck-select', error.message || error);
+    return;
+  }
+
+  try {
+    var loaded = false;
+    var loadDetail = '';
+    for (var attempt = 1; attempt <= 2 && !loaded; attempt++) {
+      if (attempt > 1) {
+        // Retry the visible route from a fresh tab state; never direct-jump to player.
+        page = await switchToFlashcardCenter(mp);
+        await tapCourse(page, sentinel.course);
+        page = await waitForPath(mp, 'flashcard-deck-select', 8000);
+        var retryDecks = await waitForData(page, 'decks', value => Array.isArray(value) && value.length > 0, 6000);
+        if (!retryDecks.ok) throw new Error('retry deck data unavailable');
+      }
+
+      await tapFirstDeck(mp);
+      var candidate = await waitForPath(mp, sentinel.packageRoot + '/pages/flashcard-player', 12000);
+      if (String(candidate && candidate.path || '').indexOf('flashcard-player') < 0) {
+        var inFlight = '';
+        var navigationDiagnostic = '';
+        try {
+          inFlight = await candidate.data('isNavigating');
+          navigationDiagnostic = await candidate.data('lastNavigationDiagnostic');
+        } catch (_) {}
+        loadDetail = 'attempt=' + attempt + ' route=' + (candidate && candidate.path || 'none') + ' isNavigating=' + inFlight + ' diagnostic=' + (navigationDiagnostic || 'none');
+        continue;
+      }
+
+      var state = await waitForData(candidate, 'viewState', value => value === 'content' || value === 'error' || value === 'empty', 12000);
+      if (!state.ok) {
+        loadDetail = 'attempt=' + attempt + ' player state timeout=' + state.value;
+        continue;
+      }
+      if (state.value !== 'content') {
+        var errorDetail = await candidate.data('errorDetail');
+        loadDetail = 'attempt=' + attempt + ' player state=' + state.value + ' detail=' + (errorDetail || '');
+        continue;
+      }
+
+      var total = await candidate.data('totalCards');
+      var actual = await candidate.data('playableCountActual');
+      var expected = await candidate.data('playableCountExpected');
+      if (!(total >= sentinel.expectedMin) || actual !== expected || total !== actual) {
+        loadDetail = 'attempt=' + attempt + ' count contract total=' + total + ' actual=' + actual + ' expected=' + expected;
+        continue;
+      }
+      page = candidate;
+      loaded = true;
+      pass(prefix + '-player-load', 'attempt=' + attempt + ' total=' + total + ' expected=' + expected);
+      await takeScreenshot(mp, prefix + '_03_player');
     }
-  } catch (e) {
-    log('  [screenshot skipped] ' + desc);
+    if (!loaded) throw new Error('player did not load after 2 visible-route attempts: ' + loadDetail);
+  } catch (error) {
+    fail(prefix + '-player-load', error.message || error);
+    return;
+  }
+
+  try {
+    const options = await page.$$('.fc-option');
+    if (!options || !options.length) throw new Error('answer options not visible');
+    await options[0].tap();
+    const answered = await waitForData(page, 'hasAnswered', value => value === true, 5000);
+    if (!answered.ok) throw new Error('answer state did not appear');
+    const selected = await page.data('selectedOption');
+    const correct = await page.data('correctOption');
+    if (!selected || !correct || !selected.textJa || !correct.textJa) throw new Error('selected/correct option text missing');
+    pass(prefix + '-answer', 'answer feedback includes selected + correct option');
+    await takeScreenshot(mp, prefix + '_04_answer');
+  } catch (error) {
+    fail(prefix + '-answer', error.message || error);
+    return;
+  }
+
+  try {
+    const clicked = await tapButtonContaining(page, '解析');
+    if (!clicked) throw new Error('explanation button not found');
+    const shown = await waitForData(page, 'showBack', value => value === true, 5000);
+    if (!shown.ok) throw new Error('explanation state did not appear');
+    pass(prefix + '-explanation', 'back side displayed');
+    await takeScreenshot(mp, prefix + '_05_explanation');
+  } catch (error) {
+    fail(prefix + '-explanation', error.message || error);
+    return;
+  }
+
+  try {
+    const before = await page.data('currentIndex');
+    const clicked = await tapButtonContaining(page, '下一题');
+    if (!clicked) throw new Error('next button not found');
+    const advanced = await waitForData(page, 'currentIndex', value => value === before + 1, 5000);
+    if (!advanced.ok) throw new Error('next card did not advance from ' + before + ' to ' + advanced.value);
+    const answeredAfter = await page.data('hasAnswered');
+    if (answeredAfter) throw new Error('answer state was not reset on next card');
+    pass(prefix + '-next', 'advanced to card ' + (before + 2));
+  } catch (error) {
+    fail(prefix + '-next', error.message || error);
+  }
+
+  try {
+    // Use the player's own back handler first. This exercises the same code as
+    // the visible return action and is less flaky than a bare automation call.
+    await mp.evaluate(() => {
+      var pages = getCurrentPages();
+      var current = pages[pages.length - 1];
+      if (current && typeof current.goBack === 'function') current.goBack();
+      else wx.navigateBack({ delta: 1 });
+    });
+    page = await waitForPath(mp, 'flashcard-deck-select', 6000);
+    if (String(page && page.path || '').indexOf('flashcard-deck-select') < 0) {
+      await mp.evaluate(() => new Promise(resolve => wx.navigateBack({ delta: 1, complete: resolve })));
+      page = await waitForPath(mp, 'flashcard-deck-select', 6000);
+    }
+    if (String(page && page.path || '').indexOf('flashcard-deck-select') < 0) throw new Error('return path=' + (page && page.path || 'none'));
+    pass(prefix + '-return', 'returned to deck select');
+  } catch (error) {
+    fail(prefix + '-return', error.message || error);
   }
 }
 
-async function getPageDataVal(page, key) {
-  try { return await page.data(key); } catch (e) { return undefined; }
+async function main() {
+  let mp;
+  try {
+    mp = await automator.connect({ wsEndpoint: 'ws://127.0.0.1:9421', timeout: 15000 });
+    pass('connect', 'DevTools automation connected');
+    mp.on('console', msg => {
+      if (msg && (msg.type === 'error' || msg.type === 'warn')) {
+        report.consoleErrors.push({ type: msg.type, text: String(msg.text || msg.message || '').slice(0, 500) });
+      }
+    });
+  } catch (error) {
+    fail('connect', error.message || error);
+    finish(1);
+    return;
+  }
+
+  for (const sentinel of SENTINELS) await runSentinel(mp, sentinel);
+
+  const fatalConsole = report.consoleErrors.filter(item => /cannot find module|module.*not found|past_exam_bank|flashcard.*(error|fail)/i.test(item.text));
+  if (fatalConsole.length) fail('console', 'runtime flashcard/cross-package errors=' + fatalConsole.length);
+  else pass('console', 'no captured cross-package flashcard errors');
+
+  finish(report.failed ? 1 : 0);
 }
 
-function makeReportAndExit(mp, exitCode) {
-  var overallFail = results.failed > 0;
-  var status = overallFail ? 'FAILED' : 'PASSED';
-  var gateStatus = overallFail ? 'BLOCKED_ON_DEVTOOLS_AUTOMATION' : 'READY_FOR_USER_PROOF';
-
-  log('');
-  log('='.repeat(60));
-  log('E2E TEST SUMMARY');
-  log('='.repeat(60));
-  log('Passed: ' + results.passed + ' | Failed: ' + results.failed + ' | Skipped: ' + results.skipped);
-  log('STATUS: ' + status + ' (' + gateStatus + ')');
-
-  fs.writeFileSync(REPORT_FILE, JSON.stringify({
-    timestamp: new Date().toISOString(),
-    status, gateStatus, results, screenshots: screenshotPaths, errors
-  }, null, 2));
-  log('Report: ' + REPORT_FILE);
+function finish(exitCode) {
+  report.status = report.failed ? 'FAILED' : 'PASSED';
+  report.gateStatus = report.failed ? 'BLOCKED_ON_FLASHCARD_RUNTIME' : 'READY_FOR_USER_PROOF';
+  fs.writeFileSync(REPORT_FILE, JSON.stringify(report, null, 2));
+  console.log('REPORT: ' + REPORT_FILE);
+  console.log('STATUS: ' + report.gateStatus + ' | passed=' + report.passed + ' failed=' + report.failed + ' skipped=' + report.skipped);
   process.exit(exitCode);
 }
 
-async function waitForPage(mp, pathFragment, timeoutMs) {
-  var start = Date.now();
-  while (Date.now() - start < timeoutMs) {
-    await sleep(1000);
-    var page = await mp.currentPage();
-    var p = page ? page.path : '';
-    if (p.indexOf(pathFragment) >= 0) return page;
-  }
-  return await mp.currentPage();
-}
-
-async function waitForData(mp, key, expectValue, timeoutMs) {
-  var start = Date.now();
-  while (Date.now() - start < timeoutMs) {
-    await sleep(1500);
-    var page = await mp.currentPage();
-    var val = await getPageDataVal(page, key);
-    var loadErr = await getPageDataVal(page, 'loadError');
-    if (loadErr) {
-      log('  loadError detected: ' + loadErr);
-      return { page, val, loadErr };
-    }
-    if (expectValue !== undefined) {
-      if (val === expectValue) return { page, val };
-    } else {
-      if (val !== undefined && val !== null) return { page, val };
-    }
-  }
-  var page = await mp.currentPage();
-  return { page, val: await getPageDataVal(page, key) };
-}
-
-async function run() {
-  log('='.repeat(60));
-  log('Flashcard Runtime E2E Test');
-  log('='.repeat(60));
-  log('Start: ' + new Date().toISOString());
-
-  // ---- Connect ----
-  log('\n[1] Connecting...');
-  var mp = null;
-  var consoleErrors = [];
-  for (var attempt = 1; attempt <= 5; attempt++) {
-    try {
-      mp = await automator.connect({ wsEndpoint: 'ws://127.0.0.1:9421', timeout: 15000 });
-      log('  Connected (attempt ' + attempt + ')');
-      // Capture console errors throughout the test
-      mp.on('console', function(msg) {
-        if (msg && (msg.type === 'error' || msg.type === 'warn')) {
-          var text = msg.text || msg.message || '';
-          if (text.length > 0) {
-            consoleErrors.push({ type: msg.type, text: text.substring(0, 500) });
-          }
-        }
-      });
-      break;
-    } catch (e) {
-      if (attempt < 5) { log('  Retry...'); await sleep(3000); }
-    }
-  }
-  if (!mp) { fail('connect', 'Cannot connect'); makeReportAndExit(null, 1); return; }
-  pass('connect', 'Connected');
-
-  // ---- Reset: navigate to flashcards ----
-  log('\n[2] Reset + Flashcard center...');
-  await ensurePage(mp, '/pages/flashcards/flashcards');
-  await sleep(2000);
-  var page = await mp.currentPage();
-  var flashcardsOk = page && page.path && page.path.indexOf('flashcards') >= 0;
-  if (flashcardsOk) {
-    pass('flashcards-nav', 'On flashcards tab');
-  } else {
-    // Fallback: try reLaunch to home, then switchTab
-    await ensurePage(mp, '/pages/home/home');
-    await sleep(2000);
-    await ensurePage(mp, '/pages/flashcards/flashcards');
-    await sleep(2000);
-    page = await mp.currentPage();
-    flashcardsOk = page && page.path && page.path.indexOf('flashcards') >= 0;
-    if (flashcardsOk) pass('flashcards-nav', 'On flashcards tab (after reLaunch)');
-    else fail('flashcards-nav', 'Cannot reach flashcards: ' + (page ? page.path : 'none'));
-  }
-
-  // ---- Check course entries ----
-  try {
-    page = await mp.currentPage();
-    var courseCards = await page.$$('.course-card');
-    var texts = [];
-    for (var i = 0; courseCards && i < courseCards.length; i++) {
-      try { texts.push(await courseCards[i].text() || ''); } catch (e) {}
-    }
-    var allText = texts.join(' ');
-    log('  Cards: "' + allText.substring(0, 200) + '"');
-    if (allText.indexOf('SG') >= 0 && allText.indexOf('IT') >= 0) {
-      pass('course-entries', 'SG + IT Passport visible');
-    } else {
-      skip('course-entries', 'Could not verify entries');
-    }
-  } catch (e) { skip('course-entries', e.message || e); }
-
-  // ---- SG: navigate to deck-select ----
-  log('\n[3] SG deck selection...');
-  await ensurePage(mp, '/packages/quiz/pages/flashcard-deck-select/flashcard-deck-select?course=sg');
-  page = await waitForPage(mp, 'deck-select', 8000);
-  var sgDeckPath = page ? page.path : '';
-  log('  Page: ' + sgDeckPath);
-  if (sgDeckPath.indexOf('deck-select') >= 0) {
-    pass('sg-deck-select', 'SG deck-select loaded');
-  } else {
-    fail('sg-deck-select', 'Expected deck-select, got: ' + sgDeckPath);
-  }
-
-  // ---- SG: read deck data ----
-  log('\n[4] SG year deck...');
-  var sgLoaded = false;
-  var sgQuizPath = '';
-  try {
-    page = await mp.currentPage();
-    var decks = await getPageDataVal(page, 'decks');
-    if (!decks || decks.length === 0) {
-      fail('sg-deck-load', 'No decks found');
-    } else {
-      var first = decks[0];
-      log('  First deck: ' + (first.label || first.yearId) + ' (' + first.count + ' questions)');
-      var navUrl = '/packages/quiz/pages/flashcard-quiz/flashcard-quiz?course=sg' +
-        '&yearId=' + encodeURIComponent(first.yearId) +
-        '&deckLabel=' + encodeURIComponent(first.label || first.yearId);
-
-      // Fire-and-forget navigate (redirectTo works via evaluate)
-      await ensurePage(mp, navUrl);
-
-      // Poll for quiz page
-      page = await waitForPage(mp, 'flashcard-quiz', 15000);
-      sgQuizPath = page ? page.path : '';
-      log('  After nav: ' + sgQuizPath);
-
-      if (sgQuizPath.indexOf('flashcard-quiz') >= 0) {
-        // Wait for loading to complete
-        var loadResult = await waitForData(mp, 'isLoading', false, 15000);
-        page = loadResult.page;
-        var total = await getPageDataVal(page, 'totalCards');
-        log('  totalCards: ' + total);
-        sgLoaded = total > 0;
-        if (sgLoaded) { pass('sg-deck-load', 'SG loaded (' + total + ' cards)'); }
-        else { fail('sg-deck-load', 'SG loaded but no cards'); }
-      } else {
-        fail('sg-deck-load', 'Not on flashcard-quiz: ' + sgQuizPath);
-      }
-    }
-  } catch (e) { fail('sg-deck-load', e.message || e); }
-
-  // ---- SG: answer a question ----
-  log('\n[5] SG answer...');
-  if (sgLoaded) {
-    try {
-      page = await mp.currentPage();
-      var opts = await page.$$('.fc-option');
-      if (opts && opts.length > 0) {
-        log('  Options: ' + opts.length);
-        await opts[0].tap();
-        await sleep(2000);
-        var fb = await page.$$('.fc-feedback');
-        if (fb && fb.length > 0) { pass('sg-answer', 'Feedback visible'); }
-        else { skip('sg-answer', 'Tapped but no feedback'); }
-      } else { skip('sg-answer', 'No options'); }
-    } catch (e) { skip('sg-answer', e.message || e); }
-  } else { skip('sg-answer', 'Not loaded'); }
-
-  // ---- SG: explanation ----
-  log('\n[6] SG explanation...');
-  if (sgLoaded) {
-    try {
-      page = await mp.currentPage();
-      var btns = await page.$$('.fc-btn');
-      var clicked = false;
-      for (var bi = 0; btns && bi < btns.length; bi++) {
-        var t = (await btns[bi].text()) || '';
-        if (t.indexOf('解析') >= 0 || t.indexOf('説明') >= 0) {
-          await btns[bi].tap(); clicked = true; break;
-        }
-      }
-      await sleep(1500);
-      if (clicked) {
-        var sb = await getPageDataVal(page, 'showBack');
-        if (sb) { pass('sg-explanation', 'Explanation shown'); }
-        else { skip('sg-explanation', 'Tapped but not verified'); }
-      } else { skip('sg-explanation', 'No explanation btn'); }
-    } catch (e) { skip('sg-explanation', e.message || e); }
-  } else { skip('sg-explanation', 'Not loaded'); }
-
-  // ---- IT Passport ----
-  log('\n[8] IT Passport...');
-  var itLoaded = false;
-  try {
-    // Reset via switchTab (tab ops work via callWxMethod)
-    await ensurePage(mp, '/pages/flashcards/flashcards');
-    await sleep(2000);
-
-    // Navigate to IT deck-select
-    await ensurePage(mp, '/packages/quiz/pages/flashcard-deck-select/flashcard-deck-select?course=itpass');
-    page = await waitForPage(mp, 'deck-select', 8000);
-    var itDeckPath = page ? page.path : '';
-    log('  IT page: ' + itDeckPath);
-
-    if (itDeckPath.indexOf('deck-select') < 0) {
-      fail('it-deck-load', 'Cannot reach IT deck-select');
-    } else {
-      var itDecks = await getPageDataVal(page, 'decks');
-      if (itDecks && itDecks.length > 0) {
-        var itFirst = itDecks[0];
-        log('  First IT deck: ' + (itFirst.label || itFirst.yearId) + ' (' + itFirst.count + ' questions)');
-        var itUrl = '/packages/quiz/pages/flashcard-quiz/flashcard-quiz?course=itpass' +
-          '&yearId=' + encodeURIComponent(itFirst.yearId) +
-          '&deckLabel=' + encodeURIComponent(itFirst.label || itFirst.yearId);
-
-        await ensurePage(mp, itUrl);
-
-        page = await waitForPage(mp, 'flashcard-quiz', 15000);
-        if (page && page.path.indexOf('flashcard-quiz') >= 0) {
-          var itLoadResult = await waitForData(mp, 'isLoading', false, 15000);
-          page = itLoadResult.page;
-          var itTotal = await getPageDataVal(page, 'totalCards');
-          itLoaded = itTotal > 0;
-          if (itLoaded) { pass('it-deck-load', 'IT loaded (' + itTotal + ' cards)'); }
-          else { fail('it-deck-load', 'IT loaded but no cards'); }
-        } else {
-          fail('it-deck-load', 'Not on flashcard-quiz');
-        }
-      } else { fail('it-deck-load', 'No IT decks'); }
-    }
-  } catch (e) { fail('it-deck-load', e.message || e); }
-
-  // ---- Console check ----
-  log('\nConsole check...');
-  try {
-    await sleep(500);
-    var crossPkg = consoleErrors.filter(c => (c.text || '').indexOf('not defined') >= 0 || (c.text || '').indexOf('module') >= 0);
-    var flashcardErrors = consoleErrors.filter(c => (c.text || '').indexOf('flashcard') >= 0 || (c.text || '').indexOf('FLASHCARD') >= 0);
-    log('  Total errors/warns: ' + consoleErrors.length);
-    log('  Cross-pkg: ' + crossPkg.length + ', flashcard-related: ' + flashcardErrors.length);
-    if (crossPkg.length > 0) {
-      fail('console', 'Cross-pkg errors: ' + crossPkg.length);
-      for (var ci = 0; ci < Math.min(crossPkg.length, 5); ci++) {
-        log('    ' + crossPkg[ci].type + ': ' + crossPkg[ci].text.substring(0, 200));
-      }
-    } else { pass('console', 'No cross-pkg errors'); }
-    if (flashcardErrors.length > 0) {
-      log('  Flashcard-related messages:');
-      for (var fi = 0; fi < Math.min(flashcardErrors.length, 10); fi++) {
-        log('    ' + flashcardErrors[fi].type + ': ' + flashcardErrors[fi].text.substring(0, 200));
-      }
-    }
-  } catch (e) { skip('console', e.message || e); }
-
-  makeReportAndExit(mp, results.failed > 0 ? 1 : 0);
-}
-
-run().catch(function (e) {
-  console.error('[FATAL] Unhandled:', e && e.message || e);
-  process.exit(1);
+main().catch(error => {
+  fail('unhandled', error && error.stack || error);
+  finish(1);
 });
