@@ -17,7 +17,7 @@ var PACKAGE_MAP = {
 
 /**
  * Get deck info for a given course+yearId.
- * Returns { packageKey, packageName, packageRoot, yearId, label, count, bridgeRoute } or null.
+ * Returns { packageKey, packageName, packageRoot, yearId, label, count, playerRoute } or null.
  */
 function getDeckInfo(course, yearId) {
   var years = pastExamIndex.getYears(course);
@@ -38,7 +38,6 @@ function getDeckInfo(course, yearId) {
         yearId: y.yearId,
         label: y.label || y.year,
         count: y.count || 0,
-        bridgeRoute: '/' + pkg.packageRoot + '/pages/flashcard-bridge/flashcard-bridge',
         playerRoute: '/' + pkg.packageRoot + '/pages/flashcard-player/flashcard-player'
       };
     }

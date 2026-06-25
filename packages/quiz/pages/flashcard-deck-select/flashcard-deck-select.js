@@ -2,6 +2,14 @@
 
 var manifest = require('../../data/flashcard-manifest');
 
+function buildPlayerUrl(deckInfo, deckId, course) {
+  var backPath = '/packages/quiz/pages/flashcard-deck-select/flashcard-deck-select?course=' + encodeURIComponent(course);
+  return deckInfo.playerRoute +
+    '?deckId=' + encodeURIComponent(deckId) +
+    '&backCourse=' + encodeURIComponent(course) +
+    '&backPath=' + encodeURIComponent(backPath);
+}
+
 Page({
   data: {
     course: '',
@@ -9,21 +17,12 @@ Page({
     courseDesc: '',
     decks: [],
     isLoading: true,
-    loadError: ''
+    loadError: '',
+    isNavigating: false,
+    lastNavigationDiagnostic: ''
   },
 
   onLoad: function (options) {
-    if (typeof wx.loadSubPackage !== 'function') {
-      console.warn('[flashcard-deck-select] wx.loadSubPackage missing — installing shim (preloadRule handles actual loading)');
-      wx.loadSubPackage = function (opts) {
-        var name = opts && opts.name ? opts.name : '';
-        console.log('[flashcard-deck-select] loadSubPackage shim called for:', name);
-        setTimeout(function () {
-          if (opts && typeof opts.success === 'function') opts.success();
-        }, 50);
-      };
-    }
-
     var course = options.course || options.exam || 'itpass';
     var courseLabel = course === 'sg' ? 'SG 闪卡' : 'IT Passport 闪卡';
     var courseDesc = course === 'sg' ? '情報セキュリティマネジメント' : 'IT パスポート試験';
@@ -33,97 +32,110 @@ Page({
       courseLabel: courseLabel,
       courseDesc: courseDesc
     });
-
     this.loadDecks(course);
   },
 
-  loadDecks: function (course) {
-    var self = this;
-    console.log('[flashcard-deck-select] loading decks for', course);
-
+  loadDecks: function (courseOrEvent) {
+    var course = typeof courseOrEvent === 'string'
+      ? courseOrEvent
+      : ((courseOrEvent && courseOrEvent.currentTarget && courseOrEvent.currentTarget.dataset && courseOrEvent.currentTarget.dataset.course) || this.data.course);
+    this.setData({ isLoading: true, loadError: '' });
     try {
       var decks = manifest.getDecksForCourse(course);
-      console.log('[flashcard-deck-select] found', decks.length, 'decks');
-
       if (!decks || decks.length === 0) {
-        self.setData({
-          isLoading: false,
-          loadError: '暂无可用牌组'
-        });
+        this.setData({ isLoading: false, loadError: '暂无可用牌组' });
         return;
       }
-
-      self.setData({
-        decks: decks,
-        isLoading: false,
-        loadError: ''
-      });
-    } catch (e) {
-      console.error('[flashcard-deck-select] error:', e);
-      self.setData({
-        isLoading: false,
-        loadError: '加载牌组列表失败: ' + (e.message || '未知错误')
-      });
+      this.setData({ decks: decks, isLoading: false, loadError: '' });
+    } catch (error) {
+      console.error('[flashcard-deck-select] loadDecks failed:', error);
+      this.setData({ isLoading: false, loadError: '加载牌组列表失败：' + (error.message || '未知错误') });
     }
   },
 
-  selectDeck: function (e) {
-    try {
-      this.setData({ _lastTap: Date.now() });
+  selectDeck: function (event) {
+    if (this.data.isNavigating) return;
 
-      var dataset = (e && e.currentTarget && e.currentTarget.dataset) || {};
-      var yearId = dataset.yearId;
-      var label = dataset.label || yearId || '年度模拟';
-      var course = this.data.course;
+    var dataset = (event && event.currentTarget && event.currentTarget.dataset) || {};
+    var course = this.data.course;
+    var yearId = dataset.yearId;
+    if (!course || !yearId) {
+      wx.showToast({ title: '牌组参数缺失', icon: 'none' });
+      return;
+    }
 
-      console.log('[deck-nav:selectDeck] course=' + course + ' yearId=' + yearId + ' label=' + label);
+    var deckInfo = manifest.getDeckInfo(course, yearId);
+    if (!deckInfo || !deckInfo.playerRoute || !deckInfo.packageName) {
+      console.error('[flashcard-deck-select] manifest lookup failed:', { course: course, yearId: yearId, deckInfo: deckInfo });
+      wx.showToast({ title: '找不到牌组入口', icon: 'none' });
+      return;
+    }
 
-      if (!course) {
-        wx.showToast({ title: '课程信息缺失', icon: 'none' });
-        return;
-      }
+    var deckId = course + '/' + yearId;
+    var playerUrl = buildPlayerUrl(deckInfo, deckId, course);
+    var self = this;
+    this.setData({
+      isNavigating: true,
+      lastNavigationDiagnostic: 'start deck=' + deckId + ' package=' + deckInfo.packageName + ' mode=loadSubPackage'
+    });
+    wx.showLoading({ title: '加载牌组…', mask: true });
 
-      if (!yearId) {
-        wx.showToast({ title: '牌组信息缺失', icon: 'none' });
-        return;
-      }
+    function finish(diagnostic) {
+      wx.hideLoading();
+      self.setData({ isNavigating: false, lastNavigationDiagnostic: diagnostic || self.data.lastNavigationDiagnostic });
+    }
 
-      var deckInfo = manifest.getDeckInfo(course, yearId);
-      if (!deckInfo) {
-        console.error('[deck-nav] getDeckInfo failed for', course, yearId);
-        wx.showToast({ title: '找不到牌组信息', icon: 'none' });
-        return;
-      }
-
-      var deckId = course + '/' + yearId;
-      var backPath = '/packages/quiz/pages/flashcard-deck-select/flashcard-deck-select?course=' + encodeURIComponent(course);
-      var playerUrl = deckInfo.playerRoute + '?deckId=' + encodeURIComponent(deckId) + '&backCourse=' + encodeURIComponent(course) + '&backPath=' + encodeURIComponent(backPath);
-
-      console.log('[deck-nav] navigating to player:', playerUrl);
-
-      wx.showLoading({ title: '加载牌组...' });
-      wx.loadSubPackage({
-        name: deckInfo.packageName,
+    function navigateToPlayer() {
+      self.setData({ lastNavigationDiagnostic: 'navigate start deck=' + deckId + ' package=' + deckInfo.packageName });
+      wx.navigateTo({
+        url: playerUrl,
         success: function () {
-          wx.hideLoading();
-          wx.navigateTo({
-            url: playerUrl,
-            fail: function (err) {
-              console.error('[deck-nav] navigate to player failed:', err);
-              wx.showToast({ title: '闪卡启动失败', icon: 'none' });
-            }
-          });
+          finish('navigate success deck=' + deckId + ' package=' + deckInfo.packageName);
         },
-        fail: function (err) {
-          wx.hideLoading();
-          console.error('[deck-nav] loadSubPackage failed:', deckInfo.packageName, err);
-          wx.showToast({ title: '牌组加载失败', icon: 'none' });
+        fail: function (error) {
+          finish('navigate fail deck=' + deckId + ' package=' + deckInfo.packageName + ' err=' + (error && error.errMsg || 'unknown'));
+          console.error('[flashcard-deck-select] player navigation failed:', {
+            error: error,
+            course: course,
+            yearId: yearId,
+            deckId: deckId,
+            packageName: deckInfo.packageName,
+            playerRoute: deckInfo.playerRoute
+          });
+          wx.showToast({ title: '闪卡启动失败，请重试', icon: 'none' });
         }
       });
-    } catch (ex) {
-      console.error('[deck-nav:exception]', ex && ex.message, ex && ex.stack);
-      this.setData({ _error: ex && ex.message });
     }
+
+    // Production WeChat always uses the real subpackage API. The DevTools
+    // automation runtime can omit that API even though direct navigation loads
+    // the declared target package itself; it receives no injected loader or
+    // synthetic success callback.
+    if (typeof wx.loadSubPackage !== 'function') {
+      self.setData({ lastNavigationDiagnostic: 'subpackage api unavailable; direct route in automation deck=' + deckId + ' package=' + deckInfo.packageName });
+      navigateToPlayer();
+      return;
+    }
+
+    wx.loadSubPackage({
+      name: deckInfo.packageName,
+      success: function () {
+        self.setData({ lastNavigationDiagnostic: 'subpackage success deck=' + deckId + ' package=' + deckInfo.packageName });
+        navigateToPlayer();
+      },
+      fail: function (error) {
+        finish('subpackage fail deck=' + deckId + ' package=' + deckInfo.packageName + ' err=' + (error && error.errMsg || 'unknown'));
+        console.error('[flashcard-deck-select] loadSubPackage failed:', {
+          error: error,
+          course: course,
+          yearId: yearId,
+          deckId: deckId,
+          packageName: deckInfo.packageName,
+          playerRoute: deckInfo.playerRoute
+        });
+        wx.showToast({ title: '牌组资源加载失败，请重试', icon: 'none' });
+      }
+    });
   },
 
   goBack: function () {

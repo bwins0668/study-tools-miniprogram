@@ -1,11 +1,8 @@
 // packages/quiz/data/flashcard_adapter.js
-// v3: Async subpackage loading via wx.loadSubPackage + App global data bridge.
-// NO cross-subpackage require — data is registered by each subpackage's flashcard-export.js
-// onto getApp().globalData.__flashcard_cache after wx.loadSubPackage + bridge-page visit.
+// Shared card normalization and local progress helpers only.
+// Runtime navigation is package-local; this module has no data-subpackage bridge.
 'use strict';
 
-var pastExamIndex = require('./past_exam_bank/index');
-var enrichment = require('./flashcard-enrichment/index');
 var manifest = require('./flashcard-manifest');
 
 var FLASHCARD_STATUS_KEY = 'flashcard_progress_v1';
@@ -224,228 +221,16 @@ function dedupeCards(cards) {
   });
 }
 
-/**
- * Load raw questions from a single subpackage's cached data.
- * Cross-subpackage require is NOT used — data must be pre-registered on
- * getApp().globalData.__flashcard_cache[packageKey] by the subpackage's
- * flashcard-export.js (triggered via bridge page after wx.loadSubPackage).
- */
-function getCachedQuestions(packageKey) {
-  try {
-    var app = getApp();
-    if (!app || !app.globalData || !app.globalData.__flashcard_cache) {
-      return null;
-    }
-    var cache = app.globalData.__flashcard_cache[packageKey];
-    if (!cache || !Array.isArray(cache) || cache.length === 0) {
-      return null;
-    }
-    return cache;
-  } catch (e) {
-    console.error('[flashcard_adapter] getCachedQuestions error:', e);
-    return null;
-  }
+// Legacy bridge / cache loading was removed from runtime. A selected deck is
+// now loaded only by its own subpackage player after deck-select receives a
+// successful wx.loadSubPackage callback. Keeping this API fail-loud prevents
+// future callers from turning an unavailable deck into an empty study session.
+function getCachedQuestions() {
+  return null;
 }
 
-/**
- * Load flashcard deck for a specific course + yearId via subpackage loading.
- * Returns a promise that resolves with { cards, stats } or rejects with error.
- * Uses wx.loadSubPackage → navigate to bridge page → EventChannel → resolve.
- */
-function loadDeckAsync(course, yearId) {
-  return new Promise(function (resolve, reject) {
-    console.log('[flashcard_adapter] loadDeckAsync', { course: course, yearId: yearId });
-
-    var deckInfo = manifest.getDeckInfo(course, yearId);
-    if (!deckInfo) {
-      reject(new Error('找不到牌组信息: ' + course + '/' + yearId));
-      return;
-    }
-
-    console.log('[flashcard_adapter] deck info:', JSON.stringify(deckInfo));
-
-    // Step 0: Check cache
-    var cached = getCachedQuestions(deckInfo.packageKey);
-    if (cached && cached.length > 0) {
-      console.log('[flashcard_adapter] HIT cache:', deckInfo.packageKey, cached.length);
-      processRawQuestions(cached, course, yearId, resolve, reject);
-      return;
-    }
-
-    // Step 1: Load subpackage
-    console.log('[flashcard_adapter] loadSubPackage:', deckInfo.packageName);
-    wx.loadSubPackage({
-      name: deckInfo.packageName,
-      success: function () {
-        console.log('[flashcard_adapter] subpackage loaded:', deckInfo.packageKey);
-
-        // Step 2: Check cache again
-        var early = getCachedQuestions(deckInfo.packageKey);
-        if (early && early.length > 0) {
-          console.log('[flashcard_adapter] cache ready:', early.length);
-          processRawQuestions(early, course, yearId, resolve, reject);
-          return;
-        }
-
-        // Step 3: Try to require flashcard-export directly from this context.
-        // After loadSubPackage, the subpackage's JS is loaded.
-        // Relative path from packages/quiz/data/ → ../../quiz-sg-1/data/flashcard-export
-        var pkgDir = deckInfo.packageRoot.replace('packages/', '');
-        try {
-          require('../../' + pkgDir + '/data/flashcard-export');
-          console.log('[flashcard_adapter] export require OK');
-        } catch (e) {
-          console.log('[flashcard_adapter] export require failed:', e.message);
-        }
-
-        // Step 4: Check cache after direct require
-        var after = getCachedQuestions(deckInfo.packageKey);
-        if (after && after.length > 0) {
-          console.log('[flashcard_adapter] cache after export require:', after.length);
-          processRawQuestions(after, course, yearId, resolve, reject);
-          return;
-        }
-
-        // Step 5: Navigate to player page inside the data subpackage
-        // The player requires its LOCAL flashcard-export.js at module level.
-        console.log('[flashcard_adapter] navigateTo player:', deckInfo.playerRoute);
-        wx.navigateTo({
-          url: deckInfo.playerRoute + '?course=' + encodeURIComponent(course) + '&yearId=' + encodeURIComponent(yearId) + '&deckLabel=' + encodeURIComponent(deckInfo.label) + '&cacheKey=' + encodeURIComponent(deckInfo.packageKey),
-          success: function () {
-            pollForCache(deckInfo.packageKey, course, yearId, resolve, reject, 0);
-          },
-          fail: function (err) {
-            console.error('[flashcard_adapter] player nav failed:', err);
-            pollForCache(deckInfo.packageKey, course, yearId, resolve, reject, 0);
-          }
-        });
-      },
-      fail: function (err) {
-        reject(new Error('subpackage 加载失败: ' + deckInfo.packageName));
-      }
-    });
-  });
-}
-
-/**
- * Poll for cached questions after bridge page populates globalData.__flashcard_cache.
- */
-function pollForCache(packageKey, course, yearId, resolve, reject, attempt) {
-  var maxAttempts = 40; // 8 seconds total
-  var interval = 200;
-  if (attempt === 0) {
-    console.log('[flashcard_adapter] pollForCache start for', packageKey);
-  }
-  if (attempt >= maxAttempts) {
-    console.error('[flashcard_adapter] pollForCache TIMEOUT for', packageKey, 'after', attempt, 'attempts');
-    console.error('[flashcard_adapter] globalData keys:', Object.keys(getApp().globalData.__flashcard_cache || {}));
-    reject(new Error('闪卡数据加载超时: ' + packageKey + ' (bridge 未回传数据)'));
-    return;
-  }
-  var cached = getCachedQuestions(packageKey);
-  if (cached && cached.length > 0) {
-    console.log('[flashcard_adapter] pollForCache FOUND', cached.length, 'questions at attempt', attempt);
-    processRawQuestions(cached, course, yearId, resolve, reject);
-    return;
-  }
-  if (attempt % 10 === 0) {
-    console.log('[flashcard_adapter] pollForCache still waiting...', attempt, 'cache keys:', Object.keys(getApp().globalData.__flashcard_cache || {}));
-  }
-  setTimeout(function () {
-    pollForCache(packageKey, course, yearId, resolve, reject, attempt + 1);
-  }, interval);
-}
-
-/**
- * Process raw questions into flashcard format, apply enrichment, dedup, filter.
- */
-function processRawQuestions(rawQuestions, course, yearId, resolve, reject) {
-  try {
-    console.log('[flashcard_adapter] processing', rawQuestions.length, 'raw questions');
-
-    // Filter by yearId
-    var filtered = rawQuestions.filter(function (q) {
-      return q.exam === course && q.yearId === yearId;
-    });
-
-    console.log('[flashcard_adapter] after yearId filter:', filtered.length);
-
-    if (filtered.length === 0) {
-      reject(new Error('该牌组 (' + yearId + ') 无有效题目'));
-      return;
-    }
-
-    // Normalize
-    var normalized = [];
-    var filteredCount = 0;
-    for (var i = 0; i < filtered.length; i++) {
-      var card = normalizeQuestion(filtered[i]);
-      if (card) {
-        // Apply enrichment
-        var enrich = enrichment.getEnrichmentForCard(course, card.sourceId);
-        if (enrich) {
-          card = applyEnrichment(card, enrich);
-        }
-        if (card.contentStatus === 'japanese_only') {
-          card.contentStatus = detectContentStatus(card);
-        }
-        normalized.push(card);
-      } else {
-        filteredCount++;
-      }
-    }
-
-    // Dedup
-    var deduped = dedupeCards(normalized);
-    var dedupCount = normalized.length - deduped.length;
-
-    // Enrichment is loaded lazily from main package — safe to call here
-    enrichment.loadAllChunksForCourse(course);
-
-    // Stats
-    var byYear = {};
-    var categories = {};
-    var contentStats = { japanese_only: 0, bilingual_partial: 0, bilingual_complete: 0 };
-    for (var j = 0; j < deduped.length; j++) {
-      var c = deduped[j];
-      var yk = c.examYear || c.yearId || 'unknown';
-      if (!byYear[yk]) byYear[yk] = 0;
-      byYear[yk]++;
-      if (c.category) {
-        if (!categories[c.category]) categories[c.category] = 0;
-        categories[c.category]++;
-      }
-      if (contentStats[c.contentStatus] !== undefined) {
-        contentStats[c.contentStatus]++;
-      }
-    }
-
-    var result = {
-      cards: deduped,
-      stats: {
-        total: filtered.length,
-        normalized: normalized.length,
-        filtered: filteredCount,
-        deduped: deduped.length,
-        dedupCount: dedupCount,
-        categories: categories,
-        byYear: byYear,
-        contentStatus: contentStats
-      }
-    };
-
-    console.log('[flashcard_adapter] loadDeckAsync done:', {
-      course: course,
-      yearId: yearId,
-      total: filtered.length,
-      deduped: deduped.length
-    });
-
-    resolve(result);
-  } catch (e) {
-    console.error('[flashcard_adapter] processRawQuestions error:', e);
-    reject(new Error('题卡数据处理失败: ' + e.message));
-  }
+function loadDeckAsync() {
+  return Promise.reject(new Error('FLASHCARD_RUNTIME_BRIDGE_REMOVED: navigate through flashcard-deck-select'));
 }
 
 // ---- Progress persistence ----
@@ -500,48 +285,10 @@ module.exports = {
   FLASHCARD_STATUS_KEY: FLASHCARD_STATUS_KEY,
   detectContentStatus: detectContentStatus,
   isGenuineChinese: isGenuineChinese,
-  // @deprecated Node.js only shim - not for WeChat runtime (will fail cross-subpackage require)
-  getFlashcardDeck: function (exam) {
-    console.warn('[flashcard_adapter] getFlashcardDeck is DEPRECATED in WeChat runtime. Use loadDeckAsync(course, yearId).');
-    var years = pastExamIndex.getYears(exam);
-    var allRaw = [];
-    for (var i = 0; i < years.length; i++) {
-      try {
-        var pkgDir = years[i].packageRoot.replace('packages/', '');
-        var loader = require('../../' + pkgDir + '/data/loader');
-        var pkgQs = loader.getAllQuestions();
-        for (var j = 0; j < pkgQs.length; j++) {
-          if (pkgQs[j].exam === exam && pkgQs[j].yearId === years[i].yearId) {
-            allRaw.push(pkgQs[j]);
-          }
-        }
-      } catch (e) {
-        console.warn('[flashcard_adapter] shim: failed to load', years[i].packageKey, e.message);
-      }
-    }
-    enrichment.loadAllChunksForCourse(exam);
-    var normalized = [];
-    for (var k = 0; k < allRaw.length; k++) {
-      var card = normalizeQuestion(allRaw[k]);
-      if (card) {
-        var enrich = enrichment.getEnrichmentForCard(exam, card.sourceId);
-        if (enrich) card = applyEnrichment(card, enrich);
-        if (card.contentStatus === 'japanese_only') card.contentStatus = detectContentStatus(card);
-        normalized.push(card);
-      }
-    }
-    var deduped = dedupeCards(normalized);
-    var byYear = {}; var categories = {}; var contentStats = { japanese_only: 0, bilingual_partial: 0, bilingual_complete: 0 };
-    for (var m = 0; m < deduped.length; m++) {
-      var c = deduped[m];
-      var yk = c.examYear || c.yearId || 'unknown';
-      if (!byYear[yk]) byYear[yk] = 0; byYear[yk]++;
-      if (c.category) { if (!categories[c.category]) categories[c.category] = 0; categories[c.category]++; }
-      if (contentStats[c.contentStatus] !== undefined) contentStats[c.contentStatus]++;
-    }
-    return {
-      cards: deduped,
-      stats: { total: allRaw.length, normalized: normalized.length, filtered: allRaw.length - normalized.length, deduped: deduped.length, dedupCount: normalized.length - deduped.length, categories: categories, byYear: byYear, years: years, contentStatus: contentStats }
-    };
+  // Runtime intentionally has no cross-subpackage bulk loader. Tooling must use
+  // an explicit Node-only source loader instead of treating a failed runtime shim
+  // as an empty card set.
+  getFlashcardDeck: function () {
+    throw new Error('FLASHCARD_DECK_BULK_LOAD_REMOVED: use a package-local loader or Node-only tooling helper');
   }
 };

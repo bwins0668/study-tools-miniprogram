@@ -17,8 +17,18 @@ var fs = require('fs');
 var path = require('path');
 
 var JSON_MODE = process.argv.indexOf('--json') !== -1;
-var FULL_TOTAL_CHECKS = 7;
-var TOTAL_CHECKS = JSON_MODE ? 6 : FULL_TOTAL_CHECKS;
+// JSON mode executes exactly six leaf checks. Normal mode adds one smoke check
+// that verifies the JSON leaf contract without recursively invoking itself.
+var LEAF_CHECKS = [
+  { title: 'Subpackage registry', command: 'node tools/check_subpackage_registry.js', cmd: 'node', args: ['tools/check_subpackage_registry.js'] },
+  { title: 'P0 release dependency closure', command: 'node tools/check_p0_release_dependency_closure.js', cmd: 'node', args: ['tools/check_p0_release_dependency_closure.js'] },
+  { title: 'Content compliance', command: 'node tools/check_content_compliance.js', cmd: 'node', args: ['tools/check_content_compliance.js'] },
+  { title: 'Quiz explanations', command: 'node tools/check_quiz_explanations.js', cmd: 'node', args: ['tools/check_quiz_explanations.js'] },
+  { title: 'Package size audit', command: 'node tools/audit_miniprogram_package_size.js', cmd: 'node', args: ['tools/audit_miniprogram_package_size.js'] }
+];
+var LEAF_TOTAL_CHECKS = 6;
+var TOTAL_CHECKS = 7;
+if (JSON_MODE) TOTAL_CHECKS = LEAF_TOTAL_CHECKS;
 
 // --- Helpers ---
 
@@ -206,24 +216,19 @@ function main() {
   var results = [];
   var checkIndex = 1;
 
-  results.push(runStep(checkIndex++, TOTAL_CHECKS,
-    'Subpackage registry', 'node', ['tools/check_subpackage_registry.js']));
+  // The declaration above is the executable P0 leaf contract. JSON runs these
+  // six leaves only; normal mode then runs one smoke process after they pass.
+  for (var leafIndex = 0; leafIndex < LEAF_CHECKS.length; leafIndex++) {
+    var leaf = LEAF_CHECKS[leafIndex];
+    results.push(runStep(checkIndex++, TOTAL_CHECKS, leaf.title, leaf.cmd, leaf.args));
+  }
+  results.push(checkJsSyntax(checkIndex++, TOTAL_CHECKS));
 
-  // JSON is the leaf-only contract queried by R3.91. Running smoke here would
-  // re-enter R3.91 and turn a contract check into a process cycle.
+  // R3.91 calls the JSON leaf contract from smoke. Never put smoke in JSON.
   if (!JSON_MODE) {
     results.push(runStep(checkIndex++, TOTAL_CHECKS,
       'Smoke test', 'node', ['tools/miniprogram_smoke_test.js']));
   }
-
-  results.push(runStep(checkIndex++, TOTAL_CHECKS,
-    'Content compliance', 'node', ['tools/check_content_compliance.js']));
-  results.push(runStep(checkIndex++, TOTAL_CHECKS,
-    'Quiz explanations', 'node', ['tools/check_quiz_explanations.js']));
-  results.push(runStep(checkIndex++, TOTAL_CHECKS,
-    'Package size audit', 'node', ['tools/audit_miniprogram_package_size.js']));
-  results.push(checkJsSyntax(checkIndex++, TOTAL_CHECKS));
-  results.push(checkWxssEscapedNewline(checkIndex++, TOTAL_CHECKS));
 
   // Summary computation
   var totalElapsed = Date.now() - totalStart;

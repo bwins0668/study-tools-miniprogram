@@ -17,17 +17,17 @@
         "pages/anki-player/anki-player"
       ]
     },
-      {
-        "root": "packages/quiz",
-        "name": "quiz",
-        "pages": [
-          "pages/exam-menu/exam-menu",
-          "pages/quiz/quiz",
-          "pages/mistakes/mistakes",
-          "pages/flashcard-quiz/flashcard-quiz",
-          "pages/flashcard-deck-select/flashcard-deck-select"
-        ]
-      },
+    {
+      "root": "packages/quiz",
+      "name": "quiz",
+      "pages": [
+        "pages/exam-menu/exam-menu",
+        "pages/quiz/quiz",
+        "pages/mistakes/mistakes",
+        "pages/flashcard-quiz/flashcard-quiz",
+        "pages/flashcard-deck-select/flashcard-deck-select"
+      ]
+    },
     {
       "root": "packages/quiz-itpass-1",
       "name": "quiz-itpass-1",
@@ -135,18 +135,6 @@
     "pages/home/home": {
       "packages": [
         "glossary"
-      ]
-    },
-    "pages/flashcards/flashcards": {
-      "packages": [
-        "quiz",
-        "quiz-itpass-1",
-        "quiz-itpass-2",
-        "quiz-itpass-3",
-        "quiz-itpass-4",
-        "quiz-itpass-5",
-        "quiz-sg-1",
-        "quiz-sg-2"
       ]
     },
     "pages/glossary/glossary": {
