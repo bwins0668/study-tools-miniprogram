@@ -230,6 +230,14 @@ Page({
     homeSessionViewCount += 1;
     var viewCount = homeSessionViewCount;
 
+    // R4: 加载间隔复习摘要
+    var reviewDueCount = 0;
+    try {
+      var sr = require('../../utils/spaced-repetition/index');
+      var s = sr.review.getTodayReviewSummary();
+      reviewDueCount = s.dueCount;
+    } catch (e) { /* SR module not available */ }
+
     var favoriteCount = getFavoriteTermCount ? getFavoriteTermCount() : 0;
     var wrongQuestionCount = getWrongQuestionCount ? getWrongQuestionCount() : 0;
     var stats = getQuizStats ? getQuizStats() : { total: 0, correct: 0, wrong: 0, accuracy: 0, todayTotal: 0 };
@@ -524,7 +532,9 @@ Page({
       practiceReminder: practiceReminder,
       // R3.58 每日学习格言
       dailyQuote: dailyQuote,
-      // R3.77 页面浏览次数
+      // R4 间隔复习摘要
+      reviewDueCount: reviewDueCount,
+      // R3.77 页面浏览次数统计
       viewCount: viewCount,
       version: app.globalData.version
     });
@@ -591,6 +601,10 @@ Page({
 
   goToGlossary: function () {
     this._navigateOnce('navigateTo', '/packages/glossary/pages/term-search/term-search', 'glossary');
+  },
+
+  openReviewCenter: function () {
+    this._navigateOnce('navigateTo', '/pages/review-center/review-center', 'review');
   },
 
   goToMistakes: function () {

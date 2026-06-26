@@ -1289,3 +1289,59 @@
     background: var(--card-bg-elevated);
   }
 }
+
+/* R4: 首页间隔复习入口 */
+.review-home-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff8e1;
+  border: 2rpx solid #ffe0b2;
+  border-radius: 16rpx;
+  padding: 20rpx 24rpx;
+  margin: 0 24rpx 16rpx;
+}
+.review-home-left {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+.review-home-icon {
+  font-size: 36rpx;
+}
+.review-home-info {
+  display: flex;
+  flex-direction: column;
+}
+.review-home-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #e65100;
+}
+.review-home-desc {
+  font-size: 24rpx;
+  color: #bf360c;
+  margin-top: 4rpx;
+}
+.review-home-right {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+.review-home-badge {
+  background: #e65100;
+  color: #fff;
+  font-size: 28rpx;
+  font-weight: 700;
+  min-width: 48rpx;
+  height: 48rpx;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12rpx;
+}
+.review-home-arrow {
+  font-size: 28rpx;
+  color: #e65100;
+}
