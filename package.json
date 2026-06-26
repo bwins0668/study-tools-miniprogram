@@ -34,6 +34,8 @@
     "test:ui-capture": "python tools/capture_ui_polish_today.py",
     "test:syntax": "node tools/check_javascript_syntax.js",
     "test:content-compliance": "node tools/check_content_compliance.js",
-    "verify:sr:release": "node tools/verify_sr_release.js"
+    "verify:sr:release": "node tools/verify_sr_release.js",
+    "verify:release:candidate": "node tools/verify_release_candidate.js",
+    "verify:matrix:full": "npm run test:minium:itpass-a && npm run test:minium:itpass-b && npm run test:minium:sg"
   }
 }
