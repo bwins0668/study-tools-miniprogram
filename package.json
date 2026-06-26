@@ -40,6 +40,7 @@
     "verify:learning:release": "node tools/verify_learning_release.js",
     "verify:adaptive-learning:release": "node tools/verify_adaptive_learning_release.js",
     "verify:adaptive-trust:release": "node tools/verify_adaptive_trust_release.js",
-    "verify:event-integrity:release": "node tools/verify_event_integrity_release.js"
+    "verify:event-integrity:release": "node tools/verify_event_integrity_release.js",
+    "verify:transaction-proof:release": "node tools/verify_transaction_proof_release.js"
   }
 }

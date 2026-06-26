@@ -2,8 +2,12 @@
 App({
   onLaunch: function () {
     console.log('Study Tools 小程序启动');
-    // R3.36 全局错误处理增强
     this.setupGlobalErrorHandler();
+    // R10: Recover pending learning transactions on cold start
+    try {
+      var recoverLdr = require('./utils/spaced-repetition/ledger');
+      recoverLdr.recoverPendingTransactions();
+    } catch (e) {}
   },
 
   setupGlobalErrorHandler: function () {

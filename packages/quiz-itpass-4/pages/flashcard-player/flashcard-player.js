@@ -484,6 +484,7 @@ Page({
     if (this._inFlight) return;
     if (this.data.hasAnswered || !this.data.currentCard) return;
     this._inFlight = true;
+    try { var preLdr = require('../../../../utils/spaced-repetition/ledger'); preLdr.savePendingAction(this.data.currentActionId || ('act-fallback-'+Date.now()), { playerId: '', deckId: this.data.deckId.split('/').pop(), cardId: this.data.currentCard.id, sessionId: this._reviewSessionId || null, course: this.data.course }); } catch(e0) {}
     var key = String(event.currentTarget.dataset.key || '');
     var selectedOption = findOption(this.data.currentCard.options, key);
     if (!selectedOption) return;
