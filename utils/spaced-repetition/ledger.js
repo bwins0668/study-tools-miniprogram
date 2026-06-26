@@ -236,8 +236,64 @@ function migrateFromV1() {
   } catch(e) {}
 }
 
+// ═══════════════════════════════════════════════════════════════════════
+// Presentation token + crash recovery
+// ═══════════════════════════════════════════════════════════════════════
+
+function buildPresentationToken(opts) {
+  var ts = Date.now();
+  return {
+    presentationId: 'pres-' + ts + '-' + Math.floor(Math.random() * 1e9).toString(36),
+    actionId: 'act-' + ts + '-' + Math.floor(Math.random() * 1e9).toString(36),
+    playerId: opts.playerId || '',
+    deckId: opts.deckId || '',
+    cardId: opts.cardId || '',
+    sessionId: opts.sessionId || null,
+    course: opts.course || '',
+    createdAt: ts
+  };
+}
+
+function recoverPendingTransactions() {
+  var pending = getPendingActions();
+  if (!pending.length) return { recovered: 0, errors: 0 };
+
+  var recovered = 0;
+  var errors = 0;
+  var ledger = _load(LEDGER_KEY, { schemaVersion: SCHEMA_VERSION, events: [] });
+  var events = ledger.events || [];
+
+  for (var i = 0; i < pending.length; i++) {
+    var p = pending[i];
+    if (!p.actionId) { errors++; continue; }
+
+    // Check if event already exists
+    var dedupeKey = 'action:' + p.actionId;
+    var alreadyExists = false;
+    for (var j = events.length - 1; j >= Math.max(0, events.length - 200); j--) {
+      if (events[j].dedupeKey === dedupeKey) { alreadyExists = true; break; }
+    }
+
+    if (alreadyExists) {
+      resolvePendingAction(p.actionId);
+      recovered++;
+      continue;
+    }
+
+    // Re-attempt event creation from pending opts
+    try {
+      recordGradeEvent(p.opts);
+      resolvePendingAction(p.actionId);
+      recovered++;
+    } catch (e) {
+      errors++;
+    }
+  }
+
+  return { recovered: recovered, errors: errors };
+}
+
 module.exports = {
-  recordGradeEvent: recordGradeEvent,
   recordSessionComplete: recordSessionComplete,
   savePendingAction: savePendingAction,
   resolvePendingAction: resolvePendingAction,
@@ -247,6 +303,8 @@ module.exports = {
   getStreakDays: getStreakDays,
   getEvents: getEvents,
   getSummary: getSummary,
+  recoverPendingTransactions: recoverPendingTransactions,
+  buildPresentationToken: buildPresentationToken,
   localDayKey: localDayKey,
   migrateFromV1: migrateFromV1,
   LEDGER_KEY: LEDGER_KEY, SUMMARY_KEY: SUMMARY_KEY, MAX_RAW_EVENTS: MAX_RAW_EVENTS

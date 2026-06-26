@@ -184,6 +184,7 @@ Page({
         viewState: 'content', isLoading: false, isEmpty: false, loadError: '', cards: cards, currentIndex: 0,
         currentCard: cards[0], totalCards: cards.length, sourceCountActual: diagnostic.sourceCountActual,
         playableCountActual: cards.length, progressPercent: Math.round(100 / cards.length),
+        currentActionId: 'act-' + Date.now() + '-' + Math.floor(Math.random() * 1e9).toString(36).slice(0,12),
         dueMode: this._isDueMode || false, reviewSessionId: this._reviewSessionId || ''
       });
 
@@ -205,7 +206,8 @@ Page({
       } catch (_) { /* non-critical */ }
 
       // ── Due mode: filter to review session items ──
-      if (this._isDueMode) {
+      this._inFlight = false;
+    if (this._isDueMode) {
         try {
           var srDue = require('../../../../utils/spaced-repetition/index');
           var session2 = srDue.review.getReviewSession();
@@ -280,7 +282,9 @@ Page({
   retryLoad: function () { this.loadDeck(this._loadOptions || {}); },
 
   selectAnswer: function (event) {
+    if (this._inFlight) return;
     if (this.data.hasAnswered || !this.data.currentCard) return;
+    this._inFlight = true;
     var key = String(event.currentTarget.dataset.key || '');
     var selectedOption = findOption(this.data.currentCard.options, key);
     var correctOption = findOption(this.data.currentCard.options, this.data.currentCard.answerId);
@@ -304,13 +308,13 @@ Page({
           questionId: this.data.currentCard.id
         }, grade, Date.now(), this._reviewSessionId || null);
         this._reviewCommitted = this.data.currentCard.id;
-        try { var ldr = require('../../../../utils/spaced-repetition/ledger'); var _actionId = 'act-' + Date.now() + '-' + Math.floor(Math.random() * 1e9).toString(36);
-        ldr.recordGradeEvent({ actionId: _actionId, playerId: '', deckId: this.data.deckId.split('/').pop(), cardId: this.data.currentCard.id, sessionId: this._reviewSessionId || null, grade: grade, course: this.data.course }); } catch(e4) {}
+        try { var ldr = require('../../../../utils/spaced-repetition/ledger'); ldr.recordGradeEvent({ actionId: this.data.currentActionId || ('act-fallback-'+Date.now()), playerId: '', deckId: this.data.deckId.split('/').pop(), cardId: this.data.currentCard.id, sessionId: this._reviewSessionId || null, grade: grade, course: this.data.course }); } catch(e4) {}
       } catch (e) {
         console.warn('[flashcard-player] review record failed:', e);
       }
     }
     // ── Due mode: complete session item ──
+    this._inFlight = false;
     if (this._isDueMode) {
       try {
         var srDueRecord = require('../../../../utils/spaced-repetition/index');
@@ -334,6 +338,7 @@ Page({
     this.setData({
       currentIndex: nextIndex, currentCard: this.data.cards[nextIndex], hasAnswered: false, selectedKey: '',
       selectedOption: null, correctOption: null, isCorrect: false, showBack: false,
+      currentActionId: 'act-' + Date.now() + '-' + Math.floor(Math.random() * 1e9).toString(36).slice(0,12),
       progressPercent: Math.round((nextIndex + 1) * 100 / this.data.totalCards)
     });
   },
