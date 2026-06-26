@@ -42,6 +42,8 @@
     "verify:adaptive-trust:release": "node tools/verify_adaptive_trust_release.js",
     "verify:event-integrity:release": "node tools/verify_event_integrity_release.js",
     "verify:transaction-proof:release": "node tools/verify_transaction_proof_release.js",
-    "verify:recovery-proof:release": "node tools/verify_transaction_proof_release.js"
+    "verify:recovery-proof:release": "node tools/verify_transaction_proof_release.js",
+    "test:recovery-runtime": "node tools/test_recovery_runtime.js",
+    "test:cn-glossary": "node tools/check_chinese_glossary_completeness.js"
   }
 }

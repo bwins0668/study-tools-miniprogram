@@ -284,7 +284,10 @@ function recoverPendingTransactions() {
     } else if (coreApplied) {
       // Core applied, event missing → safe to project event
       try {
-        recordGradeEvent(p.opts);
+        var projectedOpts = {};
+        for (var k in p.opts) { projectedOpts[k] = p.opts[k]; }
+        projectedOpts.actionId = p.actionId;
+        recordGradeEvent(projectedOpts);
         resolvePendingAction(p.actionId);
         recovered++;
       } catch (e) { errors++; }
