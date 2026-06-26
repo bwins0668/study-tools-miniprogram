@@ -13,9 +13,9 @@ function fail(msg) { throw new Error(msg); }
 // 1. Ledger v2 structure
 step('Ledger v2 structure', () => {
   var c = fs.readFileSync(path.join(ROOT, 'utils', 'spaced-repetition', 'ledger.js'), 'utf-8');
-  if (c.indexOf('occurrence') < 0) fail('missing occurrence counter');
-  if (c.indexOf('_nextOccurrence') < 0) fail('missing _nextOccurrence');
-  if (c.indexOf('SUMMARY_KEY') < 0) fail('missing compact summary');
+  if (c.indexOf('actionId') < 0) fail('missing actionId');
+  if (c.indexOf('savePendingAction') < 0) fail('missing savePendingAction');
+  if (c.indexOf('MAX_RAW_EVENTS') < 0) fail('missing MAX_RAW_EVENTS');
   if (c.indexOf('_updateSummary') < 0) fail('missing summary update');
   if (c.indexOf('migrateFromV1') < 0) fail('missing v1 migration');
   if (c.indexOf('MAX_RAW_EVENTS') < 0) fail('missing raw event cap');

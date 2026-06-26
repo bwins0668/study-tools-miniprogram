@@ -509,7 +509,8 @@ Page({
           questionId: this.data.currentCard.id
         }, grade, Date.now(), this._reviewSessionId || null);
         this._reviewCommitted = this.data.currentCard.id;
-        try { var ldr = require('../../../../utils/spaced-repetition/ledger'); ldr.recordGradeEvent({ playerId: '', deckId: this.data.deckId.split('/').pop(), cardId: this.data.currentCard.id, sessionId: this._reviewSessionId || null, grade: grade, course: this.data.course }); } catch(e4) {}
+        try { var ldr = require('../../../../utils/spaced-repetition/ledger'); var _actionId = 'act-' + Date.now() + '-' + Math.floor(Math.random() * 1e9).toString(36);
+        ldr.recordGradeEvent({ actionId: _actionId, playerId: '', deckId: this.data.deckId.split('/').pop(), cardId: this.data.currentCard.id, sessionId: this._reviewSessionId || null, grade: grade, course: this.data.course }); } catch(e4) {}
       } catch (e) { console.warn('review record failed:', e); }
     }
     // ── Due mode: complete session item ──
