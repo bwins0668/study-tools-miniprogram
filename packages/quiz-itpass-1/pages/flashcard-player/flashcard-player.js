@@ -508,6 +508,7 @@ Page({
         var sr = require('../../../../utils/spaced-repetition/index');
         var grade = isCorrect ? 'GOOD' : 'AGAIN';
         sr.review.recordReviewDecision({
+          actionId: this.data.currentActionId,
           course: this.data.course,
           deckId: this.data.deckId.split('/').pop(),
           questionId: this.data.currentCard.id

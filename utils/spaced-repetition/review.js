@@ -103,7 +103,7 @@ function clearReviewSession() {
 // Review decision recording
 // ═══════════════════════════════════════════════════════════════════════
 
-function recordReviewDecision(sourceRef, grade, now, reviewSessionId) {
+function recordReviewDecision(sourceRef, grade, now, reviewSessionId, actionId) {
   if (!sourceRef || !sourceRef.questionId || !sourceRef.course || !sourceRef.deckId) {
     return { accepted: false, reason: 'INVALID_SOURCE_REF', item: null };
   }
@@ -140,6 +140,7 @@ function recordReviewDecision(sourceRef, grade, now, reviewSessionId) {
   var result = scheduler.applyGrade(item, grade, nowTs);
   if (!result.accepted) return { accepted: false, reason: 'GRADE_FAILED', item: item };
   item = result.item;
+  if (actionId) { item.appliedActionId = actionId; }
 
   state.items[item.memoryItemId] = item;
   if (!state.processedEventIds) state.processedEventIds = {};

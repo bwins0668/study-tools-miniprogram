@@ -256,10 +256,11 @@ function buildPresentationToken(opts) {
 
 function recoverPendingTransactions() {
   var pending = getPendingActions();
-  if (!pending.length) return { recovered: 0, errors: 0 };
+  if (!pending.length) return { recovered: 0, errors: 0, aborted: 0 };
 
   var recovered = 0;
   var errors = 0;
+  var aborted = 0;
   var ledger = _load(LEDGER_KEY, { schemaVersion: SCHEMA_VERSION, events: [] });
   var events = ledger.events || [];
 
@@ -267,30 +268,51 @@ function recoverPendingTransactions() {
     var p = pending[i];
     if (!p.actionId) { errors++; continue; }
 
-    // Check if event already exists
     var dedupeKey = 'action:' + p.actionId;
-    var alreadyExists = false;
+    var eventExists = false;
     for (var j = events.length - 1; j >= Math.max(0, events.length - 200); j--) {
-      if (events[j].dedupeKey === dedupeKey) { alreadyExists = true; break; }
+      if (events[j].dedupeKey === dedupeKey) { eventExists = true; break; }
     }
 
-    if (alreadyExists) {
-      resolvePendingAction(p.actionId);
-      recovered++;
-      continue;
-    }
+    var coreApplied = wasCoreActionApplied(p.actionId);
 
-    // Re-attempt event creation from pending opts
-    try {
-      recordGradeEvent(p.opts);
+    // Recovery decision matrix
+    if (eventExists) {
+      // Event exists → just resolve pending
       resolvePendingAction(p.actionId);
       recovered++;
-    } catch (e) {
-      errors++;
+    } else if (coreApplied) {
+      // Core applied, event missing → safe to project event
+      try {
+        recordGradeEvent(p.opts);
+        resolvePendingAction(p.actionId);
+        recovered++;
+      } catch (e) { errors++; }
+    } else {
+      // Core NOT applied → abort pending, do NOT create fake event
+      resolvePendingAction(p.actionId);
+      aborted++;
     }
   }
 
-  return { recovered: recovered, errors: errors };
+  return { recovered: recovered, errors: errors, aborted: aborted };
+}
+
+/**
+ * Check if a grading action was actually applied to core SR state.
+ * Scans all SR items for matching appliedActionId.
+ */
+function wasCoreActionApplied(actionId) {
+  if (!actionId) return false;
+  try {
+    var raw = wx.getStorageSync('study_tools_spaced_repetition_state_v1');
+    if (!raw || !raw.items) return false;
+    var items = raw.items;
+    for (var key in items) {
+      if (items[key] && items[key].appliedActionId === actionId) return true;
+    }
+  } catch (e) {}
+  return false;
 }
 
 module.exports = {
@@ -304,6 +326,7 @@ module.exports = {
   getEvents: getEvents,
   getSummary: getSummary,
   recoverPendingTransactions: recoverPendingTransactions,
+  wasCoreActionApplied: wasCoreActionApplied,
   buildPresentationToken: buildPresentationToken,
   localDayKey: localDayKey,
   migrateFromV1: migrateFromV1,

@@ -72,7 +72,8 @@ step('buildPresentationToken', () => {
 step('Recovery logic', () => {
   var c = fs.readFileSync(path.join(ROOT, 'utils', 'spaced-repetition', 'ledger.js'), 'utf-8');
   if (c.indexOf('recoverPendingTransactions') < 0) throw new Error('missing recoverPendingTransactions');
-  if (c.indexOf('alreadyExists') < 0) throw new Error('recovery missing alreadyExists check');
+  if (c.indexOf('wasCoreActionApplied') < 0) throw new Error('missing wasCoreActionApplied');
+  if (c.indexOf('coreApplied') < 0) throw new Error('recovery missing coreApplied check');
   if (c.indexOf('resolvePendingAction') < 0) throw new Error('recovery missing resolve');
 });
 
