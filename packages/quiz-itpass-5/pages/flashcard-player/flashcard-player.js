@@ -206,14 +206,33 @@ Page({
       // ── Due mode: filter to review session items ──
       if (this._isDueMode) {
         try {
-          var review2 = require('../../../../utils/spaced-repetition/review');
-          var session2 = review2.getReviewSession();
+          var srDue = require('../../../../utils/spaced-repetition/index');
+          var session2 = srDue.review.getReviewSession();
+          if (session2 && session2._expired) {
+            this.setData({ viewState: 'empty', isLoading: false, isEmpty: true, cards: [], currentCard: null, totalCards: 0, playableCountActual: 0, dueMode: true });
+            return;
+          }
           if (session2 && session2.itemIds && session2.itemIds.length > 0) {
             var itemIdSet = {};
             session2.itemIds.forEach(function (id) { itemIdSet[id] = true; });
-            cards = cards.filter(function (c) { return itemIdSet['sr:v1:exam:' + course + ':' + yearId + ':' + c.id]; });
+            cards = cards.filter(function (c) {
+              var dueIdentity = srDue.identity.createExamIdentity(course, yearId, c.id);
+              return dueIdentity.ok && itemIdSet[dueIdentity.memoryItemId];
+            });
             diagnostic.playableCountActual = cards.length;
             diagnostic.actualCount = cards.length;
+            if (cards.length > 0) {
+              this.setData({
+                cards: cards,
+                currentIndex: 0,
+                currentCard: cards[0],
+                totalCards: cards.length,
+                playableCountActual: cards.length,
+                progressPercent: Math.round(100 / cards.length),
+                dueMode: true,
+                reviewSessionId: this._reviewSessionId || ''
+              });
+            }
             if (cards.length === 0) {
               this.setData({
                 viewState: 'empty', isLoading: false, isEmpty: true,
@@ -288,8 +307,14 @@ Page({
     // ── Due mode: complete session item ──
     if (this._isDueMode) {
       try {
-        var reviewMod = require('../../../../utils/spaced-repetition/review');
-        reviewMod.completeReviewSessionItem(this.data.currentCard.id);
+        var srDueRecord = require('../../../../utils/spaced-repetition/index');
+        var completedIdentity = srDueRecord.identity.createExamIdentity(
+          this.data.course,
+          this.data.deckId.split('/').pop(),
+          this.data.currentCard.id
+        );
+        if (!completedIdentity.ok) throw new Error('due session memory identity failed');
+        srDueRecord.review.completeReviewSessionItem(completedIdentity.memoryItemId);
         this._dueCompletedCount = (this._dueCompletedCount || 0) + 1;
       } catch (e3) { console.warn('due complete failed:', e3); }
     }
