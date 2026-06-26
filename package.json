@@ -39,6 +39,7 @@
     "verify:matrix:full": "npm run test:minium:itpass-a && npm run test:minium:itpass-b && npm run test:minium:sg",
     "verify:learning:release": "node tools/verify_learning_release.js",
     "verify:adaptive-learning:release": "node tools/verify_adaptive_learning_release.js",
-    "verify:adaptive-trust:release": "node tools/verify_adaptive_trust_release.js"
+    "verify:adaptive-trust:release": "node tools/verify_adaptive_trust_release.js",
+    "verify:event-integrity:release": "node tools/verify_event_integrity_release.js"
   }
 }

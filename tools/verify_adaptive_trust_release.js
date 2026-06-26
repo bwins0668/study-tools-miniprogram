@@ -52,7 +52,7 @@ step('Ledger module', () => {
   if (c.indexOf('getStreakDays') < 0) fail('missing getStreakDays');
   if (c.indexOf('localDayKey') < 0) fail('missing localDayKey');
   if (c.indexOf('dedupeKey') < 0) fail('missing dedupeKey');
-  if (c.indexOf('MAX_EVENTS') < 0) fail('missing MAX_EVENTS cap');
+  if (c.indexOf('MAX_RAW_EVENTS') < 0) fail('missing MAX_RAW_EVENTS cap');
   // Must NOT use toISOString for date keys
   if (c.indexOf('toISOString') >= 0) fail('ledger uses toISOString (UTC) — must use local date');
 });
