@@ -14,6 +14,8 @@ the current deck is retried.  Transport failures during the *cleanup* phase
 """
 from __future__ import print_function
 
+import csv
+import hashlib
 import json
 import multiprocessing
 import os
@@ -51,6 +53,12 @@ POLL_INTERVAL_SECONDS = 0.15
 HOME_RESET_TIMEOUT = 8.0
 NAVIGATION_TIMEOUT = 12.0
 CAPTURE_ENABLED = os.environ.get('MINIUM_FLASHCARD_CAPTURE') == '1'
+ISOLATED_STORAGE_KEYS = [
+    'study_tools_spaced_repetition_v1',
+    'study_tools_spaced_repetition_summary_v1',
+    'study_tools_spaced_repetition_v1_quarantine',
+    'study_tools_review_session_v1'
+]
 os.makedirs(ARTIFACTS, exist_ok=True)
 
 # ── REPORT SCHEMA ─────────────────────────────────────────────────────
@@ -77,7 +85,15 @@ REPORT = {
         'expectedRoot': os.path.realpath(PROJECT),
         'fingerprint': {}
     },
-    'cleanup': {}
+    'cleanup': {},
+    'storageIsolation': {
+        'enabled': True,
+        'clearStorageUsed': False,
+        'keys': ISOLATED_STORAGE_KEYS,
+        'backup': {},
+        'restore': {},
+        'restoreVerified': None
+    }
 }
 
 # ── STATE MACHINE ─────────────────────────────────────────────────────
@@ -123,6 +139,64 @@ def safe_str(value, maxlen=4000):
     if len(cleaned) > maxlen:
         cleaned = cleaned[:maxlen] + '...[truncated %d]' % len(raw)
     return cleaned
+
+
+STORAGE_ISOLATION_BACKUP = None
+
+
+def storage_digest(value):
+    return hashlib.sha256(json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode('utf-8')).hexdigest()
+
+
+def unwrap_wx_result(value):
+    if isinstance(value, dict):
+        outer = value.get('result', value)
+        if isinstance(outer, dict) and 'result' in outer:
+            return outer.get('result')
+        return outer
+    return value
+
+
+def wx_storage_call(mini, method, args=None):
+    return unwrap_wx_result(mini.app.call_wx_method(method, args or {}))
+
+
+def wx_storage_keys(mini):
+    info = wx_storage_call(mini, 'getStorageInfoSync') or {}
+    keys = info.get('keys', []) if isinstance(info, dict) else []
+    if not isinstance(keys, list):
+        raise RuntimeError('wx storage key listing malformed: %s' % safe_str(info, 500))
+    return set(keys)
+
+
+def capture_storage_isolation(mini):
+    present = wx_storage_keys(mini)
+    backup = {}
+    for key in ISOLATED_STORAGE_KEYS:
+        value = wx_storage_call(mini, 'getStorageSync', {'key': key}) if key in present else None
+        backup[key] = {'present': key in present, 'value': value, 'digest': storage_digest(value) if key in present else None}
+    REPORT['storageIsolation']['backup'] = {key: {'present': data['present'], 'digest': data['digest']} for key, data in backup.items()}
+    return backup
+
+
+def restore_storage_isolation(mini, backup):
+    details = {}
+    for key in ISOLATED_STORAGE_KEYS:
+        snapshot = backup[key]
+        if snapshot['present']:
+            wx_storage_call(mini, 'setStorageSync', {'key': key, 'data': snapshot['value']})
+            observed = wx_storage_call(mini, 'getStorageSync', {'key': key})
+            restored = storage_digest(observed) == snapshot['digest'] and key in wx_storage_keys(mini)
+        else:
+            if key in wx_storage_keys(mini):
+                wx_storage_call(mini, 'removeStorageSync', {'key': key})
+            restored = key not in wx_storage_keys(mini)
+        details[key] = {'restored': restored, 'presentAfter': key in wx_storage_keys(mini)}
+        if not restored:
+            raise RuntimeError('storage restore verification failed for %s' % key)
+    REPORT['storageIsolation']['restore'] = details
+    REPORT['storageIsolation']['restoreVerified'] = all(detail['restored'] for detail in details.values())
+    return details
 
 
 def sanitize_for_json(obj):
@@ -1031,9 +1105,19 @@ def finalize():
     }
     write_report_atomic()
 
-    # Phase 2: cleanup — close sessions
+    # Phase 2: restore only the isolated review-state keys before closing sessions.
     EXECUTION_PHASE = 'cleanup_started'
     REPORT['executionPhase'] = 'cleanup_started'
+    if STORAGE_ISOLATION_BACKUP is not None:
+        restore_mini = None
+        try:
+            restore_mini = connect_session()
+            restore_storage_isolation(restore_mini, STORAGE_ISOLATION_BACKUP)
+        except Exception as error:
+            REPORT['storageIsolation']['restoreVerified'] = False
+            REPORT['errors'].append({'fatal': 'storage_restore_failed: ' + safe_str(error), 'traceback': traceback.format_exc()})
+        finally:
+            close_session(restore_mini)
 
     late_sessions = close_all_sessions()
     quiescence = wait_for_runtime_quiescence()
@@ -1098,6 +1182,81 @@ def finalize():
 # DevTools target binding
 # ═══════════════════════════════════════════════════════════════════════
 
+def windows_runtime_processes():
+    """Return a read-only snapshot of DevTools-related Windows processes."""
+    result = {'devtools': [], 'weChatAppEx': [], 'errors': []}
+    if os.name != 'nt':
+        return result
+    try:
+        completed = subprocess.run(
+            ['tasklist', '/FO', 'CSV', '/NH'],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            encoding='utf-8',
+            errors='replace',
+            timeout=8
+        )
+        if completed.returncode != 0:
+            result['errors'].append('tasklist_exit_%s:%s' % (completed.returncode, safe_str(completed.stderr, 300)))
+            return result
+        for row in csv.reader(completed.stdout.splitlines()):
+            if len(row) < 2:
+                continue
+            image_name = row[0]
+            try:
+                pid = int(row[1].replace(',', ''))
+            except (TypeError, ValueError):
+                continue
+            snapshot = {'pid': pid, 'imageName': image_name}
+            lowered = image_name.lower()
+            if 'wechatappex' in lowered:
+                result['weChatAppEx'].append(snapshot)
+            if 'devtools' in lowered or 'wechatdevtools' in lowered:
+                result['devtools'].append(snapshot)
+    except Exception as error:
+        result['errors'].append('tasklist_failed:%s' % safe_str(error, 300))
+    return result
+
+
+def windows_port_owners(port):
+    """Return LISTENING TCP owners for *port* without changing process state."""
+    result = {'port': int(port), 'owners': [], 'errors': []}
+    if os.name != 'nt':
+        return result
+    try:
+        completed = subprocess.run(
+            ['netstat', '-ano', '-p', 'tcp'],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            encoding='utf-8',
+            errors='replace',
+            timeout=8
+        )
+        if completed.returncode != 0:
+            result['errors'].append('netstat_exit_%s:%s' % (completed.returncode, safe_str(completed.stderr, 300)))
+            return result
+        suffix = ':%s' % int(port)
+        seen = set()
+        for line in completed.stdout.splitlines():
+            columns = line.split()
+            if len(columns) < 5 or columns[0].upper() != 'TCP' or columns[3].upper() != 'LISTENING':
+                continue
+            if not columns[1].endswith(suffix):
+                continue
+            try:
+                pid = int(columns[-1])
+            except (TypeError, ValueError):
+                continue
+            if pid not in seen:
+                seen.add(pid)
+                result['owners'].append(pid)
+    except Exception as error:
+        result['errors'].append('netstat_failed:%s' % safe_str(error, 300))
+    return result
+
+
 def verify_target_binding(mini):
     """Verify the DevTools session is connected to the correct worktree.
 
@@ -1109,12 +1268,30 @@ def verify_target_binding(mini):
         'projectRoot': PROJECT,
         'realProjectRoot': os.path.realpath(PROJECT),
         'devtoolsPid': None,
+        'devtoolsPids': [],
+        'weChatAppExPids': [],
+        'multipleDevtoolsInstances': False,
+        'automationPort': int(os.environ.get('MINIUM_TEST_PORT', '9420')),
+        'portOwnerPids': [],
+        'processSnapshotErrors': [],
         'debugPort': None,
         'connectionMode': 'ide',
         'sourceTreeFingerprint': '',
         'runtimeFingerprint': {},
         'reason': ''
     }
+
+    process_snapshot = windows_runtime_processes()
+    result['devtoolsPids'] = [entry.get('pid') for entry in process_snapshot.get('devtools', [])]
+    result['weChatAppExPids'] = [entry.get('pid') for entry in process_snapshot.get('weChatAppEx', [])]
+    result['multipleDevtoolsInstances'] = len(result['devtoolsPids']) > 1
+    port_snapshot = windows_port_owners(result['automationPort'])
+    result['portOwnerPids'] = port_snapshot.get('owners', [])
+    result['processSnapshotErrors'] = process_snapshot.get('errors', []) + port_snapshot.get('errors', [])
+    if len(result['portOwnerPids']) == 1:
+        result['devtoolsPid'] = result['portOwnerPids'][0]
+    elif len(result['devtoolsPids']) == 1:
+        result['devtoolsPid'] = result['devtoolsPids'][0]
 
     # 1. Sanity: can we reach the home page?
     try:
@@ -1223,7 +1400,7 @@ def verify_target_binding(mini):
 # ═══════════════════════════════════════════════════════════════════════
 
 def main():
-    global EXECUTION_PHASE, TRANSPORT_RECOVERY_EVENTS, TRANSPORT_RECOVERY_DECKS_TRIED, TRANSPORT_RECOVERY_COUNT
+    global EXECUTION_PHASE, TRANSPORT_RECOVERY_EVENTS, TRANSPORT_RECOVERY_DECKS_TRIED, TRANSPORT_RECOVERY_COUNT, STORAGE_ISOLATION_BACKUP
     try:
         REPORT['executionPhase'] = 'loading_contracts'
         EXECUTION_PHASE = 'running'
@@ -1275,6 +1452,13 @@ def main():
             log('TARGET_BINDING_OK: sgDeckCount=%s itpassDeckCount=%s' % (
                 binding['runtimeFingerprint'].get('sgDeckCount', '?'),
                 binding['runtimeFingerprint'].get('itpassDeckCount', '?')))
+
+        storage_mini = None
+        try:
+            storage_mini = connect_session()
+            STORAGE_ISOLATION_BACKUP = capture_storage_isolation(storage_mini)
+        finally:
+            close_session(storage_mini)
 
         run_matrix(decks)
 

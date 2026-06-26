@@ -5,6 +5,18 @@ var path = require('path');
 
 var ROOT = path.resolve(__dirname, '..');
 var failures = [];
+var FORBIDDEN_PAGE_FOUNDATION_IMPORT = /require\s*\(\s*['"][^'"]*spaced-repetition\/(?!(?:index|review)['"]\s*\))/;
+[
+  { text: "require('../../utils/spaced-repetition/index')", forbidden: false },
+  { text: "require('../../utils/spaced-repetition/review')", forbidden: false },
+  { text: "require('../../utils/spaced-repetition/scheduler')", forbidden: true },
+  { text: "require('../../utils/spaced-repetition/index-private')", forbidden: true },
+  { text: "require('../../utils/spaced-repetition/review/internal')", forbidden: true }
+].forEach(function (example) {
+  if (FORBIDDEN_PAGE_FOUNDATION_IMPORT.test(example.text) !== example.forbidden) {
+    failures.push({ rule: 'PAGE_FOUNDATION_IMPORT_GUARD_SELF_TEST', file: 'tools/check_spaced_repetition_foundation.js', example: example.text });
+  }
+});
 var requiredModules = [
   'utils/spaced-repetition/constants.js',
   'utils/spaced-repetition/identity.js',
@@ -84,7 +96,7 @@ if (/spaced-repetition/.test(appText)) failures.push({ rule: 'APP_MUST_NOT_AUTO_
 var pageFiles = listFiles(path.join(ROOT, 'pages'), '.js').concat(listFiles(path.join(ROOT, 'packages'), '.js'));
 pageFiles.forEach(function (file) {
   var text = fs.readFileSync(file, 'utf8');
-  if (/spaced-repetition\/(?!index\b|review\b)/.test(text)) failures.push({ rule: 'PAGE_MUST_NOT_IMPORT_FOUNDATION', file: relative(file) });
+  if (FORBIDDEN_PAGE_FOUNDATION_IMPORT.test(text)) failures.push({ rule: 'PAGE_MUST_NOT_IMPORT_FOUNDATION', file: relative(file) });
   if (/今日复习/.test(text)) failures.push({ rule: 'NO_VISIBLE_TODAY_REVIEW_ENTRY', file: relative(file) });
 });
 

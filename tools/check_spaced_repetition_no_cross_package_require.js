@@ -5,6 +5,19 @@ var path = require('path');
 
 var ROOT = path.resolve(__dirname, '..');
 var failures = [];
+var FORBIDDEN_PAGE_FOUNDATION_IMPORT = /require\s*\(\s*['"][^'"]*spaced-repetition\/(?!(?:index|review)['"]\s*\))/;
+
+[
+  { text: "require('../../utils/spaced-repetition/index')", forbidden: false },
+  { text: "require('../../utils/spaced-repetition/review')", forbidden: false },
+  { text: "require('../../utils/spaced-repetition/scheduler')", forbidden: true },
+  { text: "require('../../utils/spaced-repetition/index-private')", forbidden: true },
+  { text: "require('../../utils/spaced-repetition/review/internal')", forbidden: true }
+].forEach(function (example) {
+  if (FORBIDDEN_PAGE_FOUNDATION_IMPORT.test(example.text) !== example.forbidden) {
+    failures.push({ file: 'tools/check_spaced_repetition_no_cross_package_require.js', rule: 'PAGE_FOUNDATION_IMPORT_GUARD_SELF_TEST', example: example.text });
+  }
+});
 
 function listJsFiles(directory) {
   var files = [];
@@ -58,7 +71,7 @@ var pageRoots = [path.join(ROOT, 'pages'), path.join(ROOT, 'packages')];
 pageRoots.forEach(function (pageRoot) {
   listJsFiles(pageRoot).forEach(function (file) {
     var text = fs.readFileSync(file, 'utf8');
-    if (/spaced-repetition\/(?!index\b|review\b)/.test(text)) failures.push({ file: relative(file), rule: 'PAGE_FOUNDATION_IMPORT' });
+    if (FORBIDDEN_PAGE_FOUNDATION_IMPORT.test(text)) failures.push({ file: relative(file), rule: 'PAGE_FOUNDATION_IMPORT' });
   });
 });
 
