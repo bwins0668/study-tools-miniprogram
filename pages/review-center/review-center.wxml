@@ -1,7 +1,7 @@
 <view class="rc-container">
   <view class="rc-header">
     <text class="rc-title">间隔复习</text>
-    <text class="rc-subtitle">艾宾浩斯启发</text>
+    <text class="rc-subtitle">艾宾浩斯启发 · 每日巩固</text>
   </view>
 
   <view class="rc-stats">
@@ -20,6 +20,32 @@
     <view class="rc-stat" wx:if="{{streak > 0}}">
       <text class="rc-stat-value">{{streak}}</text>
       <text class="rc-stat-label">连续天数</text>
+    </view>
+  </view>
+
+  <!-- Recovery session card -->
+  <view class="rc-recovery-card" wx:if="{{recoverySession && !recoverySession.completedAt}}">
+    <view class="rc-recovery-header">
+      <text class="rc-recovery-icon" wx:if="{{!recoveryExpired}}">⏸</text>
+      <text class="rc-recovery-icon" wx:else>⏰</text>
+      <text class="rc-recovery-title" wx:if="{{!recoveryExpired}}">有未完成的复习</text>
+      <text class="rc-recovery-title" wx:else>复习会话已过期</text>
+    </view>
+    <view class="rc-recovery-body">
+      <text class="rc-recovery-course">{{recoveryCourseLabel}}</text>
+      <text class="rc-recovery-deck">{{recoveryDeckLabel}}</text>
+      <text class="rc-recovery-progress">进度：{{recoveryProgress}}</text>
+    </view>
+    <view class="rc-recovery-actions">
+      <view class="rc-btn rc-btn-primary rc-btn-recovery" wx:if="{{!recoveryExpired}}" bindtap="resumeReview">
+        <text>继续复习</text>
+      </view>
+      <view class="rc-btn rc-btn-secondary" wx:if="{{recoveryExpired}}" bindtap="resumeReview">
+        <text>清除已过期会话</text>
+      </view>
+      <view class="rc-btn rc-btn-ghost rc-btn-small" wx:if="{{!recoveryExpired}}" bindtap="dismissRecovery">
+        <text>放弃</text>
+      </view>
     </view>
   </view>
 
