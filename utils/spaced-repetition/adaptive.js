@@ -1,10 +1,11 @@
 'use strict';
 
 /**
- * Adaptive Learning Engine — explainable, testable, rule-based.
+ * Adaptive Learning Engine v2 — trusted, evidence-based.
  *
- * Provides daily study recommendations, weak-item signals, pacing,
- * and session-awareness without breaking existing SR scheduling.
+ * Every recommendation carries a reasonCode and evidenceLevel.
+ * "Near 14-day hardship" claims are backed by the event ledger.
+ * Without ledger events, signals fall back to current-state only.
  */
 
 var constants = require('./constants');
@@ -12,10 +13,10 @@ var schema = require('./schema');
 var storage = require('./storage');
 var scheduler = require('./scheduler');
 var summary = require('./summary');
-var identity = require('./identity');
+var ledger = require('./ledger');
 
 // ═══════════════════════════════════════════════════════════════════════
-// Recommendation state
+// Main entry
 // ═══════════════════════════════════════════════════════════════════════
 
 function getLearningRecommendation() {
@@ -25,12 +26,9 @@ function getLearningRecommendation() {
   var state = loadResult.state || schema.createEmptyState(now);
   var items = schema.getItemsArray(state);
 
-  // ── 1. Unfinished session ──────────────────────────────────────
   var unfinishedSession = _getUnfinishedSession();
-  var hasUnfinishedSession = !!unfinishedSession;
-
-  // ── 2. Due items ───────────────────────────────────────────────
   var dueItems = scheduler.getDueItems(items, now);
+
   var overdueItems = [];
   var normalDueItems = [];
   for (var i = 0; i < dueItems.length; i++) {
@@ -38,7 +36,6 @@ function getLearningRecommendation() {
     else normalDueItems.push(dueItems[i]);
   }
 
-  // ── 3. Learning / relearning items ────────────────────────────
   var learningItems = [];
   var relearningItems = [];
   for (var j = 0; j < items.length; j++) {
@@ -46,21 +43,14 @@ function getLearningRecommendation() {
     if (items[j].state === constants.STATES.RELEARNING) relearningItems.push(items[j]);
   }
 
-  // ── 4. Weak-item signals ─────────────────────────────────────
-  var weakSignals = _computeWeakSignals(items, now, 14);
+  var weakSignals = _computeWeakSignals(items);
+  var newCardDecks = _computeNewCardAvailability(items);
 
-  // ── 5. New card availability ─────────────────────────────────
-  var newCardDecks = _computeNewCardAvailability(items, state, now);
+  var todayCompleted = ledger.getTodayCompleted();
+  var streak = ledger.getStreakDays();
 
-  // ── 6. Today's stats ─────────────────────────────────────────
-  var dayKey = _dayKey(now);
-  var todayRecord = summary.dailyRecord(state.daily, dayKey);
-  var todayCompleted = todayRecord.completed;
-  var streak = summary.calculateStreak(state.daily, now, 0);
-
-  // ── 7. Build priority-ordered recommendation ──────────────────
   var priority = _buildPriority({
-    hasUnfinishedSession: hasUnfinishedSession,
+    hasUnfinishedSession: !!unfinishedSession,
     unfinishedSession: unfinishedSession,
     overdueItems: overdueItems,
     normalDueItems: normalDueItems,
@@ -74,31 +64,22 @@ function getLearningRecommendation() {
 
   return {
     priority: priority,
-    stats: {
-      dueCount: dueItems.length,
-      overdueCount: overdueItems.length,
-      learningCount: learningItems.length,
-      relearningCount: relearningItems.length,
-      todayCompleted: todayCompleted,
-      streak: streak,
-      totalItems: items.length,
-      weakDeckCount: weakSignals.length
-    },
-    hasUnfinishedSession: hasUnfinishedSession,
-    weakSignals: weakSignals,
-    newCardDecks: newCardDecks
+    todayCompleted: todayCompleted,
+    streak: streak,
+    dueCount: dueItems.length,
+    hasUnfinishedSession: !!unfinishedSession
   };
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// Unfinished session detection
+// Unfinished session
 // ═══════════════════════════════════════════════════════════════════════
 
 function _getUnfinishedSession() {
   try {
     var raw = wx.getStorageSync('study_tools_review_session_v1');
     if (!raw || !raw.reviewSessionId) return null;
-    if (raw.completedAt) return null;  // already done
+    if (raw.completedAt) return null;
     var remaining = (raw.itemIds || []).length - (raw.completedItemIds || []).length;
     if (remaining <= 0) return null;
     return {
@@ -106,21 +87,16 @@ function _getUnfinishedSession() {
       course: raw.course,
       deckId: raw.deckId,
       totalItems: (raw.itemIds || []).length,
-      remainingItems: remaining,
-      createdAt: raw.createdAt,
-      backPath: raw.backPath
+      remainingItems: remaining
     };
-  } catch (e) {
-    return null;
-  }
+  } catch (e) { return null; }
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// Weak-item signals (explainable rules)
+// Weak signals — current-state only (no fake history)
 // ═══════════════════════════════════════════════════════════════════════
 
-function _computeWeakSignals(items, now, lookbackDays) {
-  var cutoff = now - lookbackDays * constants.DAY_MS;
+function _computeWeakSignals(items) {
   var deckSignals = {};
 
   for (var i = 0; i < items.length; i++) {
@@ -131,59 +107,46 @@ function _computeWeakSignals(items, now, lookbackDays) {
     var deckKey = item.sourceRef.course + '/' + item.sourceRef.deckId;
     if (!deckSignals[deckKey]) {
       deckSignals[deckKey] = {
-        course: item.sourceRef.course,
-        deckId: item.sourceRef.deckId,
-        totalSRItems: 0,
-        relearningCount: 0,
-        highLapseCount: 0,
-        recentAgainCount: 0,
-        weakScore: 0
+        course: item.sourceRef.course, deckId: item.sourceRef.deckId,
+        totalSRItems: 0, relearningCount: 0, highLapseCount: 0,
+        recentDifficultyCount: 0, weakScore: 0, evidenceLevel: 'current_state'
       };
     }
     var ds = deckSignals[deckKey];
     ds.totalSRItems += 1;
-
     if (item.state === constants.STATES.RELEARNING) ds.relearningCount += 1;
     if ((item.lapses || 0) >= 3) ds.highLapseCount += 1;
-
-    // Recent AGAIN/HARD in review log
-    if (item.lastReviewAt && item.lastReviewAt >= cutoff) {
-      if (item.lastGrade === constants.GRADES.AGAIN || item.lastGrade === constants.GRADES.HARD) {
-        ds.recentAgainCount += 1;
-      }
-    }
   }
 
-  // Compute weak score per deck
-  var signals = [];
-  Object.keys(deckSignals).forEach(function (key) {
+  // Enrich with ledger-based difficulty counts (real event history)
+  for (var key in deckSignals) {
     var ds = deckSignals[key];
-    if (ds.totalSRItems === 0) return;
+    var ledgerCount = ledger.countRecentDifficulties(ds.deckId, 14);
+    ds.recentDifficultyCount = ledgerCount;
+    if (ledgerCount > 0) ds.evidenceLevel = 'ledger_backed';
+  }
+
+  var signals = [];
+  for (var k in deckSignals) {
+    var s = deckSignals[k];
+    if (s.totalSRItems === 0) continue;
     var score = 0;
-    if (ds.relearningCount > 0) score += ds.relearningCount * 3;
-    if (ds.highLapseCount > 0) score += ds.highLapseCount * 2;
-    if (ds.recentAgainCount > 0) score += ds.recentAgainCount * 1;
-
-    // Normalize by deck size (0-100)
-    var normalized = Math.min(100, Math.round(score / Math.max(1, ds.totalSRItems) * 100));
-    ds.weakScore = normalized;
-
-    if (normalized >= 5) {  // Only report meaningful weakness
-      signals.push(ds);
-    }
-  });
+    if (s.relearningCount > 0) score += s.relearningCount * 3;
+    if (s.highLapseCount > 0) score += s.highLapseCount * 2;
+    if (s.recentDifficultyCount > 0) score += s.recentDifficultyCount * 1;
+    s.weakScore = Math.min(100, Math.round(score / Math.max(1, s.totalSRItems) * 100));
+    if (s.weakScore >= 5) signals.push(s);
+  }
 
   signals.sort(function (a, b) { return b.weakScore - a.weakScore; });
-  return signals.slice(0, 5);  // Top 5
+  return signals.slice(0, 5);
 }
 
 // ═══════════════════════════════════════════════════════════════════════
 // New card availability
 // ═══════════════════════════════════════════════════════════════════════
 
-function _computeNewCardAvailability(items, state, now) {
-  // We can't know all cards without the deck manifest, but we can
-  // check which of the known SR items are still NEW (unstudied).
+function _computeNewCardAvailability(items) {
   var newByDeck = {};
   for (var i = 0; i < items.length; i++) {
     if (items[i].state !== constants.STATES.NEW) continue;
@@ -191,103 +154,89 @@ function _computeNewCardAvailability(items, state, now) {
     if (!newByDeck[deckKey]) newByDeck[deckKey] = { course: items[i].sourceRef.course, deckId: items[i].sourceRef.deckId, newCount: 0 };
     newByDeck[deckKey].newCount += 1;
   }
-  var result = Object.keys(newByDeck).map(function (k) { return newByDeck[k]; });
-  result.sort(function (a, b) { return b.newCount - a.newCount; });
-  return result;
+  return Object.keys(newByDeck).map(function (k) { return newByDeck[k]; });
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// Priority builder
+// Priority with reasonCode
 // ═══════════════════════════════════════════════════════════════════════
 
 function _buildPriority(ctx) {
   var actions = [];
 
-  // Priority 1: Unfinished session
-  if (ctx.hasUnfinishedSession && ctx.unfinishedSession) {
+  // 1: Unfinished session
+  if (ctx.hasUnfinishedSession) {
     actions.push({
-      type: 'resume_session',
-      priority: 1,
-      label: '继续上次复习',
-      subtitle: '还剩 ' + ctx.unfinishedSession.remainingItems + ' 张',
-      deckId: ctx.unfinishedSession.deckId,
-      course: ctx.unfinishedSession.course,
-      sessionId: ctx.unfinishedSession.reviewSessionId
+      kind: 'resume_session', priority: 1, reasonCode: 'UNFINISHED_SESSION_EXISTS',
+      label: '继续上次复习', sub: '还剩 ' + ctx.unfinishedSession.remainingItems + ' 张',
+      course: ctx.unfinishedSession.course, deckId: ctx.unfinishedSession.deckId,
+      count: ctx.unfinishedSession.remainingItems, evidenceLevel: 'session_state'
     });
   }
 
-  // Priority 2: Overdue review
+  // 2: Overdue
   if (ctx.overdueItems.length > 0) {
     actions.push({
-      type: 'overdue_review',
-      priority: 2,
-      label: '优先复习',
-      subtitle: ctx.overdueItems.length + ' 张已过期',
-      count: ctx.overdueItems.length
+      kind: 'overdue_review', priority: 2, reasonCode: 'ITEMS_OVERDUE',
+      label: '优先复习', sub: ctx.overdueItems.length + ' 张已过期',
+      count: ctx.overdueItems.length, evidenceLevel: 'sr_state'
     });
   }
 
-  // Priority 3: Normal due review
+  // 3: Due
   if (ctx.normalDueItems.length > 0) {
     actions.push({
-      type: 'due_review',
-      priority: 3,
-      label: '今日复习',
-      subtitle: ctx.normalDueItems.length + ' 张待复习',
-      count: ctx.normalDueItems.length
+      kind: 'due_review', priority: 3, reasonCode: 'ITEMS_DUE_TODAY',
+      label: '今日复习', sub: ctx.normalDueItems.length + ' 张待复习',
+      count: ctx.normalDueItems.length, evidenceLevel: 'sr_state'
     });
   }
 
-  // Priority 4: Learning / relearning consolidation
+  // 4: Consolidate learning/relearning
   var learningTotal = ctx.learningItems.length + ctx.relearningItems.length;
   if (learningTotal > 0 && actions.length === 0) {
     actions.push({
-      type: 'consolidate',
-      priority: 4,
-      label: '继续巩固',
-      subtitle: learningTotal + ' 张学习中',
-      count: learningTotal
+      kind: 'consolidate_learning', priority: 4, reasonCode: 'LEARNING_ITEMS_EXIST',
+      label: '继续巩固', sub: learningTotal + ' 张学习中',
+      count: learningTotal, evidenceLevel: 'sr_state'
     });
   }
 
-  // Priority 5: Weak deck focus
-  if (ctx.weakSignals.length > 0) {
-    for (var i = 0; i < Math.min(2, ctx.weakSignals.length); i++) {
-      var ws = ctx.weakSignals[i];
-      if (ws.weakScore >= 10) {
-        actions.push({
-          type: 'weak_focus',
-          priority: 5 + i,
-          label: '重点巩固',
-          subtitle: _deckLabel(ws.deckId) + ' 有较多待巩固内容',
-          course: ws.course,
-          deckId: ws.deckId,
-          weakScore: ws.weakScore
-        });
-      }
-    }
+  // 5: Weak focus (only if ledger-backed or strong state signals)
+  for (var i = 0; i < Math.min(2, ctx.weakSignals.length); i++) {
+    var ws = ctx.weakSignals[i];
+    if (ws.weakScore < 10) continue;
+    var kind = ws.evidenceLevel === 'ledger_backed' ? 'weak_focus' : 'weak_focus_state';
+    var reasonCode = ws.evidenceLevel === 'ledger_backed'
+      ? 'RECENT_DIFFICULTY_DETECTED'
+      : 'NEEDS_CONSOLIDATION';
+    var sub = ws.evidenceLevel === 'ledger_backed'
+      ? _deckLabel(ws.deckId) + ' 近期出现 ' + ws.recentDifficultyCount + ' 次困难评分'
+      : _deckLabel(ws.deckId) + ' 有 ' + (ws.relearningCount + ws.highLapseCount) + ' 张待巩固';
+    actions.push({
+      kind: kind, priority: 5 + i, reasonCode: reasonCode,
+      label: '重点巩固', sub: sub,
+      course: ws.course, deckId: ws.deckId,
+      weakScore: ws.weakScore, evidenceLevel: ws.evidenceLevel
+    });
   }
 
-  // Priority 6: New card suggestion (only when no due/overdue)
-  if (ctx.newCardDecks.length > 0 && ctx.normalDueItems.length === 0 && ctx.overdueItems.length === 0) {
+  // 6: New learning (only no due/overdue)
+  if (ctx.newCardDecks.length > 0 && ctx.overdueItems.length === 0 && ctx.normalDueItems.length === 0) {
     var top = ctx.newCardDecks[0];
     actions.push({
-      type: 'new_learning',
-      priority: 6,
-      label: '开始新学习',
-      subtitle: top.newCount + ' 张新卡可学习',
-      course: top.course,
-      deckId: top.deckId
+      kind: 'new_learning', priority: 6, reasonCode: 'NEW_CARDS_AVAILABLE',
+      label: '开始新学习', sub: '可学习新内容',
+      course: top.course, deckId: top.deckId, evidenceLevel: 'sr_state'
     });
   }
 
-  // Fallback: All done
+  // Fallback: all done
   if (actions.length === 0) {
     actions.push({
-      type: 'all_done',
-      priority: 99,
-      label: '今天的复习已完成',
-      subtitle: ctx.streak > 0 ? '连续 ' + ctx.streak + ' 天学习' : '可以休息或学习新内容'
+      kind: 'all_done', priority: 99, reasonCode: 'NO_ACTIVE_ITEMS',
+      label: '今天的复习已完成', sub: ctx.streak > 0 ? '连续 ' + ctx.streak + ' 天学习' : '可以休息或学习新内容',
+      evidenceLevel: 'conclusive'
     });
   }
 
@@ -295,22 +244,9 @@ function _buildPriority(ctx) {
 }
 
 function _deckLabel(deckId) {
-  var labels = {
-    '01_aki': '令和元年秋期', '02_aki': '令和2年秋期', '03_haru': '令和3年',
-    '28_haru': '平成28年春期', '30_aki': '平成30年秋期',
-    'sg_01_aki': '令和元年秋期', 'sg_29_haru': '平成29年春期'
-  };
+  var labels = { '01_aki': '令和元年秋期', '30_aki': '平成30年秋期', 'sg_29_haru': '平成29年春期' };
   return labels[deckId] || deckId;
 }
-
-function _dayKey(ts) {
-  var d = new Date(ts);
-  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-}
-
-// ═══════════════════════════════════════════════════════════════════════
-// Export
-// ═══════════════════════════════════════════════════════════════════════
 
 module.exports = {
   getLearningRecommendation: getLearningRecommendation,

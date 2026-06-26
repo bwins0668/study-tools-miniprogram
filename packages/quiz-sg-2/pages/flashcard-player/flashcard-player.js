@@ -304,6 +304,7 @@ Page({
           questionId: this.data.currentCard.id
         }, grade, Date.now(), this._reviewSessionId || null);
         this._reviewCommitted = this.data.currentCard.id;
+        try { var ldr = require('../../../../utils/spaced-repetition/ledger'); ldr.recordGradeEvent({ playerId: '', deckId: this.data.deckId.split('/').pop(), cardId: this.data.currentCard.id, sessionId: this._reviewSessionId || null, grade: grade, course: this.data.course }); } catch(e4) {}
       } catch (e) {
         console.warn('[flashcard-player] review record failed:', e);
       }

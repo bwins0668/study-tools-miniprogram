@@ -12,5 +12,6 @@ module.exports = {
   eligibility: require('./eligibility'),
   routes: require('./routes'),
   review: require('./review'),
-  adaptive: require('./adaptive')
+  adaptive: require('./adaptive'),
+  ledger: require('./ledger')
 };
