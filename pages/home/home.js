@@ -232,10 +232,13 @@ Page({
 
     // R4: 加载间隔复习摘要
     var reviewDueCount = 0;
+    var adaptiveRec = null;
     try {
       var sr = require('../../utils/spaced-repetition/index');
       var s = sr.review.getTodayReviewSummary();
       reviewDueCount = s.dueCount;
+      // R6: Adaptive learning recommendation
+      adaptiveRec = sr.adaptive.getLearningRecommendation();
     } catch (e) { /* SR module not available */ }
 
     var favoriteCount = getFavoriteTermCount ? getFavoriteTermCount() : 0;
@@ -534,6 +537,8 @@ Page({
       dailyQuote: dailyQuote,
       // R4 间隔复习摘要
       reviewDueCount: reviewDueCount,
+      // R6 自适应学习推荐
+      adaptiveRec: adaptiveRec,
       // R3.77 页面浏览次数统计
       viewCount: viewCount,
       version: app.globalData.version
@@ -605,6 +610,21 @@ Page({
 
   openReviewCenter: function () {
     this._navigateOnce('navigateTo', '/pages/review-center/review-center', 'review');
+  },
+
+  // R6: Navigate to weak deck for focused practice
+  openWeakDeck: function (e) {
+    var course = e.currentTarget.dataset.course;
+    var deckId = e.currentTarget.dataset.deckId;
+    if (!course || !deckId) return;
+    this._navigateOnce('navigateTo',
+      '/packages/quiz/pages/flashcard-deck-select/flashcard-deck-select?course=' + encodeURIComponent(course),
+      'weakdeck');
+  },
+
+  // R6: Start new learning — go to flashcard center
+  startNewLearning: function (e) {
+    this._navigateOnce('switchTab', '/pages/flashcards/flashcards', 'newlearn');
   },
 
   goToMistakes: function () {

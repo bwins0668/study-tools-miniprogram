@@ -71,18 +71,74 @@
     <text class="goal-reminder" wx:if="{{showGoalReminder}}">今天还没有练习，开始吧！</text>
   </view>
 
-  <!-- R4: 间隔复习入口 -->
-  <view class="review-home-card ui-pressable" wx:if="{{reviewDueCount > 0}}" bindtap="openReviewCenter" hover-class="home-card-pressed" hover-start-time="20" hover-stay-time="150">
-    <view class="review-home-left">
-      <text class="review-home-icon">🔄</text>
-      <view class="review-home-info">
-        <text class="review-home-title">间隔复习</text>
-        <text class="review-home-desc">今日 {{reviewDueCount}} 张卡片已到期</text>
-      </view>
+  <!-- R6: 今日学习重点 (adaptive learning) -->
+  <view class="adaptive-section" wx:if="{{adaptiveRec}}">
+    <view class="adaptive-header">
+      <text class="adaptive-title">今日学习重点</text>
     </view>
-    <view class="review-home-right">
-      <text class="review-home-badge">{{reviewDueCount}}</text>
-      <text class="review-home-arrow">→</text>
+    <block wx:for="{{adaptiveRec.priority}}" wx:key="type">
+      <!-- Resume session -->
+      <view class="adaptive-card ui-pressable" wx:if="{{item.type === 'resume_session'}}" bindtap="openReviewCenter" hover-class="home-card-pressed">
+        <view class="adaptive-card-left">
+          <text class="adaptive-card-icon">📋</text>
+          <view class="adaptive-card-body">
+            <text class="adaptive-card-label">{{item.label}}</text>
+            <text class="adaptive-card-sub">{{item.subtitle}}</text>
+          </view>
+        </view>
+        <text class="adaptive-card-arrow">→</text>
+      </view>
+      <!-- Overdue / due review -->
+      <view class="adaptive-card ui-pressable" wx:if="{{item.type === 'overdue_review' || item.type === 'due_review'}}" bindtap="openReviewCenter" hover-class="home-card-pressed">
+        <view class="adaptive-card-left">
+          <text class="adaptive-card-icon">{{item.type === 'overdue_review' ? '⚠️' : '📝'}}</text>
+          <view class="adaptive-card-body">
+            <text class="adaptive-card-label">{{item.label}}</text>
+            <text class="adaptive-card-sub">{{item.subtitle}}</text>
+          </view>
+        </view>
+        <view class="adaptive-card-right">
+          <text class="adaptive-card-count">{{item.count}}</text>
+          <text class="adaptive-card-arrow">→</text>
+        </view>
+      </view>
+      <!-- Weak focus -->
+      <view class="adaptive-card ui-pressable" wx:if="{{item.type === 'weak_focus'}}" bindtap="openWeakDeck" data-course="{{item.course}}" data-deck-id="{{item.deckId}}" hover-class="home-card-pressed">
+        <view class="adaptive-card-left">
+          <text class="adaptive-card-icon">🎯</text>
+          <view class="adaptive-card-body">
+            <text class="adaptive-card-label">{{item.label}}</text>
+            <text class="adaptive-card-sub">{{item.subtitle}}</text>
+          </view>
+        </view>
+        <text class="adaptive-card-arrow">→</text>
+      </view>
+      <!-- New learning -->
+      <view class="adaptive-card ui-pressable" wx:if="{{item.type === 'new_learning'}}" bindtap="startNewLearning" data-course="{{item.course}}" data-deck-id="{{item.deckId}}" hover-class="home-card-pressed">
+        <view class="adaptive-card-left">
+          <text class="adaptive-card-icon">📖</text>
+          <view class="adaptive-card-body">
+            <text class="adaptive-card-label">{{item.label}}</text>
+            <text class="adaptive-card-sub">{{item.subtitle}}</text>
+          </view>
+        </view>
+        <text class="adaptive-card-arrow">→</text>
+      </view>
+      <!-- All done -->
+      <view class="adaptive-card adaptive-card-done" wx:if="{{item.type === 'all_done'}}">
+        <view class="adaptive-card-left">
+          <text class="adaptive-card-icon">✅</text>
+          <view class="adaptive-card-body">
+            <text class="adaptive-card-label">{{item.label}}</text>
+            <text class="adaptive-card-sub">{{item.subtitle}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+    <!-- Stats row -->
+    <view class="adaptive-stats" wx:if="{{adaptiveRec.stats}}">
+      <text class="adaptive-stat" wx:if="{{adaptiveRec.stats.todayCompleted > 0}}">今日完成 {{adaptiveRec.stats.todayCompleted}} 张</text>
+      <text class="adaptive-stat" wx:if="{{adaptiveRec.stats.streak > 0}}">连续 {{adaptiveRec.stats.streak}} 天</text>
     </view>
   </view>
 

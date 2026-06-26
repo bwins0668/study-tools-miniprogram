@@ -11,5 +11,6 @@ module.exports = {
   events: require('./events'),
   eligibility: require('./eligibility'),
   routes: require('./routes'),
-  review: require('./review')
+  review: require('./review'),
+  adaptive: require('./adaptive')
 };

@@ -37,6 +37,7 @@
     "verify:sr:release": "node tools/verify_sr_release.js",
     "verify:release:candidate": "node tools/verify_release_candidate.js",
     "verify:matrix:full": "npm run test:minium:itpass-a && npm run test:minium:itpass-b && npm run test:minium:sg",
-    "verify:learning:release": "node tools/verify_learning_release.js"
+    "verify:learning:release": "node tools/verify_learning_release.js",
+    "verify:adaptive-learning:release": "node tools/verify_adaptive_learning_release.js"
   }
 }
