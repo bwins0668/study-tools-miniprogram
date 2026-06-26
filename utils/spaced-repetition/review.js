@@ -142,6 +142,28 @@ function recordReviewDecision(sourceRef, grade, now, reviewSessionId, actionId) 
   item = result.item;
   if (actionId) { item.appliedActionId = actionId; }
 
+  // ── Durable applied action journal (survives subsequent actions on same card) ──
+  if (actionId) {
+    if (!state.appliedActions) state.appliedActions = {};
+    state.appliedActions[actionId] = {
+      actionId: actionId,
+      memoryItemId: item.memoryItemId,
+      deckId: sourceRef.deckId,
+      cardId: sourceRef.questionId,
+      sessionId: reviewSessionId || null,
+      grade: grade,
+      localDayKey: ledger ? ledger.localDayKey(nowTs) : localDayKey(nowTs),
+      appliedAt: nowTs
+    };
+    // Keep max 500 entries
+    var keys = Object.keys(state.appliedActions);
+    if (keys.length > 500) {
+      var trimmed = {};
+      keys.slice(keys.length - 500).forEach(function(k) { trimmed[k] = state.appliedActions[k]; });
+      state.appliedActions = trimmed;
+    }
+  }
+
   state.items[item.memoryItemId] = item;
   if (!state.processedEventIds) state.processedEventIds = {};
   state.processedEventIds[dedupKey] = nowTs;

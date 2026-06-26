@@ -306,10 +306,14 @@ function wasCoreActionApplied(actionId) {
   if (!actionId) return false;
   try {
     var raw = wx.getStorageSync('study_tools_spaced_repetition_state_v1');
-    if (!raw || !raw.items) return false;
-    var items = raw.items;
-    for (var key in items) {
-      if (items[key] && items[key].appliedActionId === actionId) return true;
+    if (!raw) return false;
+    // 1. Check applied action journal (survives subsequent actions on same card)
+    if (raw.appliedActions && raw.appliedActions[actionId]) return true;
+    // 2. Fallback: scan item markers
+    if (raw.items) {
+      for (var key in raw.items) {
+        if (raw.items[key] && raw.items[key].appliedActionId === actionId) return true;
+      }
     }
   } catch (e) {}
   return false;
