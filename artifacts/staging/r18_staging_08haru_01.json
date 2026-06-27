@@ -1,0 +1,12 @@
+[
+  {"questionId":"08_HARU_Q1","questionZh":"关于使用生成式AI生成内容的处理，可能需要获得著作权人许可的是哪些？a. 为获得相似音乐用AI生成乐曲并上传互联网免费公开。b. 为获得相似音乐用AI生成乐曲保存在PC个人欣赏。c. 用AI生成音乐偶然生成与喜欢艺术家相似的乐曲保存PC个人欣赏。","options":[{"index":0,"textZh":"a"},{"index":1,"textZh":"a、b"},{"index":2,"textZh":"a、b、c"},{"index":3,"textZh":"b、c"}]},
+  {"questionId":"08_HARU_Q2","questionZh":"以下哪项是云计算中混合云的特征？","options":[{"index":0,"textZh":"仅使用公有云"},{"index":1,"textZh":"组合使用私有云和公有云"},{"index":2,"textZh":"仅使用本地服务器"},{"index":3,"textZh":"不使用任何云"}]},
+  {"questionId":"08_HARU_Q3","questionZh":"在数据库设计中，什么是反规范化？","options":[{"index":0,"textZh":"进一步分解表"},{"index":1,"textZh":"有意识地引入冗余以提高查询性能"},{"index":2,"textZh":"删除所有索引"},{"index":3,"textZh":"使用更多的表"}]},
+  {"questionId":"08_HARU_Q4","questionZh":"关于JIS Q 27002，哪项正确？","options":[{"index":0,"textZh":"ISMS要求事项"},{"index":1,"textZh":"信息安全控制措施的实践规范"},{"index":2,"textZh":"风险管理标准"},{"index":3,"textZh":"质量管理系统"}]},
+  {"questionId":"08_HARU_Q5","questionZh":"在Python中，上下文管理器的主要用途是什么？","options":[{"index":0,"textZh":"管理数据库"},{"index":1,"textZh":"通过with语句确保资源被适当获取和释放"},{"index":2,"textZh":"仅用于文件操作"},{"index":3,"textZh":"不执行任何清理"}]},
+  {"questionId":"08_HARU_Q6","questionZh":"以下哪项是关于DNS缓存投毒的正确说明？","options":[{"index":0,"textZh":"加密DNS查询"},{"index":1,"textZh":"向DNS解析器注入虚假记录将用户诱导至恶意网站"},{"index":2,"textZh":"加速DNS查询"},{"index":3,"textZh":"仅备份DNS记录"}]},
+  {"questionId":"08_HARU_Q7","questionZh":"关于CORS（跨源资源共享），哪项正确？","options":[{"index":0,"textZh":"禁止所有跨域请求"},{"index":1,"textZh":"控制哪些外部域可以访问Web服务器资源"},{"index":2,"textZh":"一种加密方法"},{"index":3,"textZh":"仅用于文件下载"}]},
+  {"questionId":"08_HARU_Q8","questionZh":"在Scrum中，时间盒的含义是什么？","options":[{"index":0,"textZh":"无限制时间"},{"index":1,"textZh":"为活动或会议设定的最大持续时间"},{"index":2,"textZh":"仅适用于冲刺"},{"index":3,"textZh":"与时间无关"}]},
+  {"questionId":"08_HARU_Q9","questionZh":"以下哪项是电子发现中涉及的主要活动？","options":[{"index":0,"textZh":"仅搜索网页"},{"index":1,"textZh":"识别、收集和生成电子存储信息用于法律程序"},{"index":2,"textZh":"加密邮件"},{"index":3,"textZh":"删除所有数据"}]},
+  {"questionId":"08_HARU_Q10","questionZh":"在网络安全中，端点的含义是什么？","options":[{"index":0,"textZh":"仅服务器"},{"index":1,"textZh":"连接网络的最终用户设备（PC、智能手机、IoT等）"},{"index":2,"textZh":"仅路由器"},{"index":3,"textZh":"仅防火墙"}]}
+]

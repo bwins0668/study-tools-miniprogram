@@ -1,0 +1,7 @@
+[
+  {"questionId":"08_HARU_Q11","questionZh":"以下哪项是内存泄漏的主要原因？","options":[{"index":0,"textZh":"释放了不需要的内存"},{"index":1,"textZh":"程序分配了内存但不再使用后未释放"},{"index":2,"textZh":"重启计算机"},{"index":3,"textZh":"使用固态驱动器"}]},
+  {"questionId":"08_HARU_Q12","questionZh":"关于数据湖和数据仓库的区别，哪项正确？","options":[{"index":0,"textZh":"数据湖仅存储结构化数据"},{"index":1,"textZh":"数据湖以原始格式存储多结构数据，数据仓库存储加工后的结构化数据"},{"index":2,"textZh":"两者完全相同"},{"index":3,"textZh":"数据仓库不使用模式"}]},
+  {"questionId":"08_HARU_Q13","questionZh":"以下哪项是用于自动化软件构建和测试的CI/CD工具？","options":[{"index":0,"textZh":"Microsoft Word"},{"index":1,"textZh":"Jenkins"},{"index":2,"textZh":"Photoshop"},{"index":3,"textZh":"Excel"}]},
+  {"questionId":"08_HARU_Q14","questionZh":"在敏捷中，产品待办事项的细化应该在何时进行？","options":[{"index":0,"textZh":"仅在冲刺计划期间"},{"index":1,"textZh":"持续进行，为未来冲刺准备项目"},{"index":2,"textZh":"仅在冲刺评审期间"},{"index":3,"textZh":"不需要细化"}]},
+  {"questionId":"08_HARU_Q15","questionZh":"关于网络分段，VLAN的主要好处是什么？","options":[{"index":0,"textZh":"增加广播流量"},{"index":1,"textZh":"逻辑分割网络以改善性能和安全"},{"index":2,"textZh":"不需要交换机"},{"index":3,"textZh":"仅用于无线网络"}]}
+]

@@ -1,0 +1,12 @@
+[
+  {"questionId":"08_HARU_Q41","questionZh":"在ITIL中，已知错误记录何时创建？","options":[{"index":0,"textZh":"事件发生时立即"},{"index":1,"textZh":"问题管理识别出根本原因后"},{"index":2,"textZh":"仅在变更后"},{"index":3,"textZh":"不需要创建"}]},
+  {"questionId":"08_HARU_Q42","questionZh":"关于联邦学习，哪项正确？","options":[{"index":0,"textZh":"集中所有数据训练"},{"index":1,"textZh":"在不共享原始数据的情况下跨多个设备训练模型"},{"index":2,"textZh":"仅使用一台设备"},{"index":3,"textZh":"不使用任何隐私保护"}]},
+  {"questionId":"08_HARU_Q43","questionZh":"在Git中，rebase和merge的主要区别是什么？","options":[{"index":0,"textZh":"两者完全相同"},{"index":1,"textZh":"rebase改写历史使提交线性，merge保留分支历史"},{"index":2,"textZh":"merge删除所有历史"},{"index":3,"textZh":"rebase不能用于公开分支"}]},
+  {"questionId":"08_HARU_Q44","questionZh":"关于软件定义网络（SDN），哪项正确？","options":[{"index":0,"textZh":"完全替代所有网络硬件"},{"index":1,"textZh":"分离控制面和数据面，实现集中式网络管理"},{"index":2,"textZh":"仅用于无线网络"},{"index":3,"textZh":"不需要任何交换机"}]},
+  {"questionId":"08_HARU_Q45","questionZh":"在AWS中，EC2是什么服务？","options":[{"index":0,"textZh":"数据库服务"},{"index":1,"textZh":"虚拟服务器计算服务"},{"index":2,"textZh":"存储服务"},{"index":3,"textZh":"内容分发网络"}]},
+  {"questionId":"08_HARU_Q46","questionZh":"关于数据去标识化，哪项是正确的方法？","options":[{"index":0,"textZh":"仅删除姓名"},{"index":1,"textZh":"移除或替换可直接或间接识别个人的信息"},{"index":2,"textZh":"加密所有数据"},{"index":3,"textZh":"公开所有数据"}]},
+  {"questionId":"08_HARU_Q47","questionZh":"在敏捷中，冲刺评审的主要目的是什么？","options":[{"index":0,"textZh":"评审团队成员绩效"},{"index":1,"textZh":"向干系人展示完成的增量并获取反馈"},{"index":2,"textZh":"编写新代码"},{"index":3,"textZh":"仅更新文档"}]},
+  {"questionId":"08_HARU_Q48","questionZh":"关于Grafana，哪项正确？","options":[{"index":0,"textZh":"编程语言"},{"index":1,"textZh":"用于监控和可观测性的数据可视化和仪表板工具"},{"index":2,"textZh":"数据库管理系统"},{"index":3,"textZh":"仅用于日志收集"}]},
+  {"questionId":"08_HARU_Q49","questionZh":"以下哪项是内部威胁区别于外部威胁的特征？","options":[{"index":0,"textZh":"更易检测"},{"index":1,"textZh":"来自组织内部的可信人员，可能已具有合法访问权限"},{"index":2,"textZh":"仅通过防火墙实现"},{"index":3,"textZh":"总是故意为之"}]},
+  {"questionId":"08_HARU_Q50","questionZh":"在Kubernetes中，ConfigMap用于什么？","options":[{"index":0,"textZh":"存储数据库"},{"index":1,"textZh":"以键值对存储非敏感的配置数据"},{"index":2,"textZh":"管理用户密码"},{"index":3,"textZh":"仅用于网络配置"}]}
+]

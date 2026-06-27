@@ -1,0 +1,12 @@
+[
+  {"questionId":"08_HARU_Q51","questionZh":"关于WebSocket与HTTP的区别，哪项正确？","options":[{"index":0,"textZh":"两者都是单向通信"},{"index":1,"textZh":"WebSocket提供全双工持续连接，HTTP是请求-响应模式"},{"index":2,"textZh":"WebSocket不能用于实时应用"},{"index":3,"textZh":"HTTP比WebSocket更快"}]},
+  {"questionId":"08_HARU_Q52","questionZh":"以下哪项是实现高可用性的常见模式？","options":[{"index":0,"textZh":"单点配置"},{"index":1,"textZh":"冗余、故障转移和负载均衡"},{"index":2,"textZh":"减少服务器数量"},{"index":3,"textZh":"不使用备份"}]},
+  {"questionId":"08_HARU_Q53","questionZh":"在风险管理中，残余风险是什么？","options":[{"index":0,"textZh":"消除所有风险后剩余的风险"},{"index":1,"textZh":"采取安全措施后仍然存在的风险"},{"index":2,"textZh":"不计量的风险"},{"index":3,"textZh":"仅财务风险"}]},
+  {"questionId":"08_HARU_Q54","questionZh":"关于API密钥管理，哪项是最佳实践？","options":[{"index":0,"textZh":"在代码中硬编码"},{"index":1,"textZh":"使用环境变量或密钥管理服务，定期轮换"},{"index":2,"textZh":"公开在GitHub"},{"index":3,"textZh":"从不更改"}]},
+  {"questionId":"08_HARU_Q55","questionZh":"在机器学习的回归问题中，目标是什么？","options":[{"index":0,"textZh":"分类为离散标签"},{"index":1,"textZh":"预测连续数值"},{"index":2,"textZh":"聚类数据"},{"index":3,"textZh":"仅分析文本"}]},
+  {"questionId":"08_HARU_Q56","questionZh":"关于ISO 22301，哪项正确？","options":[{"index":0,"textZh":"质量管理标准"},{"index":1,"textZh":"业务连续性管理系统标准"},{"index":2,"textZh":"信息安全标准"},{"index":3,"textZh":"环境管理标准"}]},
+  {"questionId":"08_HARU_Q57","questionZh":"在类Unix系统中，cron表达式0 2 * * 0表示什么？","options":[{"index":0,"textZh":"每天凌晨2点"},{"index":1,"textZh":"每周日凌晨2点"},{"index":2,"textZh":"每月2号"},{"index":3,"textZh":"每2小时"}]},
+  {"questionId":"08_HARU_Q58","questionZh":"以下哪项是防止网络钓鱼的最有效方法？","options":[{"index":0,"textZh":"仅依靠技术手段"},{"index":1,"textZh":"员工安全意识培训与电子邮件过滤相结合"},{"index":2,"textZh":"关闭所有电子邮件"},{"index":3,"textZh":"仅使用短信"}]},
+  {"questionId":"08_HARU_Q59","questionZh":"关于暗网中Tor的特征，哪项正确？","options":[{"index":0,"textZh":"加密一次即发送"},{"index":1,"textZh":"通过多重加密和节点中继隐藏通信来源和目的地"},{"index":2,"textZh":"不使用任何加密"},{"index":3,"textZh":"仅用于正常网页浏览"}]},
+  {"questionId":"08_HARU_Q60","questionZh":"在Docker中，Docker Compose用于什么？","options":[{"index":0,"textZh":"管理单个容器"},{"index":1,"textZh":"定义和运行多容器应用"},{"index":2,"textZh":"仅用于网络配置"},{"index":3,"textZh":"替代Docker引擎"}]}
+]

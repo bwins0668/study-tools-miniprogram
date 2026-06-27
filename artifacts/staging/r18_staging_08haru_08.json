@@ -1,0 +1,12 @@
+[
+  {"questionId":"08_HARU_Q61","questionZh":"在Python中，GIL（全局解释器锁）的影响是什么？","options":[{"index":0,"textZh":"允许多个线程同时执行Python字节码"},{"index":1,"textZh":"限制CPython中同一时刻只有一个线程执行Python字节码"},{"index":2,"textZh":"加速多线程应用"},{"index":3,"textZh":"仅影响I/O操作"}]},
+  {"questionId":"08_HARU_Q62","questionZh":"关于安全信息和事件管理（SIEM），哪项正确？","options":[{"index":0,"textZh":"仅收集日志"},{"index":1,"textZh":"实时收集、关联和分析安全事件数据"},{"index":2,"textZh":"替代防病毒软件"},{"index":3,"textZh":"仅用于法规遵从"}]},
+  {"questionId":"08_HARU_Q63","questionZh":"在敏捷中，什么是技术债务的含义？","options":[{"index":0,"textZh":"购买软件的贷款"},{"index":1,"textZh":"为快速交付而做出技术妥协，未来需偿还的工作"},{"index":2,"textZh":"硬件成本"},{"index":3,"textZh":"许可证费用"}]},
+  {"questionId":"08_HARU_Q64","questionZh":"以下哪项是关于SMTP协议的说明？","options":[{"index":0,"textZh":"用于浏览网页"},{"index":1,"textZh":"用于发送电子邮件的协议"},{"index":2,"textZh":"用于文件传输"},{"index":3,"textZh":"用于网络诊断"}]},
+  {"questionId":"08_HARU_Q65","questionZh":"关于基础设施监控，可观测性的三大支柱是什么？","options":[{"index":0,"textZh":"日志、指标、追踪"},{"index":1,"textZh":"CPU、内存、磁盘"},{"index":2,"textZh":"网络、存储、计算"},{"index":3,"textZh":"输入、处理、输出"}]},
+  {"questionId":"08_HARU_Q66","questionZh":"在关系数据库中，什么是孤立行问题？","options":[{"index":0,"textZh":"没有主键的表"},{"index":1,"textZh":"子表中存在但父表中对应记录已删除的行"},{"index":2,"textZh":"重复行"},{"index":3,"textZh":"包含NULL的行"}]},
+  {"questionId":"08_HARU_Q67","questionZh":"关于量子密钥分发，哪项正确？","options":[{"index":0,"textZh":"使用经典加密算法"},{"index":1,"textZh":"利用量子力学原理，任何窃听行为都会干扰量子态被检测到"},{"index":2,"textZh":"不使用加密"},{"index":3,"textZh":"与经典密码学完全相同"}]},
+  {"questionId":"08_HARU_Q68","questionZh":"在安全架构中，零信任网络的三个核心原则是什么？","options":[{"index":0,"textZh":"信任所有内部流量"},{"index":1,"textZh":"始终验证、最小权限、假设已被入侵"},{"index":2,"textZh":"仅在外围防御"},{"index":3,"textZh":"信任但验证"}]},
+  {"questionId":"08_HARU_Q69","questionZh":"关于代码审查工具，哪项是常见的最佳实践？","options":[{"index":0,"textZh":"一次性审查大量代码"},{"index":1,"textZh":"审查小批量变更，关注逻辑和安全性"},{"index":2,"textZh":"只检查语法"},{"index":3,"textZh":"不需要审查"}]},
+  {"questionId":"08_HARU_Q70","questionZh":"在系统中，什么是分布式共识算法？","options":[{"index":0,"textZh":"单节点决策"},{"index":1,"textZh":"在分布式系统中就单一数据值达成一致的协议"},{"index":2,"textZh":"集中式数据库算法"},{"index":3,"textZh":"仅用于负载均衡"}]}
+]

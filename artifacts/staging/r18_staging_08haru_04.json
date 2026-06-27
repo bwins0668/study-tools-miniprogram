@@ -1,0 +1,12 @@
+[
+  {"questionId":"08_HARU_Q21","questionZh":"在网络安全中，什么是威胁建模？","options":[{"index":0,"textZh":"仅分析漏洞"},{"index":1,"textZh":"识别和评估潜在威胁以制定对策的系统过程"},{"index":2,"textZh":"编写安全代码"},{"index":3,"textZh":"加密数据"}]},
+  {"questionId":"08_HARU_Q22","questionZh":"关于图灵测试，哪项正确？","options":[{"index":0,"textZh":"测试网络速度"},{"index":1,"textZh":"评估机器是否表现出与人类无法区分的智能行为"},{"index":2,"textZh":"测试硬件性能"},{"index":3,"textZh":"评估软件安全性"}]},
+  {"questionId":"08_HARU_Q23","questionZh":"在SQL中，ACID特性的C代表什么？","options":[{"index":0,"textZh":"一致性"},{"index":1,"textZh":"并发性"},{"index":2,"textZh":"完整性"},{"index":3,"textZh":"持续性"}]},
+  {"questionId":"08_HARU_Q24","questionZh":"以下哪项是SaaS的典型例子？","options":[{"index":0,"textZh":"Amazon EC2"},{"index":1,"textZh":"Google Workspace (Gmail, Docs)"},{"index":2,"textZh":"Docker"},{"index":3,"textZh":"MySQL"}]},
+  {"questionId":"08_HARU_Q25","questionZh":"关于零日漏洞，哪项正确？","options":[{"index":0,"textZh":"无风险的漏洞"},{"index":1,"textZh":"供应商未知且尚未发布补丁的漏洞"},{"index":2,"textZh":"已修复的漏洞"},{"index":3,"textZh":"仅影响旧系统"}]},
+  {"questionId":"08_HARU_Q26","questionZh":"在RESTful API中，HTTP状态码200表示什么？","options":[{"index":0,"textZh":"服务器错误"},{"index":1,"textZh":"请求成功"},{"index":2,"textZh":"未找到"},{"index":3,"textZh":"未授权"}]},
+  {"questionId":"08_HARU_Q27","questionZh":"关于数据治理，哪项正确？","options":[{"index":0,"textZh":"仅管理数据库"},{"index":1,"textZh":"数据资产管理的整体框架，包括方针、标准和流程"},{"index":2,"textZh":"仅适用于大企业"},{"index":3,"textZh":"不使用任何策略"}]},
+  {"questionId":"08_HARU_Q28","questionZh":"以下哪项是密码管理器的主要好处？","options":[{"index":0,"textZh":"共享所有密码"},{"index":1,"textZh":"为各服务生成强密码并安全存储"},{"index":2,"textZh":"不需要任何密码"},{"index":3,"textZh":"仅用于企业"}]},
+  {"questionId":"08_HARU_Q29","questionZh":"在Scrum中，对完成的定义应由谁决定？","options":[{"index":0,"textZh":"仅Scrum Master"},{"index":1,"textZh":"Scrum团队共同制定"},{"index":2,"textZh":"仅产品负责人"},{"index":3,"textZh":"外部干系人"}]},
+  {"questionId":"08_HARU_Q30","questionZh":"关于软件供应链安全，哪项是最佳实践？","options":[{"index":0,"textZh":"信任所有依赖项"},{"index":1,"textZh":"审查和验证第三方组件，定期扫描漏洞"},{"index":2,"textZh":"仅使用内部代码"},{"index":3,"textZh":"不更新任何依赖"}]}
+]

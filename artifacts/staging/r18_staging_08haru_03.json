@@ -1,0 +1,7 @@
+[
+  {"questionId":"08_HARU_Q16","questionZh":"在微服务中，服务发现的作用是什么？","options":[{"index":0,"textZh":"硬编码所有服务地址"},{"index":1,"textZh":"自动检测和定位网络中的服务实例"},{"index":2,"textZh":"仅管理数据库地址"},{"index":3,"textZh":"不需要任何注册中心"}]},
+  {"questionId":"08_HARU_Q17","questionZh":"关于暗网和深网，哪项正确？","options":[{"index":0,"textZh":"暗网与深网完全相同"},{"index":1,"textZh":"深网包含搜索引擎无法索引的所有内容，暗网是其中需特殊软件访问的部分"},{"index":2,"textZh":"暗网仅用于非法活动"},{"index":3,"textZh":"深网是互联网的同义词"}]},
+  {"questionId":"08_HARU_Q18","questionZh":"以下哪项是数据分类的主要目的？","options":[{"index":0,"textZh":"删除所有数据"},{"index":1,"textZh":"根据敏感度应用适当的安全控制"},{"index":2,"textZh":"仅按字母排序"},{"index":3,"textZh":"不进行任何分类"}]},
+  {"questionId":"08_HARU_Q19","questionZh":"在软件架构中，事件驱动架构的特征是什么？","options":[{"index":0,"textZh":"组件通过直接调用通信"},{"index":1,"textZh":"组件通过生产和消费事件进行异步通信"},{"index":2,"textZh":"不使用任何通信"},{"index":3,"textZh":"仅使用数据库"}]},
+  {"questionId":"08_HARU_Q20","questionZh":"关于GDPR，数据控制者和数据处理者的区别是什么？","options":[{"index":0,"textZh":"两者完全相同"},{"index":1,"textZh":"控制者决定数据处理的目的和方式，处理者代表控制者处理数据"},{"index":2,"textZh":"处理者决定目的"},{"index":3,"textZh":"控制者不承担任何责任"}]}
+]

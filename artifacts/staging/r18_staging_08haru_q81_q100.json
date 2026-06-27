@@ -1,0 +1,22 @@
+[
+  {"questionId":"08_HARU_Q81","questionZh":"在项目管理中，什么是假设日志？","options":[{"index":0,"textZh":"记录所有已完成工作"},{"index":1,"textZh":"记录项目中的假设条件和制约因素"},{"index":2,"textZh":"仅记录风险"},{"index":3,"textZh":"团队成员名单"}]},
+  {"questionId":"08_HARU_Q82","questionZh":"关于数据主权，哪项正确？","options":[{"index":0,"textZh":"数据不受任何法律约束"},{"index":1,"textZh":"数据受其所在国家或地区的法律管辖"},{"index":2,"textZh":"数据可以自由跨国移动"},{"index":3,"textZh":"仅适用于个人数据"}]},
+  {"questionId":"08_HARU_Q83","questionZh":"以下哪项是解释器与编译器的区别？","options":[{"index":0,"textZh":"两者相同"},{"index":1,"textZh":"解释器逐行执行源代码，编译器一次性翻译为机器码"},{"index":2,"textZh":"编译器逐行执行"},{"index":3,"textZh":"解释器生成可执行文件"}]},
+  {"questionId":"08_HARU_Q84","questionZh":"在网络安全中，什么是蜜罐网络？","options":[{"index":0,"textZh":"生产网络"},{"index":1,"textZh":"由多个蜜罐组成的网络，用于观察攻击者行为"},{"index":2,"textZh":"仅用于DNS"},{"index":3,"textZh":"不收集任何信息"}]},
+  {"questionId":"08_HARU_Q85","questionZh":"关于持续监控，哪项是SOC（安全运营中心）的主要活动？","options":[{"index":0,"textZh":"仅开发软件"},{"index":1,"textZh":"7×24监控、检测、响应和恢复安全事件"},{"index":2,"textZh":"管理物理安全"},{"index":3,"textZh":"仅管理防火墙"}]},
+  {"questionId":"08_HARU_Q86","questionZh":"在软件工程中，什么是循环复杂度？","options":[{"index":0,"textZh":"程序执行时间"},{"index":1,"textZh":"衡量程序逻辑复杂性的定量指标"},{"index":2,"textZh":"代码行数"},{"index":3,"textZh":"函数数量"}]},
+  {"questionId":"08_HARU_Q87","questionZh":"以下哪项是IMAP与POP3的区别？","options":[{"index":0,"textZh":"两者功能完全相同"},{"index":1,"textZh":"IMAP在服务器上管理邮件，POP3下载到本地"},{"index":2,"textZh":"POP3支持文件夹管理"},{"index":3,"textZh":"IMAP只能下载邮件"}]},
+  {"questionId":"08_HARU_Q88","questionZh":"关于状态检测防火墙，哪项正确？","options":[{"index":0,"textZh":"仅检查单个数据包"},{"index":1,"textZh":"跟踪网络连接状态，基于上下文过滤流量"},{"index":2,"textZh":"不使用任何规则"},{"index":3,"textZh":"仅适用于应用层"}]},
+  {"questionId":"08_HARU_Q89","questionZh":"在项目管理中，什么是应急储备？","options":[{"index":0,"textZh":"管理储备金"},{"index":1,"textZh":"为已识别风险分配的预算或时间"},{"index":2,"textZh":"仅用于已知未知风险"},{"index":3,"textZh":"不用于任何风险"}]},
+  {"questionId":"08_HARU_Q90","questionZh":"关于生物识别认证的FRR（错误拒绝率），哪项正确？","options":[{"index":0,"textZh":"安全性的衡量指标"},{"index":1,"textZh":"合法用户被错误拒绝的概率"},{"index":2,"textZh":"攻击成功概率"},{"index":3,"textZh":"密码强度指标"}]},
+  {"questionId":"08_HARU_Q91","questionZh":"在面向对象编程中，什么是多态？","options":[{"index":0,"textZh":"仅使用一个类"},{"index":1,"textZh":"同一接口以不同方式表现的能力"},{"index":2,"textZh":"仅继承"},{"index":3,"textZh":"隐藏实现细节"}]},
+  {"questionId":"08_HARU_Q92","questionZh":"关于边缘计算中的雾计算，哪项正确？","options":[{"index":0,"textZh":"与云计算完全相同"},{"index":1,"textZh":"在边缘设备和云之间的中间层处理数据"},{"index":2,"textZh":"不使用任何网络"},{"index":3,"textZh":"仅用于存储"}]},
+  {"questionId":"08_HARU_Q93","questionZh":"以下哪项是PaaS的典型例子？","options":[{"index":0,"textZh":"Gmail"},{"index":1,"textZh":"Google App Engine"},{"index":2,"textZh":"Dropbox"},{"index":3,"textZh":"AWS EC2"}]},
+  {"questionId":"08_HARU_Q94","questionZh":"在数据工程中，什么是流处理？","options":[{"index":0,"textZh":"仅处理历史数据"},{"index":1,"textZh":"实时连续处理数据流"},{"index":2,"textZh":"批量处理"},{"index":3,"textZh":"不使用任何处理"}]},
+  {"questionId":"08_HARU_Q95","questionZh":"关于安全开发（DevSecOps），哪项正确？","options":[{"index":0,"textZh":"将安全推迟到部署后"},{"index":1,"textZh":"将安全实践嵌入CI/CD流水线的每一步"},{"index":2,"textZh":"安全仅由安全团队负责"},{"index":3,"textZh":"不使用自动化安全测试"}]},
+  {"questionId":"08_HARU_Q96","questionZh":"在SQL中，复杂查询的子查询用于什么？","options":[{"index":0,"textZh":"替换所有主查询"},{"index":1,"textZh":"在另一个查询中嵌套查询来提供中间结果"},{"index":2,"textZh":"仅用于INSERT"},{"index":3,"textZh":"不返回任何结果"}]},
+  {"questionId":"08_HARU_Q97","questionZh":"关于沉浸式技术中的VR眩晕，哪项正确？","options":[{"index":0,"textZh":"不影响任何用户"},{"index":1,"textZh":"视觉与前庭系统感知不匹配引起的不适"},{"index":2,"textZh":"仅由硬件引起"},{"index":3,"textZh":"不需要任何对策"}]},
+  {"questionId":"08_HARU_Q98","questionZh":"在IT架构中，什么是企业服务总线（ESB）？","options":[{"index":0,"textZh":"物理电缆"},{"index":1,"textZh":"集成不同应用和服务的中间件架构"},{"index":2,"textZh":"网络交换机"},{"index":3,"textZh":"仅用于数据库"}]},
+  {"questionId":"08_HARU_Q99","questionZh":"关于数字鸿沟，哪项正确？","options":[{"index":0,"textZh":"仅指年龄差异"},{"index":1,"textZh":"由社会经济因素导致的IT接入和利用能力的差距"},{"index":2,"textZh":"仅存在于发达国家"},{"index":3,"textZh":"已完全解决"}]},
+  {"questionId":"08_HARU_Q100","questionZh":"在安全评估中，什么是红队演练？","options":[{"index":0,"textZh":"仅内部审计"},{"index":1,"textZh":"模拟真实攻击者行为测试组织防御能力"},{"index":2,"textZh":"仅检查补丁"},{"index":3,"textZh":"不需要实际攻击模拟"}]}
+]

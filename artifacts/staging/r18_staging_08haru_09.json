@@ -1,0 +1,12 @@
+[
+  {"questionId":"08_HARU_Q71","questionZh":"在加密技术中，端到端加密的特征是什么？","options":[{"index":0,"textZh":"服务提供商可解密内容"},{"index":1,"textZh":"仅通信双方可以解密，中间服务器无法读取"},{"index":2,"textZh":"不使用任何加密"},{"index":3,"textZh":"仅适用于语音通信"}]},
+  {"questionId":"08_HARU_Q72","questionZh":"关于IT服务连续性管理，哪项正确？","options":[{"index":0,"textZh":"仅备份数据"},{"index":1,"textZh":"确保重大中断后IT服务能在约定时间内恢复"},{"index":2,"textZh":"不需要任何计划"},{"index":3,"textZh":"仅适用于小型企业"}]},
+  {"questionId":"08_HARU_Q73","questionZh":"在JavaScript中，严格模式的作用是什么？","options":[{"index":0,"textZh":"允许更多错误"},{"index":1,"textZh":"捕获常见编码错误并防止使用不安全特性"},{"index":2,"textZh":"禁用所有变量声明"},{"index":3,"textZh":"与普通模式完全相同"}]},
+  {"questionId":"08_HARU_Q74","questionZh":"以下哪项是关于网络代理服务器的正确说明？","options":[{"index":0,"textZh":"仅用于缓存"},{"index":1,"textZh":"中介客户端和服务器之间的请求，可用于安全和内容过滤"},{"index":2,"textZh":"替代路由器"},{"index":3,"textZh":"仅用于VPN"}]},
+  {"questionId":"08_HARU_Q75","questionZh":"在数据科学中，混淆矩阵显示什么？","options":[{"index":0,"textZh":"仅准确率"},{"index":1,"textZh":"分类模型的真阳性、假阳性、真阴性和假阴性"},{"index":2,"textZh":"数据分布"},{"index":3,"textZh":"仅训练时间"}]},
+  {"questionId":"08_HARU_Q76","questionZh":"关于云原生应用，哪项是正确的？","options":[{"index":0,"textZh":"仅适用于单一云提供商"},{"index":1,"textZh":"设计为利用云的优势：弹性扩展、容器化、微服务"},{"index":2,"textZh":"不能在本地运行"},{"index":3,"textZh":"不使用任何自动化"}]},
+  {"questionId":"08_HARU_Q77","questionZh":"在TCP/IP模型中，传输层的两个主要协议是什么？","options":[{"index":0,"textZh":"HTTP和FTP"},{"index":1,"textZh":"TCP和UDP"},{"index":2,"textZh":"IP和ICMP"},{"index":3,"textZh":"DNS和DHCP"}]},
+  {"questionId":"08_HARU_Q78","questionZh":"关于暗网中加密货币的使用，哪项正确？","options":[{"index":0,"textZh":"所有交易完全透明"},{"index":1,"textZh":"可提供一定程度的匿名性但并非完全不可追踪"},{"index":2,"textZh":"由国家发行"},{"index":3,"textZh":"不使用区块链"}]},
+  {"questionId":"08_HARU_Q79","questionZh":"在系统设计中，CQRS模式是什么？","options":[{"index":0,"textZh":"使用同一模型进行读写"},{"index":1,"textZh":"分离读操作和写操作的模型"},{"index":2,"textZh":"仅用于数据库"},{"index":3,"textZh":"不使用任何模式"}]},
+  {"questionId":"08_HARU_Q80","questionZh":"关于IT自动化的好处，哪项是所有中最重要的？","options":[{"index":0,"textZh":"完全消除人工"},{"index":1,"textZh":"减少人为错误，提高效率，使人员专注于高价值工作"},{"index":2,"textZh":"仅降低成本"},{"index":3,"textZh":"不需任何人工参与"}]}
+]

@@ -1,0 +1,12 @@
+[
+  {"questionId":"08_HARU_Q31","questionZh":"在Linux中，systemd的主要作用是什么？","options":[{"index":0,"textZh":"编辑文本"},{"index":1,"textZh":"系统和服务管理器，管理启动流程和服务"},{"index":2,"textZh":"浏览网页"},{"index":3,"textZh":"压缩文件"}]},
+  {"questionId":"08_HARU_Q32","questionZh":"关于公钥基础设施（PKI），哪项正确？","options":[{"index":0,"textZh":"不使用证书"},{"index":1,"textZh":"管理数字证书和公钥加密的框架"},{"index":2,"textZh":"仅用于电子邮件"},{"index":3,"textZh":"不再使用"}]},
+  {"questionId":"08_HARU_Q33","questionZh":"在网络安全中，什么是横向移动？","options":[{"index":0,"textZh":"仅攻击外部网络"},{"index":1,"textZh":"攻击者在网络内从一个系统移动到另一个系统以扩大控制范围"},{"index":2,"textZh":"物理移动服务器"},{"index":3,"textZh":"仅使用单一系统"}]},
+  {"questionId":"08_HARU_Q34","questionZh":"以下哪项是对象存储的特征？","options":[{"index":0,"textZh":"使用文件和文件夹层次结构"},{"index":1,"textZh":"将数据作为对象管理，适合非结构化数据和扩展"},{"index":2,"textZh":"仅用于归档"},{"index":3,"textZh":"需要昂贵硬件"}]},
+  {"questionId":"08_HARU_Q35","questionZh":"关于无服务器计算，哪项正确？","options":[{"index":0,"textZh":"不需要任何服务器"},{"index":1,"textZh":"开发者无需管理服务器，云提供商自动分配资源"},{"index":2,"textZh":"总是比服务器更贵"},{"index":3,"textZh":"仅用于数据库"}]},
+  {"questionId":"08_HARU_Q36","questionZh":"在数据可视化中，热力图适合表示什么？","options":[{"index":0,"textZh":"仅文本数据"},{"index":1,"textZh":"矩阵数据中的密度或强度，颜色表示值大小"},{"index":2,"textZh":"仅时间序列"},{"index":3,"textZh":"不显示任何模式"}]},
+  {"questionId":"08_HARU_Q37","questionZh":"以下哪项是基础设施即代码的工具？","options":[{"index":0,"textZh":"Word"},{"index":1,"textZh":"Terraform"},{"index":2,"textZh":"Photoshop"},{"index":3,"textZh":"Chrome"}]},
+  {"questionId":"08_HARU_Q38","questionZh":"关于GDPR数据泄露通知义务，哪项正确？","options":[{"index":0,"textZh":"不需要通知任何人"},{"index":1,"textZh":"在特定情况下需在72小时内通知监管机构"},{"index":2,"textZh":"仅在年度报告中提及"},{"index":3,"textZh":"不需通知数据主体"}]},
+  {"questionId":"08_HARU_Q39","questionZh":"在计算机科学中，什么是缓存？","options":[{"index":0,"textZh":"永久存储所有数据"},{"index":1,"textZh":"高速临时存储频繁访问的数据以提高性能"},{"index":2,"textZh":"一种网络协议"},{"index":3,"textZh":"仅用于数据库"}]},
+  {"questionId":"08_HARU_Q40","questionZh":"关于混沌工程，哪项正确？","options":[{"index":0,"textZh":"随机破坏系统"},{"index":1,"textZh":"有计划地注入故障以测试系统韧性"},{"index":2,"textZh":"不需要在生产环境中进行"},{"index":3,"textZh":"仅适用于初创企业"}]}
+]
