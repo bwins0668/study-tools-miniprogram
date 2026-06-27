@@ -1,0 +1,7 @@
+[
+  {"questionId":"28_HARU_Q11","questionZh":"关于HTTPS，证书验证的作用是什么？","options":[{"index":0,"textZh":"仅加密"},{"index":1,"textZh":"确认服务器身份并建立加密连接"},{"index":2,"textZh":"加速网页加载"},{"index":3,"textZh":"替代DNS"}]},
+  {"questionId":"28_HARU_Q12","questionZh":"以下哪项是监督学习的例子？","options":[{"index":0,"textZh":"将新闻文章聚类"},{"index":1,"textZh":"使用标记图像训练物体检测"},{"index":2,"textZh":"检测异常"},{"index":3,"textZh":"缩减维度"}]},
+  {"questionId":"28_HARU_Q13","questionZh":"关于SOC 2报告，哪项正确？","options":[{"index":0,"textZh":"仅财务报告"},{"index":1,"textZh":"评估服务组织的安全、可用性、保密性和隐私控制"},{"index":2,"textZh":"不需要审计"},{"index":3,"textZh":"仅适用于医疗行业"}]},
+  {"questionId":"28_HARU_Q14","questionZh":"在API设计中，HATEOAS代表什么？","options":[{"index":0,"textZh":"超文本驱动"},{"index":1,"textZh":"超媒体作为应用状态引擎"},{"index":2,"textZh":"仅JSON格式"},{"index":3,"textZh":"不需要链接"}]},
+  {"questionId":"28_HARU_Q15","questionZh":"关于CIA三要素中的完整性，哪项正确的例子？","options":[{"index":0,"textZh":"加密数据防止未授权访问"},{"index":1,"textZh":"使用哈希确保数据未被篡改"},{"index":2,"textZh":"保持系统持续运行"},{"index":3,"textZh":"备份数据"}]}
+]

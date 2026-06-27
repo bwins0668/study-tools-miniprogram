@@ -1,0 +1,12 @@
+[
+  {"questionId":"28_HARU_Q16","questionZh":"关于数据仓库中缓慢变化维度，哪项正确？","options":[{"index":0,"textZh":"维度数据不会变化"},{"index":1,"textZh":"维度数据随时间缓慢变化需要管理历史"},{"index":2,"textZh":"变化不重要"},{"index":3,"textZh":"仅适用于事实表"}]},
+  {"questionId":"28_HARU_Q17","questionZh":"在容器安全中，镜像扫描的目的是什么？","options":[{"index":0,"textZh":"检查镜像大小"},{"index":1,"textZh":"检测镜像中的已知漏洞"},{"index":2,"textZh":"标记镜像"},{"index":3,"textZh":"加速构建"}]},
+  {"questionId":"28_HARU_Q18","questionZh":"关于SAM和安全解码，哪项正确？","options":[{"index":0,"textZh":"产生不安全的代码"},{"index":1,"textZh":"确保软件以安全方式开发和运维"},{"index":2,"textZh":"仅检查语法"},{"index":3,"textZh":"不需要验证"}]},
+  {"questionId":"28_HARU_Q19","questionZh":"在网盘协作中，同时编辑时需要什么机制？","options":[{"index":0,"textZh":"锁定文档"},{"index":1,"textZh":"冲突解决或操作转换"},{"index":2,"textZh":"备份"},{"index":3,"textZh":"不需要机制"}]},
+  {"questionId":"28_HARU_Q20","questionZh":"关于GDPR中数据保护影响评估，哪项正确？","options":[{"index":0,"textZh":"可选"},{"index":1,"textZh":"对高风险处理活动强制要求"},{"index":2,"textZh":"仅适用于大企业"},{"index":3,"textZh":"数据销毁前进行"}]},
+  {"questionId":"28_HARU_Q21","questionZh":"在IT服务管理中，配置管理数据库的作用？","options":[{"index":0,"textZh":"仅存储密码"},{"index":1,"textZh":"管理IT基础设施组件的完整信息及其关系"},{"index":2,"textZh":"用户管理"},{"index":3,"textZh":"邮件管理"}]},
+  {"questionId":"28_HARU_Q22","questionZh":"关于漏洞扫描和渗透测试的区别？","options":[{"index":0,"textZh":"两者相同"},{"index":1,"textZh":"扫描自动检测已知漏洞，测试人工模拟攻击深度评估"},{"index":2,"textZh":"测试只扫描端口"},{"index":3,"textZh":"扫描不需要工具"}]},
+  {"questionId":"28_HARU_Q23","questionZh":"在算法复杂度中，O(log n)代表什么？","options":[{"index":0,"textZh":"线性复杂度"},{"index":1,"textZh":"对数复杂度，如二分查找"},{"index":2,"textZh":"平方复杂度"},{"index":3,"textZh":"常数复杂度"}]},
+  {"questionId":"28_HARU_Q24","questionZh":"关于ISO 31000中风险评估，哪项正确？","options":[{"index":0,"textZh":"一次性活动"},{"index":1,"textZh":"风险识别、分析和评价的持续过程"},{"index":2,"textZh":"仅分析"},{"index":3,"textZh":"不需要识别"}]},
+  {"questionId":"28_HARU_Q25","questionZh":"在IT财务管理中，计费回显的目的是什么？","options":[{"index":0,"textZh":"增加成本"},{"index":1,"textZh":"准确分配IT成本给使用部门并显示实际消耗"},{"index":2,"textZh":"削减所有IT支出"},{"index":3,"textZh":"不追踪使用情况"}]}
+]

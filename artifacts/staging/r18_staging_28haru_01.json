@@ -1,0 +1,12 @@
+[
+  {"questionId":"28_HARU_Q1","questionZh":"在开发合并会计报表系统时，将功能需求与非功能需求分类。填入a的需求是哪项？","options":[{"index":0,"textZh":"全年停机时间合计在10小时以内"},{"index":1,"textZh":"错误传票应使用更正传票订正"},{"index":2,"textZh":"自动提取用于制作董事会资料的数据"},{"index":3,"textZh":"合并对象公司可以每年变更"}]},
+  {"questionId":"28_HARU_Q2","questionZh":"在TCP/IP中，网络层的代表协议是什么？","options":[{"index":0,"textZh":"HTTP"},{"index":1,"textZh":"IP"},{"index":2,"textZh":"TCP"},{"index":3,"textZh":"SMTP"}]},
+  {"questionId":"28_HARU_Q3","questionZh":"以下哪项是DNS服务的主要端口号？","options":[{"index":0,"textZh":"80"},{"index":1,"textZh":"53"},{"index":2,"textZh":"443"},{"index":3,"textZh":"25"}]},
+  {"questionId":"28_HARU_Q4","questionZh":"关于IT资产管理，哪项正确？","options":[{"index":0,"textZh":"仅管理硬件"},{"index":1,"textZh":"管理IT资产整个生命周期从采购到废弃"},{"index":2,"textZh":"仅管理软件许可证"},{"index":3,"textZh":"不需要任何管理"}]},
+  {"questionId":"28_HARU_Q5","questionZh":"关于RPA的优点，哪项正确？","options":[{"index":0,"textZh":"需要重写底层系统"},{"index":1,"textZh":"在用户界面层面自动化重复任务，无需修改现有系统"},{"index":2,"textZh":"仅适用于大型企业"},{"index":3,"textZh":"只能处理简单任务"}]},
+  {"questionId":"28_HARU_Q6","questionZh":"在系统测试中，什么是回归测试？","options":[{"index":0,"textZh":"测试新功能"},{"index":1,"textZh":"确保代码变更不影响现有功能"},{"index":2,"textZh":"仅测试性能"},{"index":3,"textZh":"用户验收测试"}]},
+  {"questionId":"28_HARU_Q7","questionZh":"以下哪项是关于数字孪生的正确说明？","options":[{"index":0,"textZh":"物理对象的虚拟复制品用于实时监控和模拟"},{"index":1,"textZh":"仅用于游戏"},{"index":2,"textZh":"不需要传感器"},{"index":3,"textZh":"与数字双胞胎相同"}]},
+  {"questionId":"28_HARU_Q8","questionZh":"关于云原生中服务网格，哪项正确？","options":[{"index":0,"textZh":"物理网络设备"},{"index":1,"textZh":"管理微服务间通信的基础设施层"},{"index":2,"textZh":"不需要任何网络"},{"index":3,"textZh":"仅用于安全"}]},
+  {"questionId":"28_HARU_Q9","questionZh":"在项目管理中，什么是范围蔓延？","options":[{"index":0,"textZh":"有意缩小范围"},{"index":1,"textZh":"未经控制的项目范围不断扩大"},{"index":2,"textZh":"范围不变"},{"index":3,"textZh":"提前完成"}]},
+  {"questionId":"28_HARU_Q10","questionZh":"关于DevOps文化，哪项正确？","options":[{"index":0,"textZh":"开发和运维完全隔离"},{"index":1,"textZh":"打破开发和运维壁垒，共享责任和协作"},{"index":2,"textZh":"开发独自运维"},{"index":3,"textZh":"不需要任何文化改变"}]}
+]
