@@ -1,0 +1,7 @@
+[
+  {"questionId":"29_HARU_Q1","questionZh":"以下哪项属于个人信息保护法规定的个人信息处理经营者？","options":[{"index":0,"textZh":"管理超过1万人存款人信息的银行"},{"index":1,"textZh":"管理居民基本台账的地方公共团体"},{"index":2,"textZh":"管理考生个人信息的国立大学法人"},{"index":3,"textZh":"管理纳税人信息的国税厅"}]},
+  {"questionId":"29_HARU_Q2","questionZh":"在IT系统中，什么是灰度发布？","options":[{"index":0,"textZh":"全部同时更新"},{"index":1,"textZh":"新版本只对部分用户发布"},{"index":2,"textZh":"跳过测试版本"},{"index":3,"textZh":"不发布"}]},
+  {"questionId":"29_HARU_Q3","questionZh":"关于安全中PAM（特权访问管理）的目的？","options":[{"index":0,"textZh":"管理所有用户"},{"index":1,"textZh":"管控和审计特权账号使用"},{"index":2,"textZh":"管理密码策略"},{"index":3,"textZh":"管理权限组"}]},
+  {"questionId":"29_HARU_Q4","questionZh":"关于DevOps中ChatOps，哪项正确？","options":[{"index":0,"textZh":"替代所有工具"},{"index":1,"textZh":"通过聊天室执行运维操作"},{"index":2,"textZh":"不使用任何通知"},{"index":3,"textZh":"仅用于社交"}]},
+  {"questionId":"29_HARU_Q5","questionZh":"关于数据库时间点恢复的实现方式？","options":[{"index":0,"textZh":"完全备份"},{"index":1,"textZh":"全量+增量+事务日志"},{"index":2,"textZh":"逻辑备份"},{"index":3,"textZh":"覆盖安装"}]}
+]
