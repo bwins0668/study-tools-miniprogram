@@ -19,10 +19,14 @@ Page({
     isLoading: true,
     loadError: '',
     isNavigating: false,
-    lastNavigationDiagnostic: ''
+    lastNavigationDiagnostic: '',
+    // R20.1: 深色模式
+    __themeDark: false
   },
 
   onLoad: function (options) {
+    // R20.1: 运行时深色模式检测
+    this._applyTheme();
     var course = options.course || options.exam || 'itpass';
     var courseLabel = course === 'sg' ? 'SG 闪卡' : 'IT Passport 闪卡';
     var courseDesc = course === 'sg' ? '情報セキュリティマネジメント' : 'IT パスポート試験';
@@ -145,5 +149,16 @@ Page({
         wx.switchTab({ url: '/pages/flashcards/flashcards' });
       }
     });
+  },
+
+  /**
+   * R20.1: 运行时深色模式检测
+   */
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
   }
 });

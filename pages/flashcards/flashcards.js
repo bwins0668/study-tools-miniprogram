@@ -9,11 +9,15 @@ Page({
     itpassCount: 0,
     sgCount: 0,
     isNavigating: false,
-    navigatingCourse: ''
+    navigatingCourse: '',
+    // R20.1: 深色模式
+    __themeDark: false
   },
 
   onShow: function () {
     this._clearNavigationLock();
+    // R20.1: 运行时深色模式检测
+    this._applyTheme();
     this.loadLastProgress();
     this.loadCourses();
     this.loadAnkiStats();
@@ -186,5 +190,16 @@ Page({
         wx.showToast({ title: '页面暂时无法打开，请重试', icon: 'none' });
       }
     });
+  },
+
+  /**
+   * R20.1: 运行时深色模式检测
+   */
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
   }
 });

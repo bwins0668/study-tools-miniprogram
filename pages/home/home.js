@@ -221,11 +221,27 @@ Page({
     showUpdateBanner: true,
     updateText: '最近更新：新增返回顶部按钮、页面浏览次数统计、最近更新提示',
     isNavigating: false,
-    navigationTarget: ''
+    navigationTarget: '',
+    // R20.1: 深色模式
+    __themeDark: false
+  },
+
+  /**
+   * R20.1: 运行时深色模式检测
+   * 同步主题状态到页面 data（app.js 的 wx.onThemeChange 会自动更新所有页面）
+   */
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
   },
 
   onShow: function () {
     this._clearNavigationLock();
+    // R20.1: 运行时深色模式检测
+    this._applyTheme();
     // R3.77 页面浏览次数统计
     homeSessionViewCount += 1;
     var viewCount = homeSessionViewCount;

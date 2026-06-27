@@ -1,5 +1,5 @@
 <!--pages/home/home.wxml-->
-<view class="container home-page">
+<view class="container home-page {{__themeDark ? 'dark-theme' : ''}}">
 
   <!-- ===== Hero 仪表盘区 ===== -->
   <view class="hero">

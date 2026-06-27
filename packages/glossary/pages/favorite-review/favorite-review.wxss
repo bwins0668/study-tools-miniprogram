@@ -349,8 +349,8 @@
 .reveal-btn,
 .nav-btn-detail,
 .go-search-btn {
-  background: #111827;
-  border: 1rpx solid #111827;
+  background: var(--text-primary);
+  border: 1rpx solid var(--text-primary);
   box-shadow: 0 14rpx 32rpx rgba(17, 24, 39, 0.16);
 }
 
@@ -364,7 +364,7 @@
 
 .completion-btn-text { font-size: 26rpx; font-weight: 600; }
 
-.completion-btn-list .completion-btn-text { color: #ffffff; }
+.completion-btn-list .completion-btn-text { color: var(--text-inverse); }
 
 .completion-btn-glossary .completion-btn-text,
 .go-search-text-secondary,
@@ -384,7 +384,7 @@
   padding: 22rpx 60rpx;
 }
 
-.reveal-btn-text { font-size: 30rpx; font-weight: 600; color: #ffffff; }
+.reveal-btn-text { font-size: 30rpx; font-weight: 600; color: var(--text-inverse); }
 
 /* ===== Unfavorite ===== */
 .unfav-btn-wrap {
@@ -502,4 +502,4 @@
   opacity: 0.9;
 }
 
-.go-search-text { font-size: 30rpx; font-weight: 600; color: #ffffff; }
+.go-search-text { font-size: 30rpx; font-weight: 600; color: var(--text-inverse); }

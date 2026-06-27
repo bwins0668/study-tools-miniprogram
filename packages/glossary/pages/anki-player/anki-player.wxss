@@ -53,7 +53,7 @@ page { overflow: hidden; }
 
 .anki-progress-fill {
   height: 100%;
-  background: #1f2937;
+  background: var(--text-primary);
   border-radius: 3rpx;
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
@@ -292,7 +292,7 @@ page { overflow: hidden; }
 .complete-title { font-size: 40rpx; font-weight: 700; color: var(--text-primary); margin-bottom: 12rpx; }
 .complete-desc { font-size: 28rpx; color: var(--text-secondary); margin-bottom: 40rpx; }
 
-.complete-btn { background: #111827; border: 1rpx solid #111827; border-radius: 44rpx; padding: 24rpx 80rpx; font-size: 30rpx; color: #fff; font-weight: 600; box-shadow: 0 14rpx 32rpx rgba(17, 24, 39, 0.16); }
+.complete-btn { background: var(--text-primary); border: 1rpx solid var(--text-primary); border-radius: 44rpx; padding: 24rpx 80rpx; font-size: 30rpx; color: var(--text-inverse); font-weight: 600; box-shadow: var(--shadow-md); }
 
 /* ===== Summary card ===== */
 .summary-card,
@@ -330,10 +330,10 @@ page { overflow: hidden; }
 .summary-btn-primary,
 .empty-btn,
 .error-btn {
-  background: #111827;
-  border: 1rpx solid #111827;
-  color: #ffffff;
-  box-shadow: 0 14rpx 32rpx rgba(17, 24, 39, 0.16);
+  background: var(--text-primary);
+  border: 1rpx solid var(--text-primary);
+  color: var(--text-inverse);
+  box-shadow: var(--shadow-md);
 }
 
 .summary-btn-secondary { background: var(--card-bg); border: 1rpx solid var(--border-color); color: var(--text-primary); }

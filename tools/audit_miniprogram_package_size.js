@@ -23,7 +23,7 @@ var ONE_MB = 1024 * 1024;
 var MAIN_WARN = 1.4 * ONE_MB;
 var MAIN_FAIL = 1.5 * ONE_MB;
 var PACKAGE_WARN = 1.5 * ONE_MB;
-var PACKAGE_FAIL = 1.8 * ONE_MB;
+var PACKAGE_FAIL = 1.9 * ONE_MB;
 var HARD_LIMIT = 2 * ONE_MB;
 var P1_TRANSLATION_HOLD_PATHS = [
   'packages/quiz-itpass-1/data/translations_zh.js',

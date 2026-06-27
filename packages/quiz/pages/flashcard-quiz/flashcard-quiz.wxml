@@ -1,6 +1,6 @@
 <!-- packages/quiz/pages/flashcard-quiz/flashcard-quiz.wxml v5 -->
 <!-- Four-state machine: loading / error / empty / content -->
-<view class="fc-container">
+<view class="fc-container {{__themeDark ? 'dark-theme' : ''}}">
 
   <!-- ===== LOADING STATE ===== -->
   <view class="fc-loading" wx:if="{{isLoading}}">

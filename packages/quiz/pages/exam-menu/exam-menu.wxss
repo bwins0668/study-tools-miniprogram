@@ -347,7 +347,7 @@
 .menu-card-progress-bar {
   height: 100%;
   border-radius: 2rpx;
-  background: #1f2937 !important;
+  background: var(--text-primary) !important;
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 

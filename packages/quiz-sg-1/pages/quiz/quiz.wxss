@@ -109,7 +109,7 @@
 
 .progress-bar {
   height: 100%;
-  background: #1f2937;
+  background: var(--text-primary);
   border-radius: 4rpx;
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -422,12 +422,12 @@
 }
 
 .feedback-correct {
-  background: #86efac;
+  background: var(--color-success-light);
   border-left: 5rpx solid var(--color-success);
 }
 
 .feedback-wrong {
-  background: #fca5a5;
+  background: var(--color-error-light);
   border-left: 5rpx solid var(--color-error);
 }
 
@@ -447,14 +447,14 @@
 .feedback-correct .feedback-icon,
 .feedback-correct .feedback-text,
 .feedback-correct .feedback-tip {
-  color: #14532d;
+  color: var(--color-success);
   background: transparent;
 }
 
 .feedback-wrong .feedback-icon,
 .feedback-wrong .feedback-text,
 .feedback-wrong .feedback-tip {
-  color: #7f1d1d;
+  color: var(--color-error);
   background: transparent;
 }
 
@@ -527,12 +527,12 @@
   align-items: center;
   justify-content: center;
   min-height: 88rpx;
-  background: #111827;
-  border: 1rpx solid #111827;
+  background: var(--text-primary);
+  border: 1rpx solid var(--text-primary);
   border-radius: 44rpx;
   margin: 20rpx 60rpx;
   padding: 26rpx;
-  box-shadow: 0 14rpx 32rpx rgba(17, 24, 39, 0.16);
+  box-shadow: var(--shadow-md);
   transition: all 0.2s ease;
 }
 
@@ -544,7 +544,7 @@
 .next-btn-text {
   font-size: 30rpx;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-inverse);
   letter-spacing: 2rpx;
 }
 
@@ -616,11 +616,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #111827;
-  border: 1rpx solid #111827;
+  background: var(--text-primary);
+  border: 1rpx solid var(--text-primary);
   border-radius: 44rpx;
   padding: 26rpx 80rpx;
-  box-shadow: 0 14rpx 32rpx rgba(17, 24, 39, 0.16);
+  box-shadow: var(--shadow-md);
 }
 
 .finish-btn:active {
@@ -631,7 +631,7 @@
 .finish-btn-text {
   font-size: 30rpx;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-inverse);
   letter-spacing: 2rpx;
 }
 
@@ -842,8 +842,8 @@
 
 .result-btn-primary {
   border-color: transparent;
-  background: #111827;
-  box-shadow: 0 14rpx 32rpx rgba(17, 24, 39, 0.16);
+  background: var(--text-primary);
+  box-shadow: var(--shadow-md);
 }
 
 .result-btn-text {
@@ -859,7 +859,7 @@
 }
 
 .result-btn-text-primary {
-  color: #ffffff;
+  color: var(--text-inverse);
 }
 
 /* ===== Next action card ===== */

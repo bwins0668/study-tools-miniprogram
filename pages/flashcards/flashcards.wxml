@@ -1,5 +1,5 @@
 <!--pages/flashcards/flashcards.wxml-->
-<view class="page">
+<view class="page {{__themeDark ? 'dark-theme' : ''}}">
   <view class="container">
     <view class="page-header">
       <text class="page-title">闪卡中心</text>

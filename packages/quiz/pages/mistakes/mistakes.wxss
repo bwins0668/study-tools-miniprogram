@@ -306,11 +306,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #111827;
-  border: 1rpx solid #111827;
+  background: var(--text-primary);
+  border: 1rpx solid var(--text-primary);
   border-radius: 40rpx;
   padding: 24rpx 36rpx;
-  box-shadow: 0 14rpx 32rpx rgba(17, 24, 39, 0.16);
+  box-shadow: var(--shadow-md);
   flex: 1;
 }
 
@@ -322,7 +322,7 @@
 .practice-wrong-text {
   font-size: 28rpx;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-inverse);
 }
 
 /* ===== Wrong list ===== */
@@ -765,11 +765,11 @@
   align-items: center;
   justify-content: center;
   min-height: 88rpx;
-  background: #111827;
-  border: 1rpx solid #111827;
+  background: var(--text-primary);
+  border: 1rpx solid var(--text-primary);
   border-radius: 40rpx;
   padding: 0 28rpx;
-  box-shadow: 0 14rpx 32rpx rgba(17, 24, 39, 0.16);
+  box-shadow: var(--shadow-md);
   width: calc(100% - 120rpx);
   transition: transform 0.12s ease, opacity 0.12s ease;
 }
@@ -782,5 +782,5 @@
 .go-study-text {
   font-size: 32rpx;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-inverse);
 }

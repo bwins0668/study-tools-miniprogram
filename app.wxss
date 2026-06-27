@@ -3,6 +3,7 @@
    Sections: tokens · reset · dark mode · layout · typography
              · surfaces · buttons · tags · inputs · states
              · quiz/glossary components · symbols · legacy bars
+             · preview marker
    ============================================================ */
 
 /* ---- 1. Design tokens ---- */
@@ -154,6 +155,46 @@ button::after {
   }
 }
 
+/* ---- 3b. JS-driven dark mode fallback ---- */
+.dark-theme {
+  --bg-color: #0d1117;
+  --bg-surface: #111820;
+  --card-bg: #141b24;
+  --card-bg-elevated: #17202b;
+  --text-primary: #edf1f6;
+  --text-secondary: #aab3bf;
+  --text-hint: #6f7a88;
+  --text-inverse: #0d1117;
+  --border-color: #27313d;
+  --border-strong: #3a4654;
+  --divider-color: #1e2732;
+  --press-bg: #1c2632;
+  --active-bg: #223040;
+  --disabled-bg: #18212b;
+  --disabled-text: #596575;
+  --primary-color: #93c5fd;
+  --primary-light: rgba(147, 197, 253, 0.12);
+  --primary-dark: #dbeafe;
+  --accent-ice: #9dbbe0;
+  --accent-ink: #f8fafc;
+  --color-success: #8ca99a;
+  --color-success-light: rgba(140, 169, 154, 0.12);
+  --color-warning: #b1a080;
+  --color-warning-light: rgba(177, 160, 128, 0.12);
+  --color-error: #b18a90;
+  --color-error-light: rgba(177, 138, 144, 0.12);
+  --color-info: #96a8bd;
+  --color-info-light: rgba(150, 168, 189, 0.12);
+  --shadow-sm: 0 1rpx 2rpx rgba(0, 0, 0, 0.22);
+  --shadow-md: 0 12rpx 32rpx rgba(0, 0, 0, 0.28);
+  --shadow-lg: 0 22rpx 54rpx rgba(0, 0, 0, 0.34);
+  --shadow-inner: inset 0 1rpx 0 rgba(255, 255, 255, 0.05);
+}
+
+.dark-theme .ui-card-soft {
+  background: rgba(255, 255, 255, 0.035);
+}
+
 /* ---- 4. Page layout ---- */
 .container {
   min-height: 100vh;
@@ -265,9 +306,9 @@ button::after {
   min-height: 88rpx;
   padding: 0 42rpx;
   border-radius: var(--radius-full);
-  background: #111827;
-  color: #ffffff;
-  border: 1rpx solid #111827;
+  background: var(--text-primary);
+  color: var(--text-inverse);
+  border: 1rpx solid var(--text-primary);
   box-shadow: 0 14rpx 32rpx rgba(17, 24, 39, 0.16);
   transition: transform var(--transition-fast), opacity var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast);
 }
@@ -336,7 +377,7 @@ button::after {
 
 .btn-primary-text,
 .btn-danger-text {
-  color: #ffffff;
+  color: var(--text-inverse);
 }
 
 .btn-secondary-text {
@@ -470,7 +511,7 @@ button::after {
   height: 100%;
   min-width: 0;
   border-radius: inherit;
-  background: #1f2937;
+  background: var(--text-primary);
   transition: width var(--transition-slow);
 }
 

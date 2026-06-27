@@ -159,10 +159,14 @@ Page({
     showHint: false,
     // R3.62 答题计时器
     timerText: '',
-    startTime: 0
+    startTime: 0,
+    // R20.1: dark mode
+    __themeDark: false
   },
 
   onLoad: function (options) {
+    this._applyTheme();
+
     var exam = options.exam || 'itpass';
     var sourceType = options.sourceType || 'lesson_quiz';
     var yearId = options.yearId || '';
@@ -195,6 +199,10 @@ Page({
     }
 
     this.loadPracticeQuestions(exam, sourceType, yearId);
+  },
+
+  onShow: function () {
+    this._applyTheme();
   },
 
   redirectToPastExamPackage: function (exam, yearId) {
@@ -655,5 +663,15 @@ Page({
       icon: 'success',
       duration: 1500
     });
+  },
+  /**
+   * R20.1: runtime dark mode detection
+   */
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
   }
 });

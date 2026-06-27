@@ -94,11 +94,14 @@ Page({
     sourceCountExpected: 0, sourceCountActual: 0, playableCountExpected: 0, playableCountActual: 0,
     knownLocalDeckIds: '', errorDetail: '', route: '', cards: [], currentIndex: 0, currentCard: null,
     totalCards: 0, hasAnswered: false, selectedKey: '', selectedOption: null, correctOption: null,
-    isCorrect: false, showBack: false, isFinished: false, sessionCorrect: 0, sessionWrong: 0, wrongIds: [], progressPercent: 0
+    isCorrect: false, showBack: false, isFinished: false, sessionCorrect: 0, sessionWrong: 0, wrongIds: [], progressPercent: 0,
+    // R20.1: dark mode
+    __themeDark: false,
   },
 
   onLoad: function (options) {
     this._loadOptions = options || {};
+    this._applyTheme();
     this.loadDeck(this._loadOptions);
   },
 
@@ -251,6 +254,22 @@ Page({
 
   goHome: function () { wx.switchTab({ url: '/pages/home/home' }); },
   goBack: function () {
-    wx.navigateBack({ delta: 1, fail: function () { wx.switchTab({ url: '/pages/flashcards/flashcards' }); } });
+    wx.navigateBack({
+      delta: 1,
+      fail: function () {
+        wx.switchTab({ url: '/pages/flashcards/flashcards' });
+      }
+    });
+  },
+
+  /**
+   * R20.1: runtime dark mode detection
+   */
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
   }
 });

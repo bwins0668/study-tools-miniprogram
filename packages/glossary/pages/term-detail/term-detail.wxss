@@ -290,13 +290,13 @@
 .note-save-btn {
   margin-top: 16rpx;
   padding: 12rpx 32rpx;
-  background: #111827;
-  border: 1rpx solid #111827;
+  background: var(--text-primary);
+  border: 1rpx solid var(--text-primary);
   border-radius: 999rpx;
   text-align: center;
 }
 
 .note-save-text {
   font-size: 26rpx;
-  color: #ffffff;
+  color: var(--text-inverse);
 }

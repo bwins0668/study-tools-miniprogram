@@ -19,3 +19,12 @@ __pycache__/
 .ai-bridge/
 .gpt-handoff/
 tools/review-batches/
+
+# P1 bilingual translation artifacts (generated, not part of P0 release)
+packages/quiz-itpass-1/data/translations_zh.js
+packages/quiz-itpass-2/data/translations_zh.js
+packages/quiz-itpass-3/data/translations_zh.js
+packages/quiz-itpass-4/data/translations_zh.js
+packages/quiz-itpass-5/data/translations_zh.js
+packages/quiz-sg-1/data/translations_zh.js
+packages/quiz-sg-2/data/translations_zh.js

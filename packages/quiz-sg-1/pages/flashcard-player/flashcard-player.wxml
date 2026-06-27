@@ -1,4 +1,4 @@
-<view class="fc-container">
+<view class="fc-container {{__themeDark ? 'dark-theme' : ''}}">
   <view class="fc-loading" wx:if="{{viewState === 'loading'}}">
     <view class="fc-loading-spinner"></view>
     <text class="fc-loading-text">{{loadingMsg}}</text>
@@ -33,6 +33,7 @@
     </view>
     <view class="fc-progress" wx:if="{{!isFinished && totalCards > 0}}"><view class="fc-progress-bar" style="width: {{progressPercent}}%"></view></view>
 
+    <!-- ===== FRONT SIDE ===== -->
     <block wx:if="{{!isFinished && currentCard && !showBack}}">
       <view class="fc-card fc-front">
         <text class="fc-question-text" user-select="true">{{currentCard.questionJa}}</text>
@@ -54,7 +55,7 @@
           <text class="fc-feedback-value">{{selectedOption.key}}. {{selectedOption.textJa}}</text>
           <text class="fc-feedback-value" wx:if="{{selectedOption.hasTextZh}}">{{selectedOption.textZh}}</text>
         </view>
-        <view class="fc-feedback-item">
+        <view class="fc-feedback-item" wx:if="{{!isCorrect}}">
           <text class="fc-feedback-label">正しい答え</text>
           <text class="fc-feedback-value">{{correctOption.key}}. {{correctOption.textJa}}</text>
           <text class="fc-feedback-value" wx:if="{{correctOption.hasTextZh}}">{{correctOption.textZh}}</text>
@@ -66,30 +67,55 @@
       </view>
     </block>
 
+    <!-- ===== BACK SIDE (R20: vertical stacked mobile layout) ===== -->
     <block wx:if="{{!isFinished && currentCard && showBack}}">
       <view class="fc-back-block">
         <text class="fc-back-label">問題</text>
         <text class="fc-back-ja" user-select="true">{{currentCard.questionJa}}</text>
         <text class="fc-back-zh" wx:if="{{currentCard.hasQuestionZh}}" user-select="true">{{currentCard.questionZh}}</text>
       </view>
+
+      <!-- R20: 答题结果 — vertical stacked -->
       <view class="fc-back-block fc-back-verdict">
-        <text class="fc-back-label">あなたの選択</text>
-        <text class="fc-verdict-value">{{selectedOption.key}}. {{selectedOption.textJa}}</text>
-        <text class="fc-verdict-value" wx:if="{{selectedOption.hasTextZh}}">{{selectedOption.textZh}}</text>
-        <text class="fc-back-label">正しい答え</text>
-        <text class="fc-verdict-value fc-verdict-correct">{{correctOption.key}}. {{correctOption.textJa}}</text>
-        <text class="fc-verdict-value" wx:if="{{correctOption.hasTextZh}}">{{correctOption.textZh}}</text>
+        <text class="fc-verdict-title" wx:if="{{isCorrect}}">答题结果（正确）</text>
+        <text class="fc-verdict-title" wx:else>答题结果（错误）</text>
+
+        <view class="fc-verdict-section" wx:if="{{isCorrect}}">
+          <text class="fc-verdict-section-label">你的选择（正确答案）</text>
+          <view class="fc-verdict-key">{{selectedOption.key}}</view>
+          <text class="fc-verdict-text-ja fc-verdict-correct">{{selectedOption.textJa}}</text>
+          <text class="fc-verdict-text-zh" wx:if="{{selectedOption.hasTextZh}}">{{selectedOption.textZh}}</text>
+        </view>
+
+        <view class="fc-verdict-section" wx:if="{{!isCorrect}}">
+          <text class="fc-verdict-section-label">你的选择</text>
+          <view class="fc-verdict-key">{{selectedOption.key}}</view>
+          <text class="fc-verdict-text-ja fc-verdict-wrong">{{selectedOption.textJa}}</text>
+          <text class="fc-verdict-text-zh" wx:if="{{selectedOption.hasTextZh}}">{{selectedOption.textZh}}</text>
+        </view>
+
+        <view class="fc-verdict-section" wx:if="{{!isCorrect}}">
+          <text class="fc-verdict-section-label">正确答案</text>
+          <view class="fc-verdict-key">{{correctOption.key}}</view>
+          <text class="fc-verdict-text-ja fc-verdict-correct">{{correctOption.textJa}}</text>
+          <text class="fc-verdict-text-zh" wx:if="{{correctOption.hasTextZh}}">{{correctOption.textZh}}</text>
+        </view>
       </view>
+
+      <!-- R20: 解説 / 解析 -->
       <view class="fc-back-block" wx:if="{{currentCard.explanationJa || currentCard.hasExplanationZh}}">
-        <text class="fc-back-label">解説</text>
+        <text class="fc-back-label">解説 / 解析</text>
         <text class="fc-back-detail-ja" wx:if="{{currentCard.explanationJa}}" user-select="true">{{currentCard.explanationJa}}</text>
         <text class="fc-back-detail-zh" wx:if="{{currentCard.hasExplanationZh}}" user-select="true">{{currentCard.explanationZh}}</text>
       </view>
+
       <view class="fc-back-block" wx:if="{{currentCard.mnemonicJa || currentCard.hasMnemonicZh}}">
         <text class="fc-back-label">覚え方</text>
         <text class="fc-back-mnemonic-ja" wx:if="{{currentCard.mnemonicJa}}" user-select="true">{{currentCard.mnemonicJa}}</text>
         <text class="fc-back-mnemonic-zh" wx:if="{{currentCard.hasMnemonicZh}}" user-select="true">{{currentCard.mnemonicZh}}</text>
       </view>
+
+      <!-- R20: 全宽下一题 -->
       <view class="fc-action-row"><view class="fc-btn fc-btn-primary fc-btn-full" bindtap="nextCard"><text>{{currentIndex + 1 >= totalCards ? '结果を見る' : '次の問題 / 下一题'}}</text></view></view>
     </block>
 

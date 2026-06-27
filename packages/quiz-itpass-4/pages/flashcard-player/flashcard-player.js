@@ -172,11 +172,15 @@ Page({
     sessionCorrect: 0,
     sessionWrong: 0,
     wrongIds: [],
-    progressPercent: 0
+    progressPercent: 0,
+    // R20.1: dark mode
+    __themeDark: false,
   },
 
   onLoad: function (options) {
+    // R20.1
     this._loadOptions = options || {};
+    this._applyTheme();
     this.loadDeck(this._loadOptions);
   },
 
@@ -517,5 +521,16 @@ Page({
         wx.switchTab({ url: '/pages/flashcards/flashcards' });
       }
     });
+  },
+
+  /**
+   * R20.1: runtime dark mode detection
+   */
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
   }
 });

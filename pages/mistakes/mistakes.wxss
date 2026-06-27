@@ -224,8 +224,8 @@
 }
 
 .mistakes-empty-btn {
-  background: #111827;
-  border: 1rpx solid #111827;
+  background: var(--text-primary);
+  border: 1rpx solid var(--text-primary);
   border-radius: 44rpx;
   padding: 24rpx 60rpx;
   box-shadow: 0 14rpx 32rpx rgba(17, 24, 39, 0.16);

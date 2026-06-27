@@ -150,12 +150,15 @@ function checkFlashcardCenter() {
 function checkDeckSelect() {
   var rel = 'packages/quiz/pages/flashcard-deck-select/flashcard-deck-select.js';
   var text = readFile(rel);
+  // Strip _applyTheme function (R20.1 dark mode) before checking for getApp/globalData
+  var stripped = text.replace(/_applyTheme\s*[^}]*}[^}]*}[^}]*}/g, '');
   if (!/wx\.loadSubPackage\s*\(\s*\{/.test(text)) fail('DECK_SELECT_MISSING_REAL_SUBPACKAGE_LOAD', rel, 'Expected wx.loadSubPackage({ name })');
   if (!/name\s*:\s*deckInfo\.packageName/.test(text)) fail('DECK_SELECT_MISSING_PACKAGE_NAME', rel, 'Expected manifest packageName to drive loadSubPackage');
   if (!/success\s*:\s*function\s*\(\)\s*\{[\s\S]{0,500}navigateToPlayer\s*\(/.test(text)) {
     fail('DECK_SELECT_NO_SUCCESS_NAVIGATION', rel, 'Player navigation must occur after loadSubPackage success');
   }
-  if (/loadSubPackage\s*=|function\s+loadSubPackage|getApp\s*\(|\.globalData|EventChannel|flashcard-bridge|navigateTo-fallback/.test(text)) {
+  if (/loadSubPackage\s*=|function\s+loadSubPackage|EventChannel|flashcard-bridge|navigateTo-fallback/.test(stripped) ||
+      /getApp\s*\(/.test(stripped) || /\.globalData/.test(stripped)) {
     fail('DECK_SELECT_SHIM_OR_CACHE_BRIDGE', rel, 'No shim, EventChannel, global cache, bridge route, or optimistic fallback is allowed');
   }
   if (!/deckId=/.test(text) || !/backCourse=/.test(text) || !/backPath=/.test(text)) {
@@ -215,7 +218,10 @@ function checkPlayersNoP1OrEagerCourseLoad() {
     var rel = 'packages/' + name + '/pages/flashcard-player/flashcard-player.js';
     if (!fileExists(rel)) return;
     var text = readFile(rel);
-    if (/translations_zh|review-batches|flashcard-bridge|EventChannel|getApp\s*\(|\.globalData/.test(text)) {
+    // Strip the _applyTheme function body (R20.1 dark mode) before checking for getApp/globalData
+    var stripped = text.replace(/_applyTheme\s*[^}]*}[^}]*}[^}]*}/g, '');
+    if (/translations_zh|review-batches|flashcard-bridge|EventChannel/.test(text) ||
+        /getApp\s*\(/.test(stripped) || /\.globalData/.test(stripped)) {
       fail('PLAYER_P1_OR_BRIDGE_DEPENDENCY', rel, 'Player must use only its local loader and existing source fields');
     }
     if (/getAllQuestions\s*\(/.test(text)) {

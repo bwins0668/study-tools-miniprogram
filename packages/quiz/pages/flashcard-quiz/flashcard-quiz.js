@@ -34,6 +34,8 @@ Page({
     currentCard: null,
     answeredList: [],
     wrongIds: [],
+    // R20.1: dark mode
+    __themeDark: false,
     sessionCorrect: 0,
     sessionWrong: 0,
     hasAnswered: false,
@@ -65,6 +67,7 @@ Page({
 
   onLoad: function (options) {
     console.log('[flashcard-quiz] onLoad', options);
+    this._applyTheme();
 
     var course = options.course || options.exam || 'itpass';
     var yearId = options.yearId || '';
@@ -104,6 +107,7 @@ Page({
   },
 
   onShow: function () {
+    this._applyTheme();
     this.tryRestoreProgress();
   },
 
@@ -160,6 +164,8 @@ Page({
         showBack: false,
         answeredList: [],
         wrongIds: [],
+    // R20.1: dark mode
+    __themeDark: false,
         sessionCorrect: 0,
         sessionWrong: 0,
         isLoading: false,
@@ -397,6 +403,8 @@ Page({
       isFinished: false,
       answeredList: [],
       wrongIds: [],
+    // R20.1: dark mode
+    __themeDark: false,
       sessionCorrect: 0,
       sessionWrong: 0
     });
@@ -438,6 +446,8 @@ Page({
       isFinished: false,
       answeredList: [],
       wrongIds: [],
+    // R20.1: dark mode
+    __themeDark: false,
       sessionCorrect: 0,
       sessionWrong: 0,
       deckLabel: '错题重练'
@@ -457,5 +467,16 @@ Page({
         wx.switchTab({ url: '/pages/flashcards/flashcards' });
       }
     });
+  },
+
+  /**
+   * R20.1: runtime dark mode detection
+   */
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
   }
 });

@@ -24,6 +24,7 @@ function visit(relative) {
 
 visit('.');
 files.sort();
+
 var failures = [];
 files.forEach(function (relative) {
   var result = childProcess.spawnSync(process.execPath, ['--check', path.join(ROOT, relative)], {

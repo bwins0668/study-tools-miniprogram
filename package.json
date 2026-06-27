@@ -27,6 +27,15 @@
     "test:ui-runtime": "node tools/run_ui_polish_today_e2e.js",
     "test:ui-capture": "python tools/capture_ui_polish_today.py",
     "test:syntax": "node tools/check_javascript_syntax.js",
-    "test:content-compliance": "node tools/check_content_compliance.js"
+    "test:content-compliance": "node tools/check_content_compliance.js",
+    "test:theme-coverage": "node tools/check_theme_coverage.js",
+    "test:theme-contrast": "node tools/check_theme_contrast.js",
+    "test:home-learning-focus-theme": "node tools/check_home_learning_focus_theme.js",
+    "test:flashcard-feedback-bilingual": "node tools/check_flashcard_feedback_bilingual.js",
+    "test:flashcard-feedback-layout": "node tools/check_flashcard_feedback_layout.js",
+    "test:flashcard-explanation-bilingual": "node tools/check_flashcard_explanation_bilingual.js",
+    "test:flashcard-srs-behavior": "node tools/check_flashcard_srs_behavior.js",
+    "test:flashcard-explanation-zh-specificity": "node tools/check_flashcard_explanation_zh_specificity.js",
+    "audit:flashcard-explanation-zh-specificity": "node tools/check_flashcard_explanation_zh_specificity.js --audit"
   }
 }
