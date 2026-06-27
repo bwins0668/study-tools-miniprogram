@@ -1,0 +1,22 @@
+[
+  {"questionId":"28_AKI_Q11","questionZh":"以下哪项是TCP和UDP的共同特征？","options":[{"index":0,"textZh":"都保证数据传输"},{"index":1,"textZh":"都使用端口号进行通信"},{"index":2,"textZh":"都进行流量控制"},{"index":3,"textZh":"都建立连接"}]},
+  {"questionId":"28_AKI_Q12","questionZh":"在数据库ACID特性中，A代表什么？","options":[{"index":0,"textZh":"可用性"},{"index":1,"textZh":"原子性"},{"index":2,"textZh":"自动化"},{"index":3,"textZh":"可审计性"}]},
+  {"questionId":"28_AKI_Q13","questionZh":"关于无密码认证，FIDO2标准使用什么？","options":[{"index":0,"textZh":"仅密码"},{"index":1,"textZh":"公钥加密和生物识别，消除共享密钥"},{"index":2,"textZh":"短信验证码"},{"index":3,"textZh":"安全问题"}]},
+  {"questionId":"28_AKI_Q14","questionZh":"在微服务架构中，断路器模式的目的？","options":[{"index":0,"textZh":"加速服务调用"},{"index":1,"textZh":"防止级联故障，故障快速返回而非长时间等待"},{"index":2,"textZh":"增加调用次数"},{"index":3,"textZh":"仅用于记录"}]},
+  {"questionId":"28_AKI_Q15","questionZh":"关于GDPR中数据最小化，哪项正确？","options":[{"index":0,"textZh":"收集尽可能多的数据"},{"index":1,"textZh":"仅收集为特定目的所必需的最少个人数据"},{"index":2,"textZh":"不需要数据"},{"index":3,"textZh":"仅适用于名称"}]},
+  {"questionId":"28_AKI_Q16","questionZh":"在Linux中，/etc/shadow文件存储什么？","options":[{"index":0,"textZh":"用户配置文件"},{"index":1,"textZh":"哈希后的用户密码"},{"index":2,"textZh":"日志文件"},{"index":3,"textZh":"网络设置"}]},
+  {"questionId":"28_AKI_Q17","questionZh":"以下哪项是网络层协议？","options":[{"index":0,"textZh":"HTTP"},{"index":1,"textZh":"IP"},{"index":2,"textZh":"TCP"},{"index":3,"textZh":"DNS"}]},
+  {"questionId":"28_AKI_Q18","questionZh":"关于业务影响分析，哪项是其目的？","options":[{"index":0,"textZh":"仅评估成本"},{"index":1,"textZh":"识别关键业务功能并评估中断影响"},{"index":2,"textZh":"仅分析市场"},{"index":3,"textZh":"不需要分析"}]},
+  {"questionId":"28_AKI_Q19","questionZh":"在云服务中，什么是供应商锁定？","options":[{"index":0,"textZh":"自由切换供应商"},{"index":1,"textZh":"因依赖特定供应商技术或服务导致难以迁移"},{"index":2,"textZh":"法律要求"},{"index":3,"textZh":"不存在的概念"}]},
+  {"questionId":"28_AKI_Q20","questionZh":"在敏捷中，什么是信息辐射源？","options":[{"index":0,"textZh":"隐藏的信息"},{"index":1,"textZh":"团队主动展示项目状态的可视化显示器"},{"index":2,"textZh":"电子邮件通知"},{"index":3,"textZh":"机密报告"}]},
+  {"questionId":"28_AKI_Q21","questionZh":"关于对称加密，哪项正确？","options":[{"index":0,"textZh":"加密和解密使用不同密钥"},{"index":1,"textZh":"加密和解密使用相同密钥"},{"index":2,"textZh":"不使用任何密钥"},{"index":3,"textZh":"仅适用于公钥"}]},
+  {"questionId":"28_AKI_Q22","questionZh":"在系统设计中，CAP定理说明什么？","options":[{"index":0,"textZh":"系统可同时满足全部三个属性"},{"index":1,"textZh":"分布式系统无法同时完全满足一致性、可用性和分区容错性"},{"index":2,"textZh":"仅适用于关系数据库"},{"index":3,"textZh":"与网络无关"}]},
+  {"questionId":"28_AKI_Q23","questionZh":"以下哪项是关于DevOps中持续交付的正确说明？","options":[{"index":0,"textZh":"仅手动部署"},{"index":1,"textZh":"确保软件始终处于可发布状态"},{"index":2,"textZh":"每周部署一次"},{"index":3,"textZh":"不使用任何自动化"}]},
+  {"questionId":"28_AKI_Q24","questionZh":"在数据备份策略中，RPO为0意味着什么？","options":[{"index":0,"textZh":"无备份"},{"index":1,"textZh":"零数据丢失，实时同步"},{"index":2,"textZh":"每天备份一次"},{"index":3,"textZh":"仅每周备份"}]},
+  {"questionId":"28_AKI_Q25","questionZh":"关于XML和JSON，哪项正确？","options":[{"index":0,"textZh":"两者完全相同"},{"index":1,"textZh":"XML基于标记，JSON更轻量且易读"},{"index":2,"textZh":"JSON不能用于API"},{"index":3,"textZh":"XML比JSON更简洁"}]},
+  {"questionId":"28_AKI_Q26","questionZh":"在网络安全中，APT攻击的特征是什么？","options":[{"index":0,"textZh":"自动快速攻击"},{"index":1,"textZh":"高级持续性威胁，长期潜伏并窃取信息"},{"index":2,"textZh":"仅攻击Web应用"},{"index":3,"textZh":"仅使用已知漏洞"}]},
+  {"questionId":"28_AKI_Q27","questionZh":"关于ITIL中服务目录，哪项正确？","options":[{"index":0,"textZh":"仅列出技术组件"},{"index":1,"textZh":"面向客户的IT服务信息集中来源"},{"index":2,"textZh":"内部文档"},{"index":3,"textZh":"仅用于计费"}]},
+  {"questionId":"28_AKI_Q28","questionZh":"以下哪项是关于量子计算机的量子位特征？","options":[{"index":0,"textZh":"仅能取0或1"},{"index":1,"textZh":"可同时处于0和1的叠加态"},{"index":2,"textZh":"与经典位完全相同"},{"index":3,"textZh":"不使用概率"}]},
+  {"questionId":"28_AKI_Q29","questionZh":"在敏捷估算中，故事点的用途是什么？","options":[{"index":0,"textZh":"衡量确切小时数"},{"index":1,"textZh":"评估用户故事的相对大小和复杂度"},{"index":2,"textZh":"分配团队成员"},{"index":3,"textZh":"计算成本"}]},
+  {"questionId":"28_AKI_Q30","questionZh":"关于SD-WAN，哪项正确？","options":[{"index":0,"textZh":"仅用于有线连接"},{"index":1,"textZh":"软件定义方式管理广域网，实现灵活路由和优化"},{"index":2,"textZh":"替代所有路由器"},{"index":3,"textZh":"仅适用于小型办公室"}]}
+]

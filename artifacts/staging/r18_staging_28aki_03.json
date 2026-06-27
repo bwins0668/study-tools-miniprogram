@@ -1,0 +1,12 @@
+[
+  {"questionId":"28_AKI_Q31","questionZh":"在关系数据库中，什么是视图？","options":[{"index":0,"textZh":"物理存储的表"},{"index":1,"textZh":"基于查询的虚拟表"},{"index":2,"textZh":"数据库索引"},{"index":3,"textZh":"备份文件"}]},
+  {"questionId":"28_AKI_Q32","questionZh":"关于信息安全中的纵深防御，哪项正确？","options":[{"index":0,"textZh":"仅依赖单一安全层"},{"index":1,"textZh":"实施多层安全控制降低整体风险"},{"index":2,"textZh":"仅关注外部威胁"},{"index":3,"textZh":"不使用防火墙"}]},
+  {"questionId":"28_AKI_Q33","questionZh":"在Java中，接口与抽象类的区别是什么？","options":[{"index":0,"textZh":"没有区别"},{"index":1,"textZh":"接口仅声明方法，抽象类可有部分实现"},{"index":2,"textZh":"抽象类不能有实现"},{"index":3,"textZh":"接口可包含实现"}]},
+  {"questionId":"28_AKI_Q34","questionZh":"以下哪项是关于安全编码中OWASP Top 10的正确说明？","options":[{"index":0,"textZh":"Web应用的安全编码最佳实践清单"},{"index":1,"textZh":"Web应用最关键的十大安全风险列表"},{"index":2,"textZh":"编程语言排名"},{"index":3,"textZh":"仅适用于移动应用"}]},
+  {"questionId":"28_AKI_Q35","questionZh":"在项目中，什么是挣值管理（EVM）？","options":[{"index":0,"textZh":"仅跟踪成本"},{"index":1,"textZh":"综合评估范围、进度和成本绩效的方法"},{"index":2,"textZh":"仅管理日程"},{"index":3,"textZh":"不需要任何指标"}]},
+  {"questionId":"28_AKI_Q36","questionZh":"关于Elasticsearch，哪项正确？","options":[{"index":0,"textZh":"关系数据库"},{"index":1,"textZh":"分布式搜索和分析引擎"},{"index":2,"textZh":"Web服务器"},{"index":3,"textZh":"邮件服务器"}]},
+  {"questionId":"28_AKI_Q37","questionZh":"在UX设计中，什么是用户画像？","options":[{"index":0,"textZh":"实际用户照片"},{"index":1,"textZh":"基于研究的目标用户代表性虚构角色"},{"index":2,"textZh":"仅统计信息"},{"index":3,"textZh":"用户手册"}]},
+  {"questionId":"28_AKI_Q38","questionZh":"关于git中.gitignore文件的作用，哪项正确？","options":[{"index":0,"textZh":"删除所有文件"},{"index":1,"textZh":"指定不被Git跟踪的文件模式"},{"index":2,"textZh":"编译代码"},{"index":3,"textZh":"仅用于分支管理"}]},
+  {"questionId":"28_AKI_Q39","questionZh":"在网络安全中，什么是威胁情报？","options":[{"index":0,"textZh":"仅内部日志"},{"index":1,"textZh":"关于当前或潜在攻击的收集和分析信息"},{"index":2,"textZh":"防火墙规则"},{"index":3,"textZh":"密码策略"}]},
+  {"questionId":"28_AKI_Q40","questionZh":"关于NoSQL数据库中的键值存储，哪项正确？","options":[{"index":0,"textZh":"使用表和行"},{"index":1,"textZh":"将数据存储为键值对，简单且高性能"},{"index":2,"textZh":"仅支持SQL查询"},{"index":3,"textZh":"不支持扩展"}]}
+]

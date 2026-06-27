@@ -1,0 +1,12 @@
+[
+  {"questionId":"28_AKI_Q51","questionZh":"在IT服务管理中，事故和问题的区别是什么？","options":[{"index":0,"textZh":"两者完全相同"},{"index":1,"textZh":"事故是服务中断事件，问题是事故的根本原因"},{"index":2,"textZh":"问题比事故轻微"},{"index":3,"textZh":"问题不需要解决"}]},
+  {"questionId":"28_AKI_Q52","questionZh":"关于数字转换中API经济，哪项正确？","options":[{"index":0,"textZh":"不使用API"},{"index":1,"textZh":"通过API将服务和数据变现，创造新商业模式"},{"index":2,"textZh":"API仅用于内部系统"},{"index":3,"textZh":"API没有商业价值"}]},
+  {"questionId":"28_AKI_Q53","questionZh":"在机器学习中，欠拟合的特征是什么？","options":[{"index":0,"textZh":"完美匹配训练数据"},{"index":1,"textZh":"模型过于简单无法捕捉数据中的模式"},{"index":2,"textZh":"与过拟合相同"},{"index":3,"textZh":"使用过多特征"}]},
+  {"questionId":"28_AKI_Q54","questionZh":"关于安全事件响应，第一优先级是什么？","options":[{"index":0,"textZh":"立即通知媒体"},{"index":1,"textZh":"抑制损害并防止进一步扩散"},{"index":2,"textZh":"仅记录事件"},{"index":3,"textZh":"不采取任何措施"}]},
+  {"questionId":"28_AKI_Q55","questionZh":"在数据库分片中，水平分片的意义是什么？","options":[{"index":0,"textZh":"将不同表放在不同服务器"},{"index":1,"textZh":"按行将同一表的数据分布到多个数据库"},{"index":2,"textZh":"垂直分割列"},{"index":3,"textZh":"不需要分片"}]},
+  {"questionId":"28_AKI_Q56","questionZh":"关于GDPR域外适用，哪项正确？","options":[{"index":0,"textZh":"仅适用于EU境内"},{"index":1,"textZh":"处理EU居民数据的非EU组织也受GDPR约束"},{"index":2,"textZh":"仅适用于美国企业"},{"index":3,"textZh":"自愿遵守"}]},
+  {"questionId":"28_AKI_Q57","questionZh":"在Python中，装饰器栈的执行顺序是什么？","options":[{"index":0,"textZh":"从下到上"},{"index":1,"textZh":"从上到下"},{"index":2,"textZh":"随机"},{"index":3,"textZh":"同时"}]},
+  {"questionId":"28_AKI_Q58","questionZh":"以下哪项是分布式拒绝服务攻击的缓解策略？","options":[{"index":0,"textZh":"不使用任何保护"},{"index":1,"textZh":"流量过滤、速率限制和CDN分布"},{"index":2,"textZh":"关闭所有服务"},{"index":3,"textZh":"仅增加带宽"}]},
+  {"questionId":"28_AKI_Q59","questionZh":"在软件生命周期中，什么是技术债务？","options":[{"index":0,"textZh":"财务债务"},{"index":1,"textZh":"为快速交付而积累的需要后续修复的代码问题"},{"index":2,"textZh":"硬件成本"},{"index":3,"textZh":"许可证费用"}]},
+  {"questionId":"28_AKI_Q60","questionZh":"关于网络安全中的零信任架构，哪项正确？","options":[{"index":0,"textZh":"信任所有内部通信"},{"index":1,"textZh":"不基于网络位置信任，始终验证每个访问请求"},{"index":2,"textZh":"不使用任何认证"},{"index":3,"textZh":"仅适用于云环境"}]}
+]

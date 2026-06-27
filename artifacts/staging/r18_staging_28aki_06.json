@@ -1,0 +1,12 @@
+[
+  {"questionId":"28_AKI_Q61","questionZh":"在ITSM中，SLA和OLA的区别？","options":[{"index":0,"textZh":"相同概念"},{"index":1,"textZh":"SLA与客户签订，OLA是内部支持团队之间的协议"},{"index":2,"textZh":"OLA取代SLA"},{"index":3,"textZh":"不需要任何协议"}]},
+  {"questionId":"28_AKI_Q62","questionZh":"关于Kubernetes中Pod，哪项正确？","options":[{"index":0,"textZh":"永久运行永不重启"},{"index":1,"textZh":"可被调度器重新调度到健康节点"},{"index":2,"textZh":"不能包含多个容器"},{"index":3,"textZh":"等同于虚拟机"}]},
+  {"questionId":"28_AKI_Q63","questionZh":"在区块链中，什么是51%攻击？","options":[{"index":0,"textZh":"攻击单个节点"},{"index":1,"textZh":"控制超过半数网络算力以操纵交易"},{"index":2,"textZh":"物理攻击"},{"index":3,"textZh":"仅盗窃私钥"}]},
+  {"questionId":"28_AKI_Q64","questionZh":"关于IT预算管理，哪项是最佳实践？","options":[{"index":0,"textZh":"仅分配硬件费用"},{"index":1,"textZh":"将IT支出与业务战略对齐，跟踪ROI"},{"index":2,"textZh":"每年削减预算"},{"index":3,"textZh":"不跟踪花费"}]},
+  {"questionId":"28_AKI_Q65","questionZh":"在CSS中，什么是盒模型？","options":[{"index":0,"textZh":"仅包含内容"},{"index":1,"textZh":"包含内容、内边距、边框和外边距"},{"index":2,"textZh":"仅用于颜色"},{"index":3,"textZh":"与布局无关"}]},
+  {"questionId":"28_AKI_Q66","questionZh":"关于渗透测试，哪项正确？","options":[{"index":0,"textZh":"仅扫描端口"},{"index":1,"textZh":"模拟实际攻击评估系统安全性的授权测试"},{"index":2,"textZh":"不需要授权"},{"index":3,"textZh":"仅自动扫描"}]},
+  {"questionId":"28_AKI_Q67","questionZh":"在面向对象中，SOLID原则的S代表什么？","options":[{"index":0,"textZh":"单一职责原则"},{"index":1,"textZh":"开闭原则"},{"index":2,"textZh":"里氏替换"},{"index":3,"textZh":"接口隔离"}]},
+  {"questionId":"28_AKI_Q68","questionZh":"关于IT灾难恢复测试，哪项正确？","options":[{"index":0,"textZh":"不需要测试"},{"index":1,"textZh":"定期测试恢复程序确保实际紧急情况下可执行"},{"index":2,"textZh":"仅在购买保险后进行"},{"index":3,"textZh":"每年只进行一次"}]},
+  {"questionId":"28_AKI_Q69","questionZh":"在敏捷中，什么是速度？","options":[{"index":0,"textZh":"开发者的打字速度"},{"index":1,"textZh":"团队一个冲刺中完成的故事点数量"},{"index":2,"textZh":"代码行数"},{"index":3,"textZh":"部署频率"}]},
+  {"questionId":"28_AKI_Q70","questionZh":"关于数据可视化，折线图最适合什么类型的数据？","options":[{"index":0,"textZh":"分类比较"},{"index":1,"textZh":"显示随时间的变化趋势"},{"index":2,"textZh":"部分对整体的关系"},{"index":3,"textZh":"显示分布"}]}
+]

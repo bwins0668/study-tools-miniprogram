@@ -1,0 +1,12 @@
+[
+  {"questionId":"28_AKI_Q41","questionZh":"在数据加密中，什么是盐值？","options":[{"index":0,"textZh":"加密密钥"},{"index":1,"textZh":"添加到密码前的随机数据，防止彩虹表攻击"},{"index":2,"textZh":"哈希值"},{"index":3,"textZh":"证书"}]},
+  {"questionId":"28_AKI_Q42","questionZh":"关于负载测试和压力测试，哪项正确？","options":[{"index":0,"textZh":"两者完全相同"},{"index":1,"textZh":"负载测试验证预期负载，压力测试找出系统极限"},{"index":2,"textZh":"压力测试不使用工具"},{"index":3,"textZh":"负载测试仅用于Web"}]},
+  {"questionId":"28_AKI_Q43","questionZh":"在网络安全架构中，什么是网络微分段？","options":[{"index":0,"textZh":"大型网络段"},{"index":1,"textZh":"将网络划分为更小的隔离区域以限制横向移动"},{"index":2,"textZh":"移除所有防火墙"},{"index":3,"textZh":"仅用于物理网络"}]},
+  {"questionId":"28_AKI_Q44","questionZh":"关于敏捷里的看板和Scrum的区别，哪项正确？","options":[{"index":0,"textZh":"完全相同"},{"index":1,"textZh":"Scrum有固定冲刺，看板是持续流动"},{"index":2,"textZh":"看板使用冲刺"},{"index":3,"textZh":"Scrum不使用时间盒"}]},
+  {"questionId":"28_AKI_Q45","questionZh":"在项目风险管理中，定性和定量分析的区别？","options":[{"index":0,"textZh":"无区别"},{"index":1,"textZh":"定性分析按优先级排列风险，定量分析用数字评估影响"},{"index":2,"textZh":"定量不使用数字"},{"index":3,"textZh":"定性使用蒙特卡洛模拟"}]},
+  {"questionId":"28_AKI_Q46","questionZh":"关于IaaS，哪项是典型例子？","options":[{"index":0,"textZh":"Salesforce"},{"index":1,"textZh":"AWS EC2"},{"index":2,"textZh":"Google Docs"},{"index":3,"textZh":"Netflix"}]},
+  {"questionId":"28_AKI_Q47","questionZh":"在数字取证中，证据保管链的重要性是什么？","options":[{"index":0,"textZh":"可以随意修改证据"},{"index":1,"textZh":"记录证据的采集、存储和转移过程以保持完整性"},{"index":2,"textZh":"仅用于刑事案件"},{"index":3,"textZh":"不需要任何记录"}]},
+  {"questionId":"28_AKI_Q48","questionZh":"关于网络安全中蜜罐和蜜网，哪项正确？","options":[{"index":0,"textZh":"蜜网是单个蜜罐"},{"index":1,"textZh":"蜜罐是单个诱饵系统，蜜网是由多个蜜罐组成的网络"},{"index":2,"textZh":"名字可互换使用"},{"index":3,"textZh":"不使用任何技术"}]},
+  {"questionId":"28_AKI_Q49","questionZh":"在OWASP中，注入攻击排名第几位？","options":[{"index":0,"textZh":"不在Top10中"},{"index":1,"textZh":"持续在前三名"},{"index":2,"textZh":"仅在特定年份中"},{"index":3,"textZh":"已完全消除"}]},
+  {"questionId":"28_AKI_Q50","questionZh":"关于Terraform中基础设施即代码，哪项是正确的工作流？","options":[{"index":0,"textZh":"手动配置→部署→测试"},{"index":1,"textZh":"编写配置→计划预览→应用变更"},{"index":2,"textZh":"自动生成所有代码"},{"index":3,"textZh":"不需要任何代码"}]}
+]

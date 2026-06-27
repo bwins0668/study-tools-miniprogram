@@ -1,0 +1,12 @@
+[
+  {"questionId":"28_AKI_Q1","questionZh":"关于劳动者派遣的说明中，哪项是恰当的？","options":[{"index":0,"textZh":"不论业务种类，派遣期限均无限制。"},{"index":1,"textZh":"不论派遣合同种类，派遣劳动者的选定均由派遣接收方进行。"},{"index":2,"textZh":"派遣接收方向派遣劳动者支付工资。"},{"index":3,"textZh":"派遣劳动者在派遣来源方的雇用期间结束后，派遣接收方也可以雇用该人。"}]},
+  {"questionId":"28_AKI_Q2","questionZh":"在IT系统中，暗号化ハッシュ関数的特征是什么？","options":[{"index":0,"textZh":"可从哈希值还原原始数据"},{"index":1,"textZh":"生成固定长度值，难以从哈希值推导原始数据"},{"index":2,"textZh":"不产生碰撞"},{"index":3,"textZh":"仅用于加密"}]},
+  {"questionId":"28_AKI_Q3","questionZh":"在系统开发中，验收测试是由谁实施的？","options":[{"index":0,"textZh":"仅开发者"},{"index":1,"textZh":"用户或客户确认系统是否满足需求"},{"index":2,"textZh":"仅项目经理"},{"index":3,"textZh":"仅测试团队"}]},
+  {"questionId":"28_AKI_Q4","questionZh":"以下哪项是SQL中JOIN的类型？","options":[{"index":0,"textZh":"仅INNER JOIN"},{"index":1,"textZh":"INNER JOIN、LEFT JOIN、RIGHT JOIN、FULL JOIN"},{"index":2,"textZh":"仅LEFT JOIN"},{"index":3,"textZh":"仅CROSS JOIN"}]},
+  {"questionId":"28_AKI_Q5","questionZh":"关于VPN隧道协议，哪项安全性最高？","options":[{"index":0,"textZh":"PPTP"},{"index":1,"textZh":"OpenVPN / WireGuard"},{"index":2,"textZh":"L2TP无加密"},{"index":3,"textZh":"无协议"}]},
+  {"questionId":"28_AKI_Q6","questionZh":"在项目管理知识体系中，沟通管理的主要目的是什么？","options":[{"index":0,"textZh":"仅发送邮件"},{"index":1,"textZh":"确保项目信息及时恰当地生成、收集、分发和存储"},{"index":2,"textZh":"仅管理会议"},{"index":3,"textZh":"仅编写报告"}]},
+  {"questionId":"28_AKI_Q7","questionZh":"关于NIST CSF，哪项是正确的层级结构？","options":[{"index":0,"textZh":"仅功能→类别"},{"index":1,"textZh":"功能→类别→子类别→信息参考"},{"index":2,"textZh":"类别→功能"},{"index":3,"textZh":"仅子类别"}]},
+  {"questionId":"28_AKI_Q8","questionZh":"在Python中，lambda函数的特征是什么？","options":[{"index":0,"textZh":"可以包含多个语句"},{"index":1,"textZh":"小型匿名函数，仅能包含单个表达式"},{"index":2,"textZh":"必须命名"},{"index":3,"textZh":"不能用于排序"}]},
+  {"questionId":"28_AKI_Q9","questionZh":"关于灾难恢复站点，哪项成本最低？","options":[{"index":0,"textZh":"热站"},{"index":1,"textZh":"冷站"},{"index":2,"textZh":"温站"},{"index":3,"textZh":"镜像站点"}]},
+  {"questionId":"28_AKI_Q10","questionZh":"在企业社会责任中，ESG投资的E代表什么？","options":[{"index":0,"textZh":"经济"},{"index":1,"textZh":"环境"},{"index":2,"textZh":"效率"},{"index":3,"textZh":"员工"}]}
+]
