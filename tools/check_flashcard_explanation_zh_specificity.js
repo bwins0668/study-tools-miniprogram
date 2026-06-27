@@ -73,7 +73,7 @@ PACKAGES.forEach(function (pkg) {
     counters.totalQuestions++;
 
     var explanationJa = (q.explanationJa || '').replace(/<[^>]+>/g, '').trim();
-    var explanationZh = (q.explanationZh || '').trim();
+    var explanationZh = (loader.explanationsById && loader.explanationsById[q.id] || q.explanationZh || '').trim();
 
     // 1. Empty
     if (!explanationZh || explanationZh.length < 5) {

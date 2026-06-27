@@ -59,7 +59,13 @@ function matchTerm(item, keyword) {
 }
 
 Page({
+  onLoad: function (options) {
+    this._applyTheme();
+    this._applyTheme();
+  },
   data: {
+    __themeDark: false,
+    __themeDark: false,
     // 收藏列表
     favorites: [],
     // 当前复习索引
@@ -85,6 +91,8 @@ Page({
   },
 
   onShow: function () {
+    this._applyTheme();
+    this._applyTheme();
     this.loadFavorites();
   },
 
@@ -339,5 +347,23 @@ Page({
     wx.switchTab({
       url: '/pages/glossary/glossary'
     });
+  }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
+  }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
   }
 });

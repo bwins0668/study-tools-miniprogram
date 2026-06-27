@@ -44,7 +44,13 @@ function withCategoryLabel(item) {
 }
 
 Page({
+  onShow: function () {
+    this._applyTheme();
+    this._applyTheme();
+  },
   data: {
+    __themeDark: false,
+    __themeDark: false,
     currentTerm: null, currentIndex: 0, totalCount: 0,
     isFlipped: false, isComplete: false,
     masteredCount: 0, progressPercent: 0, swipeStyle: "",
@@ -54,6 +60,8 @@ Page({
   },
 
   onLoad: function (options) {
+    this._applyTheme();
+    this._applyTheme();
     this._sessionStart = Date.now();
     this._firstPassCount = 0;
     this._totalLoops = 0;
@@ -250,4 +258,22 @@ Page({
 
   loadAllTerms: function () { this.initSession(); },
   goBack: function () { wx.navigateBack(); }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
+  }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
+  }
 });

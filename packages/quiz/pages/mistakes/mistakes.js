@@ -71,7 +71,13 @@ function matchItem(item, keyword) {
 }
 
 Page({
+  onLoad: function (options) {
+    this._applyTheme();
+    this._applyTheme();
+  },
   data: {
+    __themeDark: false,
+    __themeDark: false,
     wrongList: [],
     filteredList: [],
     totalCount: 0,
@@ -92,6 +98,8 @@ Page({
   },
 
   onShow: function () {
+    this._applyTheme();
+    this._applyTheme();
     this.loadWrongQuestions();
   },
 
@@ -377,5 +385,23 @@ Page({
     wx.switchTab({
       url: '/pages/home/home'
     });
+  }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
+  }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
   }
 });

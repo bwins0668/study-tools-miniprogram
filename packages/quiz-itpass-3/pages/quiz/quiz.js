@@ -6,29 +6,6 @@ var pastExamFull = pastExamLoader.getAllQuestions();
 var questionsModule = { questions: [] };
 var storage = require('../../../../utils/storage');
 
-// === Inline quiz dedup (moved from utils/quiz_dedupe.js to avoid main-package unused-JS warning) ===
-function normalizeQuizText(value) {
-  return String(value || '')
-    .replace(/\s+/g, '')
-    .replace(/[Ａ-Ｚ]/g, function (ch) { return String.fromCharCode(ch.charCodeAt(0) - 0xFEE0); })
-    .replace(/[ａ-ｚ]/g, function (ch) { return String.fromCharCode(ch.charCodeAt(0) - 0xFEE0); })
-    .replace(/[０-９]/g, function (ch) { return String.fromCharCode(ch.charCodeAt(0) - 0xFEE0); })
-    .toLowerCase();
-}
-function dedupeQuestions(questions) {
-  var seen = Object.create(null);
-  return questions.filter(function (q) {
-    var stem = normalizeQuizText(q.questionZh || q.questionJa || q.title || q.term || '');
-    var opts = normalizeQuizText((q.options || []).map(function (o) { return (o.textZh || o.textJa || o.text || '').trim(); }).join('|'));
-    var ans = normalizeQuizText(q.answer || q.correctAnswer || q.correctIndex || '');
-    var key = stem + '|' + opts + '|' + ans;
-    if (!key || key === '||') return true;
-    if (seen[key]) return false;
-    seen[key] = true;
-    return true;
-  });
-}
-
 function stripHtmlTags(html) {
   if (!html || typeof html !== 'string') return '';
   return html
@@ -115,6 +92,7 @@ function createWrongQuestionSnapshot(q) {
 
 Page({
   data: {
+    __themeDark: false,
     exam: '',
     sourceType: 'past_exam_japanese',
     modeLabel: '日文题练习',
@@ -152,6 +130,7 @@ Page({
   },
 
   onLoad: function (options) {
+    this._applyTheme();
     var exam = options.exam || 'itpass';
     var sourceType = options.sourceType || 'past_exam_japanese';
     var yearId = options.yearId || '';
@@ -183,7 +162,7 @@ Page({
     if (yearId) allQuestions = allQuestions.filter(function (question) { return question.yearId === yearId; });
 
     if (allQuestions.length > 0) {
-      var processed = dedupeQuestions(allQuestions).map(processQuestionForDisplay);
+      var processed = allQuestions.map(processQuestionForDisplay);
       var yearTag = yearId ? ('（' + yearId + '）') : '';
       this.setData({
         exam: exam,
@@ -392,8 +371,20 @@ Page({
     });
   },
 
+  onShow: function () {
+    this._applyTheme();
+  },
+
   onUnload: function () {
     if (this._timerInterval) { clearInterval(this._timerInterval); this._timerInterval = null; }
     wx.showToast({ title: '答题进度已保存', icon: 'success', duration: 1500 });
+  },
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
   }
 });

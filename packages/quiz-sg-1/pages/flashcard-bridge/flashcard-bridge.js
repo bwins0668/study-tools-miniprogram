@@ -7,8 +7,13 @@ try {
   console.error('[flashcard-bridge] flashcard-export require failed:', e);
 }
 Page({
-  data: {},
-  onLoad: function(options) {
+  onShow: function () {
+    this._applyTheme();
+  },
+  data: {
+    __themeDark: false,},
+  onLoad: function (options) {
+    this._applyTheme();
     console.log('[flashcard-bridge] sg-1 bridge loaded');
     var cache = app.globalData.__flashcard_cache || {};
     var key = 'sg-1';
@@ -41,6 +46,15 @@ Page({
       }
     } else {
       console.log('[flashcard-bridge] no questions cached, staying');
+    }
+  }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
     }
   }
 });

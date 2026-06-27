@@ -8,7 +8,13 @@ const {
 } = require("../../../../utils/storage");
 
 Page({
+  onShow: function () {
+    this._applyTheme();
+    this._applyTheme();
+  },
   data: {
+    __themeDark: false,
+    __themeDark: false,
     term: null,
     exampleText: '',
     isFavorite: false,
@@ -24,6 +30,8 @@ Page({
   },
 
   onLoad: function (options) {
+    this._applyTheme();
+    this._applyTheme();
     var id = options && options.id !== undefined ? String(options.id) : '';
     var found = glossaryLoader.getTermById(id);
     var exampleText = '';
@@ -258,5 +266,23 @@ Page({
         wx.showToast({ title: '复制失败', icon: 'none', duration: 1500 });
       }
     });
+  }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
+  }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
   }
 });

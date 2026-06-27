@@ -1044,15 +1044,3 @@
   line-height: 1.5;
   margin-top: 6rpx;
 }
-
-/* ===== Dark mode ===== */
-@media (prefers-color-scheme: dark) {
-  .container,
-  .question-card,
-  .option-item,
-  .explanation-card,
-  .finish-card,
-  .result-card {
-    background: var(--bg-color);
-  }
-}

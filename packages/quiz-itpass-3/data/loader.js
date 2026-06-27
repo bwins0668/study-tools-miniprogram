@@ -3,72 +3,20 @@
 
 var questionsModule = require('./questions');
 var explanationsById = require('./explanations_zh');
-var translationsById = require('./translations_zh');
 var meta = require('./meta');
 
 var questionsByYear = questionsModule.questionsByYear || {};
 
-function mergeTranslation(q) {
-  if (!q) return q;
-  // 合并 explanations_zh (中文解析)
-  if (explanationsById && explanationsById[q.id]) {
-    var exText = explanationsById[q.id];
-    if (exText && exText.length > 5) {
-      q.explanationZh = exText;
-    }
-  }
-  // 合并 translations_zh (题干和选项中文翻译)
-  if (!translationsById) return q;
-  var t = translationsById[q.id];
-  if (!t) return q;
-  // 紧凑格式：t = [questionZh, [textZh1, textZh2, ...]]
-  // 或旧格式：{questionZh, options: [{textZh}]}
-  if (Array.isArray(t)) {
-    if (t[0] && t[0].length > 3) {
-      q.questionZh = t[0];
-    }
-    if (Array.isArray(t[1]) && q.options) {
-      for (var i = 0; i < t[1].length && i < q.options.length; i++) {
-        if (t[1][i] && t[1][i].length > 3) {
-          q.options[i].textZh = t[1][i];
-        }
-      }
-    }
-  } else if (t.questionZh) {
-    if (t.questionZh.length > 3) {
-      q.questionZh = t.questionZh;
-    }
-    if (t.options && q.options) {
-      for (var i = 0; i < t.options.length && i < q.options.length; i++) {
-        var opt = t.options[i];
-        if (typeof opt === 'string' && opt.length > 3) {
-          q.options[i].textZh = opt;
-        } else if (opt && opt.textZh && opt.textZh.length > 3) {
-          q.options[i].textZh = opt.textZh;
-        }
-      }
-    }
-  }
-  q.hasZhTranslation = true;
-  q.zhFallbackFromJa = false;
-  q.translationStatus = 'source_verified';
-  return q;
-}
-
 function getAllQuestions() {
   var result = [];
   Object.keys(questionsByYear).forEach(function (yearId) {
-    var list = questionsByYear[yearId] || [];
-    list.forEach(function(q) {
-      result.push(mergeTranslation(q));
-    });
+    result = result.concat(questionsByYear[yearId] || []);
   });
   return result;
 }
 
 function getQuestionsByYear(exam, yearId) {
   var list = (questionsByYear[yearId] || []).slice();
-  list = list.map(function(q) { return mergeTranslation(q); });
   if (!exam) return list;
   return list.filter(function (q) { return q.exam === exam; });
 }
@@ -77,7 +25,6 @@ module.exports = {
   meta: meta,
   questionsByYear: questionsByYear,
   explanationsById: explanationsById,
-  translationsById: translationsById,
   getAllQuestions: getAllQuestions,
   getQuestionsByYear: getQuestionsByYear
 };

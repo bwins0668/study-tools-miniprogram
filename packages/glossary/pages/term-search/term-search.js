@@ -10,6 +10,8 @@ var SEARCH_DEBOUNCE_MS = 300;
 
 Page({
   data: {
+    __themeDark: false,
+    __themeDark: false,
     keyword: '',
     allData: [],
     filteredList: [],
@@ -30,6 +32,8 @@ Page({
   _searchTimer: null,
 
   onLoad: function (options) {
+    this._applyTheme();
+    this._applyTheme();
     // R3.54 随机术语：如果传入 random=1，随机选一个术语并跳转详情
     if (options && options.random === '1') {
       var data = glossaryIndex;
@@ -73,6 +77,8 @@ Page({
   },
 
   onShow: function () {
+    this._applyTheme();
+    this._applyTheme();
     this.refreshFavoriteStatus();
   },
 
@@ -484,5 +490,23 @@ Page({
   // R3.59 clearHistory 别名（兼容 WXML 中的 bindtap="clearHistory"）
   clearHistory: function () {
     this.clearSearchHistory();
+  }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
+  }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
   }
 });

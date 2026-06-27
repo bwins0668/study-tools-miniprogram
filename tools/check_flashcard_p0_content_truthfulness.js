@@ -103,7 +103,10 @@ function checkPlayer(file) {
   assertNoText('NO_TRANSLATION_REQUIRE', file, text, /translations_zh/, 'Player must not reference translation files');
   assertNoText('NO_P1_STATUS', file, text, /translationStatus|needs_revision|bilingual_partial|bilingual_complete|contentStatus/, 'Player must not expose P1 bilingual status');
   assertNoText('NO_P1_TOOL_REFERENCE', file, text, /review-batches|generate_flashcard_translations/, 'Player must not reference P1 tooling');
-  var stripped = text.replace(/_applyTheme\s*[^}]*}[^}]*}[^}]*}/g, '');
+  // Strip only the exact _applyTheme method (R21 dark mode) using its precise object-method signature.
+  // This is a precise allowlist: only the exact _applyTheme:function(){} is stripped,
+  // NOT any other getApp/globalData usage. Any non-theme getApp() will still fail.
+  var stripped = text.replace(/_applyTheme\s*:\s*function\s*\(\s*\)\s*\{[\s\S]*?\n\s*\}/g, '');
   assertNoText('NO_BRIDGE_OR_GLOBAL_CACHE', file, stripped, /EventChannel|flashcard-bridge|getApp\s*\(|\.globalData|loadSubPackage\s*=/, 'Player must not use a bridge, global cache, or fake subpackage shim');
   assertNoText('NO_FULL_COURSE_PRELOAD', file, text, /getAllQuestions\s*\(/, 'Player must load only the selected deck');
   assertNoText('NO_SILENT_EMPTY_CATCH', file, text, /catch\s*\([^)]*\)\s*\{[\s\S]{0,240}return\s*\[\s*\]/, 'Player must not turn a load error into an empty deck');

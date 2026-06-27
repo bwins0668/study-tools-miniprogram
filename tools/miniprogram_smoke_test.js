@@ -42,8 +42,6 @@ function walkFiles(absDir, files) {
 
 function getDirSize(relDir) {
   return walkFiles(path.join(ROOT, relDir)).reduce(function (total, file) {
-    // Exclude P1 bilingual translation artifacts
-    if (file.rel.indexOf('translations_zh.js') >= 0) return total;
     return total + file.size;
   }, 0);
 }
@@ -4410,7 +4408,7 @@ for (var sf2324 = 0; sf2324 < allSourceFiles324.length; sf2324++) {
       fp324.includes('_backup') || fp324.includes('glossary_full') ||
       fp324.includes('tools/check_content_compliance.js') || fp324.includes('tools/miniprogram_smoke_test.js') ||
       fp324.includes('packages/exam/data/') || fp324.includes('packages/quiz/data/past_exam_bank/') ||
-      fp324.includes('translations_zh.js')) continue;
+fp324.includes('tools/generated-cache/') ) continue;
   try {
     var c324 = require('fs').readFileSync(fp324, 'utf-8');
     for (var bb324 = 0; bb324 < banned324.length; bb324++) {
@@ -4897,7 +4895,6 @@ for (var fi3 = 0; fi3 < allJsFiles330.length; fi3++) {
   if (f330.indexOf('chunks') >= 0) continue;
   if (f330.indexOf('generated-backup') >= 0) continue;
   if (f330.indexOf('packages/exam/data/') >= 0) continue;
-  if (f330.indexOf('translations_zh.js') >= 0) continue;
   try {
     var content330c = fs.readFileSync(allJsFiles330[fi3], 'utf-8');
     for (var ti = 0; ti < forbiddenTexts330.length; ti++) {

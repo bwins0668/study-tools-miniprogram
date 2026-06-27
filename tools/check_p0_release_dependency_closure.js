@@ -150,8 +150,8 @@ function checkFlashcardCenter() {
 function checkDeckSelect() {
   var rel = 'packages/quiz/pages/flashcard-deck-select/flashcard-deck-select.js';
   var text = readFile(rel);
-  // Strip _applyTheme function (R20.1 dark mode) before checking for getApp/globalData
-  var stripped = text.replace(/_applyTheme\s*[^}]*}[^}]*}[^}]*}/g, '');
+  // Strip only the exact _applyTheme method (R21 dark mode) before checking for getApp/globalData
+  var stripped = text.replace(/_applyTheme\s*:\s*function\s*\(\s*\)\s*\{[\s\S]*?\n\s*\}/g, '');
   if (!/wx\.loadSubPackage\s*\(\s*\{/.test(text)) fail('DECK_SELECT_MISSING_REAL_SUBPACKAGE_LOAD', rel, 'Expected wx.loadSubPackage({ name })');
   if (!/name\s*:\s*deckInfo\.packageName/.test(text)) fail('DECK_SELECT_MISSING_PACKAGE_NAME', rel, 'Expected manifest packageName to drive loadSubPackage');
   if (!/success\s*:\s*function\s*\(\)\s*\{[\s\S]{0,500}navigateToPlayer\s*\(/.test(text)) {
@@ -218,8 +218,8 @@ function checkPlayersNoP1OrEagerCourseLoad() {
     var rel = 'packages/' + name + '/pages/flashcard-player/flashcard-player.js';
     if (!fileExists(rel)) return;
     var text = readFile(rel);
-    // Strip the _applyTheme function body (R20.1 dark mode) before checking for getApp/globalData
-    var stripped = text.replace(/_applyTheme\s*[^}]*}[^}]*}[^}]*}/g, '');
+    // Strip only the exact _applyTheme method (R21 dark mode) before checking for getApp/globalData
+    var stripped = text.replace(/_applyTheme\s*:\s*function\s*\(\s*\)\s*\{[\s\S]*?\n\s*\}/g, '');
     if (/translations_zh|review-batches|flashcard-bridge|EventChannel/.test(text) ||
         /getApp\s*\(/.test(stripped) || /\.globalData/.test(stripped)) {
       fail('PLAYER_P1_OR_BRIDGE_DEPENDENCY', rel, 'Player must use only its local loader and existing source fields');

@@ -24,7 +24,7 @@ const FORBIDDEN_WORDS = [
 ];
 
 // Directories to skip entirely
-const SKIP_DIRS = ['.git', 'node_modules', '.workbuddy', 'generated-backup'];
+const SKIP_DIRS = ['.git', 'node_modules', '.workbuddy', 'generated-backup', 'generated-cache'];
 
 // Relative paths to skip (directories or files) — data files contain IT terminology
 // where forbidden character sequences appear as substrings of technical terms

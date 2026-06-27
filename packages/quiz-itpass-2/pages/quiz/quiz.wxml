@@ -1,5 +1,5 @@
 <!-- pages/quiz/quiz.wxml -->
-<view class="container">
+<view class="container {{__themeDark ? 'dark-theme' : ''}}">
   <view class="quiz-header">
     <view class="quiz-header-left">
       <view class="quiz-exam-badge {{exam === 'sg' ? 'badge-sg' : (exam === 'wrong_only' ? 'badge-wrong' : 'badge-it')}}">{{examBadge}}</view>

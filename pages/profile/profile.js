@@ -155,6 +155,8 @@ function buildRestoreSummary(backup) {
 
 Page({
   data: {
+    __themeDark: false,
+    __themeDark: false,
     version: '',
     favoriteCount: 0,
     wrongQuestionCount: 0,
@@ -202,12 +204,16 @@ Page({
   },
 
   onLoad: function () {
+    this._applyTheme();
+    this._applyTheme();
     this.setData({
       version: app.globalData.version
     });
   },
 
   onShow: function () {
+    this._applyTheme();
+    this._applyTheme();
     // R3.78 页面浏览次数统计
     profileSessionViewCount += 1;
     var viewCount = profileSessionViewCount;
@@ -608,5 +614,23 @@ Page({
       showCancel: false,
       confirmText: '知道了'
     });
+  }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
+  }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
   }
 });

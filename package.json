@@ -36,6 +36,9 @@
     "test:flashcard-explanation-bilingual": "node tools/check_flashcard_explanation_bilingual.js",
     "test:flashcard-srs-behavior": "node tools/check_flashcard_srs_behavior.js",
     "test:flashcard-explanation-zh-specificity": "node tools/check_flashcard_explanation_zh_specificity.js",
-    "audit:flashcard-explanation-zh-specificity": "node tools/check_flashcard_explanation_zh_specificity.js --audit"
+    "audit:flashcard-explanation-zh-specificity": "node tools/check_flashcard_explanation_zh_specificity.js --audit",
+    "test:flashcard-explanation-zh-semantic": "node tools/r21_1_1_check_semantic.js",
+    "test:flashcard-entry-contract": "node tools/check_flashcard_p0_contract.js",
+    "test:flashcard-launch-runtime": "node tools/run_flashcard_runtime_e2e.js"
   }
 }

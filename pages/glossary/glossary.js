@@ -2,11 +2,19 @@
 var storage = require("../../utils/storage");
 
 Page({
+  onLoad: function (options) {
+    this._applyTheme();
+    this._applyTheme();
+  },
   data: {
+    __themeDark: false,
+    __themeDark: false,
     favoriteCount: 0
   },
 
   onShow: function () {
+    this._applyTheme();
+    this._applyTheme();
     var count = storage.getFavoriteTermCount ? storage.getFavoriteTermCount() : 0;
     this.setData({ favoriteCount: count });
   },
@@ -34,5 +42,23 @@ Page({
     wx.navigateTo({
       url: '/packages/glossary/pages/term-search/term-search?random=1'
     });
+  }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
+  }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
   }
 });

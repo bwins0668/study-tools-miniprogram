@@ -36,6 +36,8 @@ function countCategories(exam) {
 
 Page({
   data: {
+    __themeDark: false,
+    __themeDark: false,
     exam: '',
     examTitle: '',
     examDesc: '',
@@ -55,6 +57,8 @@ Page({
   },
 
   onLoad: function (options) {
+    this._applyTheme();
+    this._applyTheme();
     var exam = options.exam || 'itpass';
     var info = EXAM_INFO[exam] || EXAM_INFO.itpass;
     this.setData({
@@ -65,6 +69,8 @@ Page({
   },
 
   onShow: function () {
+    this._applyTheme();
+    this._applyTheme();
     var exam = this.data.exam;
     var lessonStats = storage.getQuizStatsByFilter(exam, 'lesson_quiz');
     var pastStats = storage.getQuizStatsByFilter(exam, 'past_exam_japanese');
@@ -168,5 +174,23 @@ Page({
     wx.navigateTo({
       url: route.route
     });
+  }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
+  }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
   }
 });
