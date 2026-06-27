@@ -43,7 +43,9 @@ function isMostlyJapanese(text) {
 }
 
 function isGenuineChinese(text) {
-  if (!text || text.length < 3) return false;
+  // Legitimate Chinese answer choices can be as short as two characters (for example, “返利”).
+  // Presence of Han characters plus absence of kana is the actual language signal here.
+  if (!text || text.length < 1) return false;
   var hasChinese = false;
   var hasKana = false;
   for (var i = 0; i < text.length; i++) {
