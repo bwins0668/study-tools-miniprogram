@@ -1,0 +1,12 @@
+[
+  {"questionId":"07_HARU_Q11","questionZh":"在虚拟机环境中，hypervisor的作用是什么？","options":[{"index":0,"textZh":"管理网络交换机"},{"index":1,"textZh":"管理和运行多个虚拟机"},{"index":2,"textZh":"存储文件"},{"index":3,"textZh":"仅用于安全监控"}]},
+  {"questionId":"07_HARU_Q12","questionZh":"以下哪项是系统审计跟踪的目的？","options":[{"index":0,"textZh":"加速系统处理"},{"index":1,"textZh":"记录用户操作和系统事件以备事后验证"},{"index":2,"textZh":"自动修复所有错误"},{"index":3,"textZh":"压缩日志文件"}]},
+  {"questionId":"07_HARU_Q13","questionZh":"在服务水平协议中，通常不包含哪项？","options":[{"index":0,"textZh":"服务范围"},{"index":1,"textZh":"员工个人薪资"},{"index":2,"textZh":"响应时间"},{"index":3,"textZh":"可用性指标"}]},
+  {"questionId":"07_HARU_Q14","questionZh":"关于HTML中语义化标签，哪项正确？","options":[{"index":0,"textZh":"仅用于样式"},{"index":1,"textZh":"使用有含义的标签(如header、article)提高可读性和可访问性"},{"index":2,"textZh":"仅用于移动设备"},{"index":3,"textZh":"不支持SEO"}]},
+  {"questionId":"07_HARU_Q15","questionZh":"以下哪项是类图和E-R图的共同点？","options":[{"index":0,"textZh":"两者完全无关"},{"index":1,"textZh":"都可视化地表示实体及其关系"},{"index":2,"textZh":"类图仅用于数据库设计"},{"index":3,"textZh":"E-R图仅用于面向对象设计"}]},
+  {"questionId":"07_HARU_Q16","questionZh":"在IT采购中，评估供应商时应优先考虑什么？","options":[{"index":0,"textZh":"仅最低价格"},{"index":1,"textZh":"综合评估价格、技术能力、稳定性和支持体系"},{"index":2,"textZh":"仅品牌知名度"},{"index":3,"textZh":"仅交付速度"}]},
+  {"questionId":"07_HARU_Q17","questionZh":"以下哪项是蜜罐技术在网络安全中的主要目的？","options":[{"index":0,"textZh":"备份数据"},{"index":1,"textZh":"引诱攻击者并收集攻击手法信息"},{"index":2,"textZh":"加速网络"},{"index":3,"textZh":"替换防火墙"}]},
+  {"questionId":"07_HARU_Q18","questionZh":"在Python中，装饰器的执行顺序是什么？","options":[{"index":0,"textZh":"从下到上"},{"index":1,"textZh":"从上到下"},{"index":2,"textZh":"随机顺序"},{"index":3,"textZh":"同时执行"}]},
+  {"questionId":"07_HARU_Q19","questionZh":"以下哪项是关于软件维护中适应性维护的说明？","options":[{"index":0,"textZh":"修复已发现的错误"},{"index":1,"textZh":"为适应环境变化进行的修改"},{"index":2,"textZh":"提高性能"},{"index":3,"textZh":"添加新功能"}]},
+  {"questionId":"07_HARU_Q20","questionZh":"在TCP/IP协议栈中，ARP的作用是什么？","options":[{"index":0,"textZh":"加密数据"},{"index":1,"textZh":"将IP地址解析为MAC地址"},{"index":2,"textZh":"路由数据包"},{"index":3,"textZh":"管理会话"}]}
+]

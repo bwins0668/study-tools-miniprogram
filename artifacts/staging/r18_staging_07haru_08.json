@@ -1,0 +1,12 @@
+[
+  {"questionId":"07_HARU_Q71","questionZh":"在PowerShell中，cmdlet的命名惯例是什么？","options":[{"index":0,"textZh":"随机命名"},{"index":1,"textZh":"动词-名词形式"},{"index":2,"textZh":"仅使用数字"},{"index":3,"textZh":"仅使用大写字母"}]},
+  {"questionId":"07_HARU_Q72","questionZh":"关于DMZ（非军事区）网络，哪项正确？","options":[{"index":0,"textZh":"与内部网络完全相同"},{"index":1,"textZh":"位于外部网络和内部网络之间的隔离区域，放置公开服务器"},{"index":2,"textZh":"不需要防火墙"},{"index":3,"textZh":"仅用于无线网络"}]},
+  {"questionId":"07_HARU_Q73","questionZh":"以下哪项是敏捷中燃尽图的用途？","options":[{"index":0,"textZh":"显示预算使用状况"},{"index":1,"textZh":"追踪冲刺中剩余工作量"},{"index":2,"textZh":"管理团队成员"},{"index":3,"textZh":"显示客户满意度"}]},
+  {"questionId":"07_HARU_Q74","questionZh":"关于JSON Web Token，哪项正确？","options":[{"index":0,"textZh":"用于加密数据库"},{"index":1,"textZh":"紧凑且自包含的令牌格式，用于在各方间安全传输信息"},{"index":2,"textZh":"一种编程语言"},{"index":3,"textZh":"仅用于HTML渲染"}]},
+  {"questionId":"07_HARU_Q75","questionZh":"以下哪项是电子签名法的要求？","options":[{"index":0,"textZh":"不需要任何认证"},{"index":1,"textZh":"电子签名必须明确表明由本人所为"},{"index":2,"textZh":"仅使用加密"},{"index":3,"textZh":"仅纸面有效"}]},
+  {"questionId":"07_HARU_Q76","questionZh":"在计算机科学中，大O记号表示什么？","options":[{"index":0,"textZh":"代码质量"},{"index":1,"textZh":"算法效率的上限"},{"index":2,"textZh":"变量名"},{"index":3,"textZh":"内存地址"}]},
+  {"questionId":"07_HARU_Q77","questionZh":"关于网络分段，哪项是其主要好处？","options":[{"index":0,"textZh":"单一网络更快"},{"index":1,"textZh":"限制攻击影响范围并提高性能"},{"index":2,"textZh":"不需要路由器"},{"index":3,"textZh":"仅增加复杂性"}]},
+  {"questionId":"07_HARU_Q78","questionZh":"在持续集成中，构建失败时应采取什么措施？","options":[{"index":0,"textZh":"忽略继续开发"},{"index":1,"textZh":"立即修复失败并将其作为最高优先级处理"},{"index":2,"textZh":"仅在发布前修复"},{"index":3,"textZh":"关闭CI服务器"}]},
+  {"questionId":"07_HARU_Q79","questionZh":"以下哪项是SOC2报告的用途？","options":[{"index":0,"textZh":"财务报表审计"},{"index":1,"textZh":"评估服务组织的安全、可用性、处理完整性和机密性"},{"index":2,"textZh":"个人信用报告"},{"index":3,"textZh":"仅用于税务"}]},
+  {"questionId":"07_HARU_Q80","questionZh":"关于Ansible，哪项正确？","options":[{"index":0,"textZh":"需要安装Agent"},{"index":1,"textZh":"无Agent的自动化工具，使用SSH进行配置管理"},{"index":2,"textZh":"编程语言"},{"index":3,"textZh":"数据库管理系统"}]}
+]

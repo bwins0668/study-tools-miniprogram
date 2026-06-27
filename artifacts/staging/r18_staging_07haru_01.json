@@ -1,0 +1,12 @@
+[
+  {"questionId":"07_HARU_Q1","questionZh":"A公司以承包合同方式将部分工作委托给B公司。在工作形态a～c中，被视为假承包的是哪些？a. B公司员工在A公司内，在A公司负责人指挥下工作。b. B公司员工在A公司内，在B公司负责人指挥下工作。c. B公司员工在B公司内，在A公司负责人指挥下工作。","options":[{"index":0,"textZh":"a"},{"index":1,"textZh":"a、b"},{"index":2,"textZh":"a、c"},{"index":3,"textZh":"b、c"}]},
+  {"questionId":"07_HARU_Q2","questionZh":"以下哪项是物联网（IoT）安全中特别需要注意的？","options":[{"index":0,"textZh":"所有IoT设备都有足够的计算能力"},{"index":1,"textZh":"IoT设备可能成为大规模DDoS攻击的跳板"},{"index":2,"textZh":"IoT设备不连接互联网"},{"index":3,"textZh":"IoT设备不需要安全更新"}]},
+  {"questionId":"07_HARU_Q3","questionZh":"以下哪项是区块链技术不可篡改性的基础？","options":[{"index":0,"textZh":"中央服务器管理所有数据"},{"index":1,"textZh":"哈希链和分布式共识机制"},{"index":2,"textZh":"单一管理员权限"},{"index":3,"textZh":"数据的物理保护"}]},
+  {"questionId":"07_HARU_Q4","questionZh":"在关系数据库中，哪个SQL语句用于更新记录？","options":[{"index":0,"textZh":"INSERT"},{"index":1,"textZh":"SELECT"},{"index":2,"textZh":"DELETE"},{"index":3,"textZh":"UPDATE"}]},
+  {"questionId":"07_HARU_Q5","questionZh":"以下哪项是日本个人信息保护法的正确描述？","options":[{"index":0,"textZh":"仅适用于大企业"},{"index":1,"textZh":"适用于处理个人信息的全部经营者"},{"index":2,"textZh":"仅适用于公共机构"},{"index":3,"textZh":"不适用于外国企业"}]},
+  {"questionId":"07_HARU_Q6","questionZh":"在软件测试中，什么是集成测试的目的？","options":[{"index":0,"textZh":"测试单个函数"},{"index":1,"textZh":"测试多个模块之间的协作"},{"index":2,"textZh":"用户验收"},{"index":3,"textZh":"性能测试"}]},
+  {"questionId":"07_HARU_Q7","questionZh":"以下哪项是JavaScript中let和var的区别？","options":[{"index":0,"textZh":"没有区别"},{"index":1,"textZh":"let有块级作用域，var有函数级作用域"},{"index":2,"textZh":"var有块级作用域"},{"index":3,"textZh":"let不能重新赋值"}]},
+  {"questionId":"07_HARU_Q8","questionZh":"在OSI参考模型中，哪一层负责路由选择？","options":[{"index":0,"textZh":"物理层"},{"index":1,"textZh":"网络层"},{"index":2,"textZh":"传输层"},{"index":3,"textZh":"应用层"}]},
+  {"questionId":"07_HARU_Q9","questionZh":"以下哪项是ISO 27001认证的目的？","options":[{"index":0,"textZh":"提高销售额"},{"index":1,"textZh":"证明信息安全管理体系符合国际标准"},{"index":2,"textZh":"保证零安全事件"},{"index":3,"textZh":"替代所有安全产品"}]},
+  {"questionId":"07_HARU_Q10","questionZh":"在资源管理中，什么是人力资源规划的第一步？","options":[{"index":0,"textZh":"招聘"},{"index":1,"textZh":"预测必要的人员数量和技能"},{"index":2,"textZh":"培训"},{"index":3,"textZh":"评估"}]}
+]

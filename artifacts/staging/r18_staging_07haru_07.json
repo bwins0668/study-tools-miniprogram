@@ -1,0 +1,12 @@
+[
+  {"questionId":"07_HARU_Q61","questionZh":"关于IT系统运维中的变更管理流程，哪项是正确的顺序？","options":[{"index":0,"textZh":"实施→测试→审批→记录"},{"index":1,"textZh":"请求→审批→测试→实施→回顾"},{"index":2,"textZh":"直接实施"},{"index":3,"textZh":"仅审批"}]},
+  {"questionId":"07_HARU_Q62","questionZh":"关于SQL注入，哪项是有效的防御措施？","options":[{"index":0,"textZh":"允许用户输入直接拼接到SQL语句"},{"index":1,"textZh":"使用参数化查询或预处理语句"},{"index":2,"textZh":"显示数据库错误给用户"},{"index":3,"textZh":"以管理员权限运行数据库"}]},
+  {"questionId":"07_HARU_Q63","questionZh":"以下哪项是网络拓扑结构中星型拓扑的特征？","options":[{"index":0,"textZh":"所有节点以单一线路串联"},{"index":1,"textZh":"所有节点连接到中央集线器或交换机"},{"index":2,"textZh":"每个节点与所有其他节点连接"},{"index":3,"textZh":"环状连接"}]},
+  {"questionId":"07_HARU_Q64","questionZh":"关于HTTPS中使用的SSL/TLS证书，哪项正确？","options":[{"index":0,"textZh":"自行签发即可保证安全"},{"index":1,"textZh":"由受信任的证书颁发机构签发，用于验证服务器身份"},{"index":2,"textZh":"不需要更新"},{"index":3,"textZh":"仅用于邮件服务器"}]},
+  {"questionId":"07_HARU_Q65","questionZh":"在测试驱动开发中，最先编写的是什么？","options":[{"index":0,"textZh":"实现代码"},{"index":1,"textZh":"测试代码"},{"index":2,"textZh":"设计文档"},{"index":3,"textZh":"用户手册"}]},
+  {"questionId":"07_HARU_Q66","questionZh":"关于REST API的设计原则，哪项正确？","options":[{"index":0,"textZh":"使用有状态通信"},{"index":1,"textZh":"无状态，使用HTTP方法表示操作"},{"index":2,"textZh":"仅使用POST方法"},{"index":3,"textZh":"不能使用JSON"}]},
+  {"questionId":"07_HARU_Q67","questionZh":"在容器技术中，什么是镜像？","options":[{"index":0,"textZh":"运行中的容器实例"},{"index":1,"textZh":"包含应用及其依赖的只读模板"},{"index":2,"textZh":"网络配置"},{"index":3,"textZh":"存储卷"}]},
+  {"questionId":"07_HARU_Q68","questionZh":"关于数字证书的作废，使用什么协议？","options":[{"index":0,"textZh":"HTTP"},{"index":1,"textZh":"OCSP（在线证书状态协议）"},{"index":2,"textZh":"FTP"},{"index":3,"textZh":"SMTP"}]},
+  {"questionId":"07_HARU_Q69","questionZh":"在AI中，什么是迁移学习？","options":[{"index":0,"textZh":"从头开始学习"},{"index":1,"textZh":"将一个任务学到的知识应用到不同但相关的任务"},{"index":2,"textZh":"不使用任何现成模型"},{"index":3,"textZh":"仅用于文本处理"}]},
+  {"questionId":"07_HARU_Q70","questionZh":"以下哪项是网络地址转换（NAT）的主要目的？","options":[{"index":0,"textZh":"加密网络通信"},{"index":1,"textZh":"将私有IP地址转换为公有IP地址以连接互联网"},{"index":2,"textZh":"加速网络速度"},{"index":3,"textZh":"替代路由器"}]}
+]

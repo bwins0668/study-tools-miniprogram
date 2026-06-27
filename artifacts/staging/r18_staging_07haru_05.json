@@ -1,0 +1,12 @@
+[
+  {"questionId":"07_HARU_Q41","questionZh":"关于Docker和虚拟机的区别，哪项正确？","options":[{"index":0,"textZh":"Docker需要独立操作系统"},{"index":1,"textZh":"Docker共享宿主操作系统内核，比虚拟机更轻量"},{"index":2,"textZh":"虚拟机不使用任何资源隔离"},{"index":3,"textZh":"Docker安全性低于虚拟机"}]},
+  {"questionId":"07_HARU_Q42","questionZh":"以下哪项是有关CAPTCHA的正确说明？","options":[{"index":0,"textZh":"加速网站加载"},{"index":1,"textZh":"用于区分人类用户和自动化程序"},{"index":2,"textZh":"加密通信内容"},{"index":3,"textZh":"管理Cookie"}]},
+  {"questionId":"07_HARU_Q43","questionZh":"在程序设计中，递归函数必须具有什么？","options":[{"index":0,"textZh":"循环结构"},{"index":1,"textZh":"终止条件，以防止无限递归"},{"index":2,"textZh":"至少两个参数"},{"index":3,"textZh":"返回值类型声明"}]},
+  {"questionId":"07_HARU_Q44","questionZh":"关于IT基本法，哪项正确？","options":[{"index":0,"textZh":"仅适用于行政机关"},{"index":1,"textZh":"规定日本IT社会形成的基本理念和政策"},{"index":2,"textZh":"仅规制IT企业"},{"index":3,"textZh":"与个人信息无关"}]},
+  {"questionId":"07_HARU_Q45","questionZh":"在CPU调度中，周转时间的含义是什么？","options":[{"index":0,"textZh":"仅在CPU中处理的时间"},{"index":1,"textZh":"从进程提交到完成的总时间"},{"index":2,"textZh":"等待I/O的时间"},{"index":3,"textZh":"仅在队列中等待的时间"}]},
+  {"questionId":"07_HARU_Q46","questionZh":"关于数据备份的3-2-1规则，哪项正确？","options":[{"index":0,"textZh":"不需要备份"},{"index":1,"textZh":"3份副本、2种不同介质、1份异地保存"},{"index":2,"textZh":"3个备份软件、2台服务器、1个数据中心"},{"index":3,"textZh":"3年保存、2次验证、1次恢复"}]},
+  {"questionId":"07_HARU_Q47","questionZh":"在JavaScript中，Promise对象表示什么？","options":[{"index":0,"textZh":"同步处理"},{"index":1,"textZh":"未来某个时刻完成的异步操作"},{"index":2,"textZh":"DOM元素"},{"index":3,"textZh":"错误对象"}]},
+  {"questionId":"07_HARU_Q48","questionZh":"以下哪项是有关MFA（多因素认证）安全性的正确说明？","options":[{"index":0,"textZh":"仅使用密码最安全"},{"index":1,"textZh":"即使密码泄露，若没有其他因素也无法登录"},{"index":2,"textZh":"不增加安全性"},{"index":3,"textZh":"仅适用于高风险系统"}]},
+  {"questionId":"07_HARU_Q49","questionZh":"在TCP/IP中，用于诊断网络连接的命令是什么？","options":[{"index":0,"textZh":"grep"},{"index":1,"textZh":"ping"},{"index":2,"textZh":"chmod"},{"index":3,"textZh":"sudo"}]},
+  {"questionId":"07_HARU_Q50","questionZh":"关于USB Type-C的特征，哪项正确？","options":[{"index":0,"textZh":"仅供电"},{"index":1,"textZh":"支持正反插、高速数据传输和供电"},{"index":2,"textZh":"仅用于旧设备"},{"index":3,"textZh":"速度比USB 2.0慢"}]}
+]

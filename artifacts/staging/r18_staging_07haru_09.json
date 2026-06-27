@@ -1,0 +1,12 @@
+[
+  {"questionId":"07_HARU_Q81","questionZh":"以下哪项是处理个人数据时数据最小化的含义？","options":[{"index":0,"textZh":"收集尽可能多的数据"},{"index":1,"textZh":"仅收集为达成目的所必需的最少数据"},{"index":2,"textZh":"不收集任何数据"},{"index":3,"textZh":"永远不删除数据"}]},
+  {"questionId":"07_HARU_Q82","questionZh":"在Kubernetes中，Service资源的主要作用是什么？","options":[{"index":0,"textZh":"存储数据"},{"index":1,"textZh":"为Pod集合提供稳定的网络端点"},{"index":2,"textZh":"管理用户权限"},{"index":3,"textZh":"仅用于调试"}]},
+  {"questionId":"07_HARU_Q83","questionZh":"关于Git Flow，哪项正确？","options":[{"index":0,"textZh":"不使用分支"},{"index":1,"textZh":"定义feature、develop、release和main等分支模型"},{"index":2,"textZh":"仅用于单人开发"},{"index":3,"textZh":"不能合并"}]},
+  {"questionId":"07_HARU_Q84","questionZh":"以下哪项是反射型XSS攻击的特征？","options":[{"index":0,"textZh":"攻击脚本存储在服务器上"},{"index":1,"textZh":"恶意脚本通过URL参数等反射回浏览器立即执行"},{"index":2,"textZh":"仅攻击数据库"},{"index":3,"textZh":"不需要用户交互"}]},
+  {"questionId":"07_HARU_Q85","questionZh":"关于CMMI（能力成熟度模型集成），哪项正确？","options":[{"index":0,"textZh":"仅适用于软件开发"},{"index":1,"textZh":"评估和改善组织流程成熟度的框架"},{"index":2,"textZh":"一种编程语言"},{"index":3,"textZh":"仅用于安全审计"}]},
+  {"questionId":"07_HARU_Q86","questionZh":"在数据工程中，数据管道的典型构成是什么？","options":[{"index":0,"textZh":"仅数据库"},{"index":1,"textZh":"数据提取、转换、加载和编排"},{"index":2,"textZh":"仅API"},{"index":3,"textZh":"仅存储"}]},
+  {"questionId":"07_HARU_Q87","questionZh":"关于WPA3 Wi-Fi安全，哪项正确？","options":[{"index":0,"textZh":"比WPA2安全性更低"},{"index":1,"textZh":"引入SAE握手，对离线字典攻击有更强抵抗力"},{"index":2,"textZh":"不使用加密"},{"index":3,"textZh":"仅适用于企业"}]},
+  {"questionId":"07_HARU_Q88","questionZh":"在React中，虚拟DOM的主要好处是什么？","options":[{"index":0,"textZh":"降低安全性"},{"index":1,"textZh":"最小化实际DOM操作以提高性能"},{"index":2,"textZh":"需要更多内存"},{"index":3,"textZh":"仅用于移动应用"}]},
+  {"questionId":"07_HARU_Q89","questionZh":"以下哪项是Nmap的主要用途？","options":[{"index":0,"textZh":"编程"},{"index":1,"textZh":"网络发现和安全审计"},{"index":2,"textZh":"数据库管理"},{"index":3,"textZh":"文件编辑"}]},
+  {"questionId":"07_HARU_Q90","questionZh":"关于IT治理中IT投资组合管理，哪项正确？","options":[{"index":0,"textZh":"仅评估单个项目的成本"},{"index":1,"textZh":"从风险和回报角度综合管理所有IT投资"},{"index":2,"textZh":"仅削减所有成本"},{"index":3,"textZh":"不使用任何指标"}]}
+]

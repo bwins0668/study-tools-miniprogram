@@ -1,0 +1,12 @@
+[
+  {"questionId":"07_HARU_Q51","questionZh":"以下哪项是NIST网络安全框架的核心功能之一？","options":[{"index":0,"textZh":"仅审计"},{"index":1,"textZh":"识别、保护、检测、响应、恢复"},{"index":2,"textZh":"仅监控"},{"index":3,"textZh":"仅报告"}]},
+  {"questionId":"07_HARU_Q52","questionZh":"关于IPv6地址的表示方法，哪项正确？","options":[{"index":0,"textZh":"使用点分十进制"},{"index":1,"textZh":"使用冒号分隔的十六进制"},{"index":2,"textZh":"使用域名"},{"index":3,"textZh":"使用二进制"}]},
+  {"questionId":"07_HARU_Q53","questionZh":"在数据科学中，ETL和ELT的主要区别是什么？","options":[{"index":0,"textZh":"两者完全相同"},{"index":1,"textZh":"ELT先加载后转换，适合现代数据湖"},{"index":2,"textZh":"ETL不使用转换"},{"index":3,"textZh":"ELT不使用提取"}]},
+  {"questionId":"07_HARU_Q54","questionZh":"以下哪项是AI伦理中公平性的意义？","options":[{"index":0,"textZh":"仅适用于特定人群"},{"index":1,"textZh":"AI系统不对特定个人或群体产生不合理歧视"},{"index":2,"textZh":"所有结果完全相同"},{"index":3,"textZh":"不使用任何数据"}]},
+  {"questionId":"07_HARU_Q55","questionZh":"在项目管理中，什么是范围基线？","options":[{"index":0,"textZh":"仅项目预算"},{"index":1,"textZh":"经批准的范围说明书、WBS和WBS词典的组合"},{"index":2,"textZh":"仅项目日程"},{"index":3,"textZh":"团队成员名单"}]},
+  {"questionId":"07_HARU_Q56","questionZh":"关于Java虚拟机（JVM），哪项正确？","options":[{"index":0,"textZh":"仅适用于Windows"},{"index":1,"textZh":"在不同平台上执行Java字节码，实现平台独立性"},{"index":2,"textZh":"不使用内存管理"},{"index":3,"textZh":"仅用于Web应用"}]},
+  {"questionId":"07_HARU_Q57","questionZh":"关于网络安全中的纵深防御，哪项正确？","options":[{"index":0,"textZh":"单一安全控制"},{"index":1,"textZh":"配置多层不同安全控制，即使一层被突破仍有保护"},{"index":2,"textZh":"仅依靠防火墙"},{"index":3,"textZh":"不需要终端安全"}]},
+  {"questionId":"07_HARU_Q58","questionZh":"在SQL中，JOIN的主要目的是什么？","options":[{"index":0,"textZh":"删除重复数据"},{"index":1,"textZh":"基于相关列结合两个或多个表的数据"},{"index":2,"textZh":"排序结果"},{"index":3,"textZh":"创建新表"}]},
+  {"questionId":"07_HARU_Q59","questionZh":"关于敏捷开发中的EPIC，哪项正确？","options":[{"index":0,"textZh":"非常小的任务"},{"index":1,"textZh":"可以被分解为多个用户故事的大型功能"},{"index":2,"textZh":"团队成员的角色"},{"index":3,"textZh":"项目名称"}]},
+  {"questionId":"07_HARU_Q60","questionZh":"以下哪项是GDPR中DPO的职责？","options":[{"index":0,"textZh":"仅管理IT系统"},{"index":1,"textZh":"监督个人数据保护合规并作为监管机构联络点"},{"index":2,"textZh":"开发软件"},{"index":3,"textZh":"管理财务"}]}
+]

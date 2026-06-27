@@ -1,0 +1,12 @@
+[
+  {"questionId":"07_HARU_Q91","questionZh":"在UX设计中，什么是启发式评估？","options":[{"index":0,"textZh":"仅由用户进行测试"},{"index":1,"textZh":"专家基于既定可用性原则评估界面"},{"index":2,"textZh":"自动测试工具"},{"index":3,"textZh":"仅用于移动应用"}]},
+  {"questionId":"07_HARU_Q92","questionZh":"关于API网关中限流的功能，哪项正确？","options":[{"index":0,"textZh":"增加请求量"},{"index":1,"textZh":"限制单位时间内的请求数以保护后端服务"},{"index":2,"textZh":"加密所有请求"},{"index":3,"textZh":"仅用于计费"}]},
+  {"questionId":"07_HARU_Q93","questionZh":"以下哪项是ISO 31000中风险管理的核心原则？","options":[{"index":0,"textZh":"消除所有风险"},{"index":1,"textZh":"创造并保护价值，是决策不可分割的一部分"},{"index":2,"textZh":"仅适用于大企业"},{"index":3,"textZh":"不使用任何分析"}]},
+  {"questionId":"07_HARU_Q94","questionZh":"在函数式编程中，纯函数的特征是什么？","options":[{"index":0,"textZh":"可以修改全局状态"},{"index":1,"textZh":"对于相同输入总是返回相同输出，且无副作用"},{"index":2,"textZh":"依赖外部变量"},{"index":3,"textZh":"必须进行I/O操作"}]},
+  {"questionId":"07_HARU_Q95","questionZh":"关于蓝绿部署，哪项正确？","options":[{"index":0,"textZh":"仅部署到一台服务器"},{"index":1,"textZh":"准备两套相同环境，切换流量以实现零停机部署"},{"index":2,"textZh":"不使用测试"},{"index":3,"textZh":"仅用于小型应用"}]},
+  {"questionId":"07_HARU_Q96","questionZh":"在Java中，垃圾收集的主要作用是什么？","options":[{"index":0,"textZh":"手动释放内存"},{"index":1,"textZh":"自动回收不再使用的对象所占内存"},{"index":2,"textZh":"压缩文件"},{"index":3,"textZh":"清理数据库"}]},
+  {"questionId":"07_HARU_Q97","questionZh":"以下哪项是关于SSH协议的正确说明？","options":[{"index":0,"textZh":"以明文传输数据"},{"index":1,"textZh":"加密网络通信，用于安全远程登录"},{"index":2,"textZh":"仅用于文件传输"},{"index":3,"textZh":"不需要认证"}]},
+  {"questionId":"07_HARU_Q98","questionZh":"在数据库索引中，B树索引的特征是什么？","options":[{"index":0,"textZh":"仅用于少量数据"},{"index":1,"textZh":"保持平衡的数据结构，适合范围查询和排序"},{"index":2,"textZh":"总是全表扫描"},{"index":3,"textZh":"不支持插入"}]},
+  {"questionId":"07_HARU_Q99","questionZh":"关于数字转型中业务模型的变革，哪项正确？","options":[{"index":0,"textZh":"仅将现有流程数字化"},{"index":1,"textZh":"利用数字技术创造新的业务价值和客户体验"},{"index":2,"textZh":"不需要改变"},{"index":3,"textZh":"仅适用于IT部门"}]},
+  {"questionId":"07_HARU_Q100","questionZh":"在项目管理中，风险应对策略中风险接受的含义是什么？","options":[{"index":0,"textZh":"消除风险"},{"index":1,"textZh":"认识风险存在但有意不采取特别措施"},{"index":2,"textZh":"转移风险给第三方"},{"index":3,"textZh":"忽略风险"}]}
+]

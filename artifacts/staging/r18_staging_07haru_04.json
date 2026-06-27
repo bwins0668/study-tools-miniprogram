@@ -1,0 +1,12 @@
+[
+  {"questionId":"07_HARU_Q31","questionZh":"在Linux系统中，root用户具有什么特征？","options":[{"index":0,"textZh":"仅有读取权限"},{"index":1,"textZh":"拥有系统的完全管理权限"},{"index":2,"textZh":"不能安装软件"},{"index":3,"textZh":"仅能查看日志"}]},
+  {"questionId":"07_HARU_Q32","questionZh":"以下哪项是数字证书中不包含的信息？","options":[{"index":0,"textZh":"持有者公钥"},{"index":1,"textZh":"用户的私人密码"},{"index":2,"textZh":"发行者信息"},{"index":3,"textZh":"有效期"}]},
+  {"questionId":"07_HARU_Q33","questionZh":"在ITIL 4中，指导原则有多少条？","options":[{"index":0,"textZh":"5"},{"index":1,"textZh":"7"},{"index":2,"textZh":"10"},{"index":3,"textZh":"12"}]},
+  {"questionId":"07_HARU_Q34","questionZh":"关于生成式AI的版权问题，哪项是正确的？","options":[{"index":0,"textZh":"AI生成物始终不产生版权问题"},{"index":1,"textZh":"可能侵犯训练数据中所含作品的著作权"},{"index":2,"textZh":"AI生成物自动拥有著作权"},{"index":3,"textZh":"不受任何法律约束"}]},
+  {"questionId":"07_HARU_Q35","questionZh":"以下哪项是Windows操作系统中的注册表功能？","options":[{"index":0,"textZh":"管理文件"},{"index":1,"textZh":"存储系统和应用程序的配置信息数据库"},{"index":2,"textZh":"仅用于网络设置"},{"index":3,"textZh":"浏览器缓存"}]},
+  {"questionId":"07_HARU_Q36","questionZh":"在软件授权中，MIT许可证的特征是什么？","options":[{"index":0,"textZh":"禁止商业使用"},{"index":1,"textZh":"非常宽松，允许商业使用和修改"},{"index":2,"textZh":"修改后必须公开源代码"},{"index":3,"textZh":"仅用于教育目的"}]},
+  {"questionId":"07_HARU_Q37","questionZh":"以下哪项是关于网络安全中SOC的报告对象？","options":[{"index":0,"textZh":"仅外部客户"},{"index":1,"textZh":"组织内部的CISO和安全团队"},{"index":2,"textZh":"仅执法机构"},{"index":3,"textZh":"仅供应商"}]},
+  {"questionId":"07_HARU_Q38","questionZh":"在风险分析中，ALE（年预期损失）的计算公式是什么？","options":[{"index":0,"textZh":"SLE × ARO"},{"index":1,"textZh":"资产价值 × 漏洞"},{"index":2,"textZh":"威胁 × 影响"},{"index":3,"textZh":"年收入 × 风险率"}]},
+  {"questionId":"07_HARU_Q39","questionZh":"在Scrum中，对完成定义的说明，哪项正确？","options":[{"index":0,"textZh":"由Scrum Master单独决定"},{"index":1,"textZh":"由团队共同定义，表示工作完成的透明标准"},{"index":2,"textZh":"在所有项目中都是相同的"},{"index":3,"textZh":"不需要定义"}]},
+  {"questionId":"07_HARU_Q40","questionZh":"以下哪项是HTTPS通信中服务器证书的验证主体？","options":[{"index":0,"textZh":"浏览器"},{"index":1,"textZh":"证书颁发机构（CA）"},{"index":2,"textZh":"Web服务器自身"},{"index":3,"textZh":"用户"}]}
+]

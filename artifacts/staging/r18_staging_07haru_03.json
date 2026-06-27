@@ -1,0 +1,12 @@
+[
+  {"questionId":"07_HARU_Q21","questionZh":"以下哪项是加密通信协议TLS 1.3的特征？","options":[{"index":0,"textZh":"握手需要多次往返"},{"index":1,"textZh":"简化握手过程，提升速度和安全性"},{"index":2,"textZh":"不使用加密"},{"index":3,"textZh":"仅支持HTTP"}]},
+  {"questionId":"07_HARU_Q22","questionZh":"在数据库中，视图的优点是什么？","options":[{"index":0,"textZh":"存储数据副本"},{"index":1,"textZh":"简化复杂查询并提高安全性"},{"index":2,"textZh":"替换所有表"},{"index":3,"textZh":"加速写操作"}]},
+  {"questionId":"07_HARU_Q23","questionZh":"在敏捷开发中，每日站立会议的时间限制通常是多少？","options":[{"index":0,"textZh":"1小时"},{"index":1,"textZh":"15分钟"},{"index":2,"textZh":"任意时间"},{"index":3,"textZh":"半天"}]},
+  {"questionId":"07_HARU_Q24","questionZh":"以下哪项是容器编排工具Kubernetes的主要功能？","options":[{"index":0,"textZh":"仅管理单个容器"},{"index":1,"textZh":"自动化容器的部署、扩展和管理"},{"index":2,"textZh":"编辑源代码"},{"index":3,"textZh":"替换操作系统"}]},
+  {"questionId":"07_HARU_Q25","questionZh":"在IP地址中，IPv6地址的长度是多少位？","options":[{"index":0,"textZh":"32"},{"index":1,"textZh":"128"},{"index":2,"textZh":"64"},{"index":3,"textZh":"256"}]},
+  {"questionId":"07_HARU_Q26","questionZh":"关于GDPR的适用对象，哪项正确？","options":[{"index":0,"textZh":"仅EU境内企业"},{"index":1,"textZh":"处理EU居民个人数据的所有组织"},{"index":2,"textZh":"仅美国企业"},{"index":3,"textZh":"仅公共机构"}]},
+  {"questionId":"07_HARU_Q27","questionZh":"以下哪项是编译器的作用？","options":[{"index":0,"textZh":"逐行执行源代码"},{"index":1,"textZh":"将源代码整体翻译为机器语言"},{"index":2,"textZh":"管理数据库"},{"index":3,"textZh":"仅用于调试"}]},
+  {"questionId":"07_HARU_Q28","questionZh":"在DevOps中，基础设施即代码（IaC）的主要好处是什么？","options":[{"index":0,"textZh":"需要手动配置服务器"},{"index":1,"textZh":"以代码管理基础设施，实现可重复、可版本管理"},{"index":2,"textZh":"仅适用于小型系统"},{"index":3,"textZh":"降低性能"}]},
+  {"questionId":"07_HARU_Q29","questionZh":"以下哪项是日本专利法中对发明的定义？","options":[{"index":0,"textZh":"仅新发现"},{"index":1,"textZh":"利用自然规律的高度技术思想创造"},{"index":2,"textZh":"仅商业方法"},{"index":3,"textZh":"不包括软件"}]},
+  {"questionId":"07_HARU_Q30","questionZh":"在项目组合管理中，最重要的考量是什么？","options":[{"index":0,"textZh":"仅选择成本最低的项目"},{"index":1,"textZh":"平衡风险和回报，与经营战略保持一致"},{"index":2,"textZh":"选择所有项目"},{"index":3,"textZh":"仅选择短期项目"}]}
+]
