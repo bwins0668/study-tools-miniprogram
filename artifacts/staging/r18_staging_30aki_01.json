@@ -1,0 +1,6 @@
+[
+  {"questionId":"30_AKI_Q1","questionZh":"计算机a～d的网络连接和访问控制功能如表。可能成为非法访问行为对象的是哪台？","options":[{"index":0,"textZh":"计算机a"},{"index":1,"textZh":"计算机b"},{"index":2,"textZh":"计算机c"},{"index":3,"textZh":"计算机d"}]},
+  {"questionId":"30_AKI_Q2","questionZh":"关于HTTP状态码403的含义？","options":[{"index":0,"textZh":"成功"},{"index":1,"textZh":"禁止访问"},{"index":2,"textZh":"未找到"},{"index":3,"textZh":"重定向"}]},
+  {"questionId":"30_AKI_Q3","questionZh":"关于Git中分支管理的推荐命名方式？","options":[{"index":0,"textZh":"无规范"},{"index":1,"textZh":"类型/描述"},{"index":2,"textZh":"只有名称"},{"index":3,"textZh":"完全随意"}]},
+  {"questionId":"30_AKI_Q4","questionZh":"关于数据中心的N+1冗余设计？","options":[{"index":0,"textZh":"无冗余"},{"index":1,"textZh":"N个必要组件+1个备用"},{"index":2,"textZh":"2N"},{"index":3,"textZh":"不设计"}]}
+]
