@@ -1,0 +1,38 @@
+{
+  "userReportedError": "闪卡数据加载失败 · SG 闪卡 · 年度模拟",
+  "errorSource": "packages/quiz/pages/flashcard-quiz/flashcard-quiz.js",
+  "errorLine": 177,
+  "errorText": "'闪卡数据加载失败' displayed when loadDeckAsync rejects",
+  "triggerPath": "exam-menu.js:119 — navigates to flashcard-quiz (OLD page) instead of flashcard-deck-select",
+  "rootCauseChain": [
+    {
+      "level": "navigation",
+      "file": "packages/quiz/pages/exam-menu/exam-menu.js",
+      "line": 119,
+      "code": "url: '/packages/quiz/pages/flashcard-quiz/flashcard-quiz?course=' + exam",
+      "problem": "Points to deprecated flashcard-quiz page instead of flashcard-deck-select page"
+    },
+    {
+      "level": "loader",
+      "file": "packages/quiz/data/flashcard_adapter.js",
+      "line": 234,
+      "code": "function loadDeckAsync() { return Promise.reject(new Error('FLASHCARD_RUNTIME_BRIDGE_REMOVED...')); }",
+      "problem": "loadDeckAsync deliberately disabled — subpackage-local loader required"
+    },
+    {
+      "level": "page entry",
+      "file": "packages/quiz/pages/flashcard-quiz/flashcard-quiz.js",
+      "line": -59,
+      "code": "adapter.loadDeckAsync() → .then() / .catch()",
+      "problem": "flashcard-quiz page uses the disabled loadDeckAsync, which always fails"
+    }
+  ],
+  "fix": "Change exam-menu.js:119 to navigate to flashcard-deck-select instead of flashcard-quiz",
+  "impactedEntries": [
+    "IT Passport 闪卡 button on exam-menu page",
+    "SG 闪卡 button on exam-menu page"
+  ],
+  "notImpactedEntries": [
+    "flashcards page → flashcard-deck-select (uses correct path from pages/flashcards/flashcards.js:181)"
+  ]
+}
