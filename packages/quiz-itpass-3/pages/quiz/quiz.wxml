@@ -200,11 +200,11 @@
           <text class="review-item-question" user-select="true">{{item.questionZh}}</text>
           <view class="review-item-answer">
             <text class="review-item-label">你的答案：</text>
-            <text class="review-item-selected {{item.isCorrect ? 'text-correct' : 'text-wrong'}}">{{item.selectedAnswer}}</text>
+            <text class="review-item-selected {{item.isCorrect ? 'text-correct' : 'text-wrong'}}">{{item.selectedAnswerZh || item.selectedAnswer}}</text>
           </view>
           <view class="review-item-answer" wx:if="{{!item.isCorrect}}">
             <text class="review-item-label">正确答案：</text>
-            <text class="review-item-correct-answer text-correct">{{item.correctAnswer}}</text>
+            <text class="review-item-correct-answer text-correct">{{item.correctAnswerZh || item.correctAnswer}}</text>
           </view>
           <!-- R3.48 错题解析 -->
           <!-- R3.48 smoke anchor: 💡 提示 -->

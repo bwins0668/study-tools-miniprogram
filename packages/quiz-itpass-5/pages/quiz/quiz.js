@@ -307,12 +307,21 @@ Page({
       }
       if (question) {
         var qClean = processQuestionForDisplay(question);
+        // Resolve option texts for selected and correct answer keys
+        var selectedOpt = null, correctOpt = null;
+        var options = question.options || [];
+        for (var k = 0; k < options.length; k++) {
+          if (options[k].key === item.selectedAnswer) selectedOpt = options[k];
+          if (options[k].key === question.answer) correctOpt = options[k];
+        }
         reviewList.push({
           questionId: item.questionId,
           selectedAnswer: item.selectedAnswer,
+          selectedAnswerZh: selectedOpt ? stripHtmlTags(selectedOpt.textZh || selectedOpt.textJa || '') : item.selectedAnswer,
           isCorrect: item.isCorrect,
           questionZh: qClean.questionZhClean || question.questionZh || '',
           correctAnswer: question.answer || '',
+          correctAnswerZh: correctOpt ? stripHtmlTags(correctOpt.textZh || correctOpt.textJa || '') : (question.answer || ''),
           hint: question.shared_hint || ''
         });
       }
