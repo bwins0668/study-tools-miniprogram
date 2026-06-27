@@ -78,11 +78,13 @@
         <view class="fc-feedback-detail">
           <view class="fc-feedback-item">
             <text class="fc-feedback-label">あなたの選択 / 你的选择</text>
-            <text class="fc-feedback-value">{{selectedKey}}</text>
+            <text class="fc-feedback-value">{{selectedOption.key}}. {{selectedOption.textJa}}</text>
+            <text class="fc-feedback-value" wx:if="{{selectedOption.hasTextZh}}">{{selectedOption.textZh}}</text>
           </view>
           <view class="fc-feedback-item">
             <text class="fc-feedback-label">正しい答え / 正确答案</text>
-            <text class="fc-feedback-value">{{currentCard.answer}}</text>
+            <text class="fc-feedback-value">{{correctOption.key}}. {{correctOption.textJa}}</text>
+            <text class="fc-feedback-value" wx:if="{{correctOption.hasTextZh}}">{{correctOption.textZh}}</text>
           </view>
         </view>
         <view class="fc-action-row">

@@ -44,7 +44,7 @@
 .fc-feedback-text{font-size:28rpx;font-weight:600;display:block;margin-bottom:12rpx}
 .fc-feedback-detail{font-size:24rpx;font-weight:400;margin-bottom:12rpx}
 .fc-feedback-item{display:flex;justify-content:space-between;padding:4rpx 0}
-.fc-feedback-label{color:#999}
+.fc-feedback-label{color:#444;font-weight:500}
 .fc-feedback-value{font-weight:600;color:#333}
 .fc-action-row{display:flex;gap:12rpx;margin-top:12rpx}
 .fc-btn{flex:1;display:flex;align-items:center;justify-content:center;padding:22rpx 16rpx;border-radius:12rpx;background:#f0f0f0;font-size:28rpx;color:#333;font-weight:500}

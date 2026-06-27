@@ -44,6 +44,11 @@
     "verify:transaction-proof:release": "node tools/verify_transaction_proof_release.js",
     "verify:recovery-proof:release": "node tools/verify_transaction_proof_release.js",
     "test:recovery-runtime": "node tools/test_recovery_runtime.js",
-    "test:cn-glossary": "node tools/check_chinese_glossary_completeness.js"
+    "test:cn-glossary": "node tools/check_chinese_glossary_completeness.js",
+    "test:flashcard-launch": "node tools/test_flashcard_launch.js",
+    "test:flashcard-srs-coverage": "node tools/test_flashcard_srs_coverage.js",
+    "test:exam-feedback-bilingual": "node tools/test_exam_feedback_bilingual.js",
+    "test:exam-explanation-zh": "node tools/test_exam_explanation_zh.js",
+    "test:exam-mobile-layout": "node tools/test_exam_mobile_layout.js"
   }
 }
