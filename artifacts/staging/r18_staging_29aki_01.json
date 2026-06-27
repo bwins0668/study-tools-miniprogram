@@ -1,0 +1,17 @@
+[
+  {"questionId":"29_AKI_Q1","questionZh":"技术人员A、B、C分别生产产品X、Y、Z时每日生产额如表。每人每天只能负责一种产品时，每日最大生产额是多少万日元？每种产品都必定生产。","options":[{"index":0,"textZh":"20"},{"index":1,"textZh":"21"},{"index":2,"textZh":"22"},{"index":3,"textZh":"23"}]},
+  {"questionId":"29_AKI_Q2","questionZh":"关于TCP/IP中IP地址分类，C类地址默认子网掩码？","options":[{"index":0,"textZh":"255.0.0.0"},{"index":1,"textZh":"255.255.255.0"},{"index":2,"textZh":"255.255.0.0"},{"index":3,"textZh":"255.255.255.128"}]},
+  {"questionId":"29_AKI_Q3","questionZh":"关于数据库的第三正规化，哪项正确？","options":[{"index":0,"textZh":"消除重复列"},{"index":1,"textZh":"消除传递函数依赖"},{"index":2,"textZh":"消除部分函数依赖"},{"index":3,"textZh":"创建索引"}]},
+  {"questionId":"29_AKI_Q4","questionZh":"在网络安全中，什么是最小信息披露原则？","options":[{"index":0,"textZh":"共享所有信息"},{"index":1,"textZh":"仅披露完成任务所必需的信息"},{"index":2,"textZh":"不共享任何信息"},{"index":3,"textZh":"仅向所有人公开"}]},
+  {"questionId":"29_AKI_Q5","questionZh":"关于TLS协议中的证书链，哪项正确？","options":[{"index":0,"textZh":"单级CA"},{"index":1,"textZh":"根CA、中级CA和服务器证书组成信任链"},{"index":2,"textZh":"不需要根CA"},{"index":3,"textZh":"仅服务器证书"}]},
+  {"questionId":"29_AKI_Q6","questionZh":"在面向对象数据库中，对象标识的独特性来源？","options":[{"index":0,"textZh":"对象内容"},{"index":1,"textZh":"系统分配的OID"},{"index":2,"textZh":"类名"},{"index":3,"textZh":"对象大小"}]},
+  {"questionId":"29_AKI_Q7","questionZh":"关于安全中的水坑攻击，哪项正确？","options":[{"index":0,"textZh":"直接攻击目标"},{"index":1,"textZh":"感染目标频繁访问的网站"},{"index":2,"textZh":"邮件传播"},{"index":3,"textZh":"物理攻击"}]},
+  {"questionId":"29_AKI_Q8","questionZh":"在项目管理中，三点估算的公式是什么？","options":[{"index":0,"textZh":"(O+M+P)/3"},{"index":1,"textZh":"(O+4M+P)/6"},{"index":2,"textZh":"(O×M×P)/3"},{"index":3,"textZh":"O+M+P"}]},
+  {"questionId":"29_AKI_Q9","questionZh":"关于VLAN标记，802.1Q头部大小是多少字节？","options":[{"index":0,"textZh":"2"},{"index":1,"textZh":"4"},{"index":2,"textZh":"8"},{"index":3,"textZh":"12"}]},
+  {"questionId":"29_AKI_Q10","questionZh":"在英国数据保护法中，DPA 2018的主要变化？","options":[{"index":0,"textZh":"更少保护"},{"index":1,"textZh":"与GDPR保持一致并补充英国特定规定"},{"index":2,"textZh":"无变化"},{"index":3,"textZh":"替代GDPR"}]},
+  {"questionId":"29_AKI_Q11","questionZh":"关于互联网Internet交换点，哪项正确？","options":[{"index":0,"textZh":"连接终端用户"},{"index":1,"textZh":"ISP之间交换网络流量的物理基础设施"},{"index":2,"textZh":"邮件网关"},{"index":3,"textZh":"DNS根服务器"}]},
+  {"questionId":"29_AKI_Q12","questionZh":"在软件许可中，多版许可的特点？","options":[{"index":0,"textZh":"按用户数定价"},{"index":1,"textZh":"按设备数授权"},{"index":2,"textZh":"使用量计费"},{"index":3,"textZh":"一次性买断"}]},
+  {"questionId":"29_AKI_Q13","questionZh":"关于Git中revert和reset的区别？","options":[{"index":0,"textZh":"两者相同"},{"index":1,"textZh":"revert保留历史安全删除，reset删除提交记录"},{"index":2,"textZh":"reset更安全"},{"index":3,"textZh":"revert不能用于已推送"}]},
+  {"questionId":"29_AKI_Q14","questionZh":"关于ITSM中能力管理，哪项正确？","options":[{"index":0,"textZh":"管理硬件采购"},{"index":1,"textZh":"确保IT基础设施满足当前和未来的容量需求"},{"index":2,"textZh":"管理软件许可"},{"index":3,"textZh":"仅管理员工"}]},
+  {"questionId":"29_AKI_Q15","questionZh":"在数字签名方案中，RSA签名的过程？","options":[{"index":0,"textZh":"用接收者公钥加密"},{"index":1,"textZh":"发送者用私钥签名，验证者用公钥验证"},{"index":2,"textZh":"接收者用私钥签名"},{"index":3,"textZh":"使用对称密钥"}]}
+]
