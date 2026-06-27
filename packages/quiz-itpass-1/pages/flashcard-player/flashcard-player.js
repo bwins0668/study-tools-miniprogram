@@ -2,6 +2,7 @@
 
 var deckManifest = require('../../data/deck-manifest');
 var loader = require('../../data/loader');
+try { var explanationsById = require('../../data/explanations_zh'); } catch (e) { var explanationsById = {}; }
 
 function stripHtml(value) {
   if (!value || typeof value !== 'string') return '';

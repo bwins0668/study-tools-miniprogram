@@ -49,6 +49,7 @@
     "test:flashcard-srs-coverage": "node tools/test_flashcard_srs_coverage.js",
     "test:exam-feedback-bilingual": "node tools/test_exam_feedback_bilingual.js",
     "test:exam-explanation-zh": "node tools/test_exam_explanation_zh.js",
-    "test:exam-mobile-layout": "node tools/test_exam_mobile_layout.js"
+    "test:exam-mobile-layout": "node tools/test_exam_mobile_layout.js",
+    "test:flashcard-feedback-bilingual": "node tools/test_flashcard_feedback_bilingual.js"
   }
 }
