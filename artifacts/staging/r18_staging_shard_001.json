@@ -1,0 +1,102 @@
+[
+  {
+    "questionId": "01_AKI_Q1",
+    "questionZh": "根据劳动者派遣法，A公司决定将Y先生派遣至B公司。此时所成立的关系中，以下哪项最恰当？",
+    "options": [
+      {"index": 0, "textZh": "A公司与B公司之间的委托关系"},
+      {"index": 1, "textZh": "A公司与Y先生之间的劳动者派遣合同关系"},
+      {"index": 2, "textZh": "B公司与Y先生之间的雇用关系"},
+      {"index": 3, "textZh": "B公司与Y先生之间的指挥命令关系"}
+    ]
+  },
+  {
+    "questionId": "01_AKI_Q2",
+    "questionZh": "某制造商的当期损益预测如表中所示，但此后广告宣传费增加了5亿日元，持有股票的分红收入增加了3亿日元。此时，最终的营业利润和经常利润各是多少亿日元？这里假定除广告宣传费、持有股票的分红收入以外，全部按预测量计算。",
+    "options": [
+      {"index": 0, "textZh": "A"},
+      {"index": 1, "textZh": "B"},
+      {"index": 2, "textZh": "C"},
+      {"index": 3, "textZh": "D"}
+    ]
+  },
+  {
+    "questionId": "01_AKI_Q3",
+    "questionZh": "以下哪项属于IoT的应用事例？",
+    "options": [
+      {"index": 0, "textZh": "将会员PC与拍卖会场通过互联网连接，使会员即使在家也能参与拍卖。"},
+      {"index": 1, "textZh": "将公司内部服务器上的群件迁移至外部数据中心的服务器，使员工能通过互联网随时随地使用。"},
+      {"index": 2, "textZh": "在口服药容器中嵌入传感器，使药店能通过互联网管理服药记录，并将其用于服药指导。"},
+      {"index": 3, "textZh": "培训机构将授课视频发布在网站上，使学员能通过智能手机或PC随时随地听课。"}
+    ]
+  },
+  {
+    "questionId": "01_AKI_Q4",
+    "questionZh": "以下哪项是将信息以纵横二维图形模式存储的编码？",
+    "options": [
+      {"index": 0, "textZh": "ASCII码"},
+      {"index": 1, "textZh": "G代码"},
+      {"index": 2, "textZh": "JAN码"},
+      {"index": 3, "textZh": "QR码"}
+    ]
+  },
+  {
+    "questionId": "01_AKI_Q5",
+    "questionZh": "以下哪项是从材料采购到商品销售全流程统一管理、以实现供应最优化的系统？",
+    "options": [
+      {"index": 0, "textZh": "ASP"},
+      {"index": 1, "textZh": "CRM"},
+      {"index": 2, "textZh": "ERP"},
+      {"index": 3, "textZh": "SCM"}
+    ]
+  },
+  {
+    "questionId": "01_AKI_Q6",
+    "questionZh": "关于行政机关所持有的资料，规定请求公开的权利及其程序等的法律是哪一项？",
+    "options": [
+      {"index": 0, "textZh": "公益通报者保护法"},
+      {"index": 1, "textZh": "个人信息保护法"},
+      {"index": 2, "textZh": "信息公开法"},
+      {"index": 3, "textZh": "非法访问禁止法"}
+    ]
+  },
+  {
+    "questionId": "01_AKI_Q7",
+    "questionZh": "关于用于经营环境分析等的3C分析的说明中，哪项最恰当？",
+    "options": [
+      {"index": 0, "textZh": "从顾客、竞争对手、本公司三个视角进行分析。"},
+      {"index": 1, "textZh": "从最近购买日期、购买频率、购买金额三个视角进行分析。"},
+      {"index": 2, "textZh": "分解为时代、年龄、世代三个因素进行分析。"},
+      {"index": 3, "textZh": "按总销售额从高到低分为三组进行分类分析。"}
+    ]
+  },
+  {
+    "questionId": "01_AKI_Q8",
+    "questionZh": "以人口减少和老龄化等为背景，尝试利用ICT使城市或地区的功能与服务实现高效化和高度化，以解决地区课题并实现振兴。以下哪项是表示此类城市建设方案的词汇？",
+    "options": [
+      {"index": 0, "textZh": "容量"},
+      {"index": 1, "textZh": "智慧城市"},
+      {"index": 2, "textZh": "多样性"},
+      {"index": 3, "textZh": "大学"}
+    ]
+  },
+  {
+    "questionId": "01_AKI_Q9",
+    "questionZh": "在DFD中，除数据流和处理（功能）外，被描述的全部是哪一项？a. 数据处理所需的时间 b. 数据的存储位置 c. 数据的产生来源和输出目标",
+    "options": [
+      {"index": 0, "textZh": "a、b"},
+      {"index": 1, "textZh": "a、b、c"},
+      {"index": 2, "textZh": "b、c"},
+      {"index": 3, "textZh": "c"}
+    ]
+  },
+  {
+    "questionId": "01_AKI_Q10",
+    "questionZh": "在企业联盟战略中，以下哪项是对合资企业的恰当说明？",
+    "options": [
+      {"index": 0, "textZh": "指两家以上企业共同出资经营的企业。"},
+      {"index": 1, "textZh": "指企业之间通过相互出资或相互持股等方式建立合作关系。"},
+      {"index": 2, "textZh": "指通过企业合并或收购取得对方企业的控制权。"},
+      {"index": 3, "textZh": "指允许使用技术、品牌、销售活动等相关权利。"}
+    ]
+  }
+]

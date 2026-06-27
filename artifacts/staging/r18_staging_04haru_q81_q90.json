@@ -1,0 +1,12 @@
+[
+  {"questionId":"04_HARU_Q81","questionZh":"在访问控制中，基于角色的访问控制是什么？","options":[{"index":0,"textZh":"对每个用户单独设定权限"},{"index":1,"textZh":"根据用户的角色授予权限"},{"index":2,"textZh":"无任何限制"},{"index":3,"textZh":"仅对管理员授予权限"}]},
+  {"questionId":"04_HARU_Q82","questionZh":"在软件开发中，CI/CD的目的是什么？","options":[{"index":0,"textZh":"减缓开发周期"},{"index":1,"textZh":"持续集成和持续部署，加快发布周期"},{"index":2,"textZh":"仅手动测试"},{"index":3,"textZh":"不进行代码审查"}]},
+  {"questionId":"04_HARU_Q83","questionZh":"在信息安全中，VPN的主要特征是什么？","options":[{"index":0,"textZh":"仅内部网络使用"},{"index":1,"textZh":"通过互联网建立加密隧道，安全通信"},{"index":2,"textZh":"不使用任何加密"},{"index":3,"textZh":"仅用于邮件"}]},
+  {"questionId":"04_HARU_Q84","questionZh":"在项目管理中，利益相关者分析是什么？","options":[{"index":0,"textZh":"仅分析成本"},{"index":1,"textZh":"识别对项目有影响的人并分析其利益和立场"},{"index":2,"textZh":"仅分析市场"},{"index":3,"textZh":"仅分析技术风险"}]},
+  {"questionId":"04_HARU_Q85","questionZh":"在编程中，API的目的是什么？","options":[{"index":0,"textZh":"直接操作数据库"},{"index":1,"textZh":"定义软件组件间的交互接口"},{"index":2,"textZh":"仅用于网络通信"},{"index":3,"textZh":"管理文件系统"}]},
+  {"questionId":"04_HARU_Q86","questionZh":"在IT培训中，e-Learning的优点是什么？","options":[{"index":0,"textZh":"必须在固定地点学习"},{"index":1,"textZh":"可随时随地按自己的进度学习"},{"index":2,"textZh":"仅用于考试"},{"index":3,"textZh":"不需任何设备"}]},
+  {"questionId":"04_HARU_Q87","questionZh":"在数据保护法律中，GDPR是什么？","options":[{"index":0,"textZh":"仅在日本有效的法律"},{"index":1,"textZh":"欧盟通用数据保护条例"},{"index":2,"textZh":"仅适用于企业"},{"index":3,"textZh":"一种数据格式"}]},
+  {"questionId":"04_HARU_Q88","questionZh":"在AI中，什么是过拟合？","options":[{"index":0,"textZh":"模型无法学习"},{"index":1,"textZh":"模型对训练数据过度适应，对新数据泛化能力差"},{"index":2,"textZh":"模型处理速度慢"},{"index":3,"textZh":"模型不包含任何参数"}]},
+  {"questionId":"04_HARU_Q89","questionZh":"在数据库中，什么是Redis？","options":[{"index":0,"textZh":"仅关系数据库"},{"index":1,"textZh":"内存型键值数据存储"},{"index":2,"textZh":"一种文件系统"},{"index":3,"textZh":"仅用于备份"}]},
+  {"questionId":"04_HARU_Q90","questionZh":"在通信协议中，MQTT是什么？","options":[{"index":0,"textZh":"仅用于Web浏览"},{"index":1,"textZh":"轻量级消息协议，常用于IoT"},{"index":2,"textZh":"文件传输协议"},{"index":3,"textZh":"仅用于邮件"}]}
+]

@@ -1,0 +1,791 @@
+{
+  "summary": {
+    "schemaVersion": 2,
+    "purpose": "R18 worktree intake - translation takeover from R15/R16/R17 blocked attempts",
+    "protectedCount": 4,
+    "countByClassification": {
+      "A_tracked_modified": 1,
+      "B_r15_r16_failed": 88,
+      "C_unknown": 1,
+      "A_audit_infrastructure": 2,
+      "A_protected": 4
+    },
+    "totalEntries": 96
+  },
+  "protectedFiles": [
+    "tools/check_target_binding.py",
+    "tools/diagnose_sg29_return.py",
+    "tools/probe_decks.py",
+    "tools/smoke_3_decks.py"
+  ],
+  "entries": [
+    {
+      "path": "ackages/quiz/data/flashcard_adapter.js",
+      "gitStatus": "M",
+      "classification": "A_tracked_modified",
+      "sha256": "ERROR_READING",
+      "action": "keep",
+      "reason": "Tracked file modified in working tree - R16/R17 adapter fix"
+    },
+    {
+      "path": "_parsed.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "d61235cec2f0623f336589d0e52f55450d81f8ca3972f6b898ed1084641cd327",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _parsed.json"
+    },
+    {
+      "path": "artifacts/",
+      "gitStatus": "??",
+      "classification": "C_unknown",
+      "sha256": "ERROR_READING",
+      "action": "exclude",
+      "reason": "Unclassified untracked file"
+    },
+    {
+      "path": "batch_0.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "faf9818db9e669c458e95c2b6ad236403319d445a8f62ea38b6bd18ffcbb5bbf",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: batch_"
+    },
+    {
+      "path": "batch_1.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "34b76eb4f801829d6d085f385a0974006828b377047400c870a7d30759cffbb4",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: batch_"
+    },
+    {
+      "path": "batch_2.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "16572557f2b3813eda5c92378b980725d7147c7e1f9bb123716a33559208eb48",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: batch_"
+    },
+    {
+      "path": "batch_3.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "d4b5a97eb53df83b37a6d1456004ca2d85631c22ec5497f9175c6b1e6647292a",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: batch_"
+    },
+    {
+      "path": "batch_4.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "b08ab2a734cda757acbf44a4bbec7260c959e652b4461b076df9cbec17dfd1fd",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: batch_"
+    },
+    {
+      "path": "batch_5.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "07038013cd1cd4a9dca012b879be7ec6d65236ba7215346117711c3b9825cbb7",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: batch_"
+    },
+    {
+      "path": "batch_6.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "dd9d9061f78fe731bdb75284bfd5b04db8f382979cd641f7abf0707bba8916ea",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: batch_"
+    },
+    {
+      "path": "batch_7.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "ec80466762f19fe08902ff0e68dbf4c46580431364ccccdd604ba3c70342f46b",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: batch_"
+    },
+    {
+      "path": "batch_8.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "7356d01ba2dc91fb4a684fce6e1e0924b9ebf3065620e8230df50abd9e62d5f4",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: batch_"
+    },
+    {
+      "path": "batch_9.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "6e13b02b1784bf33cd52999313958ee343fdc06c02724347218d468109a57fb2",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: batch_"
+    },
+    {
+      "path": "packages/quiz-itpass-1/data/_batch_03haru_zh.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "ec1ce13808d5359be9e644f49626256303073d742932368c32a6d553b15bdc5c",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-itpass-1/data/translations_zh.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "f4648c1072d9a79fd1c33f2bbf4c8f432b2913c19acab0b202f60cfd9648948f",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: translations_zh.js"
+    },
+    {
+      "path": "packages/quiz-itpass-2/data/translations_zh.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "3b3536ac1b5067a8408d85fc6e7c39dfb0d0a06fe18b947d4b82c2d410deff1b",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: translations_zh.js"
+    },
+    {
+      "path": "packages/quiz-itpass-3/data/translations_zh.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "78e589c3e6136d9bf2e0c2d67cc952a42295fc0b50146fa5b702c8284f4f7cde",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: translations_zh.js"
+    },
+    {
+      "path": "packages/quiz-itpass-4/data/_batch_29_zh.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "7a0380c1d686c4666c1aad02a57e0ce737ee2e5677c939dd0e0c540b8f3633e6",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-itpass-4/data/translations_zh.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "525f24a10169150cabdd51479d71cd2fc5517c75f86bb227a83c81ef8918bf78",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: translations_zh.js"
+    },
+    {
+      "path": "packages/quiz-itpass-5/data/_batch_1.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "eff98a93a40eeea589771b310c87e6de688c9084f5f423dd06e582713ba33ffd",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-itpass-5/data/_batch_10.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "50fe42dc84fb7a13e74ea6ca0141de365fc9cbe6096a05b479efb4e9dd0583c7",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-itpass-5/data/_batch_10_zh.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "33253f4e369b1117e3fcb65eeca60e311fe972de6cd28bc6b3040fe7aea81075",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-itpass-5/data/_batch_1_zh.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "bf47104438a0921e6fdf6cfa1a4649afc7821cc147edbc1313c1acfd1cf17c8d",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-itpass-5/data/_batch_2.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "56ff26e7d6fead2578bd26b50959cafbf32531ec3473b914a4134d5ea0f46e41",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-itpass-5/data/_batch_2_zh.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "c19af8c97bad51541f1beb85f3c709d2bed93f869a733bf7b766fdc46008bd94",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-itpass-5/data/_batch_3.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "76c85bcbacbb9719d222c3459d22733b89850c3871cf2d42a52ea12c2d4f324a",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-itpass-5/data/_batch_3_zh.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "a36dfe6844533542668516b0defd587988d59e13d88e00dce370e8a6c2b07e2e",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-itpass-5/data/_batch_4.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "7531aeb77ae8746115371ddef1bde58f8eac3f09b278391b3dd12e34db1a6584",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-itpass-5/data/_batch_4_zh.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "b31bc1812893378b0a4ae18e6fb694361d0c57150287063df512154bb316b383",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-itpass-5/data/_batch_5.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "ea2eff3dafeb688b3e1d5df50a356242a1808c5aa5485ef62ede1c5bc3fe51a0",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-itpass-5/data/_batch_5_temp.txt",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "e9d995b606b48ee59ce252b8f7577a5827f42f13bae6fe56327fb5a6009ce554",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-itpass-5/data/_batch_5_zh.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "94b8ec23e430f0262ca4dcc8d79549448a5442e719c3f919b7283a04274b36ba",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-itpass-5/data/_batch_6.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "3411f26bed11330ec6999ce20fc22811bf0c5dd4a47de240e2b28bdb09006670",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-itpass-5/data/_batch_6_zh.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "e5cb3fe5d31604d5250fea9ce614dd76061794dcb24d158e071238f80caf10c7",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-itpass-5/data/_batch_7.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "a1ed540764b505973f4963181bfef85766e07322f33cd94755857fd2982412e0",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-itpass-5/data/_batch_8.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "1e2f756e0b433090c2f52d70727e5c3bc53684c7ecd6def6f8673735c7528c94",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-itpass-5/data/_batch_8_zh.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "04faa91b57e4fa11f656b875478799e508558120bfd10a258e54336719d702d6",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-itpass-5/data/_batch_9.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "1e2c3fdf19f45a988eb7249163e30976b072e2bb4204c43a036e7eaa030c26b3",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-itpass-5/data/_batch_extra_zh.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "1831adea8af0c252403ac1f7416310bd27c32e132d049a48c24ad9b2d0262842",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-itpass-5/data/_questions_raw.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "96c131f3bba39d9a67b42e0e05ce39fab810a686ddad49b57b0cc8f0b457f540",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _questions_raw"
+    },
+    {
+      "path": "packages/quiz-itpass-5/data/translations_zh.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "d588efe28a9492bd25be448dd95bc35cc0428207a403c8b7884a7a2e25f9a5d2",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: translations_zh.js"
+    },
+    {
+      "path": "packages/quiz-sg-1/data/_batch_sg_01_aki.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "b3dcfbf427da03d4a109844b6c8f04a50e9cd4a47ea115f72d3391cd777fd3e5",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-sg-1/data/_batch_sg_05_haru.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "1834aa6ce82d74929e05548208093feddbeba871c512c7d1f8406de77b95a07c",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-sg-1/data/_batch_sg_06_haru.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "01ac22d409c9ca780212cdb2a9ec31b6660ff02974388edf8040d6e728af6bd3",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-sg-1/data/_batch_sg_07_haru.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "d84966f3f2ecc50b423fb7787345c0d875f105a0efad17071750b1dea8e499a8",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-sg-1/data/_batch_sg_28_aki.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "d3d9aba59c89002b355130c8b1004223ee3633a7e8ea78ea4da93519af597a9c",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-sg-1/data/_extracted.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "0480a49d0b9d473af79af4d90317d6b124532207ff3fde1df860f1091df93d8a",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _extracted.json"
+    },
+    {
+      "path": "packages/quiz-sg-1/data/_to_translate.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "3f866d68017e49ac97266e48b34f9a20a660ccdc9b8c4604ff9d4d699700d4d6",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _to_translate.json"
+    },
+    {
+      "path": "packages/quiz-sg-1/data/_translated_sg_05_06_07.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "bede82a1b05de47bd04ebb2baecdd7c557d934e298a4ac78383c24d071e87b1b",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: translated_"
+    },
+    {
+      "path": "packages/quiz-sg-1/data/_translated_sg_28_aki.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "307f98c1dea232c0e97ccc47dad0c6d467c303f6b4d265ed514dbff2bf22515f",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: translated_"
+    },
+    {
+      "path": "packages/quiz-sg-1/data/questions.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "ebe9f7a618570676241be164dd60399aa9e1bf467c605f07c4411a42e35cfaea",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: packages/quiz-sg-1/data/questions.json"
+    },
+    {
+      "path": "packages/quiz-sg-1/data/questions_ja.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "efba400c4af6f3bd0b82870b5d74ae2d5eadd67eace14d0f5a508711bddc3467",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: packages/quiz-sg-1/data/questions_ja.json"
+    },
+    {
+      "path": "packages/quiz-sg-1/data/translate.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "1932b2482759d279e5b778f7f7686d2f8fe92c20c3d92fb55baf5c87a95fa1d8",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: translate.js"
+    },
+    {
+      "path": "packages/quiz-sg-1/data/translations_zh.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "3107fbd514d5992af801a6ee883e0cc1df2716da0db2e3e65bdb72504d697a96",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: translations_zh.js"
+    },
+    {
+      "path": "packages/quiz-sg-2/data/_batch_0.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "e4b7d7240bad0c1965b81c942d632cb5f83f2e9a39e9768fa53b5953ec129792",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-sg-2/data/_batch_2.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "42d9639e2d21c8ef4178fb2968e4c791336f0fbdbe651c43410e879fb861e0ae",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-sg-2/data/_batch_extra_zh.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "1a397ac7ee09eda98ad3bbc4520a421a2524cb9f6a70e69c2e5a0a21ab9fffc1",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "packages/quiz-sg-2/data/_dump.py",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "3891dad90469fdb40224d9175b69a2cde88eee6a676272b06bcf47076ebc31e6",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _dump"
+    },
+    {
+      "path": "packages/quiz-sg-2/data/_dump.txt",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "76f698d602af5f55ba0f6185b462b4a1294e9709aa94447316e3290ccd4275df",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _dump"
+    },
+    {
+      "path": "packages/quiz-sg-2/data/_fix_json.py",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "a921dc6997c3e0648379fb7fbb82da166c5989d7737605b606991bc177c5ac49",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _fix_json"
+    },
+    {
+      "path": "packages/quiz-sg-2/data/_questions_for_translate.txt",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "b2034a3a4e21c928b5df7772106a7cd230cc9dbe82ff89dced9a86914f71a761",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _translate"
+    },
+    {
+      "path": "packages/quiz-sg-2/data/_translate.py",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "b5bd8661479550b0d10fcbc00ead3ccc9ccfdcf4b854cb280dfb7b23dfe659ea",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _translate"
+    },
+    {
+      "path": "packages/quiz-sg-2/data/check_js.py",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "4869c4420258708b8052aac3616fec2ea313852f85c4e81e603a623e34453f71",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: check_js.py"
+    },
+    {
+      "path": "packages/quiz-sg-2/data/extract.py",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "0dae6d5e7004ceedbb1c2d63f8db3cb3dfbcb4a3f5cdf804493558c4eb71ecde",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: extract.py"
+    },
+    {
+      "path": "packages/quiz-sg-2/data/extract_questions.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "371dbf57d3909d7e7ed858987f2ac7c4c7f428d73024cf64416732b9886fe742",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: extract_questions.js"
+    },
+    {
+      "path": "packages/quiz-sg-2/data/gen_batch.py",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "f0ba193bd52935625aacfd715f63ead01c45ae119c4eece2a1d314d5f0d6d513",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: gen_batch.py"
+    },
+    {
+      "path": "packages/quiz-sg-2/data/translate.py",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "2e4355041f815432a83d8a561e586d80419d76baa3addb855892f07bf9284e99",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: translate.py"
+    },
+    {
+      "path": "packages/quiz-sg-2/data/translations_zh.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "a05e10dae880f89d2af3abd70520bcc8ee85fb1fa00d6c2fc493f34ea0674311",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: translations_zh.js"
+    },
+    {
+      "path": "questions_to_translate.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "2e3667b93e6f4c22fb33ea6973846a4c02a1c9fb61c928bee77b25c917f41629",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: questions_to_translate"
+    },
+    {
+      "path": "tools/audit_r16_worktree_intake.js",
+      "gitStatus": "??",
+      "classification": "A_audit_infrastructure",
+      "sha256": "d75047d15a5cd80c71d9be5d970e36149a3dd9bbd33fd4a05f3c3df8a51225b8",
+      "action": "keep",
+      "reason": "Audit infrastructure - reusable for R18 inventory"
+    },
+    {
+      "path": "tools/build_r16_cn_inventory.js",
+      "gitStatus": "??",
+      "classification": "A_audit_infrastructure",
+      "sha256": "ff3905117ccef365a9b0423e16821f678d47d09f72b9c7de48482c0a194ec2b1",
+      "action": "keep",
+      "reason": "Audit infrastructure - reusable for R18 inventory"
+    },
+    {
+      "path": "tools/check_r17_translation_candidate.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "f5d61e72c718f497659fe241c75aba28b98ba38264a1935a1e77d1ca4cf5f098",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: check_r17_translation_candidate"
+    },
+    {
+      "path": "tools/check_r17_translation_candidate_v2.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "e52cfc581555597cc732938b9599af7d94d488e005c545028efa6667bcb8d6af",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: check_r17_translation_candidate"
+    },
+    {
+      "path": "tools/check_target_binding.py",
+      "gitStatus": "??",
+      "classification": "A_protected",
+      "sha256": "13e516398d59212138b44eed7f0c1ef84c381e6423f863321b42c89e3b03f518",
+      "action": "keep_excluded",
+      "reason": "Historical diagnostic script - preserved untouched"
+    },
+    {
+      "path": "tools/compact_r17_batch_prompt.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "8c63c17d07c59c4d56195ef7a6c74f94f0e9302b5b9aa69e0707639527211d1c",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: _batch_"
+    },
+    {
+      "path": "tools/diagnose_sg29_return.py",
+      "gitStatus": "??",
+      "classification": "A_protected",
+      "sha256": "367078c62eb64fa8e381792c2137e7b9680948b72280164d71a59c8bd4e328bd",
+      "action": "keep_excluded",
+      "reason": "Historical diagnostic script - preserved untouched"
+    },
+    {
+      "path": "tools/generate_cn_translations.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "edf3117c5556bfe6e5a6a1bbb3502dad4788dcb4fabc41377cf5cdaaf1dcc2c9",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: generate_cn_translations"
+    },
+    {
+      "path": "tools/generate_cn_translations_v2.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "72f137a9f1b8ce99ad3d48a546afce787ce7108162f5a8dbb772c02d2aa9f9f1",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: generate_cn_translations"
+    },
+    {
+      "path": "tools/merge_r17_staging_candidates.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "d6bbe4d1a73e4a9d0d22e54c816203ec38d1dd3bb2271d3158772c841b61cd96",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: merge_r17"
+    },
+    {
+      "path": "tools/merge_r17_translation_parts.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "529e9864e7dace1260e657af004ecdf1b8f8a9a971fc01b8ee6f9e3bfd69c30f",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: merge_r17"
+    },
+    {
+      "path": "tools/prepare_r17_full_batch.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "a8b3a331c05bd42648a9b669e94658d0559730872a305f6c7c80456dcffc4ff6",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: prepare_r17"
+    },
+    {
+      "path": "tools/prepare_r17_pilot.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "0a08b21474604d99285f77424c0ed8836ee1a8c8d7d7c64e8f888d3152feab3f",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: prepare_r17"
+    },
+    {
+      "path": "tools/probe_decks.py",
+      "gitStatus": "??",
+      "classification": "A_protected",
+      "sha256": "e4101039441516aa9d73f9c03c13cf8d399dbc1d4bb8ca03e7cf41b0a7eea6bc",
+      "action": "keep_excluded",
+      "reason": "Historical diagnostic script - preserved untouched"
+    },
+    {
+      "path": "tools/record_r17_pilot_jobs.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "9439f8e0095a496aa7d30d6be7910f3a147c54c2e302dcf5b2c56983f502073b",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: record_r17_pilot"
+    },
+    {
+      "path": "tools/smoke_3_decks.py",
+      "gitStatus": "??",
+      "classification": "A_protected",
+      "sha256": "c046555b729280cfcba94a8bfd98a4e24da6997842328597032946ef2a0dfa4d",
+      "action": "keep_excluded",
+      "reason": "Historical diagnostic script - preserved untouched"
+    },
+    {
+      "path": "tools/test_r17_pilot_loader_adapter.js",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "84ad4a5551dd61ea7d20af15e7b3754ddb7b9e919683571aa0fd7a6b0ca1914f",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: test_r17_pilot"
+    },
+    {
+      "path": "translated_0.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "e016a8a58d8f6ed464b9cdc1ccd6b521139c6b07113687bebdf36f80a29427e0",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: translated_"
+    },
+    {
+      "path": "translated_1.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "052a969b68cb3634014e188017c28a90f36aead456505f3a19f57dcc1f6be6d6",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: translated_"
+    },
+    {
+      "path": "translated_2.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "5e0ed1646c3913d4333253b08c13a9b96e7c408daa9a5e4e9ecddc1f13e25201",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: translated_"
+    },
+    {
+      "path": "translated_3.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "a9ba3f9c7ccbfd705634a0bfaea6ee902ea489f7d077ac818700d6ff5472bebc",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: translated_"
+    },
+    {
+      "path": "translated_4.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "0388c3ebd93f1ce073e09639443599b097d7a25d18e7a8be43718112f21a4ee3",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: translated_"
+    },
+    {
+      "path": "translated_5.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "0feecabe9e05d8fd422975f0549e2afb6b9aff3bd61295c8eb0de2f247475f11",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: translated_"
+    },
+    {
+      "path": "translated_6.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "3223925cff378c7e19c67708c7d674028f07b68d1e670ec361526c25393bb3c7",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: translated_"
+    },
+    {
+      "path": "translated_7.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "9571a3880c4a7be04bafa9cbf52bab3af5a00af428fc656a6ad3c5e0479fddea",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: translated_"
+    },
+    {
+      "path": "translated_8.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "c029ed141a8a1d1834f809abb4cc9aa7ac771d33f7d2f07a2c32668c35baac75",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: translated_"
+    },
+    {
+      "path": "translated_9.json",
+      "gitStatus": "??",
+      "classification": "B_r15_r16_failed",
+      "sha256": "7674bf9c1a971feaba4d51d169e8db5e5b9cf8414fd96caaef65b8a0b1b7c0fd",
+      "action": "exclude",
+      "reason": "R15/R16 failed translation product matching pattern: translated_"
+    }
+  ]
+}

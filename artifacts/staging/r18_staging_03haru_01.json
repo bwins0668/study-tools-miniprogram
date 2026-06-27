@@ -1,0 +1,17 @@
+[
+  {"questionId":"03_HARU_Q1","questionZh":"以下哪项是使用E-R图进行数据建模的恰当理由？","options":[{"index":0,"textZh":"把握业务中数据的传递方式，明确工作流程。"},{"index":1,"textZh":"把握现行业务中数据的流动，明确业务执行中的问题点。"},{"index":2,"textZh":"将顾客、产品等业务管理对象间的关系图示化，明确其业务上的含义。"},{"index":3,"textZh":"详细研究数据项，明确数据库的实现方法。"}]},
+  {"questionId":"03_HARU_Q2","questionZh":"在信息系统中，RAID 5的特征是哪项？","options":[{"index":0,"textZh":"仅进行镜像"},{"index":1,"textZh":"分散存储数据和奇偶校验信息"},{"index":2,"textZh":"无冗余性，仅提高速度"},{"index":3,"textZh":"为每台磁盘单独镜像个备份磁盘"}]},
+  {"questionId":"03_HARU_Q3","questionZh":"以下哪项是防止内部不正当行为的措施？","options":[{"index":0,"textZh":"职责分离和访问权限的适当设定"},{"index":1,"textZh":"对所有员工使用相同的管理员权限"},{"index":2,"textZh":"禁用所有日志功能"},{"index":3,"textZh":"完全排除管理层监管"}]},
+  {"questionId":"03_HARU_Q4","questionZh":"在信息安全中，机密性受损会有什么影响？","options":[{"index":0,"textZh":"系统停止运行"},{"index":1,"textZh":"重要信息泄露给非授权者"},{"index":2,"textZh":"数据被篡改"},{"index":3,"textZh":"无法访问系统"}]},
+  {"questionId":"03_HARU_Q5","questionZh":"以下哪项是表示企业社会责任（CSR）概念的事例？","options":[{"index":0,"textZh":"仅追求短期利润最大化"},{"index":1,"textZh":"在考虑环境和社会贡献的同时进行经营活动"},{"index":2,"textZh":"完全不进行社会贡献活动"},{"index":3,"textZh":"只追求法律最低要求"}]},
+  {"questionId":"03_HARU_Q6","questionZh":"在数据库的正规化中，第三正规形的目的是什么？","options":[{"index":0,"textZh":"消除重复列"},{"index":1,"textZh":"消除传递函数依赖"},{"index":2,"textZh":"消除部分函数依赖"},{"index":3,"textZh":"在所有列上创建索引"}]},
+  {"questionId":"03_HARU_Q7","questionZh":"以下哪项是SNS在企业营销中运用的好处？","options":[{"index":0,"textZh":"可以完全不需要广告费"},{"index":1,"textZh":"可以与消费者直接互动，即时收集反馈"},{"index":2,"textZh":"自动增加销售额"},{"index":3,"textZh":"不需要任何营销策略"}]},
+  {"questionId":"03_HARU_Q8","questionZh":"在云服务中，多租户意味着什么？","options":[{"index":0,"textZh":"每个用户拥有独立的物理服务器"},{"index":1,"textZh":"多个用户共享同一系统或应用实例"},{"index":2,"textZh":"用户只能使用一个服务"},{"index":3,"textZh":"不使用任何共享资源"}]},
+  {"questionId":"03_HARU_Q9","questionZh":"以下哪项是HTML的特征？","options":[{"index":0,"textZh":"用于描述Web页面结构的标记语言"},{"index":1,"textZh":"对数据进行加密的协议"},{"index":2,"textZh":"用于管理数据库的语言"},{"index":3,"textZh":"计算机的操作系统"}]},
+  {"questionId":"03_HARU_Q10","questionZh":"下列哪项是使用IT提高业务效率的典型案例？","options":[{"index":0,"textZh":"所有业务均由人工手动处理"},{"index":1,"textZh":"引入RPA将定型业务自动化"},{"index":2,"textZh":"减少计算机使用量"},{"index":3,"textZh":"停止使用任何IT系统"}]},
+  {"questionId":"03_HARU_Q11","questionZh":"在项目质量管理中，PDCA循环的C代表什么？","options":[{"index":0,"textZh":"创建（Create）"},{"index":1,"textZh":"检查（Check）"},{"index":2,"textZh":"控制（Control）"},{"index":3,"textZh":"合作（Cooperate）"}]},
+  {"questionId":"03_HARU_Q12","questionZh":"以下哪项是使用计算机处理大量数据时需要考虑的伦理问题？","options":[{"index":0,"textZh":"隐私保护和数据的适当运用"},{"index":1,"textZh":"计算机的颜色和设计"},{"index":2,"textZh":"计算机的耗电量"},{"index":3,"textZh":"互联网连接速度"}]},
+  {"questionId":"03_HARU_Q13","questionZh":"以下关于DNS的说明中，哪项最恰当？","options":[{"index":0,"textZh":"加密互联网上所有通信"},{"index":1,"textZh":"实现域名和IP地址之间的转换"},{"index":2,"textZh":"管理计算机的文件系统"},{"index":3,"textZh":"仅用于公司内部网络"}]},
+  {"questionId":"03_HARU_Q14","questionZh":"在信息处理系统中，可用性的含义是什么？","options":[{"index":0,"textZh":"需要时能够使用系统"},{"index":1,"textZh":"信息被正确更新并保持准确"},{"index":2,"textZh":"信息不会泄露给被授权者以外的人"},{"index":3,"textZh":"系统处理速度快"}]},
+  {"questionId":"03_HARU_Q15","questionZh":"在网络安全中，以下哪项是关于防火墙的恰当说明？","options":[{"index":0,"textZh":"对所有通信不加限制地允许通过"},{"index":1,"textZh":"根据预设规则控制内外网络间的通信"},{"index":2,"textZh":"仅用于无线网络"},{"index":3,"textZh":"对数据进行加密"}]}
+]

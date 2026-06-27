@@ -1,0 +1,17 @@
+[
+  {"questionId":"04_HARU_Q1","questionZh":"关于著作权及专利权的描述a～c中，正确的全部是哪一项？a. 当两个相同的东西偶然被创造时，专利权双方均可获得，但著作权仅被一方承认。b. 软件方面，专利权和著作权都针对源代码程序列表承认。c. 专利权需申请和注册，但著作权无需。","options":[{"index":0,"textZh":"a、b"},{"index":1,"textZh":"b"},{"index":2,"textZh":"b、c"},{"index":3,"textZh":"c"}]},
+  {"questionId":"04_HARU_Q2","questionZh":"在系统开发中，外部设计的目的是什么？","options":[{"index":0,"textZh":"定义程序的内部逻辑"},{"index":1,"textZh":"从用户视角定义系统的功能、界面和操作"},{"index":2,"textZh":"编写程序代码"},{"index":3,"textZh":"进行单元测试"}]},
+  {"questionId":"04_HARU_Q3","questionZh":"以下哪项是关于RPA的恰当说明？","options":[{"index":0,"textZh":"只能由程序员使用的工具"},{"index":1,"textZh":"可以自动执行人类在PC上的定型操作的工具"},{"index":2,"textZh":"一种编程语言"},{"index":3,"textZh":"仅适用于大型企业的系统"}]},
+  {"questionId":"04_HARU_Q4","questionZh":"在IT安全中，什么是IDS？","options":[{"index":0,"textZh":"自动阻止攻击的系统"},{"index":1,"textZh":"检测网络或系统中可疑活动并发出警报的系统"},{"index":2,"textZh":"加密所有通信的设备"},{"index":3,"textZh":"管理用户账号的系统"}]},
+  {"questionId":"04_HARU_Q5","questionZh":"在数据库中，什么是SQL？","options":[{"index":0,"textZh":"一种网络协议"},{"index":1,"textZh":"用于操作关系数据库的语言"},{"index":2,"textZh":"操作系统"},{"index":3,"textZh":"硬件设备"}]},
+  {"questionId":"04_HARU_Q6","questionZh":"在企业经营中，什么是PDCA？","options":[{"index":0,"textZh":"仅适用于生产管理"},{"index":1,"textZh":"计划、执行、检查、行动的持续改善循环"},{"index":2,"textZh":"一种财务分析方法"},{"index":3,"textZh":"仅用于IT系统"}]},
+  {"questionId":"04_HARU_Q7","questionZh":"以下哪项是云计算的优点？","options":[{"index":0,"textZh":"必须采购所有硬件"},{"index":1,"textZh":"可按需灵活利用IT资源并降低初期投资"},{"index":2,"textZh":"需要自己管理数据中心"},{"index":3,"textZh":"不能扩展"}]},
+  {"questionId":"04_HARU_Q8","questionZh":"在IT项目管理中，什么是工作分解结构（WBS）？","options":[{"index":0,"textZh":"项目的预算表"},{"index":1,"textZh":"将项目整体工作分解为更小单位进行管理的手法"},{"index":2,"textZh":"团队成员名单"},{"index":3,"textZh":"项目最终报告"}]},
+  {"questionId":"04_HARU_Q9","questionZh":"在计算机网络中，什么是子网掩码？","options":[{"index":0,"textZh":"网络设备的物理地址"},{"index":1,"textZh":"用于区分IP地址中网络部分和主机部分的数值"},{"index":2,"textZh":"域名"},{"index":3,"textZh":"电子邮件地址"}]},
+  {"questionId":"04_HARU_Q10","questionZh":"在数字签名中，可实现什么？","options":[{"index":0,"textZh":"防止数据被窃听"},{"index":1,"textZh":"确认发送者身份和检测数据篡改"},{"index":2,"textZh":"压缩数据"},{"index":3,"textZh":"加速网络通信"}]},
+  {"questionId":"04_HARU_Q11","questionZh":"在信息处理中，什么是GUI？","options":[{"index":0,"textZh":"仅使用键盘操作"},{"index":1,"textZh":"使用图标和菜单等图形的用户界面"},{"index":2,"textZh":"仅使用命令行"},{"index":3,"textZh":"不显示画面的操作"}]},
+  {"questionId":"04_HARU_Q12","questionZh":"在系统开发中，什么是原型开发？","options":[{"index":0,"textZh":"一开始就完成所有功能"},{"index":1,"textZh":"先制作试用版，基于用户反馈进行改进"},{"index":2,"textZh":"不使用任何反馈"},{"index":3,"textZh":"仅由开发者完成"}]},
+  {"questionId":"04_HARU_Q13","questionZh":"在网络安全中，什么是DDoS攻击？","options":[{"index":0,"textZh":"单个来源发送攻击"},{"index":1,"textZh":"从多个计算机同时发送大量请求导致服务瘫痪"},{"index":2,"textZh":"物理破坏服务器"},{"index":3,"textZh":"窃取密码"}]},
+  {"questionId":"04_HARU_Q14","questionZh":"以下哪项是个人信息保护法中对个人信息处理经营者的要求？","options":[{"index":0,"textZh":"无需采取任何措施"},{"index":1,"textZh":"适当管理个人信息并明确使用目的"},{"index":2,"textZh":"将所有个人信息公开"},{"index":3,"textZh":"自由使用个人信息"}]},
+  {"questionId":"04_HARU_Q15","questionZh":"在计算机中，什么是RAM？","options":[{"index":0,"textZh":"永久保存数据的存储装置"},{"index":1,"textZh":"CPU直接读写的高速主存储装置"},{"index":2,"textZh":"仅用于输出的装置"},{"index":3,"textZh":"网络设备"}]}
+]

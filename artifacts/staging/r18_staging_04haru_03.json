@@ -1,0 +1,12 @@
+[
+  {"questionId":"04_HARU_Q46","questionZh":"在IT项目中，什么是可行性研究？","options":[{"index":0,"textZh":"项目开始后的评估"},{"index":1,"textZh":"在项目开始前评估技术、经济、法律等方面的可行性"},{"index":2,"textZh":"仅评估成本"},{"index":3,"textZh":"仅评估技术"}]},
+  {"questionId":"04_HARU_Q47","questionZh":"在网络中，什么是VPN？","options":[{"index":0,"textZh":"物理专用线"},{"index":1,"textZh":"通过公共网络构建的虚拟专用网络"},{"index":2,"textZh":"仅用于电话的网络"},{"index":3,"textZh":"无线LAN标准"}]},
+  {"questionId":"04_HARU_Q48","questionZh":"在数据安全中，什么是访问日志？","options":[{"index":0,"textZh":"无需保存的数据"},{"index":1,"textZh":"记录谁何时访问了哪些数据的记录"},{"index":2,"textZh":"仅保存错误记录"},{"index":3,"textZh":"已删除的数据"}]},
+  {"questionId":"04_HARU_Q49","questionZh":"在计算机中，什么是BIOS？","options":[{"index":0,"textZh":"操作系统"},{"index":1,"textZh":"计算机启动时最先运行、控制硬件初始化的基本软件"},{"index":2,"textZh":"应用程序"},{"index":3,"textZh":"网络协议"}]},
+  {"questionId":"04_HARU_Q50","questionZh":"开发了120k步骤的软件。各开发阶段的实际生产率如表示。整个开发工数为多少人月？这里生产率指每人月完成的k步骤数。","options":[{"index":0,"textZh":"10"},{"index":1,"textZh":"12"},{"index":2,"textZh":"24"},{"index":3,"textZh":"50"}]},
+  {"questionId":"04_HARU_Q51","questionZh":"在IT治理中，IT战略委员会的作用是什么？","options":[{"index":0,"textZh":"仅管理IT预算"},{"index":1,"textZh":"审议和确定与经营战略联动的IT相关重要事项"},{"index":2,"textZh":"仅进行系统开发"},{"index":3,"textZh":"仅管理IT人员"}]},
+  {"questionId":"04_HARU_Q52","questionZh":"在知识管理中，什么是SECI模型？","options":[{"index":0,"textZh":"仅关注显性知识"},{"index":1,"textZh":"表示隐性知识和显性知识相互转换的知识创造过程模型"},{"index":2,"textZh":"一种数据库模型"},{"index":3,"textZh":"项目管理手法"}]},
+  {"questionId":"04_HARU_Q53","questionZh":"在系统中，什么是供应链管理（SCM）？","options":[{"index":0,"textZh":"仅管理仓库"},{"index":1,"textZh":"从原材料采购到向消费者交付产品的全过程优化"},{"index":2,"textZh":"仅管理运输"},{"index":3,"textZh":"仅管理库存"}]},
+  {"questionId":"04_HARU_Q54","questionZh":"在信息伦理中，什么是知情同意？","options":[{"index":0,"textZh":"未经许可使用个人信息"},{"index":1,"textZh":"在充分说明后获得本人同意再收集或使用个人信息"},{"index":2,"textZh":"事后报告"},{"index":3,"textZh":"强制同意"}]},
+  {"questionId":"04_HARU_Q55","questionZh":"在编程中，什么是算法？","options":[{"index":0,"textZh":"任意的程序代码"},{"index":1,"textZh":"为解决特定问题而定义的有限步骤的处理过程"},{"index":2,"textZh":"计算机硬件"},{"index":3,"textZh":"网络配置"}]}
+]

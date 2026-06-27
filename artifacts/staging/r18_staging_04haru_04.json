@@ -1,0 +1,16 @@
+[
+  {"questionId":"04_HARU_Q56","questionZh":"在信息系统中，KPI是什么？","options":[{"index":0,"textZh":"关键绩效指标"},{"index":1,"textZh":"知识处理接口"},{"index":2,"textZh":"键盘程序接口"},{"index":3,"textZh":"核心编程语言"}]},
+  {"questionId":"04_HARU_Q57","questionZh":"在网络安全中，IDS的功能是什么？","options":[{"index":0,"textZh":"自动阻止攻击"},{"index":1,"textZh":"对数据加密"},{"index":2,"textZh":"检测未授权访问并发出警报"},{"index":3,"textZh":"管理用户账号"}]},
+  {"questionId":"04_HARU_Q58","questionZh":"在项目中，品质管理的目的是什么？","options":[{"index":0,"textZh":"加快工作速度"},{"index":1,"textZh":"确保成果物满足需求"},{"index":2,"textZh":"降低成本"},{"index":3,"textZh":"增加人员"}]},
+  {"questionId":"04_HARU_Q59","questionZh":"在数据库设计中，规范化目的是什么？","options":[{"index":0,"textZh":"增加数据重复"},{"index":1,"textZh":"压缩数据大小"},{"index":2,"textZh":"加速查询"},{"index":3,"textZh":"消除数据冗余和不整合"}]},
+  {"questionId":"04_HARU_Q60","questionZh":"在企业IT中，BPR的目标是什么？","options":[{"index":0,"textZh":"维持现有业务流程"},{"index":1,"textZh":"部分改善流程"},{"index":2,"textZh":"小幅调整"},{"index":3,"textZh":"根本性地重新设计业务流程"}]},
+  {"questionId":"04_HARU_Q61","questionZh":"在软件测试中，集成测试的目的是什么？","options":[{"index":0,"textZh":"仅测试单个模块"},{"index":1,"textZh":"仅进行用户测试"},{"index":2,"textZh":"仅测试UI"},{"index":3,"textZh":"确认模块间协作是否正常"}]},
+  {"questionId":"04_HARU_Q62","questionZh":"在IT服务中，SLA是什么？","options":[{"index":0,"textZh":"服务级别协议"},{"index":1,"textZh":"软件授权"},{"index":2,"textZh":"安全日志"},{"index":3,"textZh":"系统架构"}]},
+  {"questionId":"04_HARU_Q63","questionZh":"在信息安全中，ISMS是什么？","options":[{"index":0,"textZh":"信息安全管理系统"},{"index":1,"textZh":"互联网服务"},{"index":2,"textZh":"信息共享"},{"index":3,"textZh":"集成软件"}]},
+  {"questionId":"04_HARU_Q64","questionZh":"在网络中，子网掩码的作用是什么？","options":[{"index":0,"textZh":"区分网络部分和主机部分"},{"index":1,"textZh":"加密通信"},{"index":2,"textZh":"压缩数据"},{"index":3,"textZh":"显示网页"}]},
+  {"questionId":"04_HARU_Q65","questionZh":"在数据管理中，元数据是什么？","options":[{"index":0,"textZh":"数据的数据"},{"index":1,"textZh":"主数据"},{"index":2,"textZh":"备份数据"},{"index":3,"textZh":"临时数据"}]},
+  {"questionId":"04_HARU_Q66","questionZh":"在计算机中，USB是什么？","options":[{"index":0,"textZh":"通用串行总线"},{"index":1,"textZh":"一种网络"},{"index":2,"textZh":"编程语言"},{"index":3,"textZh":"数据库"}]},
+  {"questionId":"04_HARU_Q67","questionZh":"在项目管理中，资源平衡是什么？","options":[{"index":0,"textZh":"增加工作量"},{"index":1,"textZh":"均衡分配资源避免过度负荷"},{"index":2,"textZh":"削减预算"},{"index":3,"textZh":"加速日程"}]},
+  {"questionId":"04_HARU_Q68","questionZh":"在AI领域，监督学习是什么？","options":[{"index":0,"textZh":"使用带标签数据的学习"},{"index":1,"textZh":"无数据学习"},{"index":2,"textZh":"仅使用输出数据"},{"index":3,"textZh":"不使用算法"}]},
+  {"questionId":"04_HARU_Q69","questionZh":"在IT战略中，SWOT分析是什么？","options":[{"index":0,"textZh":"优势、劣势、机会、威胁分析"},{"index":1,"textZh":"仅财务分析"},{"index":2,"textZh":"仅市场分析"},{"index":3,"textZh":"仅竞争分析"}]}
+]

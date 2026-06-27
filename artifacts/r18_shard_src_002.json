@@ -1,0 +1,242 @@
+[
+  {
+    "questionId": "01_AKI_Q11",
+    "deckId": "quiz-itpass-1/01_aki",
+    "questionJa": "<div id=\"mondai\">情報システム戦略において定義した目標の達成状況を測定するために，重要な業績評価の指標を示す用語はどれか。",
+    "options": [
+      {
+        "key": "A",
+        "textJa": "BPO"
+      },
+      {
+        "key": "B",
+        "textJa": "CSR"
+      },
+      {
+        "key": "C",
+        "textJa": "KPI"
+      },
+      {
+        "key": "D",
+        "textJa": "ROA"
+      }
+    ],
+    "correctAnswer": "C"
+  },
+  {
+    "questionId": "01_AKI_Q12",
+    "deckId": "quiz-itpass-1/01_aki",
+    "questionJa": "<div id=\"mondai\">企業の経営理念を策定する意義として，最も適切なものはどれか。",
+    "options": [
+      {
+        "key": "A",
+        "textJa": "企業の経営戦略を実現するための行動計画を具体的に示すことができる。"
+      },
+      {
+        "key": "B",
+        "textJa": "企業の経営目標を実現するためのシナリオを明確にすることができる。"
+      },
+      {
+        "key": "C",
+        "textJa": "企業の存在理由や価値観を明確にすることができる。"
+      },
+      {
+        "key": "D",
+        "textJa": "企業の到達したい将来像を示すことができる。"
+      }
+    ],
+    "correctAnswer": "C"
+  },
+  {
+    "questionId": "01_AKI_Q13",
+    "deckId": "quiz-itpass-1/01_aki",
+    "questionJa": "<div id=\"mondai\">IoTに関する記述として，最も適切なものはどれか。",
+    "options": [
+      {
+        "key": "A",
+        "textJa": "人工知能における学習の仕組み"
+      },
+      {
+        "key": "B",
+        "textJa": "センサーを搭載した機器や制御装置などが直接インターネットにつながり，それらがネットワークを通じて様々な情報をやり取りする仕組み"
+      },
+      {
+        "key": "C",
+        "textJa": "ソフトウェアの機能の一部を，ほかのプログラムで利用できるように公開する関数や手続の集まり"
+      },
+      {
+        "key": "D",
+        "textJa": "ソフトウェアのロボットを利用して，定型的な仕事を効率化するツール"
+      }
+    ],
+    "correctAnswer": "B"
+  },
+  {
+    "questionId": "01_AKI_Q14",
+    "deckId": "quiz-itpass-1/01_aki",
+    "questionJa": "<div id=\"mondai\">CADの説明として，適切なものはどれか。",
+    "options": [
+      {
+        "key": "A",
+        "textJa": "アナログ信号をデジタル信号に変換する回路のこと"
+      },
+      {
+        "key": "B",
+        "textJa": "建築物，工業製品などの設計にコンピュータを用いること"
+      },
+      {
+        "key": "C",
+        "textJa": "光を電気信号に変換する撮像素子のこと"
+      },
+      {
+        "key": "D",
+        "textJa": "文字，画像，音声などのデータを組み合わせて一つのコンテンツを作ること"
+      }
+    ],
+    "correctAnswer": "B"
+  },
+  {
+    "questionId": "01_AKI_Q15",
+    "deckId": "quiz-itpass-1/01_aki",
+    "questionJa": "<div id=\"mondai\">自社の商品やサービスの情報を主体的に収集する見込み客の獲得を目的に，企業がSNSやブログ，検索エンジンなどを利用して商品やサービスに関連する情報を発信する。このようにして獲得した見込み客を，最終的に顧客に転換させることを目標とするマーケティング手法として，最も適切なものはどれか。",
+    "options": [
+      {
+        "key": "A",
+        "textJa": "アウトバウンドマーケティング"
+      },
+      {
+        "key": "B",
+        "textJa": "インバウンドマーケティング"
+      },
+      {
+        "key": "C",
+        "textJa": "ダイレクトマーケティング"
+      },
+      {
+        "key": "D",
+        "textJa": "テレマーケティング"
+      }
+    ],
+    "correctAnswer": "B"
+  },
+  {
+    "questionId": "01_AKI_Q16",
+    "deckId": "quiz-itpass-1/01_aki",
+    "questionJa": "<div id=\"mondai\">システム導入を検討している企業や官公庁などがRFIを実施する目的として，最も適切なものはどれか。",
+    "options": [
+      {
+        "key": "A",
+        "textJa": "ベンダー企業からシステムの詳細な見積金額を入手し，契約金額を確定する。"
+      },
+      {
+        "key": "B",
+        "textJa": "ベンダー企業から情報収集を行い，システムの技術的な課題や実現性を把握する。"
+      },
+      {
+        "key": "C",
+        "textJa": "ベンダー企業との認識のずれをなくし，取引を適正化する。"
+      },
+      {
+        "key": "D",
+        "textJa": "ベンダー企業に提案書の提出を求め，発注先を決定する。"
+      }
+    ],
+    "correctAnswer": "B"
+  },
+  {
+    "questionId": "01_AKI_Q17",
+    "deckId": "quiz-itpass-1/01_aki",
+    "questionJa": "<div id=\"mondai\">イノベーションのジレンマに関する記述として，最も適切なものはどれか。",
+    "options": [
+      {
+        "key": "A",
+        "textJa": "最初に商品を消費したときに感じた価値や満足度が，消費する量が増えるに従い，徐々に低下していく現象"
+      },
+      {
+        "key": "B",
+        "textJa": "自社の既存商品がシェアを占めている市場に，自社の新商品を導入することで，既存商品のシェアを奪ってしまう現象"
+      },
+      {
+        "key": "C",
+        "textJa": "全売上の大部分を，少数の顧客が占めている状態"
+      },
+      {
+        "key": "D",
+        "textJa": "優良な大企業が，革新的な技術の追求よりも，既存技術の向上でシェアを確保することに注力してしまい，結果的に市場でのシェアの確保に失敗する現象"
+      }
+    ],
+    "correctAnswer": "D"
+  },
+  {
+    "questionId": "01_AKI_Q18",
+    "deckId": "quiz-itpass-1/01_aki",
+    "questionJa": "<div id=\"mondai\">銀行などの預金者の資産を，AIが自動的に運用するサービスを提供するなど，金融業においてIT技術を活用して，これまでにない革新的なサービスを開拓する取組を示す用語はどれか。",
+    "options": [
+      {
+        "key": "A",
+        "textJa": "FA"
+      },
+      {
+        "key": "B",
+        "textJa": "FinTech"
+      },
+      {
+        "key": "C",
+        "textJa": "OA"
+      },
+      {
+        "key": "D",
+        "textJa": "シェアリングエコノミー"
+      }
+    ],
+    "correctAnswer": "B"
+  },
+  {
+    "questionId": "01_AKI_Q19",
+    "deckId": "quiz-itpass-1/01_aki",
+    "questionJa": "<div id=\"mondai\">特定の目的の達成や課題の解決をテーマとして，ソフトウェアの開発者や企画者などが短期集中的にアイディアを出し合い，ソフトウェアの開発などの共同作業を行い，成果を競い合うイベントはどれか。",
+    "options": [
+      {
+        "key": "A",
+        "textJa": "コンベンション"
+      },
+      {
+        "key": "B",
+        "textJa": "トレードフェア"
+      },
+      {
+        "key": "C",
+        "textJa": "ハッカソン"
+      },
+      {
+        "key": "D",
+        "textJa": "レセプション"
+      }
+    ],
+    "correctAnswer": "C"
+  },
+  {
+    "questionId": "01_AKI_Q20",
+    "deckId": "quiz-itpass-1/01_aki",
+    "questionJa": "<div id=\"mondai\">事業活動における重要な技術情報について，営業秘密とするための要件を定めている法律はどれか。",
+    "options": [
+      {
+        "key": "A",
+        "textJa": "著作権法"
+      },
+      {
+        "key": "B",
+        "textJa": "特定商取引法"
+      },
+      {
+        "key": "C",
+        "textJa": "不正アクセス禁止法"
+      },
+      {
+        "key": "D",
+        "textJa": "不正競争防止法"
+      }
+    ],
+    "correctAnswer": "D"
+  }
+]

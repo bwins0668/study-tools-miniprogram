@@ -1,0 +1,102 @@
+[
+  {
+    "questionId": "01_AKI_Q11",
+    "questionZh": "在信息系统战略中，用于衡量所定义目标的达成状况、表示重要业绩评价指标的术语是哪一项？",
+    "options": [
+      {"index": 0, "textZh": "BPO"},
+      {"index": 1, "textZh": "CSR"},
+      {"index": 2, "textZh": "KPI"},
+      {"index": 3, "textZh": "ROA"}
+    ]
+  },
+  {
+    "questionId": "01_AKI_Q12",
+    "questionZh": "以下哪项是制定企业经营理念的意义？",
+    "options": [
+      {"index": 0, "textZh": "能够具体展示为实现企业经营战略的行动计划。"},
+      {"index": 1, "textZh": "能够明确为实现企业经营目标的方案。"},
+      {"index": 2, "textZh": "能够明确企业存在的理由和价值观。"},
+      {"index": 3, "textZh": "能够展示企业期望达到的未来愿景。"}
+    ]
+  },
+  {
+    "questionId": "01_AKI_Q13",
+    "questionZh": "以下关于IoT的描述中，哪项最恰当？",
+    "options": [
+      {"index": 0, "textZh": "人工智能中的学习机制"},
+      {"index": 1, "textZh": "搭载传感器的设备和控制装置等直接连接互联网，通过网络相互交换各种信息的机制"},
+      {"index": 2, "textZh": "将软件功能的一部分以可供其他程序调用的方式公开的函数或过程集合"},
+      {"index": 3, "textZh": "利用软件机器人将定型工作高效化的工具"}
+    ]
+  },
+  {
+    "questionId": "01_AKI_Q14",
+    "questionZh": "以下哪项是对CAD的恰当说明？",
+    "options": [
+      {"index": 0, "textZh": "将模拟信号转换为数字信号的电路"},
+      {"index": 1, "textZh": "在建筑物、工业产品等的设计中使用计算机"},
+      {"index": 2, "textZh": "将光转换为电信号的摄像元件"},
+      {"index": 3, "textZh": "将文字、图像、声音等数据组合起来制作一个内容"}
+    ]
+  },
+  {
+    "questionId": "01_AKI_Q15",
+    "questionZh": "以获得主动收集本公司商品或服务信息的潜在客户为目的，企业利用SNS、博客、搜索引擎等发布与商品或服务相关的信息。以将由此获得的潜在客户最终转化为顾客为目标的营销手法，以下哪项最恰当？",
+    "options": [
+      {"index": 0, "textZh": "外向型营销"},
+      {"index": 1, "textZh": "内向型营销"},
+      {"index": 2, "textZh": "直销"},
+      {"index": 3, "textZh": "电话营销"}
+    ]
+  },
+  {
+    "questionId": "01_AKI_Q16",
+    "questionZh": "正在研究引入系统的企业和政府机关等实施RFI的目的中，以下哪项最恰当？",
+    "options": [
+      {"index": 0, "textZh": "从供应商企业获取系统的详细报价，确定合同金额。"},
+      {"index": 1, "textZh": "从供应商企业收集信息，把握系统的技术课题和可行性。"},
+      {"index": 2, "textZh": "消除与供应商企业的认识偏差，使交易规范化。"},
+      {"index": 3, "textZh": "要求供应商企业提交提案书，确定发包对象。"}
+    ]
+  },
+  {
+    "questionId": "01_AKI_Q17",
+    "questionZh": "以下关于创新者困境的描述中，哪项最恰当？",
+    "options": [
+      {"index": 0, "textZh": "最初消费商品时感受到的价值或满意度，随着消费量增加而逐渐降低的现象"},
+      {"index": 1, "textZh": "在本公司现有商品占据份额的市场中，因引入本公司新商品而夺走现有商品份额的现象"},
+      {"index": 2, "textZh": "总销售额的大部分由少数顾客占据的状态"},
+      {"index": 3, "textZh": "优秀的大企业不追求创新技术，而专注于通过提升现有技术来确保份额，结果导致在市场中无法保住份额的现象"}
+    ]
+  },
+  {
+    "questionId": "01_AKI_Q18",
+    "questionZh": "表示利用AI自动管理银行存款人资产等服务、在金融行业中活用IT技术开拓前所未有的创新服务的术语是哪一项？",
+    "options": [
+      {"index": 0, "textZh": "FA"},
+      {"index": 1, "textZh": "FinTech"},
+      {"index": 2, "textZh": "OA"},
+      {"index": 3, "textZh": "共享经济"}
+    ]
+  },
+  {
+    "questionId": "01_AKI_Q19",
+    "questionZh": "以达成特定目的或解决问题为主题，软件开发者或策划者等短期集中地集思广益、进行软件开发等协作并竞争成果的活动是哪一项？",
+    "options": [
+      {"index": 0, "textZh": "大会"},
+      {"index": 1, "textZh": "贸易博览会"},
+      {"index": 2, "textZh": "黑客马拉松"},
+      {"index": 3, "textZh": "接待会"}
+    ]
+  },
+  {
+    "questionId": "01_AKI_Q20",
+    "questionZh": "关于经营活动中的重要技术信息，规定作为商业秘密要件的法律是哪一项？",
+    "options": [
+      {"index": 0, "textZh": "著作权法"},
+      {"index": 1, "textZh": "特定商业交易法"},
+      {"index": 2, "textZh": "非法访问禁止法"},
+      {"index": 3, "textZh": "反不正当竞争法"}
+    ]
+  }
+]

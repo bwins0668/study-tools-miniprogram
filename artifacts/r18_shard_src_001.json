@@ -1,0 +1,242 @@
+[
+  {
+    "questionId": "01_AKI_Q1",
+    "deckId": "quiz-itpass-1/01_aki",
+    "questionJa": "<div id=\"mondai\">労働者派遣法に基づき， A社がY氏をB社へ派遣することとなった。このときに成立する関係として，適切なものはどれか。",
+    "options": [
+      {
+        "key": "A",
+        "textJa": "A社とB社との間の委託関係"
+      },
+      {
+        "key": "B",
+        "textJa": "A社とY氏との間の労働者派遣契約関係"
+      },
+      {
+        "key": "C",
+        "textJa": "B社とY氏との間の雇用関係"
+      },
+      {
+        "key": "D",
+        "textJa": "B社とY氏との間の指揮命令関係"
+      }
+    ],
+    "correctAnswer": "D"
+  },
+  {
+    "questionId": "01_AKI_Q2",
+    "deckId": "quiz-itpass-1/01_aki",
+    "questionJa": "<div id=\"mondai\">あるメーカーの当期損益の見込みは表のとおりであったが，その後広告宣伝費が5億円，保有株式の受取配当金が3億円増加した。このとき，最終的な営業利益と経常利益はそれぞれ何億円になるか。ここで，広告宣伝費，保有株式の受取配当金以外は全て見込みどおりであったものとする。",
+    "options": [
+      {
+        "key": "A",
+        "textJa": "ア"
+      },
+      {
+        "key": "B",
+        "textJa": "イ"
+      },
+      {
+        "key": "C",
+        "textJa": "ウ"
+      },
+      {
+        "key": "D",
+        "textJa": "エ"
+      }
+    ],
+    "correctAnswer": "A"
+  },
+  {
+    "questionId": "01_AKI_Q3",
+    "deckId": "quiz-itpass-1/01_aki",
+    "questionJa": "<div id=\"mondai\">IoTの事例として，最も適切なものはどれか。",
+    "options": [
+      {
+        "key": "A",
+        "textJa": "オークション会場と会員のPCをインターネットで接続することによって，会員の自宅からでもオークションに参加できる。"
+      },
+      {
+        "key": "B",
+        "textJa": "社内のサーバ上にあるグループウェアを外部のデータセンターのサーバに移すことによって，社員はインターネット経由でいつでもどこでも利用できる。"
+      },
+      {
+        "key": "C",
+        "textJa": "飲み薬の容器にセンサーを埋め込むことによって，薬局がインターネット経由で服用履歴を管理し，服薬指導に役立てることができる。"
+      },
+      {
+        "key": "D",
+        "textJa": "予備校が授業映像をWebサイトで配信することによって，受講者はスマートフォンやPCを用いて，いつでもどこでも授業を受けることができる。"
+      }
+    ],
+    "correctAnswer": "C"
+  },
+  {
+    "questionId": "01_AKI_Q4",
+    "deckId": "quiz-itpass-1/01_aki",
+    "questionJa": "<div id=\"mondai\">情報を縦横2次元の図形パターンに保存するコードはどれか。",
+    "options": [
+      {
+        "key": "A",
+        "textJa": "ASCIIコード"
+      },
+      {
+        "key": "B",
+        "textJa": "Gコード"
+      },
+      {
+        "key": "C",
+        "textJa": "JANコード"
+      },
+      {
+        "key": "D",
+        "textJa": "QRコード"
+      }
+    ],
+    "correctAnswer": "D"
+  },
+  {
+    "questionId": "01_AKI_Q5",
+    "deckId": "quiz-itpass-1/01_aki",
+    "questionJa": "<div id=\"mondai\">材料調達から商品販売までの流れを一括管理して，供給の最適化を目指すシステムはどれか。",
+    "options": [
+      {
+        "key": "A",
+        "textJa": "ASP"
+      },
+      {
+        "key": "B",
+        "textJa": "CRM"
+      },
+      {
+        "key": "C",
+        "textJa": "ERP"
+      },
+      {
+        "key": "D",
+        "textJa": "SCM"
+      }
+    ],
+    "correctAnswer": "D"
+  },
+  {
+    "questionId": "01_AKI_Q6",
+    "deckId": "quiz-itpass-1/01_aki",
+    "questionJa": "<div id=\"mondai\">行政機関の保有する資料について，開示を請求する権利とその手続などについて定めた法律はどれか。",
+    "options": [
+      {
+        "key": "A",
+        "textJa": "公益通報者保護法"
+      },
+      {
+        "key": "B",
+        "textJa": "個人情報保護法"
+      },
+      {
+        "key": "C",
+        "textJa": "情報公開法"
+      },
+      {
+        "key": "D",
+        "textJa": "不正アクセス禁止法"
+      }
+    ],
+    "correctAnswer": "C"
+  },
+  {
+    "questionId": "01_AKI_Q7",
+    "deckId": "quiz-itpass-1/01_aki",
+    "questionJa": "<div id=\"mondai\">事業環境の分析などに用いられる3C分析の説明として，適切なものはどれか。",
+    "options": [
+      {
+        "key": "A",
+        "textJa": "顧客，競合，自社の三つの観点から分析する。"
+      },
+      {
+        "key": "B",
+        "textJa": "最新購買日，購買頻度，購買金額の三つの観点から分析する。"
+      },
+      {
+        "key": "C",
+        "textJa": "時代，年齢，世代の三つの要因に分解して分析する。"
+      },
+      {
+        "key": "D",
+        "textJa": "総売上高の高い順に三つのグループに分類して分析する。"
+      }
+    ],
+    "correctAnswer": "A"
+  },
+  {
+    "questionId": "01_AKI_Q8",
+    "deckId": "quiz-itpass-1/01_aki",
+    "questionJa": "<div id=\"mondai\">人口減少や高齢化などを背景に，ICTを活用して，都市や地域の機能やサービスを効率化，高度化し，地域課題の解決や活性化を実現することが試みられている。このような街づくりのソリューションを示す言葉として，最も適切なものはどれか。",
+    "options": [
+      {
+        "key": "A",
+        "textJa": "キャパシティ"
+      },
+      {
+        "key": "B",
+        "textJa": "スマートシティ"
+      },
+      {
+        "key": "C",
+        "textJa": "ダイバーシティ"
+      },
+      {
+        "key": "D",
+        "textJa": "ユニバーシティ"
+      }
+    ],
+    "correctAnswer": "B"
+  },
+  {
+    "questionId": "01_AKI_Q9",
+    "deckId": "quiz-itpass-1/01_aki",
+    "questionJa": "<div id=\"mondai\">DFDにおいて，データフローや処理(機能)以外に記述されるものだけを全て挙げたものはどれか。\n\n- データの処理に要する時間\n- データの蓄積場所\n- データの発生源や出力先",
+    "options": [
+      {
+        "key": "A",
+        "textJa": "a，b"
+      },
+      {
+        "key": "B",
+        "textJa": "a，b，c"
+      },
+      {
+        "key": "C",
+        "textJa": "b，c"
+      },
+      {
+        "key": "D",
+        "textJa": "c"
+      }
+    ],
+    "correctAnswer": "C"
+  },
+  {
+    "questionId": "01_AKI_Q10",
+    "deckId": "quiz-itpass-1/01_aki",
+    "questionJa": "<div id=\"mondai\">企業のアライアンス戦略のうち，ジョイントベンチャーの説明として，適切なものはどれか。",
+    "options": [
+      {
+        "key": "A",
+        "textJa": "2社以上の企業が共同出資して経営する企業のこと"
+      },
+      {
+        "key": "B",
+        "textJa": "企業間で相互に出資や株式の持合などの協力関係を結ぶこと"
+      },
+      {
+        "key": "C",
+        "textJa": "企業の合併や買収によって相手企業の支配権を取得すること"
+      },
+      {
+        "key": "D",
+        "textJa": "技術やブランド，販売活動などに関する権利の使用を認めること"
+      }
+    ],
+    "correctAnswer": "A"
+  }
+]

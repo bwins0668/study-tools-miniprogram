@@ -1,0 +1,12 @@
+[
+  {"questionId":"04_HARU_Q91","questionZh":"在系统架构中，什么是SOA？","options":[{"index":0,"textZh":"面向服务架构，将功能作为服务提供"},{"index":1,"textZh":"单层架构"},{"index":2,"textZh":"仅文件系统"},{"index":3,"textZh":"不使用任何服务"}]},
+  {"questionId":"04_HARU_Q92","questionZh":"在Linux中，grep命令的作用是什么？","options":[{"index":0,"textZh":"创建文件"},{"index":1,"textZh":"在文本中搜索模式"},{"index":2,"textZh":"删除文件"},{"index":3,"textZh":"压缩文件"}]},
+  {"questionId":"04_HARU_Q93","questionZh":"在企业中，CSV是什么？","options":[{"index":0,"textZh":"逗号分隔值文件格式"},{"index":1,"textZh":"图像格式"},{"index":2,"textZh":"音频格式"},{"index":3,"textZh":"视频格式"}]},
+  {"questionId":"04_HARU_Q94","questionZh":"在信息系统中，ETL是什么？","options":[{"index":0,"textZh":"仅备份数据"},{"index":1,"textZh":"提取、转换、加载数据的过程"},{"index":2,"textZh":"仅加密数据"},{"index":3,"textZh":"仅删除数据"}]},
+  {"questionId":"04_HARU_Q95","questionZh":"在通信中，VoIP是什么？","options":[{"index":0,"textZh":"通过IP网络传输语音"},{"index":1,"textZh":"一种视频格式"},{"index":2,"textZh":"文件传输协议"},{"index":3,"textZh":"仅用于文字聊天"}]},
+  {"questionId":"04_HARU_Q96","questionZh":"在编程中，什么是JSON？","options":[{"index":0,"textZh":"一种编程语言"},{"index":1,"textZh":"JavaScript对象表示法，轻量级数据交换格式"},{"index":2,"textZh":"数据库系统"},{"index":3,"textZh":"操作系统"}]},
+  {"questionId":"04_HARU_Q97","questionZh":"在监控中，什么是SNMP？","options":[{"index":0,"textZh":"仅用于邮件管理"},{"index":1,"textZh":"简单网络管理协议，用于网络设备监控"},{"index":2,"textZh":"仅用于Web"},{"index":3,"textZh":"文件系统"}]},
+  {"questionId":"04_HARU_Q98","questionZh":"在企业系统中，什么是ERP？","options":[{"index":0,"textZh":"仅管理人事"},{"index":1,"textZh":"统一管理企业内各种业务的集成系统"},{"index":2,"textZh":"仅管理财务"},{"index":3,"textZh":"仅用于销售"}]},
+  {"questionId":"04_HARU_Q99","questionZh":"在认证中，什么是多因素认证？","options":[{"index":0,"textZh":"仅使用密码"},{"index":1,"textZh":"组合多种类型要素进行认证"},{"index":2,"textZh":"不使用任何认证"},{"index":3,"textZh":"仅使用指纹"}]},
+  {"questionId":"04_HARU_Q100","questionZh":"在数字商业中，什么是O2O？","options":[{"index":0,"textZh":"仅在线"},{"index":1,"textZh":"线上到线下，连接互联网和实体店"},{"index":2,"textZh":"仅线下"},{"index":3,"textZh":"不使用互联网"}]}
+]

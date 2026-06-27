@@ -1,0 +1,13 @@
+[
+  {"questionId":"04_HARU_Q70","questionZh":"在面向对象编程中，封装是什么？","options":[{"index":0,"textZh":"隐藏内部数据，仅公开必要接口"},{"index":1,"textZh":"公开所有数据"},{"index":2,"textZh":"不使用类"},{"index":3,"textZh":"仅使用函数"}]},
+  {"questionId":"04_HARU_Q71","questionZh":"在系统中，TPS是什么？","options":[{"index":0,"textZh":"每秒事务处理数"},{"index":1,"textZh":"总处理时间"},{"index":2,"textZh":"传输协议"},{"index":3,"textZh":"测试程序"}]},
+  {"questionId":"04_HARU_Q72","questionZh":"在IT基础设施中，SAN是什么？","options":[{"index":0,"textZh":"存储区域网络"},{"index":1,"textZh":"系统区域网络"},{"index":2,"textZh":"软件应用网络"},{"index":3,"textZh":"安全接入网络"}]},
+  {"questionId":"04_HARU_Q73","questionZh":"在加密技术中，公开密钥加密的特征是什么？","options":[{"index":0,"textZh":"加密和解密使用相同密钥"},{"index":1,"textZh":"加密密钥可公开，解密用私钥"},{"index":2,"textZh":"不使用任何密钥"},{"index":3,"textZh":"仅在企业内部使用"}]},
+  {"questionId":"04_HARU_Q74","questionZh":"在信息理论中，熵的含义是什么？","options":[{"index":0,"textZh":"信息的无序程度"},{"index":1,"textZh":"数据压缩率"},{"index":2,"textZh":"处理速度"},{"index":3,"textZh":"存储容量"}]},
+  {"questionId":"04_HARU_Q75","questionZh":"在企业系统中，CRM的目的是什么？","options":[{"index":0,"textZh":"管理供应商关系"},{"index":1,"textZh":"管理与顾客的关系"},{"index":2,"textZh":"管理员工信息"},{"index":3,"textZh":"管理财务会计"}]},
+  {"questionId":"04_HARU_Q76","questionZh":"在风险分析中，定量的风险评估使用什么？","options":[{"index":0,"textZh":"仅定性判断"},{"index":1,"textZh":"数值和统计方法"},{"index":2,"textZh":"仅依靠经验"},{"index":3,"textZh":"不使用任何数据"}]},
+  {"questionId":"04_HARU_Q77","questionZh":"在面向对象中，继承的特征是什么？","options":[{"index":0,"textZh":"不可重用代码"},{"index":1,"textZh":"子类继承父类的属性和方法"},{"index":2,"textZh":"仅复制数据"},{"index":3,"textZh":"删除所有方法"}]},
+  {"questionId":"04_HARU_Q78","questionZh":"在Web应用中，MVC模式是什么？","options":[{"index":0,"textZh":"单一层次结构"},{"index":1,"textZh":"模型、视图、控制器分离架构"},{"index":2,"textZh":"仅包含模型"},{"index":3,"textZh":"不使用任何模式"}]},
+  {"questionId":"04_HARU_Q79","questionZh":"在信息系统中，什么是IoT网关？","options":[{"index":0,"textZh":"连接IoT设备和网络的设备"},{"index":1,"textZh":"一种传感器"},{"index":2,"textZh":"显示设备"},{"index":3,"textZh":"仅用于存储"}]},
+  {"questionId":"04_HARU_Q80","questionZh":"在IT管理中，什么是服务水平管理？","options":[{"index":0,"textZh":"仅管理硬件"},{"index":1,"textZh":"定义、监控和改善IT服务质量"},{"index":2,"textZh":"仅管理成本"},{"index":3,"textZh":"管理员工"}]}
+]
