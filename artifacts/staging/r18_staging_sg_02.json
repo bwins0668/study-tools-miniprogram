@@ -1,0 +1,12 @@
+[
+  {"questionId":"SG_01_AKI_問11","questionZh":"关于恶意软件，哪项是正确的？","options":[{"index":0,"textZh":"具有破坏或非法目的的软件"},{"index":1,"textZh":"用于系统性能优化的软件"},{"index":2,"textZh":"开源软件的特称"},{"index":3,"textZh":"备份软件"}]},
+  {"questionId":"SG_01_AKI_問12","questionZh":"关于加密算法，对称加密的特征是什么？","options":[{"index":0,"textZh":"使用不同密钥加密和解密"},{"index":1,"textZh":"使用相同密钥加密和解密"},{"index":2,"textZh":"无需任何密钥"},{"index":3,"textZh":"仅用于数字签名"}]},
+  {"questionId":"SG_01_AKI_問13","questionZh":"关于信息安全策略，哪项是正确的？","options":[{"index":0,"textZh":"由IT部门单独制定"},{"index":1,"textZh":"由经营者批准并及时传达给员工"},{"index":2,"textZh":"仅适用于管理层"},{"index":3,"textZh":"不需要定期审查"}]},
+  {"questionId":"SG_01_AKI_問14","questionZh":"关于数字签名，哪项是正确的？","options":[{"index":0,"textZh":"可确保机密性"},{"index":1,"textZh":"可证明发送者身份并检测篡改"},{"index":2,"textZh":"可对数据进行压缩"},{"index":3,"textZh":"可加速通信"}]},
+  {"questionId":"SG_01_AKI_問15","questionZh":"信息安全管理体系中的PDCA，C代表什么？","options":[{"index":0,"textZh":"检查"},{"index":1,"textZh":"控制"},{"index":2,"textZh":"创建"},{"index":3,"textZh":"认证"}]},
+  {"questionId":"SG_01_AKI_問16","questionZh":"关于个人数据，哪项是正确的？","options":[{"index":0,"textZh":"可识别特定个人的信息"},{"index":1,"textZh":"仅大企业可处理"},{"index":2,"textZh":"不需保护"},{"index":3,"textZh":"可自由售卖"}]},
+  {"questionId":"SG_01_AKI_問17","questionZh":"关于DDoS攻击的缓解方法？","options":[{"index":0,"textZh":"使所有员工下线"},{"index":1,"textZh":"流量过滤和CDN"},{"index":2,"textZh":"拆掉防火墙"},{"index":3,"textZh":"购买更多带宽"}]},
+  {"questionId":"SG_01_AKI_問18","questionZh":"关于备份策略，哪项是正确的？","options":[{"index":0,"textZh":"只需备份一次"},{"index":1,"textZh":"定期备份并验证恢复"},{"index":2,"textZh":"只在灾难后备份"},{"index":3,"textZh":"不需要备份"}]},
+  {"questionId":"SG_01_AKI_問19","questionZh":"关于内部威胁的特征？","options":[{"index":0,"textZh":"来自组织外部"},{"index":1,"textZh":"拥有合法访问权限的可信人员造成威胁"},{"index":2,"textZh":"总是恶意行为"},{"index":3,"textZh":"容易被检测到"}]},
+  {"questionId":"SG_01_AKI_問20","questionZh":"关于资产管理中CMDB的作用？","options":[{"index":0,"textZh":"管理用户账号"},{"index":1,"textZh":"存储IT配置项信息"},{"index":2,"textZh":"管理数据库"},{"index":3,"textZh":"管理代码"}]}
+]

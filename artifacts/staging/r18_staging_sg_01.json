@@ -1,0 +1,12 @@
+[
+  {"questionId":"SG_01_AKI_問1","questionZh":"以下哪项属于BEC（商务邮件诈骗）？","options":[{"index":0,"textZh":"伪装交易对象发送虚假邮件骗取金钱"},{"index":1,"textZh":"伪造发件地址使目标邮件被列入黑名单"},{"index":2,"textZh":"利用开放邮件中继转发垃圾邮件"},{"index":3,"textZh":"伪造邮件地址损害组织信誉"}]},
+  {"questionId":"SG_01_AKI_問2","questionZh":"信息安全中，机密性是指什么？","options":[{"index":0,"textZh":"信息只能被授权者访问"},{"index":1,"textZh":"信息保持准确完整"},{"index":2,"textZh":"信息需要时可访问"},{"index":3,"textZh":"信息不被篡改"}]},
+  {"questionId":"SG_01_AKI_問3","questionZh":"ISMS中，风险评估的目的是什么？","options":[{"index":0,"textZh":"消除所有风险"},{"index":1,"textZh":"识别分析评价信息安全风险"},{"index":2,"textZh":"购买保险"},{"index":3,"textZh":"制定预算"}]},
+  {"questionId":"SG_01_AKI_問4","questionZh":"以下哪项是非法访问的示例？","options":[{"index":0,"textZh":"未经授权访问计算机"},{"index":1,"textZh":"在网站上发布评论"},{"index":2,"textZh":"用合法账号登录"},{"index":3,"textZh":"更新软件"}]},
+  {"questionId":"SG_01_AKI_問5","questionZh":"关于JIS Q 27001，哪项是正确的？","options":[{"index":0,"textZh":"ISMS要求事项的国际标准"},{"index":1,"textZh":"仅适用于日本"},{"index":2,"textZh":"质量管理"},{"index":3,"textZh":"环境管理"}]},
+  {"questionId":"SG_01_AKI_問6","questionZh":"密码破解中，字典攻击的特征是什么？","options":[{"index":0,"textZh":"尝试所有字符组合"},{"index":1,"textZh":"使用常见密码列表尝试"},{"index":2,"textZh":"暴力破解"},{"index":3,"textZh":"彩虹表攻击"}]},
+  {"questionId":"SG_01_AKI_問7","questionZh":"关于社会工程学攻击，哪项正确？","options":[{"index":0,"textZh":"利用技术漏洞入侵"},{"index":1,"textZh":"利用人的心理弱点获取信息"},{"index":2,"textZh":"物理破坏"},{"index":3,"textZh":"密码破解"}]},
+  {"questionId":"SG_01_AKI_問8","questionZh":"关于VPN，哪项是正确的？","options":[{"index":0,"textZh":"通过互联网建立加密的虚拟专用网络"},{"index":1,"textZh":"仅适用于内部网络"},{"index":2,"textZh":"不用加密"},{"index":3,"textZh":"只用于远程桌面"}]},
+  {"questionId":"SG_01_AKI_問9","questionZh":"关于防火墙，哪项是正确的？","options":[{"index":0,"textZh":"检测和阻止外部入侵"},{"index":1,"textZh":"仅用于无线网络"},{"index":2,"textZh":"加速网络"},{"index":3,"textZh":"管理用户"}]},
+  {"questionId":"SG_01_AKI_問10","questionZh":"关于信息资产管理的首要步骤？","options":[{"index":0,"textZh":"不管理"},{"index":1,"textZh":"识别和分类"},{"index":2,"textZh":"删除"},{"index":3,"textZh":"加密"}]}
+]

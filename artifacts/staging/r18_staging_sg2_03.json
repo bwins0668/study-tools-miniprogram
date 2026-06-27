@@ -1,0 +1,12 @@
+[
+  {"questionId":"SG_29_AKI_問1","questionZh":"关于网络安全经营指南中经营者的应对？","options":[{"index":0,"textZh":"安排无权限的CISO"},{"index":1,"textZh":"不分享攻击信息"},{"index":2,"textZh":"确保人才待遇和预算"},{"index":3,"textZh":"禁止客户审计"}]},
+  {"questionId":"SG_29_AKI_問2","questionZh":"关于信息安全风险分析中各威胁发生的可能性？","options":[{"index":0,"textZh":"威胁频率"},{"index":1,"textZh":"不分析"},{"index":2,"textZh":"可能"},{"index":3,"textZh":"不确定"}]},
+  {"questionId":"SG_29_AKI_問3","questionZh":"关于私有数据假名化处理的特征？","options":[{"index":0,"textZh":"可复原"},{"index":1,"textZh":"无法关联"},{"index":2,"textZh":"不处理"},{"index":3,"textZh":"删除"}]},
+  {"questionId":"SG_29_AKI_問4","questionZh":"关于IaaS中虚拟机的安全由谁负责？","options":[{"index":0,"textZh":"提供商"},{"index":1,"textZh":"客户"},{"index":2,"textZh":"共享"},{"index":3,"textZh":"不负责"}]},
+  {"questionId":"SG_29_AKI_問5","questionZh":"关于SOC成熟度级别评估目的？","options":[{"index":0,"textZh":"不评"},{"index":1,"textZh":"衡量运营能力"},{"index":2,"textZh":"不衡量"},{"index":3,"textZh":"无意义"}]},
+  {"questionId":"SG_29_AKI_問6","questionZh":"关于PII（个人身份信息）保护首要原则？","options":[{"index":0,"textZh":"收集越多越好"},{"index":1,"textZh":"最小化收集"},{"index":2,"textZh":"任意使用"},{"index":3,"textZh":"不保护"}]},
+  {"questionId":"SG_29_AKI_問7","questionZh":"关于APT攻击检测最有效方法？","options":[{"index":0,"textZh":"签名"},{"index":1,"textZh":"行为分析"},{"index":2,"textZh":"不检测"},{"index":3,"textZh":"手动"}]},
+  {"questionId":"SG_29_AKI_問8","questionZh":"关于EDR规则创建的最佳实践？","options":[{"index":0,"textZh":"无规则"},{"index":1,"textZh":"基于威胁情报"},{"index":2,"textZh":"不配置"},{"index":3,"textZh":"全部放行"}]},
+  {"questionId":"SG_29_AKI_問9","questionZh":"关于数据安全分级分类的依据是什么？","options":[{"index":0,"textZh":"随意"},{"index":1,"textZh":"敏感程度和业务影响"},{"index":2,"textZh":"大小"},{"index":3,"textZh":"类型"}]},
+  {"questionId":"SG_29_AKI_問10","questionZh":"关于多因素认证中最常见组合？","options":[{"index":0,"textZh":"密码+短信码"},{"index":1,"textZh":"密码+用户名"},{"index":2,"textZh":"用户名+邮箱"},{"index":3,"textZh":"IP+密码"}]}
+]

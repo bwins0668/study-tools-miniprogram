@@ -1,0 +1,12 @@
+[
+  {"questionId":"SG_28_HARU_問1","questionZh":"以下哪项是对CSIRT的恰当说明？","options":[{"index":0,"textZh":"全球IP分配组织"},{"index":1,"textZh":"制定互联网标准"},{"index":2,"textZh":"组织内安全事件响应团队"},{"index":3,"textZh":"黑客组织"}]},
+  {"questionId":"SG_28_HARU_問2","questionZh":"关于ISMS中管理评审的输入不包括？","options":[{"index":0,"textZh":"内审结果"},{"index":1,"textZh":"员工绩效"},{"index":2,"textZh":"风险状况"},{"index":3,"textZh":"整改措施"}]},
+  {"questionId":"SG_28_HARU_問3","questionZh":"关于密码安全管理中定期更改政策？","options":[{"index":0,"textZh":"不改"},{"index":1,"textZh":"被攻时改"},{"index":2,"textZh":"不改也没事"},{"index":3,"textZh":"长时间用"}]},
+  {"questionId":"SG_28_HARU_問4","questionZh":"关于信息安全中资产管理的目的？","options":[{"index":0,"textZh":"不管理"},{"index":1,"textZh":"保护资产"},{"index":2,"textZh":"增加资产"},{"index":3,"textZh":"减少资产"}]},
+  {"questionId":"SG_28_HARU_問5","questionZh":"关于数据携带权的规定？","options":[{"index":0,"textZh":"不能转"},{"index":1,"textZh":"用户可转移数据"},{"index":2,"textZh":"厂商控制"},{"index":3,"textZh":"不可用"}]},
+  {"questionId":"SG_28_HARU_問6","questionZh":"关于恶意广告（Malvertising）的应对？","options":[{"index":0,"textZh":"不应对"},{"index":1,"textZh":"广告拦截"},{"index":2,"textZh":"不拦截"},{"index":3,"textZh":"忽略"}]},
+  {"questionId":"SG_28_HARU_問7","questionZh":"关于信息安全中整体风险水平策略？","options":[{"index":0,"textZh":"不控制"},{"index":1,"textZh":"降至可接受水平"},{"index":2,"textZh":"零风险"},{"index":3,"textZh":"无所谓"}]},
+  {"questionId":"SG_28_HARU_問8","questionZh":"关于虚拟化安全中Hypervisor的安全加固？","options":[{"index":0,"textZh":"不加固"},{"index":1,"textZh":"最小化攻击面"},{"index":2,"textZh":"加功能"},{"index":3,"textZh":"不关注"}]},
+  {"questionId":"SG_28_HARU_問9","questionZh":"关于数据安全中屏蔽（Masking）技术的应用？","options":[{"index":0,"textZh":"不屏蔽"},{"index":1,"textZh":"保护敏感数据"},{"index":2,"textZh":"显示全部"},{"index":3,"textZh":"不保护"}]},
+  {"questionId":"SG_28_HARU_問10","questionZh":"关于日志管理中保留策略的最先考虑？","options":[{"index":0,"textZh":"法规要求"},{"index":1,"textZh":"存储成本"},{"index":2,"textZh":"不保留"},{"index":3,"textZh":"不重要"}]}
+]
