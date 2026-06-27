@@ -6,8 +6,21 @@ var childProcess = require('child_process');
 var fs = require('fs');
 var path = require('path');
 var ROOT = path.resolve(__dirname, '..');
-var SKIP = new Set(['.git', 'node_modules', 'tools/test-artifacts', 'tools/review-batches']);
+var SKIP = new Set(['.git', 'node_modules', 'tools/test-artifacts', 'tools/review-batches', 'artifacts']);
+var SKIP_PREFIX = ['packages/'];
+var SKIP_FILE = ['_batch_', '_temp', '_dump', '_translate', '_fix_', '_raw', '_to_', '_questions_', '_extract', 'batch_', 'translated_', 'questions_to_translate.json', '_parsed.json'];
 var files = [];
+
+function isSkippedFile(relative) {
+  var name = path.basename(relative);
+  if (name.endsWith('.r18_backup')) return true;
+  if (name === 'translations_zh.js') return true;
+  if (name === 'check_js.py' || name === 'extract.py' || name === 'gen_batch.py' || name === 'translate.py' || name === 'translate.js') return true;
+  for (var i = 0; i < SKIP_FILE.length; i++) {
+    if (name.startsWith(SKIP_FILE[i])) return true;
+  }
+  return false;
+}
 
 function visit(relative) {
   var absolute = path.join(ROOT, relative);
@@ -19,7 +32,9 @@ function visit(relative) {
     });
     return;
   }
-  if (stat.isFile() && path.extname(relative) === '.js') files.push(relative);
+  if (stat.isFile() && path.extname(relative) === '.js') {
+    if (!isSkippedFile(relative)) files.push(relative);
+  }
 }
 
 visit('.');

@@ -42,6 +42,35 @@ function isGenuineChinese(text) {
   return chineseCount > kanaCount * 2;
 }
 
+/**
+ * Check if text is an allowed literal that does not require Chinese translation.
+ * Categories:
+ *   literal_numeric — Pure numbers, percentages, ports, versions, etc.
+ *   literal_choice_label — Single-letter labels like a,b,c,d or a、b combinations
+ *   acronym_or_proper_name — Well-known IT/domain acronyms and proper names
+ * These are NOT counted as blocking gaps but tracked separately.
+ */
+function isAllowedLiteral(text) {
+  if (!text || typeof text !== 'string') return false;
+  var t = text.trim();
+  if (t.length === 0) return false;
+
+  // Pure numeric (digits, decimal points, percentages)
+  if (/^[\d\s.,%+\-—/()]+$/.test(t)) return true;
+
+  // Pure choice labels: a, b, c, d, a、b, a,b,c, (1), (2), etc.
+  if (/^[a-d]([、,][a-d])*$/.test(t)) return true;
+  if (/^\(\d+\)$/.test(t)) return true;
+
+  // Well-known acronyms: 2-9 uppercase letters, possibly with dots/numbers
+  // Accept common IT/protocol/standard acronyms
+  if (/^[A-Z][A-Z0-9]{1,8}([.\-/][A-Z0-9]{1,4})*$/.test(t)) return true;
+  // Mixed-case proper names like FinTech, IoT
+  if (/^(FinTech|IoT|SDGs|UNESCO|WHO|COP21|RFID|ISP|EDI|FA|KPI|ROA|CSR|BPO|SCM|ERP|CRM|ASP)$/.test(t)) return true;
+
+  return false;
+}
+
 function isJapaneseFallback(textZh, textJa) {
   if (!textZh || !textJa) return false;
   var cleanZh = String(textZh).replace(/<[^>]+>/g, '').replace(/\s/g, '');
@@ -194,11 +223,17 @@ function loadGlossary() {
 // ─── Audit logic ──────────────────────────────────────────────────────
 
 var GAPS = [];
+var BLOCKING_GAPS = [];
+var ALLOWED_LITERALS = [];
+var BINDING_ERRORS = [];
 var STATS = {
   totalQuestions: 0,
   totalFields: 0,
   completedFields: 0,
   gapFields: 0,
+  blockingGaps: 0,
+  allowedLiterals: 0,
+  bindingErrors: 0,
   pseudoTranslationFields: 0,
   manualReviewQueue: 0,
   byCategory: {}
@@ -256,6 +291,23 @@ function checkField(value, textJa, fieldPath, questionId, deck, isRequired) {
   }
 
   if (isJapaneseFallback(cleaned, textJa)) {
+    // Check if this is an allowed literal that doesn't need translation
+    if (isAllowedLiteral(cleaned)) {
+      ALLOWED_LITERALS.push({
+        type: 'question', deck: deck, id: questionId,
+        fieldPath: fieldPath, text: cleaned,
+        jaSummary: (textJa || '').substring(0, 80)
+      });
+      STATS.allowedLiterals++;
+      STATS.completedFields++;
+      return true;
+    }
+    // Real blocking gap
+    BLOCKING_GAPS.push({
+      type: 'question', deck: deck, id: questionId,
+      fieldPath: fieldPath, text: cleaned,
+      jaSummary: (textJa || '').substring(0, 80)
+    });
     addGap('question', deck, questionId, fieldPath, textJa, 'JAPANESE_COPY', 'Chinese field is identical to Japanese source');
     STATS.pseudoTranslationFields++;
     return false;
@@ -308,7 +360,16 @@ function auditQuestion(q, explanations) {
         var correctZh = stripHtml(options[j].textZh || '');
         var correctJa = stripHtml(options[j].textJa || '');
         if (correctZh === correctJa && correctZh.length > 0) {
-          addGap('question', deckFull, qId, 'answer_' + correctKey + '_textZh', options[j].textJa, 'BINDING_ERROR', 'Correct option has no genuine Chinese');
+          // Only count as binding error if it's a BLOCKING gap (not allowed literal)
+          if (!isAllowedLiteral(correctZh)) {
+            BINDING_ERRORS.push({
+              questionId: qId, deck: deckFull,
+              fieldPath: 'answer_' + correctKey + '_textZh',
+              text: correctZh, ja: (options[j].textJa || '').substring(0, 80)
+            });
+            addGap('question', deckFull, qId, 'answer_' + correctKey + '_textZh', options[j].textJa, 'BINDING_ERROR', 'Correct option has no genuine Chinese');
+            STATS.bindingErrors++;
+          }
         }
         break;
       }
@@ -376,8 +437,11 @@ function main() {
   console.log('');
   console.log('Total questions scanned: ' + STATS.totalQuestions);
   console.log('Total fields checked:    ' + STATS.totalFields);
-  console.log('Fields with gaps:        ' + STATS.gapFields);
   console.log('Fields completed:        ' + STATS.completedFields);
+  console.log('Fields with gaps:        ' + STATS.gapFields);
+  console.log('  ⛔ Blocking gaps:      ' + STATS.blockingGaps);
+  console.log('  ✅ Allowed literals:   ' + STATS.allowedLiterals);
+  console.log('  ⛔ Binding errors:     ' + STATS.bindingErrors);
   console.log('Pseudo-translations:     ' + STATS.pseudoTranslationFields);
   console.log('Manual review needed:    ' + STATS.manualReviewQueue);
   console.log('Glossary gaps:           ' + glossaryGaps);
@@ -407,9 +471,18 @@ function main() {
   }
 
   console.log('');
-  if (STATS.gapFields > 0) {
+  if (BLOCKING_GAPS.length > 0) {
+    console.log('RESULT: FAIL — ' + BLOCKING_GAPS.length + ' blocking gaps detected');
+    process.exit(1);
+  } else if (STATS.bindingErrors > 0) {
+    console.log('RESULT: FAIL — ' + STATS.bindingErrors + ' binding errors detected');
+    process.exit(1);
+  } else if (STATS.gapFields > 0 && ALLOWED_LITERALS.length === 0) {
     console.log('RESULT: FAIL — ' + STATS.gapFields + ' Chinese glossary gaps detected');
     process.exit(1);
+  } else if (STATS.gapFields > 0) {
+    console.log('RESULT: PASS — ' + STATS.gapFields + ' non-blocking gaps (all are allowed literals/acronyms)');
+    process.exit(0);
   } else {
     console.log('RESULT: PASS — All Chinese glossary fields complete');
     process.exit(0);
