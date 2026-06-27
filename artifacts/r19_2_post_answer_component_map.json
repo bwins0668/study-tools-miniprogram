@@ -1,0 +1,48 @@
+{
+  "screenshotVersion": "R19.2",
+  "commit": "c3cb36f",
+  "sections": [
+    {
+      "screenLabel": "你的选择",
+      "packagePath": "packages/quiz-*/pages/quiz/quiz.wxml",
+      "wxmlNode": ".review-item-answer (你的答案：)",
+      "wxssSelector": ".review-item-answer",
+      "pageDataField": "selectedAnswerZh || selectedAnswer",
+      "isSharedComponent": false,
+      "layoutStatus": "vertical (flex-direction: row for label+value inline)",
+      "fixApplied": "selectedAnswerZh added in R19.1 via quiz.js patch"
+    },
+    {
+      "screenLabel": "正确答案",
+      "packagePath": "packages/quiz-*/pages/quiz/quiz.wxml",
+      "wxmlNode": ".review-item-answer (正确答案：)",
+      "wxssSelector": ".review-item-answer",
+      "pageDataField": "correctAnswerZh || correctAnswer",
+      "isSharedComponent": false,
+      "layoutStatus": "vertical, only shown when !isCorrect",
+      "fixApplied": "correctAnswerZh added in R19.1"
+    },
+    {
+      "screenLabel": "解説 / 解析",
+      "packagePath": "packages/quiz-*/pages/quiz/quiz.wxml",
+      "wxmlNode": ".explanation-card > .explanation-body",
+      "wxssSelector": ".explanation-card, .explanation-body",
+      "pageDataField": "currentQuestion.explanationZhClean, currentQuestion.explanationJaClean",
+      "isSharedComponent": false,
+      "layoutStatus": "vertical stack with Japanese then Chinese explanation",
+      "fixApplied": "explanationZhClean populated from processQuestionForDisplay() which reads loader.explanationsById"
+    },
+    {
+      "screenLabel": "下一题 / 下一问题",
+      "packagePath": "packages/quiz-*/pages/quiz/quiz.wxml",
+      "wxmlNode": ".next-btn",
+      "wxssSelector": ".next-btn",
+      "pageDataField": "currentIndex < totalQuestions ? '下一题' : '查看结果'",
+      "isSharedComponent": false,
+      "layoutStatus": "full-width button, bottom-fixed",
+      "fixApplied": "preexisting, not modified"
+    }
+  ],
+  "legacySideBySide": "No side-by-side answer comparison found in current code. Review items use separate .review-item-answer blocks (flex-direction: row for label+value inline). The 'your choice' and 'correct answer' are separate rows in vertical stacking order.",
+  "explanationStatus": "explanationZh is populated from generatedZhExplanations (explanations_by_id from loader). WXML renders explanationZhClean followed by explanationJaClean. All 1945 questions have Chinese explanations."
+}
