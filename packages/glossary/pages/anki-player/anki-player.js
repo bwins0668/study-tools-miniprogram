@@ -1,18 +1,67 @@
 var glossaryData = require("../../data/glossary_index");
 var STORAGE_KEY = "study-tools-mini-anki-status-v1";
 var SWIPE_THRESHOLD = 80;
+var CATEGORY_LABELS_ZH = {
+  all: "全部",
+  algorithm: "算法",
+  automation: "自动化",
+  business: "业务",
+  cloud: "云计算",
+  database: "数据库",
+  git: "Git",
+  java: "Java",
+  network: "网络",
+  programming: "编程",
+  project: "项目管理",
+  python: "Python",
+  security: "信息安全",
+  system: "系统",
+  testing: "测试",
+  web: "Web",
+  development: "开发",
+  frontend: "前端",
+  backend: "后端",
+  data: "数据",
+  ai: "AI",
+  storage: "存储",
+  design: "设计",
+  architecture: "架构",
+  operating_system: "操作系统",
+  os: "操作系统",
+  sql: "SQL",
+  itpass: "IT Passport",
+  sg: "SG"
+};
+
+function getCategoryLabel(category) {
+  return CATEGORY_LABELS_ZH[category] || category || "";
+}
+
+function withCategoryLabel(item) {
+  return Object.assign({}, item, {
+    categoryLabel: getCategoryLabel(item.category)
+  });
+}
 
 Page({
+  onShow: function () {
+    this._applyTheme();
+    this._applyTheme();
+  },
   data: {
+    __themeDark: false,
+    __themeDark: false,
     currentTerm: null, currentIndex: 0, totalCount: 0,
     isFlipped: false, isComplete: false,
     masteredCount: 0, progressPercent: 0, swipeStyle: "",
-    categories: [], selectedCategory: "all", showFilter: false,
+    categories: [], selectedCategory: "all", selectedCategoryLabel: "全部", showFilter: false,
     dataSource: "glossary", initialTotal: 0, summary: null,
     isLoading: true, errorMsg: ""
   },
 
   onLoad: function (options) {
+    this._applyTheme();
+    this._applyTheme();
     this._sessionStart = Date.now();
     this._firstPassCount = 0;
     this._totalLoops = 0;
@@ -38,7 +87,12 @@ Page({
       for (var i = 0; i < items.length; i++) {
         var c = items[i].category; if (c && !catMap[c]) { catMap[c] = true; cats.push(c); }
       }
-      cats.sort(); this.setData({ categories: cats });
+      cats.sort();
+      this.setData({
+        categories: cats.map(function (key) {
+          return { key: key, label: getCategoryLabel(key) };
+        })
+      });
     }
     category = category || this.data.selectedCategory || "all";
     var ankiStatus = {};
@@ -49,7 +103,7 @@ Page({
       if (category !== "all" && t.category !== category && source === "glossary") continue;
       var s = ankiStatus[t.id];
       if (!s || s.status !== "mastered") {
-        queue.push(Object.assign({}, t, { loopCount: 0 }));
+        queue.push(Object.assign(withCategoryLabel(t), { loopCount: 0 }));
       }
     }
     this.ankiStatus = ankiStatus;
@@ -57,6 +111,7 @@ Page({
     this.initialTotal = queue.length;
     this.setData({
       selectedCategory: category,
+      selectedCategoryLabel: getCategoryLabel(category),
       totalCount: queue.length, currentIndex: 0, initialTotal: queue.length,
       isComplete: false, summary: null,
       masteredCount: this.countMastered(),
@@ -203,4 +258,22 @@ Page({
 
   loadAllTerms: function () { this.initSession(); },
   goBack: function () { wx.navigateBack(); }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
+  }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
+  }
 });

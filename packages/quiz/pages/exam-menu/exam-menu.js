@@ -1,5 +1,6 @@
 // pages/exam-menu/exam-menu.js
 var storage = require("../../../../utils/storage");
+var pastExamIndex = require("../../data/past_exam_bank/index");
 
 var EXAM_INFO = {
   itpass: {
@@ -12,7 +13,6 @@ var EXAM_INFO = {
   }
 };
 
-// 格式化时间戳为友好文案
 function formatTimeAgo(ts) {
   if (!ts) return '';
   var now = Date.now();
@@ -29,8 +29,15 @@ function formatTimeAgo(ts) {
   return Math.floor(days / 30) + ' 个月前';
 }
 
+function countCategories(exam) {
+  var years = pastExamIndex.getYears(exam) || [];
+  return years.length;
+}
+
 Page({
   data: {
+    __themeDark: false,
+    __themeDark: false,
     exam: '',
     examTitle: '',
     examDesc: '',
@@ -38,14 +45,20 @@ Page({
     lessonAccuracy: 0,
     pastTotal: 0,
     pastAccuracy: 0,
-    // Round 3.22: 整体统计
     overallTotal: 0,
     overallAccuracy: 0,
     lastPracticeText: '',
-    suggestion: { text: '', level: '' }
+    suggestion: { text: '', level: '' },
+    pastExamList: [],
+    pastExamExpanded: false,
+    activePastExamYearId: '',
+    flashcardTotal: '--',
+    flashcardCategoryCount: '--'
   },
 
   onLoad: function (options) {
+    this._applyTheme();
+    this._applyTheme();
     var exam = options.exam || 'itpass';
     var info = EXAM_INFO[exam] || EXAM_INFO.itpass;
     this.setData({
@@ -56,20 +69,19 @@ Page({
   },
 
   onShow: function () {
+    this._applyTheme();
+    this._applyTheme();
     var exam = this.data.exam;
     var lessonStats = storage.getQuizStatsByFilter(exam, 'lesson_quiz');
     var pastStats = storage.getQuizStatsByFilter(exam, 'past_exam_japanese');
 
-    // Round 3.22: 整体统计（合并两源）
     var overallTotal = (lessonStats.total || 0) + (pastStats.total || 0);
     var overallCorrect = (lessonStats.correct || 0) + (pastStats.correct || 0);
     var overallAccuracy = overallTotal > 0 ? Math.round(overallCorrect / overallTotal * 100) : 0;
 
-    // Round 3.22: 最近练习时间
     var lastTs = storage.getLastAttemptByExam(exam);
     var lastText = formatTimeAgo(lastTs);
 
-    // Round 3.22: 学习建议
     var suggestion = { text: '', level: '' };
     if (overallTotal === 0) {
       suggestion = { text: '从课程练习开始，逐步了解考试内容', level: 'start' };
@@ -81,6 +93,11 @@ Page({
       suggestion = { text: '建议先复习基础知识点再继续练习', level: 'review' };
     }
 
+    var pastExamList = pastExamIndex.getYears(exam);
+    var flashcardCategoryCount = countCategories(exam);
+    var firstYear = pastExamList && pastExamList[0];
+    var flashcardTotal = firstYear ? firstYear.count : '--';
+
     this.setData({
       lessonTotal: lessonStats.total || 0,
       lessonAccuracy: lessonStats.accuracy || 0,
@@ -89,7 +106,51 @@ Page({
       overallTotal: overallTotal,
       overallAccuracy: overallAccuracy,
       lastPracticeText: lastText,
-      suggestion: suggestion
+      suggestion: suggestion,
+      pastExamList: pastExamList,
+      flashcardTotal: flashcardTotal,
+      flashcardCategoryCount: flashcardCategoryCount
+    });
+  },
+
+  togglePastExamList: function () {
+    this.setData({
+      pastExamExpanded: !this.data.pastExamExpanded
+    });
+  },
+
+  goFlashcardCourse: function () {
+    var exam = this.data.exam || 'itpass';
+    wx.navigateTo({
+      url: '/packages/quiz/pages/flashcard-deck-select/flashcard-deck-select?course=' + exam,
+      fail: function () {
+        wx.showToast({ title: '闪卡启动失败', icon: 'none' });
+      }
+    });
+  },
+
+  goPastExamYear: function (event) {
+    var dataset = event.currentTarget.dataset || {};
+    var yearId = dataset.yearId;
+    if (!yearId) {
+      console.warn('[exam-menu] goPastExamYear: yearId missing in dataset', dataset);
+      wx.showToast({ title: '试卷信息缺失', icon: 'none' });
+      return;
+    }
+    this.setData({ activePastExamYearId: yearId });
+    var route = pastExamIndex.getRoute(this.data.exam, yearId);
+    if (!route || !route.route) {
+      console.warn('[exam-menu] goPastExamYear: route missing', this.data.exam, yearId);
+      wx.showToast({ title: '试卷分包缺失', icon: 'none' });
+      return;
+    }
+    var url = route.route;
+    wx.navigateTo({
+      url: url,
+      fail: function (err) {
+        console.error('[exam-menu] navigate to past exam failed', url, err);
+        wx.showToast({ title: '打开试卷失败', icon: 'none' });
+      }
     });
   },
 
@@ -100,8 +161,36 @@ Page({
   },
 
   goPastExam: function () {
+    var first = (this.data.pastExamList || [])[0];
+    if (!first) {
+      wx.showToast({ title: '暂无真题年份', icon: 'none' });
+      return;
+    }
+    var route = pastExamIndex.getRoute(this.data.exam, first.yearId);
+    if (!route || !route.route) {
+      wx.showToast({ title: '试卷分包缺失', icon: 'none' });
+      return;
+    }
     wx.navigateTo({
-      url: '/packages/quiz/pages/quiz/quiz?exam=' + this.data.exam + '&sourceType=past_exam_japanese'
+      url: route.route
     });
+  }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
+  }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
   }
 });

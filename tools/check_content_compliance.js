@@ -24,7 +24,7 @@ const FORBIDDEN_WORDS = [
 ];
 
 // Directories to skip entirely
-const SKIP_DIRS = ['.git', 'node_modules', '.workbuddy', 'generated-backup'];
+const SKIP_DIRS = ['.git', 'node_modules', '.workbuddy', 'generated-backup', 'generated-cache'];
 
 // Relative paths to skip (directories or files) — data files contain IT terminology
 // where forbidden character sequences appear as substrings of technical terms
@@ -33,8 +33,14 @@ const SKIP_DIRS = ['.git', 'node_modules', '.workbuddy', 'generated-backup'];
 const SKIP_REL_DIRS = new Set([
   'packages/glossary/data',
   'packages/quiz/data',
+  'packages/quiz/data/past_exam_bank',
   'packages/exam/data'
 ]);
+
+function shouldSkipRelDir(rel) {
+  if (SKIP_REL_DIRS.has(rel)) return true;
+  return /^packages\/quiz-(itpass|sg)-\d+\/data(?:\/|$)/.test(rel);
+}
 
 // Files to skip (relative to ROOT) — tool scripts that define blacklist arrays
 const SKIP_FILES = new Set([
@@ -67,7 +73,7 @@ function collectFiles(dir, relBase) {
       continue;
     }
     if (stat.isDirectory()) {
-      if (SKIP_REL_DIRS.has(rel)) continue;
+      if (shouldSkipRelDir(rel)) continue;
       results = results.concat(collectFiles(full, rel));
     } else if (stat.isFile()) {
       if (SKIP_FILES.has(rel)) continue;

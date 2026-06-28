@@ -89,15 +89,43 @@ function saveWrongQuestions(list) {
   }
 }
 
-function addWrongQuestion(questionId, exam, lastAnswer) {
+function normalizeQuestionSnapshot(snapshot) {
+  if (!snapshot || typeof snapshot !== 'object') return null;
+  return {
+    id: snapshot.id,
+    exam: snapshot.exam,
+    sourceType: snapshot.sourceType,
+    yearId: snapshot.yearId,
+    year: snapshot.year,
+    number: snapshot.number,
+    category: snapshot.category,
+    level: snapshot.level,
+    questionZh: snapshot.questionZh || '',
+    questionJa: snapshot.questionJa || '',
+    options: Array.isArray(snapshot.options) ? snapshot.options.slice(0, 8) : [],
+    answer: snapshot.answer,
+    explanationZh: snapshot.explanationZh || '',
+    explanationJa: snapshot.explanationJa || '',
+    translationStatus: snapshot.translationStatus,
+    explanationStatus: snapshot.explanationStatus
+  };
+}
+
+function addWrongQuestion(questionId, exam, lastAnswer, questionSnapshot) {
   var list = getWrongQuestions();
   var now = Date.now();
+  var snapshot = normalizeQuestionSnapshot(questionSnapshot);
   // 查找是否已存在
   var found = false;
   for (var i = 0; i < list.length; i++) {
     if (list[i].id === questionId) {
       list[i].wrongAt = now;
       list[i].lastAnswer = lastAnswer;
+      if (snapshot) {
+        list[i].questionSnapshot = snapshot;
+        list[i].sourceType = snapshot.sourceType || list[i].sourceType;
+        list[i].yearId = snapshot.yearId || list[i].yearId;
+      }
       found = true;
       break;
     }
@@ -108,7 +136,10 @@ function addWrongQuestion(questionId, exam, lastAnswer) {
       id: questionId,
       exam: exam,
       wrongAt: now,
-      lastAnswer: lastAnswer
+      lastAnswer: lastAnswer,
+      sourceType: snapshot && snapshot.sourceType,
+      yearId: snapshot && snapshot.yearId,
+      questionSnapshot: snapshot
     });
   }
   saveWrongQuestions(list);
@@ -421,16 +452,19 @@ function validateLocalBackup(backup) {
 function exportLocalBackup() {
   var ankiStatus = {};
   try { ankiStatus = wx.getStorageSync(ANKI_STATUS_KEY) || {}; } catch (e) {}
+  var flashcardProgress = null;
+  try { flashcardProgress = wx.getStorageSync('flashcard_progress_v1') || null; } catch (e) {}
   return {
     app: 'study-tools-mini',
-    version: 'v0.23.0',
+    version: 'v0.28.0',
     exportedAt: Date.now(),
     data: {
       favoriteTerms: getFavoriteTerms(),
       wrongQuestions: getWrongQuestions(),
       quizAttempts: getQuizAttempts()
     },
-    ankiStatus: ankiStatus
+    ankiStatus: ankiStatus,
+    flashcardProgress: flashcardProgress
   };
 }
 
@@ -441,6 +475,9 @@ function importLocalBackup(backup) {
   saveQuizAttempts(backup.data.quizAttempts);
   if (backup.ankiStatus) {
     try { wx.setStorageSync(ANKI_STATUS_KEY, backup.ankiStatus); } catch (e) {}
+  }
+  if (backup.flashcardProgress) {
+    try { wx.setStorageSync('flashcard_progress_v1', backup.flashcardProgress); } catch (e) {}
   }
   return true;
 }

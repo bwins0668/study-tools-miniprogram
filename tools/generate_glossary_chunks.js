@@ -4,13 +4,34 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 const PACKAGE_SOURCE_PATH = path.join(ROOT, 'packages/glossary/data/glossary.js');
 const BACKUP_SOURCE_PATH = path.join(ROOT, 'tools/generated-backup/glossary_full_v0112.js');
-const SOURCE_PATH = fs.existsSync(PACKAGE_SOURCE_PATH) ? PACKAGE_SOURCE_PATH : BACKUP_SOURCE_PATH;
 const DATA_DIR = path.join(ROOT, 'packages/glossary/data');
 const CHUNKS_DIR = path.join(DATA_DIR, 'chunks');
 const CHUNK_SIZE = 50;
 
-const glossaryModule = require(SOURCE_PATH);
-const glossary = glossaryModule.glossaryData || glossaryModule.glossary;
+function loadGlossarySource() {
+  if (fs.existsSync(PACKAGE_SOURCE_PATH)) {
+    const glossaryModule = require(PACKAGE_SOURCE_PATH);
+    return glossaryModule.glossaryData || glossaryModule.glossary;
+  }
+  if (fs.existsSync(BACKUP_SOURCE_PATH)) {
+    const glossaryModule = require(BACKUP_SOURCE_PATH);
+    return glossaryModule.glossaryData || glossaryModule.glossary;
+  }
+  if (fs.existsSync(CHUNKS_DIR)) {
+    const chunks = fs.readdirSync(CHUNKS_DIR)
+      .filter(function (name) { return /^glossary_chunk_\d{3}\.js$/.test(name); })
+      .sort();
+    let merged = [];
+    for (const name of chunks) {
+      const chunkModule = require(path.join(CHUNKS_DIR, name));
+      merged = merged.concat(chunkModule.glossaryChunk || []);
+    }
+    return merged;
+  }
+  return null;
+}
+
+const glossary = loadGlossarySource();
 
 if (!Array.isArray(glossary)) {
   throw new Error('Source glossary must export an array');

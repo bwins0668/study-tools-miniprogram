@@ -1,6 +1,122 @@
 // pages/quiz/quiz.js
 var questionsModule = require('../../data/questions');
+var pastExamIndex = require('../../data/past_exam_bank/index');
 var storage = require('../../../../utils/storage');
+
+// === Inline quiz dedup (moved from utils/quiz_dedupe.js to avoid main-package unused-JS warning) ===
+function normalizeQuizText(value) {
+  return String(value || '')
+    .replace(/\s+/g, '')
+    .replace(/[Ａ-Ｚ]/g, function (ch) { return String.fromCharCode(ch.charCodeAt(0) - 0xFEE0); })
+    .replace(/[ａ-ｚ]/g, function (ch) { return String.fromCharCode(ch.charCodeAt(0) - 0xFEE0); })
+    .replace(/[０-９]/g, function (ch) { return String.fromCharCode(ch.charCodeAt(0) - 0xFEE0); })
+    .toLowerCase();
+}
+function dedupeQuestions(questions) {
+  var seen = Object.create(null);
+  return questions.filter(function (q) {
+    var stem = normalizeQuizText(q.questionZh || q.questionJa || q.title || q.term || '');
+    var opts = normalizeQuizText((q.options || []).map(function (o) { return (o.textZh || o.textJa || o.text || '').trim(); }).join('|'));
+    var ans = normalizeQuizText(q.answer || q.correctAnswer || q.correctIndex || '');
+    var key = stem + '|' + opts + '|' + ans;
+    if (!key || key === '||') return true;
+    if (seen[key]) return false;
+    seen[key] = true;
+    return true;
+  });
+}
+
+// === P0-3: HTML 清洗 + 日文检测 + 中文解析 fallback ===
+function stripHtmlTags(html) {
+  if (!html || typeof html !== 'string') return '';
+  return html
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/p>/gi, '\n')
+    .replace(/<\/div>/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+function hasJapaneseKana(text) {
+  if (!text) return false;
+  return /[\u3040-\u309F\u30A0-\u30FF]/.test(text);
+}
+
+function isMostlyJapanese(text) {
+  if (!text || text.length < 10) return false;
+  var kanaCount = 0;
+  for (var i = 0; i < text.length; i++) {
+    var code = text.charCodeAt(i);
+    if ((code >= 0x3040 && code <= 0x309F) || (code >= 0x30A0 && code <= 0x30FF) || (code >= 0x4E00 && code <= 0x9FFF)) {
+      kanaCount++;
+    }
+  }
+  return kanaCount / text.length > 0.3;
+}
+
+function formatExplanation(raw) {
+  var cleaned = stripHtmlTags(raw);
+  if (!cleaned || cleaned.length < 5) return { clean: '', isJapanese: true };
+  var isJa = hasJapaneseKana(cleaned) || isMostlyJapanese(cleaned);
+  return { clean: cleaned, isJapanese: isJa };
+}
+
+function processQuestionForDisplay(q) {
+  var result = {};
+  for (var key in q) { result[key] = q[key]; }
+
+  // 清洗题干 HTML
+  if (q.questionZh) result.questionZhClean = stripHtmlTags(q.questionZh);
+  if (q.questionJa) result.questionJaClean = stripHtmlTags(q.questionJa);
+
+  // 处理中文解析：当前轻量页只处理课程题和本地错题快照；真题解释随年份分包加载。
+  if (q.explanationZhClean && q.explanationZhClean.length > 10) {
+    result.explanationZhClean = q.explanationZhClean;
+  } else {
+    var zhResult = formatExplanation(q.explanationZh);
+    if (!zhResult.isJapanese && zhResult.clean && zhResult.clean.length > 10) {
+      result.explanationZhClean = zhResult.clean;
+    } else {
+      var ans = q.answer || '';
+      result.explanationZhClean = '正确答案：' + ans + '。本题考查IT基础知识，该选项最符合题意。';
+    }
+  }
+
+  // 处理日文解析
+  var jaResult = formatExplanation(q.explanationJa);
+  result.explanationJaClean = jaResult.clean;
+
+  return result;
+}
+
+function createWrongQuestionSnapshot(q) {
+  if (!q) return null;
+  return {
+    id: q.id,
+    exam: q.exam,
+    sourceType: q.sourceType,
+    yearId: q.yearId,
+    year: q.year,
+    number: q.number,
+    category: q.category,
+    level: q.level,
+    questionZh: q.questionZhClean || q.questionZh || '',
+    questionJa: q.questionJaClean || q.questionJa || '',
+    options: q.options || [],
+    answer: q.answer,
+    explanationZh: q.explanationZhClean || q.explanationZh || '',
+    explanationJa: q.explanationJaClean || q.explanationJa || '',
+    translationStatus: q.translationStatus || 'complete',
+    explanationStatus: q.explanationStatus || 'complete'
+  };
+}
 
 Page({
   data: {
@@ -43,23 +159,17 @@ Page({
     showHint: false,
     // R3.62 答题计时器
     timerText: '',
-    startTime: 0
+    startTime: 0,
+    // R20.1: dark mode
+    __themeDark: false
   },
 
   onLoad: function (options) {
-  var that = this;
-
-  // 实时计时器（每秒更新）
-  if (this._timerInterval) clearInterval(this._timerInterval);
-  this._timerInterval = setInterval(function () {
-    if (!that.data.quizDone && that.startTime) {
-      var elapsed = Math.floor((Date.now() - that.startTime) / 1000);
-      that.setData({ formattedTime: formatTime(elapsed) });
-    }
-  }, 1000);
+    this._applyTheme();
 
     var exam = options.exam || 'itpass';
     var sourceType = options.sourceType || 'lesson_quiz';
+    var yearId = options.yearId || '';
 
     // R3.62 答题计时器：记录开始时间并启动计时器
     var startTime = Date.now();
@@ -83,41 +193,101 @@ Page({
       return;
     }
 
-    this.loadPracticeQuestions(exam, sourceType);
+    if (sourceType === 'past_exam_japanese') {
+      this.redirectToPastExamPackage(exam, yearId);
+      return;
+    }
+
+    this.loadPracticeQuestions(exam, sourceType, yearId);
   },
 
-  loadPracticeQuestions: function (exam, sourceType) {
+  onShow: function () {
+    this._applyTheme();
+  },
+
+  redirectToPastExamPackage: function (exam, yearId) {
+    if (!yearId) {
+      wx.redirectTo({
+        url: '/packages/quiz/pages/exam-menu/exam-menu?exam=' + exam,
+        fail: function (err) {
+          console.error('[quiz] redirect to exam menu failed', err);
+          wx.showToast({ title: '请选择考试年份', icon: 'none' });
+        }
+      });
+      return;
+    }
+
+    var route = pastExamIndex.getRoute(exam, yearId);
+    if (!route || !route.route) {
+      console.warn('[quiz] past exam split route missing', exam, yearId);
+      wx.showToast({ title: '试卷分包缺失', icon: 'none' });
+      this.setData({
+        exam: exam,
+        examTitle: (exam === 'sg' ? 'SG 考试' : 'IT Passport') + ' - 日文题练习',
+        examBadge: exam === 'sg' ? 'SG' : 'IT',
+        sourceType: 'past_exam_japanese',
+        modeLabel: '日文题练习',
+        questions: [],
+        currentQuestion: null,
+        isFinished: true,
+        showResult: false,
+        totalQuestions: 0,
+        showFeedbackTip: false,
+        yearId: yearId
+      });
+      return;
+    }
+
+    wx.redirectTo({
+      url: route.route,
+      fail: function (err) {
+        console.error('[quiz] redirect to split past exam failed', route.route, err);
+        wx.showToast({ title: '打开试卷失败', icon: 'none' });
+      }
+    });
+  },
+
+  loadPracticeQuestions: function (exam, sourceType, yearId) {
     var examTitle = exam === 'sg' ? 'SG 考试' : 'IT Passport';
     var examBadge = exam === 'sg' ? 'SG' : 'IT';
     var modeLabel = sourceType === 'past_exam_japanese' ? '日文题练习' : '课程练习';
-    var allQuestions = questionsModule.questions.filter(function (question) {
+    var baseQuestions = questionsModule.questions;
+    var allQuestions = baseQuestions.filter(function (question) {
       return question.exam === exam && question.sourceType === sourceType;
     });
-
+    if (yearId) {
+      allQuestions = allQuestions.filter(function (question) {
+        return question.yearId === yearId;
+      });
+    }
     if (allQuestions.length > 0) {
+      // P0-3: 清洗所有题目的 HTML 并生成中文解析 fallback
+      var processed = dedupeQuestions(allQuestions).map(processQuestionForDisplay);
+      var yearTag = yearId ? ('（' + yearId + '）') : '';
       this.setData({
         exam: exam,
-        examTitle: examTitle + ' - ' + modeLabel,
+        examTitle: examTitle + ' - ' + modeLabel + yearTag,
         examBadge: examBadge,
         sourceType: sourceType,
         modeLabel: modeLabel,
-        resultModeLabel: examTitle + ' · ' + modeLabel,
-        questions: allQuestions,
-        totalQuestions: allQuestions.length,
-        currentQuestion: allQuestions[0],
+        resultModeLabel: examTitle + ' · ' + modeLabel + yearTag,
+        questions: processed,
+        totalQuestions: processed.length,
+        currentQuestion: processed[0],
         currentIndex: 0,
-        progressPercent: Math.round(1 / allQuestions.length * 100) || 0,
+        progressPercent: Math.round(1 / processed.length * 100) || 0,
         selectedAnswer: '',
         hasAnswered: false,
         isCorrect: false,
         isFinished: false,
         showResult: false,
-        showFeedbackTip: false
+        showFeedbackTip: false,
+        yearId: yearId
       });
     } else {
       this.setData({
         exam: exam,
-        examTitle: examTitle + ' - ' + modeLabel,
+        examTitle: examTitle + ' - ' + modeLabel + (yearId ? ('（' + yearId + '）') : ''),
         examBadge: examBadge,
         sourceType: sourceType,
         modeLabel: modeLabel,
@@ -127,7 +297,8 @@ Page({
         isFinished: true,
         showResult: false,
         totalQuestions: 0,
-        showFeedbackTip: false
+        showFeedbackTip: false,
+        yearId: yearId
       });
     }
   },
@@ -146,7 +317,8 @@ Page({
       storage.addWrongQuestion(
         this.data.currentQuestion.id,
         attemptExam,
-        key
+        key,
+        createWrongQuestionSnapshot(this.data.currentQuestion)
       );
     }
 
@@ -268,8 +440,8 @@ Page({
       hasWrongQuestions: hasWrongQuestions,
       // R3.43 准备答题回顾数据（包含题目文本和正确答案）
       reviewList: (function () {
-        var questions = self.data.questions;
-        var answered = self.data.answeredList;
+        var questions = this.data.questions;
+        var answered = this.data.answeredList;
         var result = [];
         for (var i = 0; i < answered.length; i++) {
           var item = answered[i];
@@ -281,13 +453,13 @@ Page({
             }
           }
           if (question) {
+            var qClean = processQuestionForDisplay(question);
             result.push({
               questionId: item.questionId,
               selectedAnswer: item.selectedAnswer,
               isCorrect: item.isCorrect,
-              questionZh: question.questionZh || '',
+              questionZh: qClean.questionZhClean || question.questionZh || '',
               correctAnswer: question.answer || '',
-              // R3.48 添加错题解析
               hint: question.shared_hint || ''
             });
           }
@@ -332,7 +504,7 @@ Page({
     if (sourceType === 'wrong_only') {
       this.loadWrongQuestions();
     } else {
-      this.loadPracticeQuestions(exam, sourceType);
+      this.loadPracticeQuestions(exam, sourceType, this.data.yearId || '');
     }
   },
 
@@ -375,6 +547,7 @@ Page({
     }
 
     if (matched.length > 0) {
+      var processed = matched.map(processQuestionForDisplay);
       this.setData({
         exam: 'wrong_only',
         examTitle: '错题练习',
@@ -382,9 +555,9 @@ Page({
         sourceType: 'wrong_only',
         modeLabel: '错题重练',
         resultModeLabel: '错题练习 · 错题重练',
-        questions: matched,
-        totalQuestions: matched.length,
-        currentQuestion: matched[0],
+        questions: processed,
+        totalQuestions: processed.length,
+        currentQuestion: processed[0],
         currentIndex: 0,
         progressPercent: Math.round(1 / matched.length * 100) || 0,
         selectedAnswer: '',
@@ -422,7 +595,7 @@ Page({
     }
     return {
       title: title,
-      path: '/packages/quiz/pages/quiz-menu/quiz-menu',
+      path: '/packages/quiz/pages/exam-menu/exam-menu',
       imageUrl: ''
     };
   },
@@ -490,5 +663,15 @@ Page({
       icon: 'success',
       duration: 1500
     });
+  },
+  /**
+   * R20.1: runtime dark mode detection
+   */
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
   }
 });

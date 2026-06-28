@@ -95,21 +95,21 @@ function generateEnhancedSuggestion(wrongCount, favoriteCount, hasLastAttempt, t
   if (favoriteCount > 0) {
     result.text = '已收藏 ' + favoriteCount + ' 个术语';
     result.actionText = '复习收藏';
-    result.actionPath = '/packages/glossary/pages/term-list/term-list';
+    result.actionPath = '/packages/glossary/pages/favorite-review/favorite-review';
     return result;
   }
 
   if (streakCount > 0) {
     result.text = '已连续学习 ' + streakCount + ' 天，继续保持！';
     result.actionText = '继续练习';
-    result.actionPath = '/packages/quiz/pages/quiz-menu/quiz-menu';
+    result.actionPath = '/packages/quiz/pages/exam-menu/exam-menu';
     return result;
   }
 
   if (todayTotal > 0 && hasLastAttempt) {
     result.text = '今天已练习 ' + todayTotal + ' 题';
     result.actionText = '继续练习';
-    result.actionPath = '/packages/quiz/pages/quiz-menu/quiz-menu';
+    result.actionPath = '/packages/quiz/pages/exam-menu/exam-menu';
     return result;
   }
 
@@ -219,10 +219,29 @@ Page({
     version: '',
     // R3.79 最近更新提示
     showUpdateBanner: true,
-    updateText: '最近更新：新增返回顶部按钮、页面浏览次数统计、最近更新提示'
+    updateText: '最近更新：新增返回顶部按钮、页面浏览次数统计、最近更新提示',
+    isNavigating: false,
+    navigationTarget: '',
+    // R20.1: 深色模式
+    __themeDark: false
+  },
+
+  /**
+   * R20.1: 运行时深色模式检测
+   * 同步主题状态到页面 data（app.js 的 wx.onThemeChange 会自动更新所有页面）
+   */
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
   },
 
   onShow: function () {
+    this._clearNavigationLock();
+    // R20.1: 运行时深色模式检测
+    this._applyTheme();
     // R3.77 页面浏览次数统计
     homeSessionViewCount += 1;
     var viewCount = homeSessionViewCount;
@@ -527,72 +546,95 @@ Page({
     });
   },
 
+  onHide: function () {
+    this._clearNavigationLock();
+  },
+
+  onUnload: function () {
+    this._clearNavigationLock();
+  },
+
+  _clearNavigationLock: function () {
+    if (this._navigationUnlockTimer) {
+      clearTimeout(this._navigationUnlockTimer);
+      this._navigationUnlockTimer = null;
+    }
+    if (this.data.isNavigating || this.data.navigationTarget) {
+      this.setData({ isNavigating: false, navigationTarget: '' });
+    }
+  },
+
+  _releaseNavigationSoon: function () {
+    var self = this;
+    if (self._navigationUnlockTimer) clearTimeout(self._navigationUnlockTimer);
+    self._navigationUnlockTimer = setTimeout(function () {
+      self._clearNavigationLock();
+    }, 600);
+  },
+
+  _navigateOnce: function (method, url, target) {
+    if (this.data.isNavigating) return;
+    var self = this;
+    var navigate = wx[method];
+    if (typeof navigate !== 'function') return;
+    self.setData({ isNavigating: true, navigationTarget: target || '' });
+    navigate({
+      url: url,
+      success: function () {
+        self._releaseNavigationSoon();
+      },
+      fail: function (error) {
+        console.error('[home] navigation failed:', error);
+        self._clearNavigationLock();
+        wx.showToast({ title: '页面暂时无法打开，请重试', icon: 'none' });
+      }
+    });
+  },
+
   continueLearning: function () {
     var exam = this.data.lastExam;
     var sourceType = this.data.lastSourceType;
     if (exam && sourceType) {
-      wx.navigateTo({
-        url: '/packages/quiz/pages/quiz/quiz?exam=' + exam + '&sourceType=' + sourceType
-      });
+      this._navigateOnce('navigateTo', '/packages/quiz/pages/quiz/quiz?exam=' + exam + '&sourceType=' + sourceType, 'continue');
     }
   },
 
   // R3.51 建议卡片操作按钮点击事件
   suggestionActionTap: function () {
     var path = this.data.suggestionActionPath || '';
-    if (path) {
-      wx.navigateTo({
-        url: path
-      });
-    }
+    if (path) this._navigateOnce('navigateTo', path);
   },
 
   goToGlossary: function () {
-    wx.navigateTo({
-      url: '/packages/glossary/pages/term-search/term-search'
-    });
+    this._navigateOnce('navigateTo', '/packages/glossary/pages/term-search/term-search', 'glossary');
   },
 
   goToMistakes: function () {
-    wx.navigateTo({
-      url: '/packages/quiz/pages/mistakes/mistakes'
-    });
+    this._navigateOnce('navigateTo', '/packages/quiz/pages/mistakes/mistakes', 'mistakes');
   },
 
   goToItPassport: function () {
-    wx.navigateTo({
-      url: '/packages/quiz/pages/exam-menu/exam-menu?exam=itpass'
-    });
+    this._navigateOnce('navigateTo', '/packages/quiz/pages/exam-menu/exam-menu?exam=itpass', 'itpass');
   },
 
   goToSG: function () {
-    wx.navigateTo({
-      url: '/packages/quiz/pages/exam-menu/exam-menu?exam=sg'
-    });
+    this._navigateOnce('navigateTo', '/packages/quiz/pages/exam-menu/exam-menu?exam=sg', 'sg');
   },
 
   goToFavoriteReview: function () {
-    wx.navigateTo({
-      url: '/packages/glossary/pages/favorite-review/favorite-review'
-    });
+    this._navigateOnce('navigateTo', '/packages/glossary/pages/favorite-review/favorite-review');
   },
 
   goToAnki: function () {
-    wx.navigateTo({
-      url: '/packages/glossary/pages/anki-player/anki-player?from=home'
-    });
+    this._navigateOnce('navigateTo', '/packages/glossary/pages/anki-player/anki-player?from=home', 'anki');
   },
 
   quickStart: function () {
-    wx.navigateTo({
-      url: '/packages/quiz/pages/quiz/quiz?exam=itpass&sourceType=lesson_quiz'
-    });
+    this._navigateOnce('navigateTo', '/packages/quiz/pages/quiz/quiz?exam=itpass&sourceType=lesson_quiz', 'itpass');
   },
 
   goToProfile: function () {
-    wx.switchTab({
-      url: '/pages/profile/profile'
-    });
+    this._navigateOnce('switchTab', '/pages/profile/profile', 'profile');
   },
 
   // R3.63 关闭练习提醒

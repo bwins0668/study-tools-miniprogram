@@ -44,10 +44,16 @@
     </view>
   </view>
 
+  <!-- 复习优先级提示 -->
+  <view class="priority-hint" wx:if="{{totalCount > 0}}">
+    <view class="priority-hint-symbol"></view>
+    <text class="priority-hint-text">{{priorityHint}}</text>
+  </view>
+
   <!-- 搜索框 -->
   <view class="search-section" wx:if="{{totalCount > 0}}">
     <view class="search-bar">
-      <text class="search-icon">🔍</text>
+      <view class="search-symbol"></view>
       <input
         class="search-input"
         placeholder="搜索错题：题干、答案、解析…"
@@ -147,48 +153,47 @@
       <text class="review-index">{{currentReviewIndex + 1}} / {{filteredList.length}}</text>
     </view>
 
-    <view class="card review-card">
-      <view class="wrong-header">
-        <view class="wrong-tags">
-          <text class="wrong-exam">{{filteredList[currentReviewIndex].examLabel}}</text>
-          <text class="wrong-source {{filteredList[currentReviewIndex].sourceType === 'past_exam_japanese' ? 'wrong-source-exam' : ''}}">{{filteredList[currentReviewIndex].sourceLabel}}</text>
+    <view class="review-card">
+      <view class="card-inner {{isFlipped ? 'flipped' : ''}}" bindtap="toggleFlip">
+        <view class="card-face card-front">
+          <view class="wrong-header">
+            <view class="wrong-tags">
+              <text class="wrong-exam">{{filteredList[currentReviewIndex].examLabel}}</text>
+              <text class="wrong-source {{filteredList[currentReviewIndex].sourceType === 'past_exam_japanese' ? 'wrong-source-exam' : ''}}">{{filteredList[currentReviewIndex].sourceLabel}}</text>
+            </view>
+            <text class="wrong-time" wx:if="{{filteredList[currentReviewIndex].savedAtLabel}}">{{filteredList[currentReviewIndex].savedAtLabel}}</text>
+          </view>
+          <view class="flashcard-body">
+            <text class="flashcard-question">{{filteredList[currentReviewIndex].questionZh}}</text>
+            <text class="flashcard-question-ja" wx:if="{{filteredList[currentReviewIndex].questionJa}}">{{filteredList[currentReviewIndex].questionJa}}</text>
+            <text class="flashcard-hint" wx:if="{{!isFlipped}}">点击查看答案</text>
+          </view>
         </view>
-        <text class="wrong-time" wx:if="{{filteredList[currentReviewIndex].savedAtLabel}}">{{filteredList[currentReviewIndex].savedAtLabel}}</text>
-      </view>
-
-      <text class="wrong-question-zh">{{filteredList[currentReviewIndex].questionZh}}</text>
-      <text class="wrong-question-ja">{{filteredList[currentReviewIndex].questionJa}}</text>
-
-      <view class="translation-warning" wx:if="{{filteredList[currentReviewIndex].sourceType === 'past_exam_japanese'}}">
-        <text class="warning-icon">⚠</text>
-        <text class="warning-text">日文原题，中文翻译待补充。</text>
-      </view>
-
-      <view class="wrong-detail-row">
-        <text class="wrong-detail-label">正确答案：</text>
-        <text class="wrong-detail-value wrong-correct">{{filteredList[currentReviewIndex].correctAnswer}}</text>
-      </view>
-      <view class="wrong-detail-row">
-        <text class="wrong-detail-label">你的答案：</text>
-        <text class="wrong-detail-value wrong-incorrect">{{filteredList[currentReviewIndex].lastAnswer}}</text>
-      </view>
-
-      <view class="explanation-toggle" bindtap="toggleExplanation">
-        <text class="toggle-label">{{showExplanation ? '隐藏解析' : '显示解析'}}</text>
-        <text class="toggle-arrow">{{showExplanation ? '▲' : '▼'}}</text>
-      </view>
-
-      <view class="wrong-explanation" wx:if="{{showExplanation && (filteredList[currentReviewIndex].explanationZh || filteredList[currentReviewIndex].explanationJa)}}">
-        <view class="explanation-warning" wx:if="{{filteredList[currentReviewIndex].explanationStatus === 'shared_hint'}}">
-          <text class="warning-icon">⚠</text>
-          <text class="warning-text">解释为通用说明，中文解释待补充。</text>
+        <view class="card-face card-back">
+          <view class="wrong-header">
+            <text class="wrong-header-label">答案</text>
+            <text class="wrong-time" wx:if="{{filteredList[currentReviewIndex].savedAtLabel}}">{{filteredList[currentReviewIndex].savedAtLabel}}</text>
+          </view>
+          <view class="flashcard-body">
+            <text class="flashcard-correct">{{filteredList[currentReviewIndex].correctAnswer}}</text>
+            <text class="flashcard-wrong">你的答案：{{filteredList[currentReviewIndex].lastAnswer}}</text>
+            <view class="wrong-explanation" wx:if="{{showExplanation && (filteredList[currentReviewIndex].explanationZh || filteredList[currentReviewIndex].explanationJa)}}">
+              <view class="explanation-warning" wx:if="{{filteredList[currentReviewIndex].explanationStatus === 'shared_hint'}}">
+                <text class="warning-icon">⚠</text>
+                <text class="warning-text">解释为通用说明，中文解释待补充。</text>
+              </view>
+              <text class="wrong-exp-text">{{filteredList[currentReviewIndex].explanationZh}}</text>
+              <text class="wrong-exp-text wrong-exp-ja">{{filteredList[currentReviewIndex].explanationJa}}</text>
+            </view>
+            <view class="review-nodata-hint" wx:if="{{showExplanation && !filteredList[currentReviewIndex].explanationZh && !filteredList[currentReviewIndex].explanationJa}}">
+              <text class="nodata-text">暂无解析</text>
+            </view>
+            <view class="explanation-toggle" bindtap="toggleExplanation">
+              <text class="toggle-label">{{showExplanation ? '隐藏解析' : '显示解析'}}</text>
+              <text class="toggle-arrow">{{showExplanation ? '▲' : '▼'}}</text>
+            </view>
+          </view>
         </view>
-        <text class="wrong-exp-text">{{filteredList[currentReviewIndex].explanationZh}}</text>
-        <text class="wrong-exp-text wrong-exp-ja">{{filteredList[currentReviewIndex].explanationJa}}</text>
-      </view>
-
-      <view class="review-nodata-hint" wx:if="{{showExplanation && !filteredList[currentReviewIndex].explanationZh && !filteredList[currentReviewIndex].explanationJa}}">
-        <text class="nodata-text">暂无解析</text>
       </view>
 
       <!-- 复习模式操作 -->
@@ -210,7 +215,7 @@
 
   <!-- 搜索无结果 -->
   <view class="empty-state" wx:if="{{filteredList.length === 0 && searchEmpty}}">
-    <text class="empty-icon">🔍</text>
+    <view class="empty-symbol"></view>
     <text class="empty-text">没有匹配的错题</text>
     <text class="empty-hint">试试其他关键词。</text>
     <view class="empty-action">
@@ -222,7 +227,7 @@
 
   <!-- 空状态 -->
   <view class="empty-state" wx:elif="{{filteredList.length === 0 && !searchEmpty}}">
-    <text class="empty-icon">📋</text>
+    <view class="empty-symbol"></view>
     <text class="empty-text">{{activeFilter === 'all' ? '当前没有错题' : '该分类下没有错题'}}</text>
     <text class="empty-hint">继续练习后会自动记录需要复习的题目。</text>
     <view class="empty-action">

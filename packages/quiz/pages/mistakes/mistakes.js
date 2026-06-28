@@ -71,7 +71,13 @@ function matchItem(item, keyword) {
 }
 
 Page({
+  onLoad: function (options) {
+    this._applyTheme();
+    this._applyTheme();
+  },
   data: {
+    __themeDark: false,
+    __themeDark: false,
     wrongList: [],
     filteredList: [],
     totalCount: 0,
@@ -87,10 +93,13 @@ Page({
     searchEmpty: false,
     viewMode: 'list',
     currentReviewIndex: 0,
-    showExplanation: true
+    showExplanation: true,
+    isFlipped: false
   },
 
   onShow: function () {
+    this._applyTheme();
+    this._applyTheme();
     this.loadWrongQuestions();
   },
 
@@ -108,20 +117,24 @@ Page({
           break;
         }
       }
+      if (!question && wq.questionSnapshot) {
+        question = wq.questionSnapshot;
+      }
       if (question) {
+        var questionOptions = Array.isArray(question.options) ? question.options : [];
         var correctText = '';
-        for (var k = 0; k < question.options.length; k++) {
-          if (question.options[k].key === question.answer) {
-            correctText = question.options[k].key + '. ' + (question.options[k].textZh || question.options[k].textJa || '');
+        for (var k = 0; k < questionOptions.length; k++) {
+          if (questionOptions[k].key === question.answer) {
+            correctText = questionOptions[k].key + '. ' + (questionOptions[k].textZh || questionOptions[k].textJa || questionOptions[k].text || '');
             break;
           }
         }
         var optionsDisplay = [];
-        for (var oi = 0; oi < question.options.length; oi++) {
-          var opt = question.options[oi];
+        for (var oi = 0; oi < questionOptions.length; oi++) {
+          var opt = questionOptions[oi];
           optionsDisplay.push({
             key: opt.key,
-            text: opt.textZh || opt.textJa || ''
+            text: opt.textZh || opt.textJa || opt.text || ''
           });
         }
         wrongList.push({
@@ -130,12 +143,12 @@ Page({
           examLabel: EXAM_NAMES[wq.exam] || wq.exam,
           sourceType: question.sourceType || 'lesson_quiz',
           sourceLabel: SOURCE_LABELS[question.sourceType] || '课程练习',
-          questionZh: question.questionZh,
-          questionJa: question.questionJa,
+          questionZh: question.questionZhClean || question.questionZh,
+          questionJa: question.questionJaClean || question.questionJa,
           options: optionsDisplay,
           correctAnswer: correctText,
-          explanationZh: question.explanationZh,
-          explanationJa: question.explanationJa,
+          explanationZh: question.explanationZhClean || question.explanationZh,
+          explanationJa: question.explanationJaClean || question.explanationJa,
           lastAnswer: wq.lastAnswer,
           wrongAt: wq.wrongAt,
           wrongAtLabel: formatTime(wq.wrongAt),
@@ -156,6 +169,16 @@ Page({
       if (wrongList[ci].sourceType === 'past_exam_japanese') japaneseCount++;
     }
 
+    // 计算优先级提示
+    var priorityHint = '';
+    if (wrongList.length > 0) {
+      var maxCategory = 'IT Passport';
+      var maxCount = itCount;
+      if (sgCount > maxCount) { maxCategory = 'SG'; maxCount = sgCount; }
+      if (japaneseCount > maxCount) { maxCategory = '日文题'; maxCount = japaneseCount; }
+      priorityHint = '建议优先复习，可从' + maxCategory + '开始';
+    }
+
     this.setData({
       wrongList: wrongList,
       totalCount: wrongList.length,
@@ -164,6 +187,7 @@ Page({
       itCount: itCount,
       sgCount: sgCount,
       japaneseCount: japaneseCount,
+      priorityHint: priorityHint,
       currentReviewIndex: 0,
       showExplanation: true
     });
@@ -261,7 +285,8 @@ Page({
     this.setData({
       viewMode: 'review',
       currentReviewIndex: 0,
-      showExplanation: true
+      showExplanation: true,
+      isFlipped: false
     });
   },
 
@@ -271,7 +296,8 @@ Page({
     if (this.data.currentReviewIndex > 0) {
       this.setData({
         currentReviewIndex: this.data.currentReviewIndex - 1,
-        showExplanation: true
+        showExplanation: true,
+        isFlipped: false
       });
     }
   },
@@ -280,14 +306,22 @@ Page({
     if (this.data.currentReviewIndex < this.data.filteredList.length - 1) {
       this.setData({
         currentReviewIndex: this.data.currentReviewIndex + 1,
-        showExplanation: true
+        showExplanation: true,
+        isFlipped: false
       });
     }
   },
 
   toggleExplanation: function () {
     this.setData({
-      showExplanation: !this.data.showExplanation
+      showExplanation: !this.data.showExplanation,
+      isFlipped: false
+    });
+  },
+
+  toggleFlip: function () {
+    this.setData({
+      isFlipped: !this.data.isFlipped
     });
   },
 
@@ -351,5 +385,23 @@ Page({
     wx.switchTab({
       url: '/pages/home/home'
     });
+  }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
+  }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
   }
 });

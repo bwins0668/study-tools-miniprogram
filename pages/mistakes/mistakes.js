@@ -13,7 +13,13 @@ function formatDate(timestamp) {
 }
 
 Page({
+  onLoad: function (options) {
+    this._applyTheme();
+    this._applyTheme();
+  },
   data: {
+    __themeDark: false,
+    __themeDark: false,
     wrongCount: 0,
     itpassCount: 0,
     sgCount: 0,
@@ -21,6 +27,8 @@ Page({
   },
 
   onShow: function () {
+    this._applyTheme();
+    this._applyTheme();
     var count = storage.getWrongQuestionCount ? storage.getWrongQuestionCount() : 0;
     var stats = storage.getWrongQuestionStats ? storage.getWrongQuestionStats() : { itpass: 0, sg: 0 };
     var lastTime = storage.getLastWrongTime ? storage.getLastWrongTime() : null;
@@ -38,9 +46,33 @@ Page({
     });
   },
 
+  goToAnkiMistakes: function () {
+    wx.navigateTo({
+      url: '/packages/glossary/pages/anki-player/anki-player?source=mistakes&from=mistakes'
+    });
+  },
+
   goStudy: function () {
     wx.navigateTo({
       url: '/packages/quiz/pages/exam-menu/exam-menu?exam=itpass'
     });
+  }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
+  }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
   }
 });

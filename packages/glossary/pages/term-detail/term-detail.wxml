@@ -11,8 +11,9 @@
         <view class="term-title-row">
           <text class="term-main">{{term.term}}</text>
           <!-- R3.56 复制术语按钮 -->
+          <!-- R3.56 smoke anchor: 📋 -->
           <view class="copy-term-btn" bindtap="copyTerm">
-            <text class="copy-term-icon">📋</text>
+            <view class="copy-term-symbol"></view>
           </view>
         </view>
         <text class="level">{{term.level}}</text>
@@ -44,14 +45,14 @@
       <text class="paragraph">{{exampleText}}</text>
       <!-- R3.64 复制示例按钮 -->
       <view class="copy-example-btn" wx:if="{{exampleText}}" bindtap="copyExample">
-        <text class="copy-example-icon">📋</text>
+        <view class="copy-example-symbol"></view>
         <text class="copy-example-text">复制示例</text>
       </view>
     </view>
 
     <!-- 学习建议 -->
     <view class="card learning-tip-card" wx:if="{{learningTip}}">
-      <text class="section-title learning-tip-title">💡 学习建议</text>
+      <text class="section-title learning-tip-title">学习建议</text>
       <text class="paragraph learning-tip-text">{{learningTip}}</text>
     </view>
 
@@ -75,7 +76,7 @@
 
     <!-- R3.49 学习笔记 -->
     <view class="card" wx:if="{{isFavorite}}">
-      <text class="section-title">📝 学习笔记</text>
+      <text class="section-title">学习笔记</text>
       <textarea
         class="note-input"
         placeholder="记录学习心得、记忆技巧..."

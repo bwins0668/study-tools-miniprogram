@@ -155,6 +155,8 @@ function buildRestoreSummary(backup) {
 
 Page({
   data: {
+    __themeDark: false,
+    __themeDark: false,
     version: '',
     favoriteCount: 0,
     wrongQuestionCount: 0,
@@ -202,12 +204,16 @@ Page({
   },
 
   onLoad: function () {
+    this._applyTheme();
+    this._applyTheme();
     this.setData({
       version: app.globalData.version
     });
   },
 
   onShow: function () {
+    this._applyTheme();
+    this._applyTheme();
     // R3.78 页面浏览次数统计
     profileSessionViewCount += 1;
     var viewCount = profileSessionViewCount;
@@ -512,6 +518,69 @@ Page({
     });
   },
 
+  // 通过文本输入恢复备份数据（对应 WXML restoreByText 绑定）
+  restoreByText: function () {
+    var that = this;
+    wx.showModal({
+      title: '通过文本恢复',
+      content: '请输入此前复制的备份 JSON 文本，将覆盖当前本地收藏、错题和学习记录。',
+      confirmText: '下一步',
+      cancelText: '取消',
+      success: function (res) {
+        if (!res.confirm) return;
+        wx.showModal({
+          title: '粘贴备份数据',
+          content: '请将备份 JSON 文本粘贴到输入框（长按粘贴），确认后点击确定进行恢复。',
+          confirmText: '确定',
+          cancelText: '取消',
+          editable: true,
+          placeholderText: '将备份 JSON 粘贴到这里...',
+          success: function (res2) {
+            if (!res2.confirm) return;
+            var text = (res2.content || '').trim();
+            if (!text) {
+              wx.showToast({ title: '请输入备份数据', icon: 'none' });
+              return;
+            }
+            var parsed = null;
+            try {
+              parsed = JSON.parse(text);
+            } catch (e) {
+              wx.showToast({ title: '备份数据格式无效，请确认复制的是本小程序导出的 JSON', icon: 'none', duration: 2000 });
+              return;
+            }
+            if (!storage.validateLocalBackup(parsed)) {
+              wx.showToast({ title: '备份数据格式无效，请确认复制的是本小程序导出的 JSON', icon: 'none', duration: 2000 });
+              return;
+            }
+            var rs = buildRestoreSummary(parsed);
+            var confirmContent = '即将恢复以下数据，这会覆盖当前本地数据：\n\n';
+            confirmContent += '收藏术语：' + (rs.favoriteCount || 0) + ' 条\n';
+            confirmContent += '错题：' + (rs.wrongQuestionCount || 0) + ' 条\n';
+            confirmContent += '学习记录：' + (rs.quizAttemptCount || 0) + ' 条\n';
+            confirmContent += 'Anki 闪卡进度：' + (rs.ankiCount || 0) + ' 条\n';
+            confirmContent += '备份版本：' + rs.backupVersion + '\n';
+            confirmContent += '备份时间：' + rs.backupTime + '\n\n';
+            confirmContent += '确定要恢复吗？';
+            wx.showModal({
+              title: '确认恢复',
+              content: confirmContent,
+              confirmText: '确认恢复',
+              cancelText: '取消',
+              success: function (res3) {
+                if (res3.confirm) {
+                  storage.importLocalBackup(parsed);
+                  wx.showToast({ title: '恢复成功', icon: 'none', duration: 1500 });
+                  that.refreshAllData();
+                }
+              }
+            });
+          }
+        });
+      }
+    });
+  },
+
   // R3.57 复制版本号
   copyVersion: function () {
     var version = this.data.version || '';
@@ -545,5 +614,23 @@ Page({
       showCancel: false,
       confirmText: '知道了'
     });
+  }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
+  }
+,
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
   }
 });

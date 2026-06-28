@@ -28,6 +28,43 @@ function readFile(rel) {
   return fs.readFileSync(path.join(ROOT, rel), 'utf-8');
 }
 
+function walkFiles(absDir, files) {
+  files = files || [];
+  if (!fs.existsSync(absDir)) return files;
+  fs.readdirSync(absDir).forEach(function (name) {
+    const full = path.join(absDir, name);
+    const stat = fs.statSync(full);
+    if (stat.isDirectory()) walkFiles(full, files);
+    else if (stat.isFile()) files.push({ abs: full, rel: path.relative(ROOT, full).replace(/\\/g, '/'), size: stat.size });
+  });
+  return files;
+}
+
+function getDirSize(relDir) {
+  return walkFiles(path.join(ROOT, relDir)).reduce(function (total, file) {
+    return total + file.size;
+  }, 0);
+}
+
+function loadSplitPastExamDataForSmoke() {
+  const index = require(path.join(ROOT, 'packages/quiz/data/past_exam_bank/index'));
+  const fullBank = [];
+  const explanations = {};
+  (index.packages || []).forEach(function (pkg) {
+    const dataRoot = path.join(ROOT, pkg.root, 'data');
+    const questionsModule = require(path.join(dataRoot, 'questions'));
+    const explMap = require(path.join(dataRoot, 'explanations_zh'));
+    const byYear = questionsModule.questionsByYear || {};
+    Object.keys(byYear).forEach(function (yearId) {
+      fullBank.push.apply(fullBank, byYear[yearId] || []);
+    });
+    Object.keys(explMap || {}).forEach(function (id) {
+      explanations[id] = explMap[id];
+    });
+  });
+  return { index: index, fullBank: fullBank, explanations: explanations };
+}
+
 // Shared compliance forbidden terms (centralized for easier maintenance)
 var COMPLIANCE_HIGH_RISK_TERMS = ['保证通过', '包过', '押题', '必过'];
 var COMPLIANCE_FORBIDDEN_TERMS = [
@@ -314,7 +351,7 @@ try {
 if (glossaryOk) pass('glossary split data valid');
 
 // ============================================================
-console.log('\n--- data/questions.js ---');
+console.log('\n--- data/questions.js (course-only lightweight entry) ---');
 
 let questionsOk = true;
 try {
@@ -331,20 +368,20 @@ try {
     pass('questions data can be required and is array');
     console.log('  questions entries: ' + questions.length);
 
-    if (questions.length < 229) {
-      fail('questions.js: expected >= 229 entries, got ' + questions.length);
+    if (questions.length < 129) {
+      fail('questions.js: expected >= 129 course entries, got ' + questions.length);
       questionsOk = false;
     }
 
     const itpassCount = questions.filter(q => q.exam === 'itpass').length;
     const sgCount = questions.filter(q => q.exam === 'sg').length;
     console.log('  itpass: ' + itpassCount + ', sg: ' + sgCount);
-    if (itpassCount < 135) {
-      fail('questions.js: expected >= 135 itpass, got ' + itpassCount);
+    if (itpassCount < 85) {
+      fail('questions.js: expected >= 85 itpass course entries, got ' + itpassCount);
       questionsOk = false;
     }
-    if (sgCount < 94) {
-      fail('questions.js: expected >= 94 sg, got ' + sgCount);
+    if (sgCount < 44) {
+      fail('questions.js: expected >= 44 sg course entries, got ' + sgCount);
       questionsOk = false;
     }
 
@@ -356,21 +393,22 @@ try {
       fail('questions.js: expected >= 129 lesson_quiz, got ' + lessonQuizCount);
       questionsOk = false;
     }
-    if (pastExamCount < 100) {
-      fail('questions.js: expected >= 100 past_exam_japanese, got ' + pastExamCount);
+    if (pastExamCount !== 0) {
+      fail('questions.js: past_exam_japanese must live in split subpackages, got ' + pastExamCount);
       questionsOk = false;
     }
 
-    // past_exam_japanese distribution by exam
-    const pastItpass = questions.filter(q => q.sourceType === 'past_exam_japanese' && q.exam === 'itpass').length;
-    const pastSg = questions.filter(q => q.sourceType === 'past_exam_japanese' && q.exam === 'sg').length;
-    console.log('  past_exam itpass: ' + pastItpass + ', past_exam sg: ' + pastSg);
-    if (pastItpass < 50) {
-      fail('questions.js: expected >= 50 past_exam itpass, got ' + pastItpass);
+    // past_exam_japanese distribution by split packages
+    const splitPastData = loadSplitPastExamDataForSmoke();
+    const pastItpass = splitPastData.fullBank.filter(q => q.sourceType === 'past_exam_japanese' && q.exam === 'itpass').length;
+    const pastSg = splitPastData.fullBank.filter(q => q.sourceType === 'past_exam_japanese' && q.exam === 'sg').length;
+    console.log('  split past_exam itpass: ' + pastItpass + ', split past_exam sg: ' + pastSg);
+    if (pastItpass !== 1500) {
+      fail('split past_exam: expected 1500 itpass, got ' + pastItpass);
       questionsOk = false;
     }
-    if (pastSg < 50) {
-      fail('questions.js: expected >= 50 past_exam sg, got ' + pastSg);
+    if (pastSg !== 445) {
+      fail('split past_exam: expected 445 sg, got ' + pastSg);
       questionsOk = false;
     }
 
@@ -1066,13 +1104,13 @@ console.log('\n--- 版本号检查 ---');
 let versionOk = true;
 const appJsContent = readFile('app.js');
 const storageContent = readFile('utils/storage.js');
-if (!appJsContent.includes('v0.23.0')) {
-  fail('version: app.js does not contain v0.23.0');
+if (!appJsContent.includes('v0.28.0')) {
+  fail('version: app.js does not contain v0.28.0');
   versionOk = false;
 }
 
-if (!storageContent.includes("version: 'v0.23.0'")) {
-  fail('version: utils/storage.js exportLocalBackup does not contain v0.23.0');
+if (!storageContent.includes("version: 'v0.28.0'")) {
+  fail('version: utils/storage.js exportLocalBackup does not contain v0.28.0');
   versionOk = false;
 }
 
@@ -1089,7 +1127,7 @@ if (!profileJs.includes('globalData.version')) {
   fail('version: profile.js does not read from globalData.version');
   versionOk = false;
 }
-if (versionOk) pass('version check v0.23.0');
+if (versionOk) pass('version check v0.28.0');
 
 // ============================================================
 // 十一、Check Round 2.0 新功能
@@ -1564,12 +1602,12 @@ var profileWxml32 = readFile('pages/profile/profile.wxml');
 var profileWxss32 = readFile('pages/profile/profile.wxss');
 
   // 1. 版本号 v0.21.0
-  if (!appJsContent.includes('v0.23.0')) {
-    fail('Round 3.2: app.js missing v0.23.0');
+  if (!appJsContent.includes('v0.28.0')) {
+    fail('Round 3.2: app.js missing v0.28.0');
     round32Ok = false;
   }
-  if (!storageContent.includes("version: 'v0.23.0'")) {
-    fail('Round 3.2: storage.js exportLocalBackup missing v0.23.0');
+  if (!storageContent.includes("version: 'v0.28.0'")) {
+    fail('Round 3.2: storage.js exportLocalBackup missing v0.28.0');
     round32Ok = false;
   }
 
@@ -1671,12 +1709,12 @@ var favReviewWxml33 = readFile('packages/glossary/pages/favorite-review/favorite
 var favReviewWxss33 = readFile('packages/glossary/pages/favorite-review/favorite-review.wxss');
 
   // 1. 版本号 v0.21.0
-  if (!appJsContent.includes('v0.23.0')) {
-    fail('Round 3.3: app.js missing v0.23.0');
+  if (!appJsContent.includes('v0.28.0')) {
+    fail('Round 3.3: app.js missing v0.28.0');
     round33Ok = false;
   }
-  if (!storageContent.includes("version: 'v0.23.0'")) {
-    fail('Round 3.3: storage.js exportLocalBackup missing v0.23.0');
+  if (!storageContent.includes("version: 'v0.28.0'")) {
+    fail('Round 3.3: storage.js exportLocalBackup missing v0.28.0');
     round33Ok = false;
   }
 
@@ -1751,7 +1789,7 @@ if (!profileJs33.includes('getFavoriteTermCount') || !profileJs33.includes('favo
 }
 
   // 10. 备份导出/恢复版本同步到 v0.21.0
-  if (!storageContent.includes("version: 'v0.23.0'")) {
+  if (!storageContent.includes("version: 'v0.28.0'")) {
     fail('Round 3.3: storage.js exportLocalBackup version not synced to v0.21.0');
     round33Ok = false;
   }
@@ -1791,12 +1829,12 @@ var mistakesWxml34 = readFile('packages/quiz/pages/mistakes/mistakes.wxml');
 var mistakesWxss34 = readFile('packages/quiz/pages/mistakes/mistakes.wxss');
 
   // 1. 版本号 v0.21.0
-  if (!appJsContent.includes('v0.23.0')) {
-    fail('Round 3.4: app.js missing v0.23.0');
+  if (!appJsContent.includes('v0.28.0')) {
+    fail('Round 3.4: app.js missing v0.28.0');
     round34Ok = false;
   }
-  if (!storageContent.includes("version: 'v0.23.0'")) {
-    fail('Round 3.4: storage.js exportLocalBackup missing v0.23.0');
+  if (!storageContent.includes("version: 'v0.28.0'")) {
+    fail('Round 3.4: storage.js exportLocalBackup missing v0.28.0');
     round34Ok = false;
   }
 
@@ -1964,12 +2002,12 @@ var homeWxml35 = readFile('pages/home/home.wxml');
 var homeWxss35 = readFile('pages/home/home.wxss');
 
   // 1. 版本号 v0.21.0
-  if (!appJsContent.includes('v0.23.0')) {
-    fail('Round 3.5: app.js missing v0.23.0');
+  if (!appJsContent.includes('v0.28.0')) {
+    fail('Round 3.5: app.js missing v0.28.0');
     round35Ok = false;
   }
-  if (!storageContent.includes("version: 'v0.23.0'")) {
-    fail('Round 3.5: storage.js exportLocalBackup missing v0.23.0');
+  if (!storageContent.includes("version: 'v0.28.0'")) {
+    fail('Round 3.5: storage.js exportLocalBackup missing v0.28.0');
     round35Ok = false;
   }
 
@@ -2126,14 +2164,14 @@ var profileWxml36 = readFile('pages/profile/profile.wxml');
 var profileWxss36 = readFile('pages/profile/profile.wxss');
 
 // 1. app.js 版本为 v0.21.0
-if (!appJs36.includes('v0.23.0')) {
-  fail('Round 3.6: app.js missing v0.23.0');
+if (!appJs36.includes('v0.28.0')) {
+  fail('Round 3.6: app.js missing v0.28.0');
   round36Ok = false;
 }
 
 // 2. exportLocalBackup 版本为 v0.21.0
-if (!storage36.includes("version: 'v0.23.0'")) {
-  fail('Round 3.6: storage.js exportLocalBackup missing v0.23.0');
+if (!storage36.includes("version: 'v0.28.0'")) {
+  fail('Round 3.6: storage.js exportLocalBackup missing v0.28.0');
   round36Ok = false;
 }
 
@@ -2275,14 +2313,14 @@ var homeWxml37 = readFile('pages/home/home.wxml');
 var homeWxss37 = readFile('pages/home/home.wxss');
 
 // 1. app.js 版本为 v0.21.0
-if (!appJs37.includes('v0.23.0')) {
-  fail('Round 3.7: app.js missing v0.23.0');
+if (!appJs37.includes('v0.28.0')) {
+  fail('Round 3.7: app.js missing v0.28.0');
   round37Ok = false;
 }
 
 // 2. exportLocalBackup 版本为 v0.21.0
-if (!storage37.includes("version: 'v0.23.0'")) {
-  fail('Round 3.7: storage.js exportLocalBackup missing v0.23.0');
+if (!storage37.includes("version: 'v0.28.0'")) {
+  fail('Round 3.7: storage.js exportLocalBackup missing v0.28.0');
   round37Ok = false;
 }
 
@@ -2354,7 +2392,10 @@ if (!homeJs37.includes('goToSG') || !homeWxml37.includes('goToSG')) {
 
 // 10. 课程练习 / 日文真题入口仍存在（通过 exam-menu）
 var examMenuJs37 = readFile('packages/quiz/pages/exam-menu/exam-menu.js');
-if (!examMenuJs37.includes("sourceType=lesson_quiz") || !examMenuJs37.includes("sourceType=past_exam_japanese")) {
+var splitIndexJs37 = readFile('packages/quiz/data/past_exam_bank/index.js');
+if (!examMenuJs37.includes("sourceType=lesson_quiz") ||
+    !examMenuJs37.includes('pastExamIndex.getRoute') ||
+    !splitIndexJs37.includes("sourceType=past_exam_japanese")) {
   fail('Round 3.7: exam-menu missing lesson_quiz/past_exam_japanese entry');
   round37Ok = false;
 }
@@ -2444,14 +2485,14 @@ var profileWxml39 = readFile('pages/profile/profile.wxml');
 var profileWxss39 = readFile('pages/profile/profile.wxss');
 
 // 1. app.js 版本为 v0.21.0
-if (!appJs39.includes('v0.23.0')) {
-  fail('Round 3.9: app.js missing v0.23.0');
+if (!appJs39.includes('v0.28.0')) {
+  fail('Round 3.9: app.js missing v0.28.0');
   round39Ok = false;
 }
 
 // 2. exportLocalBackup 版本为 v0.21.0
-if (!storage39.includes("version: 'v0.23.0'")) {
-  fail('Round 3.9: storage.js exportLocalBackup missing v0.23.0');
+if (!storage39.includes("version: 'v0.28.0'")) {
+  fail('Round 3.9: storage.js exportLocalBackup missing v0.28.0');
   round39Ok = false;
 }
 
@@ -2659,14 +2700,14 @@ var profileWxml317 = readFile('pages/profile/profile.wxml');
 var profileWxss317 = readFile('pages/profile/profile.wxss');
 
 // 1. 版本号 v0.21.0
-if (!appJs317.includes('v0.23.0')) {
-  fail('Round 3.17: app.js missing v0.23.0');
+if (!appJs317.includes('v0.28.0')) {
+  fail('Round 3.17: app.js missing v0.28.0');
   round317Ok = false;
 }
 
 // 2. exportLocalBackup 版本同步
-if (!storage317.includes("version: 'v0.23.0'")) {
-  fail('Round 3.17: storage.js exportLocalBackup missing v0.23.0');
+if (!storage317.includes("version: 'v0.28.0'")) {
+  fail('Round 3.17: storage.js exportLocalBackup missing v0.28.0');
   round317Ok = false;
 }
 
@@ -2829,8 +2870,8 @@ var homeWxml318 = readFile('pages/home/home.wxml');
 var homeWxss318 = readFile('pages/home/home.wxss');
 
 // 1. 版本号保持 v0.21.0
-if (!appJs318.includes('v0.23.0')) {
-  fail('Round 3.18: app.js missing v0.23.0');
+if (!appJs318.includes('v0.28.0')) {
+  fail('Round 3.18: app.js missing v0.28.0');
   round318Ok = false;
 }
 
@@ -2938,8 +2979,8 @@ for (var a318 = 0; a318 < forbiddenAPIs318.length; a318++) {
 }
 
 // 18. exportLocalBackup 版本保持 v0.21.0
-if (!storage318.includes("version: 'v0.23.0'")) {
-  fail('Round 3.18: storage.js backup version not v0.23.0');
+if (!storage318.includes("version: 'v0.28.0'")) {
+  fail('Round 3.18: storage.js backup version not v0.28.0');
   round318Ok = false;
 }
 
@@ -3018,8 +3059,8 @@ var favReviewWxml319 = readFile('packages/glossary/pages/favorite-review/favorit
 var favReviewWxss319 = readFile('packages/glossary/pages/favorite-review/favorite-review.wxss');
 
 // 1. 版本号保持 v0.21.0
-if (!appJs319.includes('v0.23.0')) {
-  fail('Round 3.19: app.js missing v0.23.0');
+if (!appJs319.includes('v0.28.0')) {
+  fail('Round 3.19: app.js missing v0.28.0');
   round319Ok = false;
 }
 
@@ -3080,9 +3121,13 @@ if (!favReviewWxss319.includes('.stats-last-saved')) {
   round319Ok = false;
 }
 
-// 9. favorite-review.wxss 空状态图标为 120rpx
-if (!favReviewWxss319.includes('font-size: 120rpx;')) {
-  fail('Round 3.19: favorite-review.wxss empty icon should be 120rpx');
+// 9. favorite-review.wxss 空状态图标保持醒目视觉处理
+var favEmptyIconPolished319 = favReviewWxss319.includes('font-size: 120rpx;') ||
+  (favReviewWxss319.includes('width: 112rpx;') &&
+    favReviewWxss319.includes('height: 112rpx;') &&
+    favReviewWxss319.includes('background: linear-gradient(135deg, rgba(232, 145, 58, 0.12)'));
+if (!favEmptyIconPolished319) {
+  fail('Round 3.19: favorite-review.wxss empty icon should keep prominent visual treatment');
   round319Ok = false;
 }
 
@@ -3093,8 +3138,8 @@ if (STORAGE_KEY_RX.test(storage319)) {
 }
 
 // 11. exportLocalBackup 版本保持 v0.21.0
-if (!storage319.includes("version: 'v0.23.0'")) {
-  fail('Round 3.19: storage.js backup version not v0.23.0');
+if (!storage319.includes("version: 'v0.28.0'")) {
+  fail('Round 3.19: storage.js backup version not v0.28.0');
   round319Ok = false;
 }
 
@@ -3184,8 +3229,8 @@ var quizWxml320 = readFile('packages/quiz/pages/quiz/quiz.wxml');
 var quizWxss320 = readFile('packages/quiz/pages/quiz/quiz.wxss');
 
 // === 版本号 ===
-if (!appJs320.includes('v0.23.0')) {
-  fail('Round 3.20: app.js missing v0.23.0');
+if (!appJs320.includes('v0.28.0')) {
+  fail('Round 3.20: app.js missing v0.28.0');
   round320Ok = false;
 }
 
@@ -3348,8 +3393,8 @@ if (STORAGE_KEY_RX.test(storage320)) {
 }
 
 // 24. exportLocalBackup 版本保持 v0.21.0
-if (!storage320.includes("version: 'v0.23.0'")) {
-  fail('Round 3.20: storage.js backup version not v0.23.0');
+if (!storage320.includes("version: 'v0.28.0'")) {
+  fail('Round 3.20: storage.js backup version not v0.28.0');
   round320Ok = false;
 }
 
@@ -3431,8 +3476,8 @@ var termSearchWxml321 = readFile('packages/glossary/pages/term-search/term-searc
 var termSearchWxss321 = readFile('packages/glossary/pages/term-search/term-search.wxss');
 
 // === 版本号 ===
-if (!appJs321.includes('v0.23.0')) {
-  fail('Round 3.21: app.js missing v0.23.0');
+if (!appJs321.includes('v0.28.0')) {
+  fail('Round 3.21: app.js missing v0.28.0');
   round321Ok = false;
 }
 
@@ -3607,8 +3652,8 @@ if (STORAGE_KEY_RX.test(storage321)) {
 }
 
 // 27. exportLocalBackup 版本保持 v0.21.0
-if (!storage321.includes("version: 'v0.23.0'")) {
-  fail('Round 3.21: storage.js backup version not v0.23.0');
+if (!storage321.includes("version: 'v0.28.0'")) {
+  fail('Round 3.21: storage.js backup version not v0.28.0');
   round321Ok = false;
 }
 
@@ -3846,8 +3891,8 @@ if (!examMenuWxss322.includes('new-user-card') || !examMenuWxss322.includes('new
 
 // === D. 合规检查 ===
 // 20. 版本号 v0.21.0
-if (!appJs322.includes('v0.23.0')) {
-  fail('Round 3.22: app.js version not v0.23.0');
+if (!appJs322.includes('v0.28.0')) {
+  fail('Round 3.22: app.js version not v0.28.0');
   round322Ok = false;
 }
 
@@ -4047,8 +4092,8 @@ if (!termDetailWxml323.includes('术语不存在')) {
 
 // === E. 合规检查 ===
 // 17. 版本号 v0.21.0
-if (!appJs323.includes('v0.23.0')) {
-  fail('Round 3.23: app.js version not v0.23.0');
+if (!appJs323.includes('v0.28.0')) {
+  fail('Round 3.23: app.js version not v0.28.0');
   round323Ok = false;
 }
 
@@ -4140,8 +4185,8 @@ var appJson324 = readFile('app.json');
 
 // === A. 版本号与配置稳定性 ===
 // 1. 版本号 v0.21.0
-if (!appJs324.includes('v0.23.0')) {
-  fail('Round 3.24: version not v0.23.0');
+if (!appJs324.includes('v0.28.0')) {
+  fail('Round 3.24: version not v0.28.0');
   round324Ok = false;
 }
 
@@ -4166,7 +4211,7 @@ if (!appJson324.includes('"root": "packages/quiz"') ||
 
 // === B. Storage 数据格式稳定性 ===
 // 4. backup version 保持 v0.21.0
-if (!storage324.includes("version: 'v0.23.0'")) {
+if (!storage324.includes("version: 'v0.28.0'")) {
   fail('Round 3.24: storage backup version changed');
   round324Ok = false;
 }
@@ -4362,7 +4407,8 @@ for (var sf2324 = 0; sf2324 < allSourceFiles324.length; sf2324++) {
       fp324.includes('glossary_index.js') || fp324.includes('questions.js') ||
       fp324.includes('_backup') || fp324.includes('glossary_full') ||
       fp324.includes('tools/check_content_compliance.js') || fp324.includes('tools/miniprogram_smoke_test.js') ||
-      fp324.includes('packages/exam/data/')) continue;
+      fp324.includes('packages/exam/data/') || fp324.includes('packages/quiz/data/past_exam_bank/') ||
+fp324.includes('tools/generated-cache/') ) continue;
   try {
     var c324 = require('fs').readFileSync(fp324, 'utf-8');
     for (var bb324 = 0; bb324 < banned324.length; bb324++) {
@@ -4761,7 +4807,7 @@ try {
   round330Ok = false;
 }
 
-// B. v0.23.0 跨轮功能共存验证
+// B. v0.28.0 跨轮功能共存验证
 var allJsFiles330 = [];
 ['pages', 'packages', 'utils'].forEach(function(dir) {
   function walk(d) {
@@ -4844,6 +4890,7 @@ for (var fi3 = 0; fi3 < allJsFiles330.length; fi3++) {
   var f330 = allJsFiles330[fi3].replace(/\\/g, '/');
   if (f330.indexOf('smoke_test') >= 0) continue;
   if (f330.indexOf('questions.js') >= 0) continue;
+  if (f330.indexOf('packages/quiz/data/past_exam_bank/') >= 0) continue;
   if (f330.indexOf('glossary_index.js') >= 0) continue;
   if (f330.indexOf('chunks') >= 0) continue;
   if (f330.indexOf('generated-backup') >= 0) continue;
@@ -4991,7 +5038,7 @@ if (navBroken331.length > 0) {
   round331Ok = false;
 }
 
-// C. v0.23.0 功能边界测试
+// C. v0.28.0 功能边界测试
 // C1: examBadge 边界（未知考试方向 fallback）
 var quizJs331 = readFile('packages/quiz/pages/quiz/quiz.js');
 var hasDefaultBadge = quizJs331.indexOf('examBadge') >= 0 &&
@@ -5013,7 +5060,7 @@ if (!hasDefaultBadge && !hasProgressGuard) { fail('R3.31: boundary guard missing
 if (!hasAllActions) { fail('R3.31: nextAction coverage incomplete'); round331Ok = false; }
 if (!hasCatFallback) { fail('R3.31: categoryLabel fallback missing'); round331Ok = false; }
 
-// D. v0.23.0 全轮共存完整性
+// D. v0.28.0 全轮共存完整性
 var v022Features = [
   // R3.27
   { file: 'packages/quiz/pages/quiz/quiz.js', checks: ['examBadge', 'progressPercent', 'feedbackTip', 'showFeedbackTip'] },
@@ -5033,7 +5080,7 @@ for (var fi = 0; fi < v022Features.length; fi++) {
     var fc = readFile(v022Features[fi].file);
     for (var ci = 0; ci < v022Features[fi].checks.length; ci++) {
       if (fc.indexOf(v022Features[fi].checks[ci]) < 0) {
-        fail('R3.31: v0.23.0 feature missing in ' + v022Features[fi].file + ': ' + v022Features[fi].checks[ci]);
+        fail('R3.31: v0.28.0 feature missing in ' + v022Features[fi].file + ': ' + v022Features[fi].checks[ci]);
         round331Ok = false;
       }
     }
@@ -7014,7 +7061,7 @@ if (!fileExists(maintenanceDocPath383)) {
 } else {
   var maintenanceDoc383 = readFile(maintenanceDocPath383);
   var maintenanceRequired383 = [
-    "v0.23.0",
+    "v0.28.0",
     "本地数据边界",
     "Storage Key 清单",
     "study-tools-mini-favorite-terms-v1",
@@ -7235,26 +7282,26 @@ function check391(condition, message) {
   }
 }
 
-// Guard: skip recursion when called from within run_miniprogram_checks.js
+// R3.91 queries the leaf-only JSON contract.
 var jsonOutput391 = null;
-if (process.env.CODEX_JSON_CONTRACT === '1') {
-  // Nested call via execSync - skip to avoid infinite recursion
-  round391Ok = true;
-} else {
-  // Run --json mode and capture output (set env var to prevent recursion)
-  try {
-    jsonOutput391 = execSync('node tools/run_miniprogram_checks.js --json', {
+try {
+  jsonOutput391 = (require('child_process').execSync('node tools/run_miniprogram_checks.js --json', {
     cwd: ROOT,
     encoding: 'utf-8',
     timeout: 30000,
-    env: Object.assign({}, process.env, { CODEX_JSON_CONTRACT: '1' })
-  }).trim();
-  } catch (e) {
-    fail('R3.91: failed to run --json mode: ' + e.message);
-      round391Ok = false;
-      jsonOutput391 = null;
-    }
+    stdio: ['ignore', 'pipe', 'pipe']
+  }) || '').trim();
+  if (!jsonOutput391) {
+    fail('R3.91: --json output is empty');
+    round391Ok = false;
+    jsonOutput391 = null;
   }
+} catch (e) {
+  var stderr391 = String(e && e.stderr || '').trim();
+  fail('R3.91: --json command returned non-zero: ' + (stderr391 || e.message));
+  round391Ok = false;
+  jsonOutput391 = null;
+}
 
 if (jsonOutput391 !== null) {
   var parsed391;
@@ -7267,6 +7314,20 @@ if (jsonOutput391 !== null) {
   }
 
   if (parsed391 !== null) {
+    check391(typeof parsed391.success === 'boolean', 'R3.91: success must be boolean');
+    check391(Array.isArray(parsed391.checks), 'R3.91: checks must be array');
+    check391(Array.isArray(parsed391.failures), 'R3.91: failures must be array');
+    if (Array.isArray(parsed391.checks)) {
+      check391(parsed391.checks.every(function (check) {
+        return check && typeof check.name === 'string' && typeof check.ok === 'boolean';
+      }), 'R3.91: checks must contain named boolean results');
+      check391(!parsed391.checks.some(function (check) { return check.name === 'Smoke test'; }),
+        'R3.91: JSON leaf mode must not invoke miniprogram_smoke_test');
+    }
+    if (parsed391.success === true && Array.isArray(parsed391.failures)) {
+      check391(parsed391.failures.length === 0, 'R3.91: success=true must have no failures');
+    }
+
     // Top-level field types
     check391(typeof parsed391.ok === 'boolean',              'R3.91: ok must be boolean, got ' + typeof parsed391.ok);
     check391(typeof parsed391.totalChecks === 'number',       'R3.91: totalChecks must be number');
@@ -7302,12 +7363,15 @@ if (jsonOutput391 !== null) {
 
     // Success scenario invariants
     if (parsed391.ok === true) {
+      var checksContent391 = readFile("tools/run_miniprogram_checks.js");
+      var leafMatch391 = checksContent391.match(/var LEAF_TOTAL_CHECKS = (\d+)/);
+      var expectedTotal391 = leafMatch391 ? Number(leafMatch391[1]) : parsed391.totalChecks;
       check391(parsed391.failedChecks === 0,
                'R3.91: ok=true but failedChecks=' + parsed391.failedChecks);
       check391(parsed391.passedChecks === parsed391.totalChecks,
                'R3.91: ok=true but passedChecks (' + parsed391.passedChecks + ') !== totalChecks (' + parsed391.totalChecks + ')');
-      check391(parsed391.totalChecks === 4,
-               'R3.91: ok=true but totalChecks=' + parsed391.totalChecks + ' (expected 4)');
+      check391(parsed391.totalChecks === expectedTotal391,
+               'R3.91: ok=true but totalChecks=' + parsed391.totalChecks + ' (expected ' + expectedTotal391 + ')');
     }
   }
 }
@@ -7684,6 +7748,785 @@ check3122(ankiJs3122.indexOf('wx.getStorageSync') >= 0, 'R3.122: anki-player.js 
 check3122(ankiJs3122.indexOf('wx.setStorageSync') >= 0, 'R3.122: anki-player.js must use local storage (setStorageSync)');
 
 if (round3122Ok) pass('Round Mini 3.122 Anki offline-only smoke');
+
+// ============================================================
+// UI polish PR visual contract smoke
+// ============================================================
+console.log('\n--- UI polish PR visual contract ---');
+var uiPolishOk = true;
+function checkUiPolish(cond, msg) {
+  if (!cond) { fail(msg); uiPolishOk = false; }
+}
+
+var homeWxmlUiPolish = readFile('pages/home/home.wxml');
+var homeWxssUiPolish = readFile('pages/home/home.wxss');
+var appWxssUiPolish = readFile('app.wxss');
+var themeJsonUiPolish = readFile('theme.json');
+var ankiWxssUiPolish = readFile('packages/glossary/pages/anki-player/anki-player.wxss');
+var quizWxssUiPolish = readFile('packages/quiz/pages/quiz/quiz.wxss');
+var mistakesWxssUiPolish = readFile('packages/quiz/pages/mistakes/mistakes.wxss');
+var favoriteReviewWxssUiPolish = readFile('packages/glossary/pages/favorite-review/favorite-review.wxss');
+
+checkUiPolish(homeWxmlUiPolish.indexOf('entry-card-anki') >= 0,
+  'UI polish: Anki entry card must carry its theme class');
+checkUiPolish(homeWxmlUiPolish.indexOf('hover-class="home-card-pressed"') >= 0 &&
+  homeWxssUiPolish.indexOf('.home-card-pressed') >= 0 &&
+  homeWxssUiPolish.indexOf('scale(0.98)') >= 0 &&
+  homeWxssUiPolish.indexOf('background: var(--press-bg)') >= 0 &&
+  homeWxssUiPolish.indexOf('border-color: var(--border-strong)') >= 0 &&
+  homeWxssUiPolish.indexOf('box-shadow:') >= 0,
+  'UI polish: home entry cards must keep pressed feedback');
+checkUiPolish(homeWxssUiPolish.indexOf('.entry-card-badge') >= 0 &&
+  homeWxssUiPolish.indexOf('linear-gradient(135deg, #ef4444, #dc2626)') >= 0,
+  'UI polish: home badges must keep gradient treatment');
+checkUiPolish(homeWxssUiPolish.indexOf('.entry-card-anki') >= 0 &&
+  homeWxssUiPolish.indexOf('.entry-card-profile') >= 0,
+  'UI polish: home cards must keep per-module color classes');
+checkUiPolish(homeWxssUiPolish.indexOf('.hero') >= 0 &&
+  homeWxssUiPolish.indexOf('radial-gradient') >= 0,
+  'UI polish: home hero must keep textured visual layer');
+
+checkUiPolish(appWxssUiPolish.indexOf('.btn-primary') >= 0 &&
+  appWxssUiPolish.indexOf('.btn-secondary') >= 0 &&
+  appWxssUiPolish.indexOf('.btn-danger') >= 0,
+  'UI polish: global button system must keep primary/secondary/danger variants');
+checkUiPolish(appWxssUiPolish.indexOf('.tag-itpass') >= 0 &&
+  appWxssUiPolish.indexOf('.tag-profile') >= 0 &&
+  appWxssUiPolish.indexOf('border-color') >= 0,
+  'UI polish: global tags must keep themed border treatment');
+checkUiPolish(themeJsonUiPolish.indexOf('tabSelectedColor') >= 0 &&
+  themeJsonUiPolish.indexOf('#3b82f6') >= 0 &&
+  themeJsonUiPolish.indexOf('#93c5fd') >= 0,
+  'UI polish: tab theme colors must keep light and dark active states');
+checkUiPolish(ankiWxssUiPolish.indexOf('.action-btn:active') >= 0 &&
+  ankiWxssUiPolish.indexOf('translateY(2rpx) scale(0.955)') >= 0,
+  'UI polish: Anki action buttons must keep pressed feedback');
+checkUiPolish(homeWxmlUiPolish.indexOf('闪卡') >= 0 &&
+  homeWxmlUiPolish.indexOf('记忆辅助') >= 0,
+  'UI polish: Anki entry shows flashcard + memory assist tag');
+checkUiPolish(homeWxmlUiPolish.indexOf('查词') >= 0 &&
+  homeWxmlUiPolish.indexOf('中日英对照') >= 0,
+  'UI polish: Glossary entry shows lookup + language tag');
+checkUiPolish(homeWxmlUiPolish.indexOf('薄弱点复盘') >= 0,
+  'UI polish: Mistakes entry shows weakness review tag');
+checkUiPolish(homeWxmlUiPolish.indexOf('数据 / 备份管理') >= 0,
+  'UI polish: Profile entry shows data + backup tag');
+checkUiPolish(homeWxmlUiPolish.indexOf('开始练习') >= 0,
+  'UI polish: Untouched exam cards show start-practice prompt');
+checkUiPolish(homeWxmlUiPolish.indexOf('积累词汇') >= 0,
+  'UI polish: Empty state suggests glossary + practice start');
+checkUiPolish(homeWxmlUiPolish.indexOf('浏览术语表') >= 0,
+  'UI polish: Empty state shows glossary entry chip');
+checkUiPolish(homeWxmlUiPolish.indexOf('了解工具') >= 0,
+  'UI polish: Empty state shows tool intro chip');
+
+if (uiPolishOk) pass('UI polish PR visual contract smoke');
+
+// ============================================================
+// R3.125: learning experience polish visual tokens
+// ============================================================
+console.log('\n--- R3.125 learning experience polish visual tokens ---');
+var round3125Ok = true;
+function check3125(cond, msg) {
+  if (!cond) { fail(msg); round3125Ok = false; }
+}
+
+check3125(homeWxssUiPolish.indexOf('min-height: 184rpx') >= 0 &&
+  homeWxssUiPolish.indexOf('border-left: 5rpx solid rgba(250, 140, 22, 0.38)') >= 0,
+  'R3.125: home entry cards and quick tips must keep polished hierarchy');
+check3125(quizWxssUiPolish.indexOf('min-height: 88rpx') >= 0 &&
+  quizWxssUiPolish.indexOf('--color-success') >= 0 &&
+  quizWxssUiPolish.indexOf('--color-error') >= 0,
+  'R3.125: quiz feedback must keep touch comfort and dark contrast');
+check3125(mistakesWxssUiPolish.indexOf('.go-study-btn:active') >= 0 &&
+  mistakesWxssUiPolish.indexOf('border-radius: 22rpx') >= 0,
+  'R3.125: mistakes empty state must keep card treatment and pressed action');
+check3125(favoriteReviewWxssUiPolish.indexOf('.fav-list-card:active') >= 0 &&
+  favoriteReviewWxssUiPolish.indexOf('.go-search-btn:active') >= 0,
+  'R3.125: favorite review cards and empty actions must keep pressed feedback');
+check3125(ankiWxssUiPolish.indexOf('.empty-btn:active') >= 0 &&
+  ankiWxssUiPolish.indexOf('backdrop-filter:blur(10px)') >= 0,
+  'R3.125: Anki empty state must keep soft panel and pressed action');
+
+if (round3125Ok) pass('R3.125 learning experience polish visual tokens');
+
+// ============================================================
+// R3.126: package ignore, flashcard entry, localized categories
+// ============================================================
+console.log('\n--- R3.126 package and flashcard usability fixes ---');
+var round3126Ok = true;
+function check3126(cond, msg) {
+  if (!cond) { fail(msg); round3126Ok = false; }
+}
+
+var projectConfig3126 = JSON.parse(readFile('project.config.json'));
+var ignore3126 = (projectConfig3126.packOptions && projectConfig3126.packOptions.ignore) || [];
+function hasIgnore3126(type, value) {
+  return ignore3126.some(function (item) {
+    return item && item.type === type && item.value === value;
+  });
+}
+['tools', '.workbuddy', 'docs', 'scripts', '.git', '.github', 'node_modules'].forEach(function (folder) {
+  check3126(hasIgnore3126('folder', folder), 'R3.126: project.config.json must ignore non-runtime folder ' + folder);
+});
+check3126(hasIgnore3126('suffix', '.md'), 'R3.126: project.config.json must ignore markdown docs');
+check3126(hasIgnore3126('file', 'package.json') && hasIgnore3126('file', 'package-lock.json'),
+  'R3.126: project.config.json must ignore npm metadata files');
+
+var glossaryWxml3126 = readFile('pages/glossary/glossary.wxml');
+var glossaryJs3126 = readFile('pages/glossary/glossary.js');
+function isRegisteredPage3126(targetUrl) {
+  var target = targetUrl.replace(/^\//, '').split('?')[0];
+  if ((appJson.pages || []).indexOf(target) >= 0) return true;
+  var pkgs = appJson.subpackages || [];
+  for (var i = 0; i < pkgs.length; i++) {
+    var root = (pkgs[i].root || '').replace(/\/$/, '');
+    if (target.indexOf(root + '/') !== 0) continue;
+    var subPath = target.slice(root.length + 1);
+    if ((pkgs[i].pages || []).indexOf(subPath) >= 0) return true;
+  }
+  return false;
+}
+var ankiHandlerMatch3126 = glossaryJs3126.match(/goToAnkiPlayer:\s*function\s*\([^)]*\)\s*{[\s\S]*?url:\s*['"]([^'"]+)['"]/);
+var ankiTarget3126 = ankiHandlerMatch3126 && ankiHandlerMatch3126[1];
+check3126(glossaryWxml3126.indexOf('闪卡记忆') >= 0 &&
+  glossaryWxml3126.indexOf('bindtap="goToAnkiPlayer"') >= 0,
+  'R3.126: glossary flashcard entry must exist and bind goToAnkiPlayer');
+check3126(!!ankiTarget3126 && isRegisteredPage3126(ankiTarget3126) &&
+  fileExists(ankiTarget3126.replace(/^\//, '').split('?')[0] + '.wxml'),
+  'R3.126: goToAnkiPlayer target must be registered and backed by a page file');
+
+var ankiJs3126 = readFile('packages/glossary/pages/anki-player/anki-player.js');
+var ankiWxml3126 = readFile('packages/glossary/pages/anki-player/anki-player.wxml');
+var ankiWxss3126 = readFile('packages/glossary/pages/anki-player/anki-player.wxss');
+['algorithm: "算法"', 'automation: "自动化"', 'business: "业务"', 'cloud: "云计算"', 'database: "数据库"'].forEach(function (mapping) {
+  check3126(ankiJs3126.indexOf(mapping) >= 0, 'R3.126: anki category mapping missing ' + mapping);
+});
+check3126(ankiJs3126.indexOf('key: key, label: getCategoryLabel(key)') >= 0,
+  'R3.126: anki category chips must carry key and label');
+check3126(ankiWxml3126.indexOf('selectedCategory === item.key') >= 0 &&
+  ankiWxml3126.indexOf('data-category="{{item.key}}"') >= 0 &&
+  ankiWxml3126.indexOf('{{item.label}}') >= 0,
+  'R3.126: anki filter must display label while filtering by key');
+check3126(ankiWxml3126.indexOf('selectedCategoryLabel') >= 0 &&
+  ankiWxml3126.indexOf('{{currentTerm.categoryLabel}}') >= 0,
+  'R3.126: anki header and card must show localized category labels');
+check3126(ankiWxss3126.indexOf('min-height:44rpx') >= 0 && ankiWxss3126.indexOf('white-space:nowrap') >= 0,
+  'R3.126: anki category chips must keep readable sizing');
+
+var examMenuWxml3126 = readFile('packages/quiz/pages/exam-menu/exam-menu.wxml');
+var examMenuWxss3126 = readFile('packages/quiz/pages/exam-menu/exam-menu.wxss');
+check3126(examMenuWxml3126.indexOf('catchtap="goPastExamYear"') >= 0,
+  'R3.126: past exam year chips should not bubble into card toggle');
+check3126(examMenuWxss3126.indexOf('.past-exam-year-count') >= 0 &&
+  examMenuWxss3126.indexOf('min-width: 56rpx') >= 0 &&
+  examMenuWxss3126.indexOf('background-color: rgba(245, 158, 11, 0.12)') >= 0,
+  'R3.126: past exam year count must keep badge treatment');
+
+if (round3126Ok) pass('R3.126 package and flashcard usability fixes');
+
+// ============================================================
+// R3.123: split past_exam_bank data integrity smoke
+// ============================================================
+var round3123Ok = true;
+function check3123(cond, msg) {
+  if (!cond) { fail(msg); round3123Ok = false; }
+}
+
+var split3123 = loadSplitPastExamDataForSmoke();
+var bank3123 = split3123.fullBank;
+var bankText3123 = bank3123.map(function (q) {
+  return [q.questionZh, q.questionJa, q.explanationZh, q.explanationJa, q.yearId, q.exam].join(' ');
+}).join('\n');
+check3123(fileExists('packages/quiz/data/past_exam_bank/index.js'),
+  'R3.123: lightweight split index must exist');
+check3123(bank3123.length === 1945,
+  'R3.123: expected 1945 split past exam entries, got ' + bank3123.length);
+check3123(split3123.index.packages && split3123.index.packages.length >= 7,
+  'R3.123: split index should register quiz data subpackages');
+check3123(bankText3123.indexOf('令和') >= 0,
+  'R3.123: split bank must contain Reiwa kanji - encoding may be corrupted');
+check3123(bankText3123.indexOf('業務') >= 0,
+  'R3.123: split bank must contain gyoumu - encoding may be corrupted');
+check3123(bankText3123.indexOf('著作権') >= 0,
+  'R3.123: split bank must contain chosakuken - encoding may be corrupted');
+check3123(bankText3123.indexOf('01_aki') >= 0 && bankText3123.indexOf('sg_31_haru') >= 0,
+  'R3.123: split bank must include IT Passport and SG yearId boundaries');
+
+if (round3123Ok) pass('R3.123: split past_exam_bank data integrity');
+// R3.124: course + split data encoding integrity check
+var qs3124 = readFile('packages/quiz/data/course_questions.js') + '\n' + bankText3123;
+var qsEncOk3124 = true;
+function check3124(cond, msg) { if (!cond) { fail(msg); qsEncOk3124 = false; } }
+var qsContent3124 = qs3124;
+// Verifies questionJa text fields are not mojibake
+check3124(qsContent3124.indexOf('問題') >= 0,
+  'R3.124: split/course questions must contain 問題 (kanji for mondai)');
+check3124(qsContent3124.indexOf('令和') >= 0,
+  'R3.124: split/course questions must contain 令和 (Reiwa era)');
+check3124(qsContent3124.indexOf('ä»¤') < 0 && qsContent3124.indexOf('ã®') < 0,
+  'R3.124: split/course questions free of common mojibake patterns');
+if (qsEncOk3124) pass('R3.124: split/course questions encoding integrity');
+
+// ============================================================
+// R3.127: main package structure & exam paper navigation
+// ============================================================
+var round3127Ok = true;
+function check3127(cond, msg) { if (!cond) { fail(msg); round3127Ok = false; } }
+
+// A. Main package / subpackage structure
+var projCfg3127 = JSON.parse(readFile('project.config.json'));
+var ignoreList3127 = (projCfg3127.packOptions && projCfg3127.packOptions.ignore) || [];
+var ignoreValues3127 = ignoreList3127.map(function (item) { return item.value; });
+
+check3127(ignoreValues3127.indexOf('tools') >= 0, 'R3.127: packOptions.ignore must include tools');
+check3127(ignoreValues3127.indexOf('docs') >= 0, 'R3.127: packOptions.ignore must include docs');
+check3127(ignoreValues3127.indexOf('scripts') >= 0, 'R3.127: packOptions.ignore must include scripts');
+check3127(ignoreValues3127.indexOf('.git') >= 0, 'R3.127: packOptions.ignore must include .git');
+check3127(ignoreValues3127.indexOf('node_modules') >= 0, 'R3.127: packOptions.ignore must include node_modules');
+check3127(ignoreValues3127.indexOf('packages/exam') >= 0, 'R3.127: packOptions.ignore must include packages/exam (unused orphan)');
+check3127(ignoreValues3127.indexOf('data') >= 0, 'R3.127: packOptions.ignore must include data (empty dir)');
+check3127(ignoreValues3127.indexOf('miniapp') >= 0, 'R3.127: packOptions.ignore must include miniapp (empty dir)');
+
+var appJson3127 = JSON.parse(readFile('app.json'));
+var subPkgs3127 = appJson3127.subpackages || [];
+var subPkgRoots3127 = subPkgs3127.map(function (sp) { return sp.root; });
+check3127(subPkgRoots3127.indexOf('packages/quiz') >= 0, 'R3.127: subpackages must include quiz');
+check3127(subPkgRoots3127.indexOf('packages/glossary') >= 0, 'R3.127: subpackages must include glossary');
+
+var mainPages3127 = appJson3127.pages || [];
+check3127(mainPages3127.indexOf('packages/quiz/pages/exam-menu/exam-menu') < 0, 'R3.127: exam-menu must NOT be in main package pages');
+check3127(mainPages3127.indexOf('packages/quiz/pages/quiz/quiz') < 0, 'R3.127: quiz must NOT be in main package pages');
+check3127(mainPages3127.indexOf('packages/glossary/pages/anki-player/anki-player') < 0, 'R3.127: anki-player must NOT be in main package pages');
+
+// B. Year paper navigation chain
+var examMenuWxml3127 = readFile('packages/quiz/pages/exam-menu/exam-menu.wxml');
+var examMenuJs3127 = readFile('packages/quiz/pages/exam-menu/exam-menu.js');
+
+check3127(examMenuWxml3127.indexOf('catchtap="goPastExamYear"') >= 0 || examMenuWxml3127.indexOf("catchtap='goPastExamYear'") >= 0,
+  'R3.127: exam-menu WXML must bind catchtap="goPastExamYear" on year chip');
+check3127(examMenuJs3127.indexOf('goPastExamYear') >= 0,
+  'R3.127: exam-menu JS must define goPastExamYear handler');
+check3127(examMenuJs3127.indexOf('wx.navigateTo') >= 0,
+  'R3.127: goPastExamYear must call wx.navigateTo');
+check3127(examMenuJs3127.indexOf('pastExamIndex.getRoute') >= 0,
+  'R3.127: goPastExamYear must resolve split package quiz route');
+check3127(examMenuJs3127.indexOf('currentTarget.dataset') >= 0,
+  'R3.127: goPastExamYear must use currentTarget.dataset (not target.dataset)');
+
+var quizJs3127 = readFile('packages/quiz/pages/quiz/quiz.js');
+// Ensure showPracticeResult does NOT reference undefined variables
+check3127(quizJs3127.indexOf('self.data.questions') < 0,
+  'R3.127: quiz.js must not use self.data.questions (undefined self)');
+check3127(quizJs3127.indexOf('self.data.answeredList') < 0,
+  'R3.127: quiz.js must not use self.data.answeredList (undefined self)');
+check3127(quizJs3127.indexOf('activeYearId: yearId') < 0,
+  'R3.127: showPracticeResult must not reference bare yearId variable');
+check3127(quizJs3127.indexOf('yearLabel') < 0,
+  'R3.127: showPracticeResult must not reference undefined yearLabel');
+// Ensure loadPracticeQuestions saves yearId to this.data
+check3127(quizJs3127.indexOf('yearId: yearId') >= 0,
+  'R3.127: loadPracticeQuestions must save yearId to this.data');
+// Ensure quiz page is registered in app.json subpackage
+var quizSubPkg3127 = subPkgs3127.filter(function (sp) { return sp.root === 'packages/quiz'; })[0];
+check3127(quizSubPkg3127 && quizSubPkg3127.pages.indexOf('pages/quiz/quiz') >= 0,
+  'R3.127: quiz page must be registered in quiz subpackage');
+
+if (round3127Ok) pass('R3.127: main package structure & exam paper navigation');
+
+// ============================================================
+// R3.130: exam year chip navigation chain & main package guard
+// ============================================================
+var round3130Ok = true;
+function check3130(cond, msg) { if (!cond) { fail(msg); round3130Ok = false; } }
+
+// A. Year chip event isolation: toggle must NOT be on whole card
+var examMenuWxml3130 = readFile('packages/quiz/pages/exam-menu/exam-menu.wxml');
+check3130(examMenuWxml3130.indexOf('menu-card-exam" bindtap="togglePastExamList"') < 0,
+  'R3.130: togglePastExamList must NOT be on whole menu-card-exam (only on header)');
+check3130(examMenuWxml3130.indexOf('menu-card-header" bindtap="togglePastExamList"') >= 0,
+  'R3.130: togglePastExamList must be on menu-card-header only');
+
+// B. Year chip catchtap + data-* on same element
+check3130(examMenuWxml3130.indexOf('data-year-id=') >= 0,
+  'R3.130: year chip must have data-year-id attribute');
+check3130(examMenuWxml3130.indexOf('catchtap="goPastExamYear"') >= 0,
+  'R3.130: year chip must have catchtap="goPastExamYear"');
+
+// C. JS handler must exist with fail callback
+var examMenuJs3130 = readFile('packages/quiz/pages/exam-menu/exam-menu.js');
+check3130(examMenuJs3130.indexOf('goPastExamYear') >= 0,
+  'R3.130: goPastExamYear handler must exist');
+check3130(examMenuJs3130.indexOf('currentTarget.dataset') >= 0,
+  'R3.130: handler must use currentTarget.dataset');
+check3130(examMenuJs3130.indexOf('fail:') >= 0 || examMenuJs3130.indexOf('fail :') >= 0,
+  'R3.130: navigateTo must have fail callback');
+check3130(examMenuJs3130.indexOf('pastExamIndex.getRoute') >= 0,
+  'R3.130: must navigate through split package route');
+
+// D. quiz.js onLoad must accept exam, sourceType, yearId
+var quizJs3130 = readFile('packages/quiz/pages/quiz/quiz.js');
+check3130(quizJs3130.indexOf('options.exam') >= 0,
+  'R3.130: quiz.js onLoad must read options.exam');
+check3130(quizJs3130.indexOf('options.sourceType') >= 0,
+  'R3.130: quiz.js onLoad must read options.sourceType');
+check3130(quizJs3130.indexOf('options.yearId') >= 0,
+  'R3.130: quiz.js onLoad must read options.yearId');
+
+// E. Param name alignment: exam-menu passes yearId, quiz reads yearId
+var splitIndexJs3130 = readFile('packages/quiz/data/past_exam_bank/index.js');
+check3130(splitIndexJs3130.indexOf('yearId=') >= 0 && quizJs3130.indexOf('options.yearId') >= 0,
+  'R3.130: exam-menu and quiz.js must use same param name yearId');
+check3130(splitIndexJs3130.indexOf('sourceType=past_exam_japanese') >= 0 && quizJs3130.indexOf("'past_exam_japanese'") >= 0,
+  'R3.130: exam-menu and quiz.js must use same sourceType value');
+
+// F. project.config.json guard: compileWorklet should be false
+var projCfg3130 = JSON.parse(readFile('project.config.json'));
+check3130(projCfg3130.setting && projCfg3130.setting.compileWorklet === false,
+  'R3.130: compileWorklet should be false to reduce main package compiled size');
+
+// G. IT Passport and SG both have year data in the split index
+var fullBankPath3130 = path.join(ROOT, 'packages/quiz/data/past_exam_bank/full_bank.js');
+check3130(!fs.existsSync(fullBankPath3130),
+  'R3.130: past_exam_bank/full_bank.js must not remain in runtime quiz package');
+check3130(fileExists('packages/quiz/data/past_exam_bank/index.js'),
+  'R3.130: lightweight past exam index must exist for year chip data');
+check3130(split3123.index.getYears ? true : split3123.index.years.length >= 20,
+  'R3.130: split index must expose year chip data');
+
+if (round3130Ok) pass('R3.130: exam year chip navigation chain & main package guard');
+
+// ============================================================
+// R3.131: main package glass-easel removal, warning fix, Chinese explanation
+// ============================================================
+var round3131Ok = true;
+function check3131(cond, msg) { if (!cond) { fail(msg); round3131Ok = false; } }
+
+// A. Main package: glass-easel removed, app.miniapp.json ignored
+var appJson3131 = JSON.parse(readFile('app.json'));
+check3131(!appJson3131.componentFramework || appJson3131.componentFramework !== 'glass-easel',
+  'R3.131: app.json must NOT use glass-easel componentFramework (bloat main package)');
+var projCfg3131 = JSON.parse(readFile('project.config.json'));
+var ignoreValues3131 = ((projCfg3131.packOptions && projCfg3131.packOptions.ignore) || []).map(function(i){return i.value;});
+check3131(ignoreValues3131.indexOf('app.miniapp.json') >= 0,
+  'R3.131: packOptions.ignore must include app.miniapp.json');
+check3131(projCfg3131.setting && projCfg3131.setting.compileWorklet === false,
+  'R3.131: compileWorklet must remain false');
+
+// B. Warning fix: quiz.wxml long text user-select
+var quizWxml3131 = readFile('packages/quiz/pages/quiz/quiz.wxml');
+check3131(quizWxml3131.indexOf('user-select="true"') >= 0,
+  'R3.131: quiz.wxml must have user-select="true" on long text elements');
+// Explanation body must use view (not text) for long content
+check3131(quizWxml3131.indexOf('<view class="explanation-body"') >= 0,
+  'R3.131: explanation-body must use <view> not <text> for long content');
+
+// C. Chinese explanation: HTML cleaning + Japanese detection + fallback
+var quizJs3131 = readFile('packages/quiz/pages/quiz/quiz.js');
+check3131(quizJs3131.indexOf('stripHtmlTags') >= 0,
+  'R3.131: quiz.js must have stripHtmlTags function');
+check3131(quizJs3131.indexOf('hasJapaneseKana') >= 0,
+  'R3.131: quiz.js must have hasJapaneseKana detection function');
+check3131(quizJs3131.indexOf('processQuestionForDisplay') >= 0,
+  'R3.131: quiz.js must have processQuestionForDisplay function');
+check3131(quizJs3131.indexOf('explanationZhClean') >= 0,
+  'R3.131: quiz.js must generate explanationZhClean field');
+
+// D. WXML binds clean fields, NOT raw
+check3131(quizWxml3131.indexOf('currentQuestion.explanationZhClean') >= 0,
+  'R3.131: WXML must bind explanationZhClean (not raw explanationZh)');
+check3131(quizWxml3131.indexOf('currentQuestion.explanationJaClean') >= 0,
+  'R3.131: WXML must bind explanationJaClean');
+check3131(quizWxml3131.indexOf('{{currentQuestion.explanationZh}}') < 0,
+  'R3.131: WXML must NOT bind raw explanationZh directly');
+check3131(quizWxml3131.indexOf('{{currentQuestion.explanationJa}}') < 0,
+  'R3.131: WXML must NOT bind raw explanationJa directly');
+
+// E. No raw HTML / kaisetsu / ansbg in displayed explanation fields
+check3131(quizWxml3131.indexOf('id="kaisetsu"') < 0,
+  'R3.131: WXML must not contain kaisetsu ID');
+check3131(quizJs3131.indexOf("'中文解析待补充") < 0,
+  'R3.131: quiz.js must NOT contain old fallback "中文解析待补充" (replaced by generated)');
+check3131(quizJs3131.indexOf('full_bank') < 0 && quizJs3131.indexOf('explanations_zh') < 0,
+  'R3.131: lightweight quiz.js must not import full_bank or monolithic explanations_zh');
+var splitQuizJs3131 = readFile('packages/quiz-itpass-1/pages/quiz/quiz.js');
+check3131(splitQuizJs3131.indexOf('generatedZhExplanations') >= 0 &&
+  splitQuizJs3131.indexOf("require('../../data/loader')") >= 0,
+  'R3.131: split quiz page must load generated Chinese explanations from its local data loader');
+
+// Local helper for smoke test data check (uses generated explanations, mirrors quiz.js)
+var generatedZhMap3131 = split3123.explanations;
+function processQuestionForDisplay3131(q) {
+  var raw = q.explanationZh || '';
+  var cleaned = raw.replace(/<[^>]+>/g, '').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim();
+  var hasKana = /[\u3040-\u309F\u30A0-\u30FF]/.test(cleaned);
+  // Use generated explanation if available
+  var genExpl = generatedZhMap3131[q.id] || '';
+  var zhClean;
+  if (genExpl && genExpl.length > 10) {
+    zhClean = genExpl;
+  } else if (!hasKana && cleaned && cleaned.length > 10) {
+    zhClean = cleaned;
+  } else {
+    zhClean = '正确答案：' + (q.answer||'') + '。本题考查IT基础知识。';
+  }
+  var result = { explanationZhClean: zhClean };
+  return result;
+}
+
+// F. Data quality: past exam explanationZh should be processed, not raw
+var pastExamBank3131 = split3123.fullBank;
+var sampleSize3131 = Math.min(10, pastExamBank3131.length);
+var rawHtmlCount3131 = 0;
+for (var i3131 = 0; i3131 < sampleSize3131; i3131++) {
+  var q3131 = pastExamBank3131[i3131];
+  var processed3131 = processQuestionForDisplay3131(q3131);
+  if (processed3131.explanationZhClean && processed3131.explanationZhClean.indexOf('<div') >= 0) rawHtmlCount3131++;
+}
+check3131(rawHtmlCount3131 === 0,
+  'R3.131: processed explanationZhClean must not contain raw HTML <div tags');
+
+if (round3131Ok) pass('R3.131: main package, warning fix, Chinese explanation pipeline');
+
+// ============================================================
+// R3.132: Generated Chinese explanations integration + package audit
+// ============================================================
+var round3132Ok = true;
+function check3132(cond, msg) { if (!cond) { fail(msg); round3132Ok = false; } }
+
+// A. Generated explanations split files exist and cover all past exam questions
+var explMap3132 = split3123.explanations;
+check3132(explMap3132 !== null && Object.keys(explMap3132).length === 1945,
+  'R3.132: split explanations_zh.js files must be loadable and total 1945 entries');
+
+if (explMap3132) {
+  var fullBank3132 = split3123.fullBank;
+  var missingCount3132 = 0;
+  fullBank3132.forEach(function(q) {
+    if (!explMap3132[q.id] || explMap3132[q.id].length < 20) missingCount3132++;
+  });
+  check3132(missingCount3132 === 0,
+    'R3.132: all ' + fullBank3132.length + ' past exam questions must have generated Chinese explanations (missing: ' + missingCount3132 + ')');
+  
+  // No forbidden text
+  var forbiddenFound3132 = false;
+  var forbidden3132 = ['中文解析待补充', '暂无中文解析', '无法生成'];
+  Object.keys(explMap3132).forEach(function(id) {
+    var text = explMap3132[id];
+    forbidden3132.forEach(function(f) {
+      if (text.indexOf(f) >= 0) forbiddenFound3132 = true;
+    });
+  });
+  check3132(!forbiddenFound3132,
+    'R3.132: generated explanations must not contain forbidden placeholder text');
+  
+  // No raw HTML in explanations
+  var htmlFound3132 = false;
+  var kanaFound3132 = false;
+  var totalLength3132 = 0;
+  Object.keys(explMap3132).forEach(function(id) {
+    var text = explMap3132[id];
+    if (text.indexOf('<div') >= 0 || text.indexOf('class=') >= 0 || text.indexOf('ansbg') >= 0) htmlFound3132 = true;
+    if (/[\u3040-\u309F\u30A0-\u30FF]/.test(text)) kanaFound3132 = true;
+    totalLength3132 += text.length;
+  });
+  check3132(!htmlFound3132,
+    'R3.132: generated explanations must not contain raw HTML');
+  check3132(!kanaFound3132,
+    'R3.132: generated explanations must not contain Japanese kana');
+  check3132(totalLength3132 / Object.keys(explMap3132).length >= 100,
+    'R3.132: generated explanations average length should stay useful');
+}
+
+// B. quiz.js loads generated explanations
+var quizJs3132 = readFile('packages/quiz/pages/quiz/quiz.js');
+var splitQuizJs3132 = readFile('packages/quiz-sg-1/pages/quiz/quiz.js');
+check3132(quizJs3132.indexOf('redirectToPastExamPackage') >= 0 &&
+  splitQuizJs3132.indexOf('generatedZhExplanations') >= 0,
+  'R3.132: lightweight quiz.js must redirect and split quiz page must import generated Chinese explanations');
+
+// C. check_quiz_explanations.js exists
+var checkScript3132 = false;
+try {
+  checkScript3132 = fs.existsSync(path.join(ROOT, 'tools/check_quiz_explanations.js'));
+} catch(e) {}
+check3132(checkScript3132,
+  'R3.132: tools/check_quiz_explanations.js must exist');
+
+// D. check_quiz_explanations.js validates coverage (verify content check markers exist)
+var checkScriptContent3132 = readFile('tools/check_quiz_explanations.js');
+check3132(checkScriptContent3132.indexOf('explanations_zh') >= 0 &&
+  checkScriptContent3132.indexOf('禁止词') >= 0 &&
+  checkScriptContent3132.indexOf('RFI') >= 0 &&
+  checkScriptContent3132.indexOf('无日文假名残留') >= 0 &&
+  checkScriptContent3132.indexOf('process.exit') >= 0,
+  'R3.132: tools/check_quiz_explanations.js must contain valid checks');
+
+// E. package audit script exists and marks itself as auxiliary
+check3132(fileExists('tools/audit_miniprogram_package_size.js'),
+  'R3.132: tools/audit_miniprogram_package_size.js must exist');
+var auditScript3132 = readFile('tools/audit_miniprogram_package_size.js');
+check3132(auditScript3132.indexOf('auxiliary audit') >= 0 &&
+  auditScript3132.indexOf('main-package candidate') >= 0,
+  'R3.132: package audit script must describe auxiliary main package candidates');
+
+// F. one-command gate should run the stricter explanation quality check
+var runChecks3132 = readFile('tools/run_miniprogram_checks.js');
+check3132(runChecks3132.indexOf('tools/check_quiz_explanations.js') >= 0,
+  'R3.132: run_miniprogram_checks.js must run quiz explanation quality check');
+check3132(runChecks3132.indexOf('tools/audit_miniprogram_package_size.js') >= 0,
+  'R3.132: run_miniprogram_checks.js must run package size audit');
+
+// G. quiz.wxml uses user-select on review-item-question
+var quizWxml3132 = readFile('packages/quiz/pages/quiz/quiz.wxml');
+check3132(quizWxml3132.indexOf('review-item-question" user-select') >= 0,
+  'R3.132: review-item-question must have user-select="true"');
+
+// H. Main package: enhance and postcss disabled
+var projCfg3132 = JSON.parse(readFile('project.config.json'));
+check3132(projCfg3132.setting && projCfg3132.setting.enhance === false,
+  'R3.132: enhance should be false to reduce main package size');
+check3132(projCfg3132.setting && projCfg3132.setting.postcss === false,
+  'R3.132: postcss should be false to reduce CSS compilation overhead');
+check3132(projCfg3132.setting && projCfg3132.setting.uploadWithSourceMap === false,
+  'R3.132: uploadWithSourceMap should be false for code quality scan');
+
+if (round3132Ok) pass('R3.132: generated Chinese explanations integration & package audit');
+
+// ============================================================
+// R3.133: quiz data subpackage split and package-size guard
+// ============================================================
+var round3133Ok = true;
+function check3133(cond, msg) { if (!cond) { fail(msg); round3133Ok = false; } }
+
+var appJson3133 = JSON.parse(readFile('app.json'));
+var subPkgRoots3133 = (appJson3133.subpackages || []).map(function (pkg) { return pkg.root; });
+var requiredSplitRoots3133 = [
+  'packages/quiz-itpass-1',
+  'packages/quiz-itpass-2',
+  'packages/quiz-itpass-3',
+  'packages/quiz-itpass-4',
+  'packages/quiz-itpass-5',
+  'packages/quiz-sg-1',
+  'packages/quiz-sg-2'
+];
+
+requiredSplitRoots3133.forEach(function (root) {
+  check3133(subPkgRoots3133.indexOf(root) >= 0,
+    'R3.133: app.json must register split quiz data package ' + root);
+  check3133(fileExists(root + '/pages/quiz/quiz.js') &&
+    fileExists(root + '/pages/quiz/quiz.wxml') &&
+    fileExists(root + '/data/questions.js') &&
+    fileExists(root + '/data/explanations_zh.js') &&
+    fileExists(root + '/data/loader.js'),
+    'R3.133: split package files missing for ' + root);
+  check3133(getDirSize(root) < 2.3 * 1024 * 1024,
+    'R3.133: split package must stay under 2.3MB: ' + root);
+});
+
+check3133(getDirSize('packages/quiz') < 2.3 * 1024 * 1024,
+  'R3.133: packages/quiz must stay under 2.3MB after moving data out');
+check3133(!fileExists('packages/quiz/data/past_exam_bank/full_bank.js'),
+  'R3.133: full_bank.js must not remain inside packages/quiz');
+check3133(!fileExists('packages/quiz/data/past_exam_bank/explanations_zh.js'),
+  'R3.133: monolithic explanations_zh.js must not remain inside packages/quiz');
+
+var quizIndex3133 = readFile('packages/quiz/data/past_exam_bank/index.js');
+var examMenuJs3133 = readFile('packages/quiz/pages/exam-menu/exam-menu.js');
+var quizJs3133 = readFile('packages/quiz/pages/quiz/quiz.js');
+check3133(quizIndex3133.indexOf('getYears') >= 0 && quizIndex3133.indexOf('getRoute') >= 0,
+  'R3.133: lightweight past exam index must expose getYears/getRoute');
+check3133(examMenuJs3133.indexOf('pastExamIndex.getYears') >= 0 &&
+  examMenuJs3133.indexOf('pastExamIndex.getRoute') >= 0,
+  'R3.133: exam-menu must use lightweight index for year list and route');
+check3133(quizJs3133.indexOf('full_bank') < 0 && quizJs3133.indexOf('explanations_zh') < 0,
+  'R3.133: lightweight quiz.js must not import old aggregate data');
+
+var runChecks3133 = readFile('tools/run_miniprogram_checks.js');
+check3133(runChecks3133.indexOf('TOTAL_CHECKS = 8') >= 0 &&
+  runChecks3133.indexOf('tools/check_subpackage_registry.js') >= 0 &&
+  runChecks3133.indexOf('tools/audit_miniprogram_package_size.js') >= 0 &&
+  runChecks3133.indexOf('tools/check_quiz_explanations.js') >= 0,
+  'R3.133: run_miniprogram_checks must include subpackage registry, package audit and quiz explanations');
+
+check3133(split3123.fullBank.length === 1945 &&
+  Object.keys(split3123.explanations).length === 1945,
+  'R3.133: split past exam bank and explanations must stay complete');
+
+if (round3133Ok) pass('R3.133: quiz data subpackage split and package-size guard');
+
+// ============================================================
+// Flashcard cold-start reliability checks
+// ============================================================
+console.log('\n--- Flashcard cold-start reliability checks ---');
+var roundFlashcardOk = true;
+function checkFlashcard(cond, msg) {
+  if (!cond) { fail(msg); roundFlashcardOk = false; } else { pass(msg); }
+}
+
+// 1. flashcard-quiz route is registered
+var appJsonFlash = JSON.parse(readFile('app.json'));
+var quizPkg = appJsonFlash.subpackages.find(function(p) { return p.name === 'quiz'; });
+checkFlashcard(
+  quizPkg && quizPkg.pages.indexOf('pages/flashcard-quiz/flashcard-quiz') >= 0,
+  'Flashcard: flashcard-quiz route registered in quiz subpackage'
+);
+
+// 2. flashcard-deck-select route is registered
+checkFlashcard(
+  quizPkg && quizPkg.pages.indexOf('pages/flashcard-deck-select/flashcard-deck-select') >= 0,
+  'Flashcard: flashcard-deck-select route registered'
+);
+
+// 3. Bridge pages exist for all data subpackages
+var bridgeSubpackages = ['quiz-itpass-1', 'quiz-itpass-2', 'quiz-itpass-3', 'quiz-itpass-4', 'quiz-itpass-5', 'quiz-sg-1', 'quiz-sg-2'];
+var allBridgesExist = true;
+bridgeSubpackages.forEach(function(sp) {
+  var bridgePath = 'packages/' + sp + '/pages/flashcard-bridge/flashcard-bridge.js';
+  if (!fileExists(bridgePath)) {
+    allBridgesExist = false;
+    fail('Flashcard: bridge missing for ' + sp);
+    roundFlashcardOk = false;
+  }
+});
+if (allBridgesExist) pass('Flashcard: all 7 bridge pages exist');
+
+// 4. flashcard-export.js exists for all data subpackages
+var allExportsExist = true;
+bridgeSubpackages.forEach(function(sp) {
+  var exportPath = 'packages/' + sp + '/data/flashcard-export.js';
+  if (!fileExists(exportPath)) {
+    allExportsExist = false;
+    fail('Flashcard: flashcard-export missing for ' + sp);
+    roundFlashcardOk = false;
+  }
+});
+if (allExportsExist) pass('Flashcard: all 7 flashcard-export.js exist');
+
+// 5. flashcard-quiz doesn't directly require sibling subpackage loaders
+var quizAdapter = readFile('packages/quiz/data/flashcard_adapter.js');
+var deckSelectFlash = readFile('packages/quiz/pages/flashcard-deck-select/flashcard-deck-select.js');
+var hasCrossPkgRequire = false;
+// Check for patterns like require('../../quiz-sg-1/...') or require('../../quiz-itpass-1/...')
+var crossPkgPattern = /require\(['"]\.\.\/\.\.\/(quiz-(?:sg|itpass)-\d)/;
+var crossPkgMatch = quizAdapter.match(crossPkgPattern);
+// The DEPRECATED shim (getFlashcardDeck) is allowed to have cross-pkg require
+// Only loadDeckAsync must NOT have it
+var loadDeckAsyncStart = quizAdapter.indexOf('function loadDeckAsync');
+var loadDeckAsyncEnd = quizAdapter.indexOf('function pollForCache');
+var loadDeckAsyncBody = quizAdapter.substring(loadDeckAsyncStart, loadDeckAsyncEnd);
+if (crossPkgPattern.test(loadDeckAsyncBody)) {
+  hasCrossPkgRequire = true;
+}
+checkFlashcard(!hasCrossPkgRequire,
+  'Flashcard: loadDeckAsync does NOT directly require sibling subpackage loaders');
+
+// 6. loadDeckAsync uses player navigation (not cross-pkg require)
+checkFlashcard(
+  deckSelectFlash.indexOf('wx.loadSubPackage') >= 0 &&
+  deckSelectFlash.indexOf('name: deckInfo.packageName') >= 0 &&
+  deckSelectFlash.indexOf('navigateToPlayer') >= 0 &&
+  deckSelectFlash.indexOf('playerRoute') >= 0 &&
+  quizAdapter.indexOf('FLASHCARD_RUNTIME_BRIDGE_REMOVED') >= 0 &&
+  quizAdapter.indexOf('__flashcard_cache') < 0 &&
+  quizAdapter.indexOf('function pollForCache') < 0,
+  'Flashcard: deck select loads its target package before player navigation'
+);
+
+// 7. manifest has correct structure
+var manifest = readFile('packages/quiz/data/flashcard-manifest.js');
+checkFlashcard(
+  manifest.indexOf('getDeckInfo') >= 0 && manifest.indexOf('getDecksForCourse') >= 0,
+  'Flashcard: manifest has getDeckInfo and getDecksForCourse'
+);
+checkFlashcard(
+  manifest.indexOf("'quiz-sg-1'") >= 0 && manifest.indexOf("'quiz-itpass-1'") >= 0,
+  'Flashcard: manifest maps sg-1 and itpass-1 packages'
+);
+
+// 8. flashcard-quiz WXML has loading/error/empty/content states
+var quizWxml = readFile('packages/quiz/pages/flashcard-quiz/flashcard-quiz.wxml');
+checkFlashcard(quizWxml.indexOf('isLoading') >= 0, 'Flashcard: WXML has isLoading state');
+checkFlashcard(quizWxml.indexOf('loadError') >= 0, 'Flashcard: WXML has loadError state');
+checkFlashcard(quizWxml.indexOf('isEmpty') >= 0 || quizWxml.indexOf('暂无') >= 0, 'Flashcard: WXML has empty state');
+checkFlashcard(quizWxml.indexOf('currentCard') >= 0, 'Flashcard: WXML has content state');
+
+// 9. flashcard-quiz has error handling in loadDeck
+var flashQuizJs = readFile('packages/quiz/pages/flashcard-quiz/flashcard-quiz.js');
+checkFlashcard(
+  flashQuizJs.indexOf('.catch') >= 0 && flashQuizJs.indexOf('loadError') >= 0,
+  'Flashcard: loadDeck has .catch and sets loadError'
+);
+checkFlashcard(
+  flashQuizJs.indexOf('retryLoad') >= 0,
+  'Flashcard: loadDeck has retryLoad handler'
+);
+
+// 10. Bridge pages use local require (not cross-pkg)
+var bridgeSg1 = readFile('packages/quiz-sg-1/pages/flashcard-bridge/flashcard-bridge.js');
+checkFlashcard(
+  bridgeSg1.indexOf("require('../../data/flashcard-export')") >= 0,
+  'Flashcard: bridge uses local flashcard-export require'
+);
+
+// 11. flashcard-export uses local loader require
+var exportSg1 = readFile('packages/quiz-sg-1/data/flashcard-export.js');
+checkFlashcard(
+  exportSg1.indexOf("require('./loader')") >= 0,
+  'Flashcard: flashcard-export uses local loader require'
+);
+
+// 12. Lazy flashcard data loading: no eager data-package preload, then target-package loading.
+var lazyDataPackages = [
+  'quiz', 'quiz-itpass-1', 'quiz-itpass-2', 'quiz-itpass-3', 'quiz-itpass-4',
+  'quiz-itpass-5', 'quiz-sg-1', 'quiz-sg-2'
+];
+var preloadRulesFlash = appJsonFlash.preloadRule || {};
+var homePreloadPackages = (preloadRulesFlash['pages/home/home'] || {}).packages || [];
+var flashcardCenterPreloadPackages = (preloadRulesFlash['pages/flashcards/flashcards'] || {}).packages || [];
+function hasLazyDataPreload(packages) {
+  return lazyDataPackages.some(function (packageName) {
+    return packages.indexOf(packageName) >= 0;
+  });
+}
+checkFlashcard(!hasLazyDataPreload(homePreloadPackages),
+  'Flashcard: home does not preload flashcard data subpackages');
+checkFlashcard(!hasLazyDataPreload(flashcardCenterPreloadPackages),
+  'Flashcard: flashcard center does not preload flashcard data subpackages');
+
+var deckSelectLazyJs = readFile('packages/quiz/pages/flashcard-deck-select/flashcard-deck-select.js');
+checkFlashcard(
+  deckSelectLazyJs.indexOf('wx.loadSubPackage') >= 0 &&
+  deckSelectLazyJs.indexOf('name: deckInfo.packageName') >= 0 &&
+  deckSelectLazyJs.indexOf('wx.navigateTo') >= 0 &&
+  deckSelectLazyJs.indexOf('url: playerUrl') >= 0,
+  'Flashcard: deck select loads its target package then navigates to the registered player'
+);
+checkFlashcard(
+  deckSelectLazyJs.indexOf('installing shim') < 0 &&
+  deckSelectLazyJs.indexOf('wx.loadSubPackage = function') < 0 &&
+  deckSelectLazyJs.indexOf('__flashcard_cache') < 0,
+  'Flashcard: deck select has no fake loadSubPackage shim or cache bridge'
+);
+
+var flashcardCenterJs = readFile('pages/flashcards/flashcards.js');
+checkFlashcard(
+  flashcardCenterJs.indexOf('past_exam_bank') < 0 &&
+  flashcardCenterJs.indexOf('flashcard_adapter') < 0 &&
+  flashcardCenterJs.indexOf('../../packages/quiz') < 0,
+  'Flashcard: main flashcard page does not cross-require question-bank data'
+);
+
+var playerPackageNames = ['quiz-itpass-1', 'quiz-itpass-2', 'quiz-itpass-3', 'quiz-itpass-4', 'quiz-itpass-5', 'quiz-sg-1', 'quiz-sg-2'];
+checkFlashcard(playerPackageNames.every(function (packageName) {
+  return (appJsonFlash.subpackages || []).some(function (subpackage) {
+    return subpackage.name === packageName &&
+      Array.isArray(subpackage.pages) &&
+      subpackage.pages.indexOf('pages/flashcard-player/flashcard-player') >= 0;
+  });
+}), 'Flashcard: formal player route is registered for every data subpackage');
+
+if (roundFlashcardOk) pass('Flashcard cold-start reliability checks');
 
 console.log('\n========================================');
 console.log('Passed: ' + passed);
