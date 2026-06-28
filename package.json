@@ -49,6 +49,10 @@
     "test:flashcard-launch-runtime": "node tools/run_flashcard_runtime_e2e.js",
     "test:home-course-flashcard-flow": "node tools/check_home_course_flashcard_flow.js",
     "test:flashcard-runtime-bilingual-data": "node tools/check_flashcard_bilingual_runtime_data.js",
-    "test:flashcard-player-bilingual-wxml": "node tools/check_flashcard_player_bilingual_wxml.js"
+    "test:flashcard-player-bilingual-wxml": "node tools/check_flashcard_player_bilingual_wxml.js",
+    "test:flashcard-translation-fingerprint-integrity": "node tools/check_flashcard_translation_fingerprint_integrity.js",
+    "test:flashcard-explanation-zh-naturalness": "node tools/check_flashcard_explanation_zh_naturalness.js",
+    "test:flashcard-explanation-zh-template-duplication": "node tools/check_flashcard_explanation_zh_template_duplication.js",
+    "test:flashcard-bilingual-semantic-audit": "node tools/check_flashcard_bilingual_semantic_audit.js"
   }
 }
