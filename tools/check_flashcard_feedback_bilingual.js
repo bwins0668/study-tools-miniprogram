@@ -28,14 +28,14 @@ PACKAGES.forEach(function(pkg) {
 
   var loader = fs.readFileSync(loaderPath, 'utf8');
 
-  // Must call mergeTranslation
-  if (loader.indexOf('mergeTranslation') < 0 && loader.indexOf('merge_translation') < 0) {
-    failures.push(pkg + ': loader.js does not call mergeTranslation');
+  // Must call mergeTranslation or mergeChinese
+  if (loader.indexOf('mergeTranslation') < 0 && loader.indexOf('merge_translation') < 0 && loader.indexOf('mergeChinese') < 0) {
+    failures.push(pkg + ': loader.js does not call mergeChinese/mergeTranslation');
   }
 
-  // Must reference translations_zh
-  if (loader.indexOf('translations_zh') < 0) {
-    failures.push(pkg + ': loader.js does not reference translations_zh');
+  // Must reference questions_zh or translations_zh
+  if (loader.indexOf('questions_zh') < 0 && loader.indexOf('translations_zh') < 0) {
+    failures.push(pkg + ': loader.js does not reference questions_zh');
   }
 
   // Must reference explanations_zh
@@ -43,13 +43,15 @@ PACKAGES.forEach(function(pkg) {
     failures.push(pkg + ': loader.js does not reference explanations_zh');
   }
 
-  // translations_zh.js must exist and have content
-  if (!fs.existsSync(translationsPath)) {
-    failures.push(pkg + ': translations_zh.js missing');
+  // questions_zh.js or translations_zh.js must exist and have content
+  var questionsZhPath = path.join(ROOT, 'packages', pkg, 'data', 'questions_zh.js');
+  if (!fs.existsSync(translationsPath) && !fs.existsSync(questionsZhPath)) {
+    failures.push(pkg + ': neither questions_zh.js nor translations_zh.js exist');
   } else {
-    var tSize = fs.statSync(translationsPath).size;
+    var srcPath = fs.existsSync(questionsZhPath) ? questionsZhPath : translationsPath;
+    var tSize = fs.statSync(srcPath).size;
     if (tSize < 100) {
-      failures.push(pkg + ': translations_zh.js too small (' + tSize + ' bytes)');
+      failures.push(pkg + ': bilingual data file too small (' + tSize + ' bytes)');
     }
   }
 

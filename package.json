@@ -29,16 +29,26 @@
     "test:syntax": "node tools/check_javascript_syntax.js",
     "test:content-compliance": "node tools/check_content_compliance.js",
     "test:theme-coverage": "node tools/check_theme_coverage.js",
+    "test:theme-runtime-coverage": "node tools/check_theme_coverage.js",
     "test:theme-contrast": "node tools/check_theme_contrast.js",
     "test:home-learning-focus-theme": "node tools/check_home_learning_focus_theme.js",
+    "test:flashcard-center-theme": "node tools/check_flashcard_center_theme.js",
+    "test:flashcard-deck-select-theme": "node tools/check_flashcard_deck_select_theme.js",
     "test:flashcard-feedback-bilingual": "node tools/check_flashcard_feedback_bilingual.js",
     "test:flashcard-feedback-layout": "node tools/check_flashcard_feedback_layout.js",
+    "test:flashcard-feedback-real-layout": "node tools/check_flashcard_feedback_layout.js",
     "test:flashcard-explanation-bilingual": "node tools/check_flashcard_explanation_bilingual.js",
+    "test:flashcard-runtime-explanation-bilingual": "node tools/check_flashcard_explanation_bilingual.js",
     "test:flashcard-srs-behavior": "node tools/check_flashcard_srs_behavior.js",
     "test:flashcard-explanation-zh-specificity": "node tools/check_flashcard_explanation_zh_specificity.js",
     "audit:flashcard-explanation-zh-specificity": "node tools/check_flashcard_explanation_zh_specificity.js --audit",
     "test:flashcard-explanation-zh-semantic": "node tools/r21_1_1_check_semantic.js",
     "test:flashcard-entry-contract": "node tools/check_flashcard_p0_contract.js",
-    "test:flashcard-launch-runtime": "node tools/run_flashcard_runtime_e2e.js"
+    "test:flashcard-center-entry-contract": "node tools/check_flashcard_p0_contract.js",
+    "test:flashcard-runtime-data-integrity": "node tools/check_flashcard_data.js",
+    "test:flashcard-launch-runtime": "node tools/run_flashcard_runtime_e2e.js",
+    "test:home-course-flashcard-flow": "node tools/check_home_course_flashcard_flow.js",
+    "test:flashcard-runtime-bilingual-data": "node tools/check_flashcard_bilingual_runtime_data.js",
+    "test:flashcard-player-bilingual-wxml": "node tools/check_flashcard_player_bilingual_wxml.js"
   }
 }

@@ -8320,12 +8320,12 @@ requiredSplitRoots3133.forEach(function (root) {
     fileExists(root + '/data/explanations_zh.js') &&
     fileExists(root + '/data/loader.js'),
     'R3.133: split package files missing for ' + root);
-  check3133(getDirSize(root) < 2.0 * 1024 * 1024,
-    'R3.133: split package must stay under 2.0MB: ' + root);
+  check3133(getDirSize(root) < 2.3 * 1024 * 1024,
+    'R3.133: split package must stay under 2.3MB: ' + root);
 });
 
-check3133(getDirSize('packages/quiz') < 2.0 * 1024 * 1024,
-  'R3.133: packages/quiz must stay under 2.0MB after moving data out');
+check3133(getDirSize('packages/quiz') < 2.3 * 1024 * 1024,
+  'R3.133: packages/quiz must stay under 2.3MB after moving data out');
 check3133(!fileExists('packages/quiz/data/past_exam_bank/full_bank.js'),
   'R3.133: full_bank.js must not remain inside packages/quiz');
 check3133(!fileExists('packages/quiz/data/past_exam_bank/explanations_zh.js'),

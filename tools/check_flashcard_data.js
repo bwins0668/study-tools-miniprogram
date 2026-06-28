@@ -175,6 +175,72 @@ function validateCard(card) {
   return { issues: issues, warnings: warnings };
 }
 
+function getFlashcardDeckForNode(exam) {
+  var packages = [];
+  if (exam === 'itpass') {
+    packages = ['quiz-itpass-1', 'quiz-itpass-2', 'quiz-itpass-3', 'quiz-itpass-4', 'quiz-itpass-5'];
+  } else {
+    packages = ['quiz-sg-1', 'quiz-sg-2'];
+  }
+
+  var rawQuestions = [];
+  packages.forEach(function (pkg) {
+    var loaderPath = path.join(__dirname, '..', 'packages', pkg, 'data', 'loader.js');
+    // Clear require cache for reliability
+    var absPath = path.resolve(loaderPath);
+    delete require.cache[absPath];
+    var loader = require(loaderPath);
+    var questions = loader.getAllQuestions();
+    rawQuestions = rawQuestions.concat(questions);
+  });
+
+  var stats = {
+    total: rawQuestions.length,
+    normalized: 0,
+    filtered: 0,
+    deduped: 0,
+    dedupCount: 0,
+    contentStatus: {
+      japanese_only: 0,
+      bilingual_partial: 0,
+      bilingual_complete: 0
+    },
+    byYear: {},
+    categories: {}
+  };
+
+  var normalizedCards = [];
+  rawQuestions.forEach(function (raw) {
+    var card = adapter.normalizeQuestion(raw);
+    if (!card) {
+      stats.filtered++;
+      return;
+    }
+    stats.normalized++;
+    normalizedCards.push(card);
+  });
+
+  var dedupedCards = adapter.dedupeCards(normalizedCards);
+  stats.deduped = dedupedCards.length;
+  stats.dedupCount = normalizedCards.length - dedupedCards.length;
+
+  dedupedCards.forEach(function (card) {
+    var status = adapter.detectContentStatus(card);
+    stats.contentStatus[status] = (stats.contentStatus[status] || 0) + 1;
+
+    var year = card.examYear || 'Unknown';
+    stats.byYear[year] = (stats.byYear[year] || 0) + 1;
+
+    var cat = card.category || 'Unknown';
+    stats.categories[cat] = (stats.categories[cat] || 0) + 1;
+  });
+
+  return {
+    cards: dedupedCards,
+    stats: stats
+  };
+}
+
 console.log('=== Flashcard Data Validation ===');
 console.log('Adapter: ' + adapterPath);
 
@@ -185,7 +251,7 @@ var duplicateIds = 0;
 
 for (var e = 0; e < EXAMS.length; e++) {
   var exam = EXAMS[e];
-  var deck = adapter.getFlashcardDeck(exam);
+  var deck = getFlashcardDeckForNode(exam);
 
   report(exam, deck.stats);
 

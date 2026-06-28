@@ -1,5 +1,5 @@
 <!--pages/mistakes/mistakes.wxml - 错题复盘中心-->
-<view class="container">
+<view class="container {{__themeDark ? 'dark-theme' : ''}}">
   <!-- 顶部 Hero -->
   <view class="mistakes-hero">
     <view class="mistakes-hero-row">

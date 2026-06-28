@@ -1,5 +1,5 @@
 <!--pages/profile/profile.wxml-->
-<view class="container">
+<view class="container {{__themeDark ? 'dark-theme' : ''}}">
   <!-- 头部 -->
   <view class="profile-header">
     <view class="avatar-placeholder">

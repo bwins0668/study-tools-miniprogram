@@ -1270,6 +1270,18 @@
     box-shadow: 0 24rpx 56rpx rgba(0, 0, 0, 0.42);
   }
 
+  .hero-focus-label {
+    color: rgba(255, 255, 255, 0.50);
+  }
+
+  .hero-focus-title {
+    color: rgba(255, 255, 255, 0.92);
+  }
+
+  .hero-focus-desc {
+    color: rgba(255, 255, 255, 0.60);
+  }
+
   .hero-focus-action,
   .quick-start-btn,
   .suggestion-action,
@@ -1289,3 +1301,72 @@
     background: var(--card-bg-elevated);
   }
 }
+
+/* ---- Dark theme JS fallback ---- */
+.dark-theme .hero {
+  background: var(--card-bg-elevated);
+  border-color: var(--border-color);
+  box-shadow: 0 24rpx 56rpx rgba(0, 0, 0, 0.42);
+}
+
+.dark-theme .hero-kicker {
+  color: var(--text-hint);
+}
+
+.dark-theme .hero-title {
+  color: var(--text-primary);
+}
+
+.dark-theme .hero-subtitle {
+  color: var(--text-secondary);
+}
+
+.dark-theme .hero-focus-label {
+  color: var(--text-hint);
+}
+
+.dark-theme .hero-focus-title {
+  color: var(--text-primary);
+}
+
+.dark-theme .hero-focus-desc {
+  color: var(--text-secondary);
+}
+
+.dark-theme .hero-stats {
+  border-top-color: var(--border-color);
+  border-bottom-color: var(--border-color);
+}
+
+.dark-theme .hero-stat-divider {
+  background: var(--border-color);
+}
+
+.dark-theme .hero-stat-value {
+  color: var(--text-primary);
+}
+
+.dark-theme .hero-stat-label {
+  color: var(--text-secondary);
+}
+
+.dark-theme .hero-focus-action,
+.dark-theme .quick-start-btn,
+.dark-theme .suggestion-action,
+.dark-theme .continue-btn,
+.dark-theme .back-to-top {
+  background: var(--text-primary);
+  color: var(--text-inverse);
+  border: 1rpx solid var(--border-strong);
+}
+
+.dark-theme .hero-focus-action-text,
+.dark-theme .suggestion-action-text,
+.dark-theme .back-to-top-icon {
+  color: var(--text-inverse);
+}
+
+.dark-theme .entry-card-primary {
+  background: var(--card-bg-elevated);
+}
+

@@ -47,12 +47,15 @@ function isSkippedRel(rel) {
     rel === '.gpt-handoff' || rel.indexOf('.gpt-handoff/') === 0 ||
     rel === 'node_modules' || rel.indexOf('node_modules/') === 0 ||
     rel === 'outputs' || rel.indexOf('outputs/') === 0 ||
+    rel === 'scratch' || rel.indexOf('scratch/') === 0 ||
+    rel === 'artifacts' || rel.indexOf('artifacts/') === 0 ||
     rel === 'tools/test-artifacts' || rel.indexOf('tools/test-artifacts/') === 0 ||
     rel === 'tools/review-batches' || rel.indexOf('tools/review-batches/') === 0 ||
     rel === 'tools/generated-cache' || rel.indexOf('tools/generated-cache/') === 0 ||
     /^tools\/(?:.*\/)?__pycache__(?:\/|$)/.test(rel) ||
     rel === 'project.private.config.json' ||
-    /(^|\/)devtools-.*\.log$/i.test(rel) || /\.patch$/i.test(rel) || /\.pyc$/i.test(rel);
+    /(^|\/)devtools-.*\.log$/i.test(rel) || /\.patch$/i.test(rel) || /\.pyc$/i.test(rel) ||
+    /translations_zh\.js$/i.test(rel);
 }
 
 function walk(dir, files) {

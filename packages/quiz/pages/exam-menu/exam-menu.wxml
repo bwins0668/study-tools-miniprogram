@@ -1,5 +1,5 @@
 <!--packages/quiz/pages/exam-menu/exam-menu.wxml-->
-<view class="container exam-{{exam}}">
+<view class="container exam-{{exam}} {{__themeDark ? 'dark-theme' : ''}}">
   <view class="exam-dashboard">
     <view class="dashboard-header">
       <view class="dashboard-title-group">

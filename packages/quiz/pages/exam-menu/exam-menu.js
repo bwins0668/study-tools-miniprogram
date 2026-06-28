@@ -122,7 +122,7 @@ Page({
   goFlashcardCourse: function () {
     var exam = this.data.exam || 'itpass';
     wx.navigateTo({
-      url: '/packages/quiz/pages/flashcard-quiz/flashcard-quiz?course=' + exam,
+      url: '/packages/quiz/pages/flashcard-deck-select/flashcard-deck-select?course=' + exam,
       fail: function () {
         wx.showToast({ title: '闪卡启动失败', icon: 'none' });
       }
