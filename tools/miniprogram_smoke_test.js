@@ -8346,6 +8346,49 @@ checkR16(['教材', '章节进度', '正确率', '继续学习', '预计时长',
 }), 'R1.6: topic page must not render textbook/progress/accuracy/resume/question-number');
 if (r16Ok) pass('R1.6: exam-topic structure & honest topic page contract');
 
+// R1.8: full-link closure — handler safety, honest practice gating, capability edges
+console.log('\n--- R1.8 topic learning closure ---');
+var r18Ok = true;
+function checkR18(cond, msg) { if (!cond) { fail(msg); r18Ok = false; } }
+
+var ccRegR18 = require(path.join(ROOT, 'utils/course-content-registry.js'));
+var topicJsR18 = readFile('pages/course-topic/course-topic.js');
+var topicWxmlR18 = readFile('pages/course-topic/course-topic.wxml');
+
+// 1. every bindtap in the topic wxml has a matching Page handler (no dangling tap)
+var topicHandlers = (topicWxmlR18.match(/bindtap="(\w+)"/g) || []).map(function (m) {
+  return m.replace(/bindtap="|"/g, '');
+});
+checkR18(topicHandlers.length > 0 && topicHandlers.every(function (h) {
+  return new RegExp('\\b' + h + ':\\s*function').test(topicJsR18);
+}), 'R1.8: topic page must define every bindtap handler (no dangling tap incl. goPractice)');
+
+// 2. honest practice gating: the practice action is rendered only behind practiceVerified
+checkR18(/wx:if="\{\{practiceVerified\}\}"[\s\S]{0,160}开始本主题练习/.test(topicWxmlR18),
+  'R1.8: 开始本主题练习 must be gated behind practiceVerified');
+// and goPractice must self-guard against acting while unverified
+checkR18(/goPractice:\s*function[\s\S]{0,160}practiceVerified/.test(topicJsR18),
+  'R1.8: goPractice must self-guard on practiceVerified (no fabricated route)');
+
+// 3. capability edges: learning + unresolved courses own no topics and resolve null
+checkR18(['python', 'java', 'algorithm', 'mos365'].every(function (id) {
+  return ccRegR18.getTopicsForCourse(id).length === 0 &&
+    ccRegR18.getTopicById(id, 'technology') === null &&
+    ccRegR18.isTopicPracticeAvailable(id, 'technology') === false;
+}), 'R1.8: python/java/algorithm/mos365 must own no topics and fail safe');
+
+// 4. practice-bridge integrity: any verified topic REQUIRES the real bridge file
+var anyVerified = (ccRegR18.TOPICS || []).some(function (t) { return t.practiceCapability === 'verified'; });
+checkR18(!anyVerified || fileExists('utils/course-topic-practice.js'),
+  'R1.8: a practiceCapability=verified topic must be backed by utils/course-topic-practice.js');
+
+// 5. mistakes bridge stays cross-course on BOTH course shell and topic page
+checkR18(readFile('pages/course/course.wxml').indexOf('跨课程') >= 0 &&
+  topicWxmlR18.indexOf('跨课程') >= 0,
+  'R1.8: cross-course mistakes wording must remain on shell and topic page');
+
+if (r18Ok) pass('R1.8: topic learning closure contract');
+
 // G4-specific Quiet Paper contracts (exam-menu, mistakes, flashcard-deck-select)
 // are deferred until the G4 page batch is independently frozen.
 

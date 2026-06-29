@@ -49,7 +49,7 @@
 .cs-topic__body { flex: 1; min-width: 0; }
 .cs-topic__title { font-size: var(--qp-font-size-body); color: var(--qp-color-ink); }
 .cs-topic__ja { display: block; margin-top: 2rpx; font-size: var(--qp-font-size-caption);
-  color: var(--qp-color-text-tertiary); }
+  color: var(--qp-color-text-secondary); }
 .cs-topic__arrow { flex: none; margin-left: 12rpx; font-size: 24rpx; color: var(--qp-color-text-tertiary); }
 .cs-topic__pending { flex: none; margin-left: 12rpx; font-size: var(--qp-font-size-caption);
   color: var(--qp-color-text-tertiary); }
@@ -60,11 +60,11 @@
 .cs-row__body { flex: 1; min-width: 0; }
 .cs-row__text { font-size: var(--qp-font-size-body); color: var(--qp-color-ink); }
 .cs-row__note { display: block; margin-top: 4rpx; font-size: var(--qp-font-size-caption);
-  color: var(--qp-color-text-tertiary); }
+  color: var(--qp-color-text-secondary); }
 .cs-row__arrow { flex: none; margin-left: 12rpx; font-size: 24rpx; color: var(--qp-color-text-tertiary); }
 
 .cs-note { display: block; margin-top: 16rpx; font-size: var(--qp-font-size-caption);
-  color: var(--qp-color-text-tertiary); }
+  color: var(--qp-color-text-secondary); }
 
 .cs-empty { padding: 48rpx 0; text-align: center; }
 .cs-empty__title { font-size: 28rpx; font-weight: var(--qp-font-weight-semibold); color: var(--qp-color-ink); }
