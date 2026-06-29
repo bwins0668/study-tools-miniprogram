@@ -3,6 +3,7 @@ var questionsModule = require('../../data/questions');
 var pastExamIndex = require('../../data/past_exam_bank/index');
 var storage = require('../../../../utils/storage');
 var topicScopeEngine = require('../../../../utils/quiz-topic-scope');
+var favoriteQuestions = require('../../../../utils/favorite-questions');
 
 // === Inline quiz dedup (moved from utils/quiz_dedupe.js to avoid main-package unused-JS warning) ===
 function normalizeQuizText(value) {
@@ -170,7 +171,10 @@ Page({
     topicLabel: '',
     // R2.6: verified topic context for attempt metadata (only set for a valid scope)
     topicId: '',
-    topicTitle: ''
+    topicTitle: '',
+    // R2.7: question favorite control (only enabled when identity is complete)
+    canFavorite: false,
+    isFavorited: false
   },
 
   onLoad: function (options) {
@@ -319,6 +323,7 @@ Page({
         topicId: (topicScope && topicScope.valid) ? topicScope.topicId : '',
         topicTitle: (topicScope && topicScope.valid) ? topicScope.title : ''
       });
+      this._refreshFavoriteStateFor(processed[0]);
     } else {
       this.setData({
         exam: exam,
@@ -456,6 +461,7 @@ Page({
       showFeedbackTip: false,
       feedbackTip: ''
     });
+    this._refreshFavoriteStateFor(this.data.questions[nextIndex]);
   },
 
   showPracticeResult: function () {
@@ -614,6 +620,27 @@ Page({
     wx.navigateBack();
   },
 
+  // R2.7: sync the favorite control to a given question's identity.
+  _refreshFavoriteStateFor: function (q) {
+    var identity = q ? { exam: q.exam, questionId: q.id, sourceType: q.sourceType } : null;
+    var canFav = favoriteQuestions.isValidIdentity(identity);
+    this.setData({
+      canFavorite: canFav,
+      isFavorited: canFav ? favoriteQuestions.isQuestionFavorited(identity) : false
+    });
+  },
+
+  // R2.7: toggle favorite for the CURRENT question only. No effect on answering,
+  // options, result state, or topic scope. Disabled for incomplete identity.
+  toggleFavorite: function () {
+    var q = this.data.currentQuestion;
+    if (!q) return;
+    var identity = { exam: q.exam, questionId: q.id, sourceType: q.sourceType };
+    if (!favoriteQuestions.isValidIdentity(identity)) return;
+    var nowFav = favoriteQuestions.toggleFavoriteQuestion(identity);
+    this.setData({ isFavorited: nowFav });
+  },
+
   // R2.0: return from a topic-scoped (incl. empty) session. Prefer the natural
   // back stack to the Topic page; if there is no stack, fall back safely to the
   // matching Course Shell (never a wrong exam, never a white screen).
@@ -684,6 +711,7 @@ Page({
         showAnalysisDrawer: false,
         showFeedbackTip: false
       });
+      this._refreshFavoriteStateFor(processed[0]);
     } else {
       this.setData({
         exam: 'wrong_only',
@@ -770,6 +798,7 @@ Page({
       showReview: false,
       showFeedbackTip: false
     });
+    this._refreshFavoriteStateFor(wrongQuestions[0]);
   },
 
   // R3.71 进度保存提示

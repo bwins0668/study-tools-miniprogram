@@ -38,6 +38,11 @@
       <text class="question-ja" user-select="true">{{currentQuestion.questionJaClean || currentQuestion.questionJa}}</text>
       <view class="question-progress-row">
         <text class="question-number">第 {{currentIndex + 1}} / {{totalQuestions}} 题</text>
+        <!-- R2.7: 低干扰题目收藏入口（仅 identity 完整时显示） -->
+        <view class="fav-toggle {{isFavorited ? 'fav-toggle--on' : ''}}" wx:if="{{canFavorite}}" catchtap="toggleFavorite">
+          <text class="fav-toggle__icon">{{isFavorited ? '★' : '☆'}}</text>
+          <text class="fav-toggle__label">{{isFavorited ? '已收藏' : '收藏'}}</text>
+        </view>
       </view>
       <view class="question-source" wx:if="{{currentQuestion.sourceType === 'lesson_quiz'}}">
         <text class="source-badge">课程练习</text>

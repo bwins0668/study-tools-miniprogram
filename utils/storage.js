@@ -67,6 +67,33 @@ function getFavoriteTermStats() {
   return stats;
 }
 
+// ========== 收藏题目（独立领域，R2.7） ==========
+// 与术语收藏 / 闪卡 / 错题完全隔离。只存身份与轻量时间，不存题目正文。
+
+const FAVORITE_QUESTIONS_KEY = "study-tools-mini-favorite-questions-v1";
+
+function getFavoriteQuestions() {
+  try {
+    var raw = wx.getStorageSync(FAVORITE_QUESTIONS_KEY);
+    if (raw && typeof raw === 'object' && Array.isArray(raw.items)) {
+      return { version: 1, items: raw.items };
+    }
+    return { version: 1, items: [] };
+  } catch (error) {
+    console.warn("getFavoriteQuestions failed", error);
+    return { version: 1, items: [] };
+  }
+}
+
+function saveFavoriteQuestions(data) {
+  var items = (data && Array.isArray(data.items)) ? data.items : [];
+  try {
+    wx.setStorageSync(FAVORITE_QUESTIONS_KEY, { version: 1, items: items });
+  } catch (error) {
+    console.warn("saveFavoriteQuestions failed", error);
+  }
+}
+
 // ========== 错题本 ==========
 
 const WRONG_QUESTIONS_KEY = "study-tools-mini-wrong-questions-v1";
@@ -469,7 +496,9 @@ function exportLocalBackup() {
     data: {
       favoriteTerms: getFavoriteTerms(),
       wrongQuestions: getWrongQuestions(),
-      quizAttempts: getQuizAttempts()
+      quizAttempts: getQuizAttempts(),
+      // R2.7: optional independent question-favorite domain (object {version,items})
+      favoriteQuestions: getFavoriteQuestions()
     },
     ankiStatus: ankiStatus,
     flashcardProgress: flashcardProgress
@@ -481,6 +510,12 @@ function importLocalBackup(backup) {
   saveFavoriteTerms(backup.data.favoriteTerms);
   saveWrongQuestions(backup.data.wrongQuestions);
   saveQuizAttempts(backup.data.quizAttempts);
+  // R2.7: optional question favorites. Old backups omit this -> leave as-is (empty).
+  // Corrupt shapes are ignored safely (only import a well-formed {items:[]}).
+  var fq = backup.data.favoriteQuestions;
+  if (fq && typeof fq === 'object' && Array.isArray(fq.items)) {
+    saveFavoriteQuestions({ version: 1, items: fq.items });
+  }
   if (backup.ankiStatus) {
     try { wx.setStorageSync(ANKI_STATUS_KEY, backup.ankiStatus); } catch (e) {}
   }
@@ -494,6 +529,7 @@ function clearAllLocalUserData() {
   saveFavoriteTerms([]);
   saveWrongQuestions([]);
   saveQuizAttempts([]);
+  saveFavoriteQuestions({ version: 1, items: [] });
 }
 
 var ANKI_STATUS_KEY = 'study-tools-mini-anki-status-v1';
@@ -502,6 +538,10 @@ module.exports = {
   FAVORITE_TERMS_KEY: FAVORITE_TERMS_KEY,
   getFavoriteTerms: getFavoriteTerms,
   saveFavoriteTerms: saveFavoriteTerms,
+  // R2.7: independent question favorites raw accessors (domain logic in utils/favorite-questions.js)
+  FAVORITE_QUESTIONS_KEY: FAVORITE_QUESTIONS_KEY,
+  getFavoriteQuestions: getFavoriteQuestions,
+  saveFavoriteQuestions: saveFavoriteQuestions,
   isFavoriteTerm: isFavoriteTerm,
   addFavoriteTerm: addFavoriteTerm,
   removeFavoriteTerm: removeFavoriteTerm,

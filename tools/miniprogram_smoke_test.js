@@ -75,6 +75,7 @@ var COMPLIANCE_FORBIDDEN_TERMS = [
 // Shared storage key contract (single source of truth for storage key checks)
 var KNOWN_STORAGE_KEYS = [
   'study-tools-mini-favorite-terms-v1',
+  'study-tools-mini-favorite-questions-v1', // R2.7: authorized independent question-favorite domain
   'study-tools-mini-wrong-questions-v1',
   'study-tools-mini-quiz-attempts-v1',
   'study-tools-mini-anki-status-v1',
@@ -4666,8 +4667,8 @@ var keyCount330 = (storageContent330.match(/study-tools-mini-[a-z-]+-v1/g) || []
 var uniqueKeys330 = {};
 keyCount330.forEach(function(k) { uniqueKeys330[k] = true; });
 var uniqueKeyCount330 = Object.keys(uniqueKeys330).length;
-if (uniqueKeyCount330 !== 4) {
-  fail('R3.30: storage key count changed (expected 3, got ' + uniqueKeyCount330 + ')');
+if (uniqueKeyCount330 !== 5) {
+  fail('R3.30: storage key count changed (expected 5, got ' + uniqueKeyCount330 + ')');
   round330Ok = false;
 }
 

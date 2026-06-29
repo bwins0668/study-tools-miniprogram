@@ -175,11 +175,42 @@
   margin-top: 16rpx;
   padding-top: 16rpx;
   border-top: 1rpx solid var(--divider-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .question-number {
   font-size: 24rpx;
   color: var(--text-hint);
+}
+
+/* ===== R2.7: question favorite toggle (low-noise, no image asset) ===== */
+.fav-toggle {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+  border: 1rpx solid var(--border-color);
+  background: var(--card-bg);
+}
+.fav-toggle__icon {
+  font-size: 26rpx;
+  color: var(--text-hint);
+  margin-right: 6rpx;
+}
+.fav-toggle__label {
+  font-size: 22rpx;
+  color: var(--text-secondary);
+}
+.fav-toggle--on {
+  border-color: var(--primary-color);
+  background: var(--primary-light);
+}
+.fav-toggle--on .fav-toggle__icon,
+.fav-toggle--on .fav-toggle__label {
+  color: var(--primary-color);
 }
 
 /* ===== Question card ===== */
