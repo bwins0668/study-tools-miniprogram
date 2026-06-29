@@ -1,142 +1,78 @@
-<!--pages/home/home.wxml · Quiet Paper 首页视觉冻结层-->
-<view class="qp-home {{__themeDark ? 'dark-theme' : ''}}" style="padding-top: {{navSafeTop}}px;">
-  <view class="qp-head">
-    <text class="qp-head__title">{{uiText.panelTitle}}</text>
-    <view class="qp-head__meta">
-      <text class="qp-head__date qp-num">{{headDateText}}</text>
-      <block wx:if="{{streakCount > 0}}">
-        <text class="qp-head__dot">·</text>
-        <text class="qp-head__streak">连续 <text class="qp-num qp-ink-strong">{{streakCount}}</text> 天</text>
+<!--pages/home/home.wxml · Course Center landing page-->
+<view class="cc-home {{__themeDark ? 'dark-theme' : ''}}" style="padding-top: {{navSafeTop}}px;">
+
+  <!-- A. 学习状态 -->
+  <view class="cc-hero">
+    <block wx:if="{{hasLastAttempt}}">
+      <text class="cc-hero__kicker">继续学习</text>
+      <text class="cc-hero__title">{{lastExamLabel}}</text>
+      <text class="cc-hero__sub" wx:if="{{lastMetaText}}">{{lastMetaText}}</text>
+      <view class="cc-hero__actions">
+        <view class="cc-btn cc-btn--primary" bindtap="continueLearning">继续学习</view>
+        <view class="cc-btn cc-btn--outline" bindtap="goReview">今日复习</view>
+      </view>
+      <text class="cc-hero__streak" wx:if="{{streakCount > 0}}">连续学习 {{streakCount}} 天</text>
+    </block>
+    <block wx:else>
+      <text class="cc-hero__kicker">开始学习</text>
+      <text class="cc-hero__title">从一门课程或考试开始</text>
+      <view class="cc-hero__actions">
+        <view class="cc-btn cc-btn--primary" bindtap="goPractice">开始刷题</view>
+        <view class="cc-btn cc-btn--outline" bindtap="goToCourseArea">浏览课程</view>
+      </view>
+    </block>
+  </view>
+
+  <!-- B. 课程学习 -->
+  <view class="cc-section cc-section--courses">
+    <text class="cc-section__title">课程学习</text>
+    <view class="cc-course-list">
+      <block wx:for="{{languageCourses}}" wx:key="id">
+        <view class="cc-course-card {{item.availability === 'planned' ? 'cc-course-card--planned' : ''}}"
+          bindtap="{{item.availability === 'planned' ? 'onPlannedCourse' : ''}}">
+          <text class="cc-course-card__name">{{item.displayName}}</text>
+          <text class="cc-course-card__desc">{{item.description}}</text>
+          <view class="cc-course-card__badge" wx:if="{{item.availability === 'planned'}}">
+            <text class="cc-course-card__badge-text">即将开放</text>
+          </view>
+        </view>
       </block>
     </view>
   </view>
 
-  <view class="qp-focus">
-    <block wx:if="{{hasLastAttempt}}">
-      <text class="qp-focus__kicker">{{uiText.continueKicker}}</text>
-      <text class="qp-focus__title">{{lastExamLabel}}</text>
-      <text class="qp-focus__sub" wx:if="{{lastMetaText}}">{{lastMetaText}}</text>
-
-      <view class="qp-structure-line" aria-hidden="true">
-        <view class="qp-structure-line__mark"></view>
-      </view>
-
-      <ui-button variant="primary" text="{{uiText.continueButton}}" bind:qptap="continueLearning"></ui-button>
-    </block>
-
-    <block wx:else>
-      <text class="qp-focus__kicker">{{uiText.startKicker}}</text>
-      <text class="qp-focus__title">{{uiText.startTitle}}</text>
-      <text class="qp-focus__sub">{{uiText.startSub}}</text>
-      <text class="qp-focus__desc">{{uiText.startDesc}}</text>
-
-      <view class="qp-structure-line" aria-hidden="true"></view>
-
-      <ui-button variant="primary" text="{{uiText.startButton}}" bind:qptap="quickStart"></ui-button>
-    </block>
-  </view>
-
-  <view class="qp-metrics" wx:if="{{todayTotal > 0 || totalAttempts > 0 || favoriteCount > 0}}">
-    <view class="qp-metric" wx:if="{{todayTotal > 0}}">
-      <text class="qp-metric__value qp-num">{{todayTotal}}</text>
-      <text class="qp-metric__label">今日答题</text>
-    </view>
-    <view class="qp-metric__sep" wx:if="{{todayTotal > 0 && totalAttempts > 0}}"></view>
-    <view class="qp-metric" wx:if="{{totalAttempts > 0}}">
-      <text class="qp-metric__value qp-num">{{accuracy}}<text class="qp-metric__unit">%</text></text>
-      <text class="qp-metric__label">正确率</text>
-    </view>
-    <view class="qp-metric__sep" wx:if="{{(todayTotal > 0 || totalAttempts > 0) && favoriteCount > 0}}"></view>
-    <view class="qp-metric" wx:if="{{favoriteCount > 0}}">
-      <text class="qp-metric__value qp-num">{{favoriteCount}}</text>
-      <text class="qp-metric__label">已收藏</text>
-    </view>
-  </view>
-
-  <block wx:if="{{wrongQuestionCount > 0 || favoriteCount > 0}}">
-    <text class="qp-eyebrow">{{uiText.reviewSection}}</text>
-    <view class="qp-list">
-      <view class="qp-row ui-pressable" wx:if="{{wrongQuestionCount > 0}}" bindtap="goToMistakes" hover-class="qp-row--pressed" hover-stay-time="80">
-        <view class="qp-row__dot qp-row__dot--danger"></view>
-        <text class="qp-row__title">{{uiText.mistakeReview}}</text>
-        <text class="qp-row__value qp-num">{{wrongQuestionCount}}</text>
-        <text class="qp-row__chev">›</text>
-      </view>
-      <view class="qp-row ui-pressable" wx:if="{{favoriteCount > 0}}" bindtap="goToFavoriteReview" hover-class="qp-row--pressed" hover-stay-time="80">
-        <view class="qp-row__dot qp-row__dot--primary"></view>
-        <text class="qp-row__title">{{uiText.flashcardReview}}</text>
-        <text class="qp-row__value qp-num">{{favoriteCount}}</text>
-        <text class="qp-row__chev">›</text>
-      </view>
-    </view>
-  </block>
-
-  <!-- E · 需要加强 -->
-  <block wx:if="{{itpassWeak || sgWeak}}">
-    <text class="qp-eyebrow">{{uiText.weakSection}}</text>
-    <view class="qp-list">
-      <view class="qp-row ui-pressable" wx:if="{{itpassWeak}}" bindtap="goToItPassport" hover-class="qp-row--pressed" hover-stay-time="80">
-        <view class="qp-row__dot qp-row__dot--danger"></view>
-        <view class="qp-row__body">
-          <text class="qp-row__title">{{uiText.itpassTitle}} · 需要加强</text>
-          <text class="qp-row__desc">正确率 {{itpassAccuracy}}%</text>
-          <view class="qp-structure-line" aria-hidden="true">
-            <view class="qp-structure-line__mark" style="background-color: var(--qp-color-danger); width: {{itpassAccuracy}}%"></view>
+  <!-- C. 资格考试 -->
+  <view class="cc-section">
+    <text class="cc-section__title">资格考试</text>
+    <view class="cc-exam-list">
+      <block wx:for="{{examCourses}}" wx:key="id">
+        <view wx:if="{{item.availability === 'available'}}" class="cc-exam-card" bindtap="{{item.id === 'itpass' ? 'goItPassport' : 'goSG'}}">
+          <view class="cc-exam-card__body">
+            <text class="cc-exam-card__name">{{item.displayName}}</text>
+            <text class="cc-exam-card__desc">{{item.description}}</text>
           </view>
+          <view class="cc-exam-card__action">开始刷题</view>
         </view>
-        <text class="qp-row__chev">›</text>
-      </view>
-      <view class="qp-row ui-pressable" wx:if="{{sgWeak}}" bindtap="goToSG" hover-class="qp-row--pressed" hover-stay-time="80">
-        <view class="qp-row__dot qp-row__dot--danger"></view>
-        <view class="qp-row__body">
-          <text class="qp-row__title">{{uiText.sgTitle}} · 需要加强</text>
-          <text class="qp-row__desc">正确率 {{sgAccuracy}}%</text>
-          <view class="qp-structure-line" aria-hidden="true">
-            <view class="qp-structure-line__mark" style="background-color: var(--qp-color-danger); width: {{sgAccuracy}}%"></view>
+        <view wx:else class="cc-exam-card cc-exam-card--muted">
+          <view class="cc-exam-card__body">
+            <text class="cc-exam-card__name">{{item.displayName}}</text>
+            <text class="cc-exam-card__desc">{{item.description}}</text>
           </view>
+          <text class="cc-exam-card__status">准备中</text>
         </view>
-        <text class="qp-row__chev">›</text>
-      </view>
-    </view>
-  </block>
-
-  <text class="qp-eyebrow">{{uiText.practiceSection}}</text>
-  <view class="qp-list">
-    <view class="qp-row qp-row--lead ui-pressable" bindtap="goToItPassport" hover-class="qp-row--pressed" hover-stay-time="80">
-      <view class="qp-row__body">
-        <text class="qp-row__title">{{uiText.itpassTitle}}</text>
-        <text class="qp-row__desc" wx:if="{{itpassTotal > 0}}">已做 <text class="qp-num">{{itpassTotal}}</text> 题 · 正确率 <text class="qp-num">{{itpassAccuracy}}</text>%</text>
-        <text class="qp-row__desc qp-row__desc--muted" wx:else>{{uiText.itpassEmpty}}</text>
-      </view>
-      <text class="qp-row__chev">›</text>
-    </view>
-    <view class="qp-row ui-pressable" bindtap="goToSG" hover-class="qp-row--pressed" hover-stay-time="80">
-      <view class="qp-row__body">
-        <text class="qp-row__title">{{uiText.sgTitle}}</text>
-        <text class="qp-row__desc" wx:if="{{sgTotal > 0}}">已做 <text class="qp-num">{{sgTotal}}</text> 题 · 正确率 <text class="qp-num">{{sgAccuracy}}</text>%</text>
-        <text class="qp-row__desc qp-row__desc--muted" wx:else>{{uiText.sgEmpty}}</text>
-      </view>
-      <text class="qp-row__chev">›</text>
+      </block>
     </view>
   </view>
 
-  <text class="qp-eyebrow">{{uiText.toolsSection}}</text>
-  <view class="qp-list qp-list--tools">
-    <view class="qp-row ui-pressable" bindtap="goToGlossary" hover-class="qp-row--pressed" hover-stay-time="80">
-      <text class="qp-row__title qp-row__title--regular">{{uiText.glossary}}</text>
-      <text class="qp-row__chev">›</text>
-    </view>
-    <view class="qp-row ui-pressable" bindtap="goToAnki" hover-class="qp-row--pressed" hover-stay-time="80">
-      <text class="qp-row__title qp-row__title--regular">{{uiText.anki}}</text>
-      <text class="qp-row__chev">›</text>
-    </view>
-    <view class="qp-row ui-pressable" bindtap="goToProfile" hover-class="qp-row--pressed" hover-stay-time="80">
-      <text class="qp-row__title qp-row__title--regular">{{uiText.profile}}</text>
-      <text class="qp-row__chev">›</text>
+  <!-- D. 学习记录 -->
+  <view class="cc-section">
+    <view class="cc-record-link" bindtap="goProfile">
+      <text class="cc-record-link__text">学习记录</text>
+      <text class="cc-record-link__arrow">→</text>
     </view>
   </view>
 
-  <view class="qp-backtop ui-pressable" wx:if="{{showBackToTop}}" bindtap="scrollToTop">
-    <text class="qp-backtop__icon">↑</text>
+  <!-- Back to top -->
+  <view class="cc-backtop" wx:if="{{showBackToTop}}" bindtap="scrollToTop">
+    <text class="cc-backtop__icon">↑</text>
   </view>
 </view>

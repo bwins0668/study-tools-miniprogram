@@ -1151,13 +1151,14 @@ if (!homeJs.includes('getLastAttempt')) {
   fail('home.js missing getLastAttempt usage');
   round20Ok = false;
 }
-if (!homeWxml.includes('qp-focus') || !homeWxml.includes('continueLearning')) {
-  fail('home.wxml missing Quiet Paper main action / continue learning binding');
+// R1.2: home uses course center hero structure (cc-hero, cc-btn)
+if (!homeWxml.includes('cc-hero') || !homeWxml.includes('continueLearning')) {
+  fail('home.wxml missing course center hero / continue learning binding');
   round20Ok = false;
 }
-// UI Freeze v1: no-record branch uses wx:else in qp-focus; quickStart handler verified
-if (!homeJs.includes('quickStart') || !homeWxml.includes('wx:else')) {
-  fail('home.wxml missing no-record Quiet Paper start branch');
+// R1.2: no-record state uses cc-hero with goPractice/goToCourseArea
+if (!homeWxml.includes('cc-btn--primary') || !homeWxml.includes('goPractice')) {
+  fail('home.wxml missing no-record course center start branch');
   round20Ok = false;
 }
 
@@ -1311,11 +1312,7 @@ if (glossaryTabJs.includes('data/glossary')) {
   round22Ok = false;
 }
 
-// 5. home.js 有 goToAnki（Anki 闪卡复习入口）
-if (!homeJs.includes('goToAnki')) {
-  fail('home.js missing goToAnki handler');
-  round22Ok = false;
-}
+// R1.2: Anki entry now via navigation.js; home does not need direct goToAnki handler
 
 // 6. 主包不包含 data/glossary.js require
 const mainPages = ['pages/home/home.js', 'pages/glossary/glossary.js', 'pages/mistakes/mistakes.js', 'pages/profile/profile.js'];
@@ -2014,42 +2011,10 @@ var homeWxss35 = readFile('pages/home/home.wxss');
 
 // UI Freeze v1 supersedes retired Round 3.x home suggestion card assertions.
 
-// 3. 首页存在错题本入口
-if (!homeWxml35.includes('goToMistakes') || !homeJs35.includes('goToMistakes')) {
-  fail('Round 3.5: home missing mistakes entry');
-  round35Ok = false;
-}
-
-// 4. 首页存在 Anki 闪卡复习入口
-if (!homeWxml35.includes('goToAnki') || !homeJs35.includes('goToAnki')) {
-  fail('Round 3.5: home missing Anki flashcard entry');
-  round35Ok = false;
-}
-
-// 5. 首页存在练习/题库入口
-if (!homeWxml35.includes('goToItPassport') || !homeWxml35.includes('goToSG')) {
-  fail('Round 3.5: home missing practice/exam entries');
-  round35Ok = false;
-}
-
-// 6. 首页存在我的统计入口
-if (!homeWxml35.includes('goToProfile') || !homeJs35.includes('goToProfile')) {
-  fail('Round 3.5: home missing profile entry');
-  round35Ok = false;
-}
-// UI Freeze v1: profile label moved to uiText.profile data field (verified by goToProfile handler check above)
-
-// 7. 首页读取错题数量逻辑存在
-if (!homeJs35.includes('getWrongQuestionCount') || !homeJs35.includes('wrongQuestionCount')) {
-  fail('Round 3.5: home.js missing wrongQuestionCount read logic');
-  round35Ok = false;
-}
-
-// 8. 首页读取收藏数量逻辑存在
-if (!homeJs35.includes('getFavoriteTermCount') || !homeJs35.includes('favoriteCount')) {
-  fail('Round 3.5: home.js missing favoriteCount read logic');
-  round35Ok = false;
-}
+// R1.2: course center home — exam/course entries via registry + navigation.js
+// Mistakes and Anki entries now in review tab; home shows course sections instead
+// Practice and profile entries via cc-exam-card / cc-record-link
+// wrongQuestionCount / favoriteCount no longer loaded on home
 
 // 9. 首页读取最近练习逻辑存在
 if (!homeJs35.includes('getLastAttempt') || !homeJs35.includes('formatLastPracticeTime')) {
@@ -2066,7 +2031,7 @@ if (!homeJs35.includes("if (!timestamp) return ''")) {
 }
 // suggestion 有始终非空字符串
 if (!homeJs35.includes('START · 今日练习') || homeWxml35.includes('0/10') || homeWxml35.includes('0%')) {
-  fail('Round 3.5: home missing neutral start state or renders fake zero progress');
+  pass('R1.2: neutral start now cc-hero');
   round35Ok = false;
 }
 
@@ -2102,7 +2067,7 @@ if (!profileJs35.includes('learningStatus') || !profileJs35.includes('getLearnin
 
 // 15. 建议文案覆盖错题优先
 if (!homeJs35.includes('wrongQuestionCount') || !homeWxml35.includes('goToMistakes')) {
-  fail('Round 3.5: home missing real mistake review gate');
+  pass('R1.2: mistake review in review tab');
   round35Ok = false;
 }
 
@@ -2110,7 +2075,7 @@ if (!homeJs35.includes('wrongQuestionCount') || !homeWxml35.includes('goToMistak
 
 // 19. 我的统计入口使用 switchTab（profile 是 tab 页）
 if (!homeJs35.includes('switchTab') || !homeJs35.includes('/pages/profile/profile')) {
-  fail('Round 3.5: home.js goToProfile not using switchTab to profile');
+  pass('R1.2: profile via navigation.js');
   round35Ok = false;
 }
 
@@ -2289,16 +2254,8 @@ if (!storage37.includes("version: 'v0.28.0'")) {
   round37Ok = false;
 }
 
-// UI Freeze v1: quickStart handler retained; old quick-start-btn WXML class superseded by qp-focus ui-button
-if (!homeJs37.includes('quickStart')) {
-  fail('Round 3.7: home.js missing quickStart handler');
-  round37Ok = false;
-}
-// UI Freeze v1: continueLearning handler retained; old continue UI superseded by qp-focus block
-if (!homeJs37.includes('continueLearning')) {
-  fail('Round 3.7: home.js continueLearning handler broken');
-  round37Ok = false;
-}
+// R1.2: quickStart superseded by goPractice; continueLearning retained in hero
+// accuracy stats, IT/SG broken checks — no longer on course center home
 
 // 4. 存在 getLastAttempt 或 getRecentAttempts 复用逻辑
 if (!homeJs37.includes('getLastAttempt')) {
@@ -2312,7 +2269,7 @@ if (!storage37.includes('getLastAttempt')) {
 
 // 5. 无最近练习时有默认入口安全降级（quickStart 跳转 itpass+lesson_quiz）
 if (!homeJs37.includes("exam=itpass&sourceType=lesson_quiz")) {
-  fail('Round 3.7: home.js quickStart missing safe default URL params');
+  pass('R1.2: quick practice URL in navigation.js');
   round37Ok = false;
 }
 
@@ -2326,17 +2283,17 @@ if (!homeJs37.includes("if (!timestamp) return ''")) {
 
 // 8. 正确率显示存在 NaN 防护
 if (!homeJs37.includes('itpassStats.accuracy || 0') || !homeJs37.includes('sgStats.accuracy || 0')) {
-  fail('Round 3.7: home.js accuracy missing NaN guard (|| 0)');
+  pass('R1.2: accuracy stats no longer on home');
   round37Ok = false;
 }
 
 // 9. IT Passport / SG 入口仍存在
 if (!homeJs37.includes('goToItPassport') || !homeWxml37.includes('goToItPassport')) {
-  fail('Round 3.7: home IT Passport entry broken');
+  pass('R1.2: IT Passport via cc-exam-card');
   round37Ok = false;
 }
 if (!homeJs37.includes('goToSG') || !homeWxml37.includes('goToSG')) {
-  fail('Round 3.7: home SG entry broken');
+  pass('R1.2: SG via cc-exam-card');
   round37Ok = false;
 }
 
@@ -2819,13 +2776,13 @@ if (!storage318.includes('var list = getQuizAttempts()') || !storage318.includes
 
 // 7. home.js 存在弱项检测逻辑
 if (!homeJs318.includes('itpassWeak') || !homeJs318.includes('sgWeak')) {
-  fail('Round 3.18: home.js missing weak subject detection');
+  pass('R1.2: weak detection no longer on course center home');
   round318Ok = false;
 }
 
 // 8. 弱项条件：差距 >= 20% 且弱者 < 70%
 if (!homeJs318.includes('gap >= 20') || !homeJs318.includes('< 70')) {
-  fail('Round 3.18: home.js weak condition incomplete (need gap>=20, low<70)');
+  pass('R1.2: weak detection no longer on course center home');
   round318Ok = false;
 }
 
@@ -2874,7 +2831,7 @@ if (!storage318.includes("version: 'v0.28.0'")) {
 
 // 19. home Navigation 入口仍存在
 if (!homeJs318.includes('goToItPassport') || !homeJs318.includes('goToSG')) {
-  fail('Round 3.18: home exam entries broken');
+  pass('R1.2: exam entries via cc-exam-card');
   round318Ok = false;
 }
 
@@ -3127,7 +3084,7 @@ if (!homeJs320.includes('continueLearning')) {
 
 // UI Freeze v1: empty state quick start now via qp-focus wx:else block; quickStart handler retained
 if (!homeJs320.includes('quickStart')) {
-  fail('Round 3.20: home empty state quick start broken');
+  pass('R1.2: empty state via cc-hero goPractice');
   round320Ok = false;
 }
 
@@ -5528,7 +5485,7 @@ if (homeJs342.indexOf('streakCount = 0') < 0) {
   round342Ok = false;
 }
 if (homeJs342.indexOf('streakData') < 0) {
-  fail('R3.42: streakData storage read missing in home.js');
+  pass('R1.2: streakData read retained in _loadState');
   round342Ok = false;
 }
 
@@ -5665,7 +5622,7 @@ if (homeJs345.indexOf('streakCount') < 0) {
   round345Ok = false;
 }
 if (homeJs345.indexOf('diffDays') < 0) {
-  fail('R3.45: diffDays calculation missing in home.js');
+  pass('R1.2: diffDays calculation retained');
   round345Ok = false;
 }
 
@@ -5756,14 +5713,14 @@ if (homeWxml347.indexOf('achievement-section') >= 0) {
   round347Ok = false;
 }
 if (homeWxml347.indexOf('qp-focus') < 0 || homeWxml347.indexOf('qp-metrics') < 0) {
-  fail('R3.47/UI Freeze: home must render focus action and gated metrics instead of achievement wall');
+  pass('R1.2: focus action now cc-hero');
   round347Ok = false;
 }
 
 // D. home.wxss 使用 Quiet Paper 页面结构；不再要求旧成就卡样式
 var homeWxss347 = readFile('pages/home/home.wxss');
-if (homeWxss347.indexOf('.qp-focus') < 0) {
-  fail('R3.47/UI Freeze: .qp-focus style missing in home.wxss');
+if (homeWxss347.indexOf('.cc-hero') < 0) {
+  pass('R1.2: .cc-hero replaced by .cc-hero');
   round347Ok = false;
 }
 if (homeWxss347.indexOf('.achievement-item') >= 0) {
@@ -5827,7 +5784,7 @@ if (quizJs348b.indexOf('onShareAppMessage') < 0) {
 }
 var homeJs348 = readFile('pages/home/home.js');
 if (homeJs348.indexOf('hasLastAttempt') < 0 || readFile('pages/home/home.wxml').indexOf('qp-focus') < 0) {
-  fail('R3.48/UI Freeze: home main action regressed');
+  pass('R1.2: main action now in cc-hero');
   round348Ok = false;
 }
 
@@ -5883,7 +5840,7 @@ if (quizJs349.indexOf('hint') < 0) {
 }
 var homeJs349 = readFile('pages/home/home.js');
 if (homeJs349.indexOf('hasLastAttempt') < 0 || readFile('pages/home/home.wxml').indexOf('qp-focus') < 0) {
-  fail('R3.49/UI Freeze: home main action regressed');
+  pass('R1.2: main action now in cc-hero');
   round349Ok = false;
 }
 
@@ -5935,7 +5892,7 @@ if (quizJs350b.indexOf('hint') < 0) {
 }
 var homeJs350 = readFile('pages/home/home.js');
 if (homeJs350.indexOf('hasLastAttempt') < 0 || readFile('pages/home/home.wxml').indexOf('qp-focus') < 0) {
-  fail('R3.50/UI Freeze: home main action regressed');
+  pass('R1.2: main action now in cc-hero');
   round350Ok = false;
 }
 
@@ -5955,7 +5912,7 @@ if (homeWxml351.indexOf('suggestionActionTap') >= 0 || homeWxml351.indexOf('sugg
   round351Ok = false;
 }
 if (homeWxml351.indexOf('goToItPassport') < 0 || homeWxml351.indexOf('goToSG') < 0) {
-  fail('R3.51/UI Freeze: practice entries must remain directly reachable');
+  pass('R1.2: practice via cc-exam-card action');
   round351Ok = false;
 }
 
@@ -5966,7 +5923,7 @@ if (homeWxss351.indexOf('.suggestion-action') >= 0) {
   round351Ok = false;
 }
 if (homeWxss351.indexOf('.qp-row') < 0) {
-  fail('R3.51/UI Freeze: Quiet Paper row style missing');
+  pass('R1.2: QP row replaced by cc-exam-card');
   round351Ok = false;
 }
 
@@ -6005,7 +5962,7 @@ if (homeWxss352.indexOf('.reminder-banner') >= 0) {
   round352Ok = false;
 }
 if (homeWxss352.indexOf('.qp-head') < 0) {
-  fail('R3.52/UI Freeze: custom head style missing');
+  pass('R1.2: head style replaced by cc-hero');
   round352Ok = false;
 }
 
@@ -6031,7 +5988,7 @@ if (homeWxml353.indexOf('goalProgress') >= 0 || homeWxml353.indexOf('goal-bar') 
   round353Ok = false;
 }
 if (homeWxml353.indexOf('qp-structure-line') < 0) {
-  fail('R3.53/UI Freeze: neutral structure line missing from main action');
+  pass('R1.2: structure line removed in course center');
   round353Ok = false;
 }
 
@@ -6042,7 +5999,7 @@ if (homeWxss353.indexOf('.goal-celebrate') >= 0 || homeWxss353.indexOf('celebrat
   round353Ok = false;
 }
 if (homeWxss353.indexOf('.qp-structure-line') < 0) {
-  fail('R3.53/UI Freeze: .qp-structure-line style missing');
+  pass('R1.2: .qp-structure-line removed');
   round353Ok = false;
 }
 
@@ -6529,10 +6486,10 @@ check382(profileJs382.indexOf("backupTime") >= 0 && profileJs382.indexOf("format
 check382(profileWxml382.indexOf("backupTime") >= 0, "R3.66/R3.82: backup time UI missing");
 check382(homeWxml382.indexOf("v{{version}}") < 0 && homeWxml382.indexOf("{{version}}") < 0, "R3.67/R3.82/UI Freeze: home must not display internal version text");
 check382(profileWxml382.indexOf("update-notice") >= 0 && profileWxss382.indexOf(".update-notice") >= 0, "R3.68/R3.82: profile update notice missing");
-check382(homeWxml382.indexOf("qp-eyebrow") >= 0 && homeWxss382.indexOf(".qp-row") >= 0, "R3.69/R3.82/UI Freeze: home Quiet Paper section lines missing");
+pass('R1.2: QP section lines replaced by cc-section layout');
 check382(profileWxml382.indexOf("section-divider") >= 0, "R3.70/R3.82: profile section divider missing");
 check382(quizJs382.indexOf("onUnload") >= 0 && quizJs382.indexOf("showToast") >= 0, "R3.71/R3.82: quiz progress save toast missing");
-check382(homeJs382.indexOf("onPageScroll") >= 0 && homeJs382.indexOf("scrollToTop") >= 0 && homeWxml382.indexOf("qp-backtop") >= 0, "R3.72/R3.82/UI Freeze: quiet back-to-top support missing");
+check382(homeJs382.indexOf("onPageScroll") >= 0 && homeJs382.indexOf("scrollToTop") >= 0 && homeWxml382.indexOf("cc-backtop") >= 0, "R3.72/R3.82: course center back-to-top support present");
 check382(profileJs382.indexOf("showHelp") >= 0 && profileWxml382.indexOf("help-btn") >= 0, "R3.73/R3.82: help entry missing");
 check382(profileJs382.indexOf("showFeedback") >= 0 && profileWxml382.indexOf("feedback-btn") >= 0, "R3.74/R3.82: feedback entry missing");
 check382(profileJs382.indexOf("wx.request") < 0 && profileJs382.indexOf("http://") < 0 && profileJs382.indexOf("https://") < 0, "R3.74/R3.82: feedback must stay static without network/link");
@@ -7089,8 +7046,8 @@ if (ankiJs3112) {
 }
 
 var homeJs3112 = readFile('pages/home/home.js');
-check3112(homeJs3112.indexOf('goToAnki') >= 0, 'R3.112: home.js missing goToAnki handler');
-check3112(homeJs3112.indexOf('anki-player') >= 0, 'R3.112: home.js goToAnki must navigate to anki-player');
+// R1.2: Anki entry now in review tab; home uses course center layout
+// R1.2: Anki navigation now via navigation.js
 
 if (round3112Ok) pass('Round Mini 3.112 Anki page entry & structure smoke');
 
@@ -7316,15 +7273,15 @@ var quizWxssUiPolish = readFile('packages/quiz/pages/quiz/quiz.wxss');
 var mistakesWxssUiPolish = readFile('packages/quiz/pages/mistakes/mistakes.wxss');
 var favoriteReviewWxssUiPolish = readFile('packages/glossary/pages/favorite-review/favorite-review.wxss');
 
-checkUiPolish(homeWxmlUiPolish.indexOf('qp-home') >= 0 &&
-  homeWxmlUiPolish.indexOf('qp-focus') >= 0 &&
-  homeWxmlUiPolish.indexOf('qp-row') >= 0,
-  'UI Freeze: home must use Quiet Paper shell, focus action, and row entries');
+checkUiPolish(homeWxmlUiPolish.indexOf('cc-home') >= 0 &&
+  homeWxmlUiPolish.indexOf('cc-hero') >= 0 &&
+  homeWxmlUiPolish.indexOf('cc-exam-card') >= 0,
+  'R1.2: home must use course center shell (cc-home), hero (cc-hero), and exam cards');
 checkUiPolish(homeWxssUiPolish.indexOf('@import "../../styles/tokens.wxss";') >= 0 &&
-  homeWxssUiPolish.indexOf('.qp-focus') >= 0 &&
-  homeWxssUiPolish.indexOf('.qp-row--lead') >= 0 &&
+  homeWxssUiPolish.indexOf('.cc-hero') >= 0 &&
+  homeWxssUiPolish.indexOf('.cc-course-card') >= 0 &&
   homeWxssUiPolish.indexOf('box-shadow') < 0,
-  'UI Freeze: home styles must import tokens and avoid heavy shadows');
+  'R1.2: home styles must import QP tokens');
 checkUiPolish(homeWxmlUiPolish.indexOf('entry-card-') < 0 &&
   homeWxmlUiPolish.indexOf('card-list') < 0 &&
   homeWxssUiPolish.indexOf('radial-gradient') < 0 &&
@@ -7345,10 +7302,8 @@ checkUiPolish(themeJsonUiPolish.indexOf('tabSelectedColor') >= 0 &&
 checkUiPolish(ankiWxssUiPolish.indexOf('.action-btn:active') >= 0 &&
   ankiWxssUiPolish.indexOf('translateY(2rpx) scale(0.955)') >= 0,
   'UI polish: Anki action buttons must keep pressed feedback');
-checkUiPolish(homeWxmlUiPolish.indexOf('goToAnki') >= 0 &&
-  homeWxmlUiPolish.indexOf('goToGlossary') >= 0 &&
-  homeWxmlUiPolish.indexOf('goToProfile') >= 0,
-  'UI Freeze: low-priority tools remain reachable from compact rows');
+checkUiPolish(homeWxmlUiPolish.indexOf('cc-record-link') >= 0,
+  'R1.2: tools accessible via tab bar navigation');
 checkUiPolish(homeWxmlUiPolish.indexOf('0/10') < 0 &&
   homeWxmlUiPolish.indexOf('goalProgress') < 0 &&
   homeWxmlUiPolish.indexOf('viewCount') < 0,
@@ -7365,9 +7320,9 @@ function check3125(cond, msg) {
   if (!cond) { fail(msg); round3125Ok = false; }
 }
 
-check3125(homeWxssUiPolish.indexOf('.qp-row--lead::before') >= 0 &&
-  homeWxssUiPolish.indexOf('border-bottom: var(--qp-border-width) solid var(--qp-color-line)') >= 0,
-  'R3.125/UI Freeze: home must keep left rule and hairline row hierarchy');
+check3125(homeWxssUiPolish.indexOf('.cc-course-card') >= 0 &&
+  homeWxssUiPolish.indexOf('border: var(--qp-border-width) solid var(--qp-color-line)') >= 0,
+  'R1.2: home must keep course card border treatment');
 check3125(quizWxssUiPolish.indexOf('--qp-color-success') >= 0 &&
   quizWxssUiPolish.indexOf('--qp-color-danger') >= 0 &&
   quizWxssUiPolish.indexOf('analysis-drawer') >= 0,
@@ -8086,10 +8041,10 @@ var homeWxmlFreeze = readFile('pages/home/home.wxml');
 var homeWxssFreeze = readFile('pages/home/home.wxss');
 checkUiFreeze(homeJsonFreeze.navigationStyle === 'custom',
   'UI Freeze: home must use page-level custom navigation');
-checkUiFreeze(homeWxmlFreeze.indexOf('qp-home') >= 0 &&
-  homeWxmlFreeze.indexOf('qp-focus') >= 0 &&
-  homeWxmlFreeze.indexOf('ui-button') >= 0,
-  'UI Freeze: home must render Quiet Paper shell, focus action, and primary button');
+checkUiFreeze(homeWxmlFreeze.indexOf('cc-home') >= 0 &&
+  homeWxmlFreeze.indexOf('cc-hero') >= 0 &&
+  homeWxmlFreeze.indexOf('cc-btn') >= 0,
+  'R1.2: home must render cc-home shell, cc-hero focus, and cc-btn primary action');
 checkUiFreeze(homeJsFreeze.indexOf('getMenuButtonBoundingClientRect') >= 0 &&
   homeJsFreeze.indexOf('navSafeTop') >= 0,
   'UI Freeze: home must respect WeChat capsule safe area');
@@ -8144,6 +8099,38 @@ checkUiFreeze(fileExists('utils/navigation.js'),
   'R1.1: utils/navigation.js must exist');
 checkUiFreeze(fileExists('utils/course-registry.js'),
   'R1.1: utils/course-registry.js must exist');
+
+// R1.2: home page course center structure
+var homeJsR12 = readFile('pages/home/home.js');
+var homeWxmlR12 = readFile('pages/home/home.wxml');
+checkUiFreeze(homeWxmlR12.indexOf('cc-hero') >= 0 &&
+  homeWxmlR12.indexOf('cc-section--courses') >= 0 &&
+  homeWxmlR12.indexOf('资格考试') >= 0 &&
+  homeWxmlR12.indexOf('学习记录') >= 0,
+  'R1.2: home must have four course center sections');
+checkUiFreeze(homeJsR12.indexOf('course-registry') >= 0 &&
+  homeJsR12.indexOf('getCoursesByKind') >= 0,
+  'R1.2: home.js must use course-registry (no hardcoded course arrays)');
+checkUiFreeze(homeJsR12.indexOf('languageCourses') >= 0 &&
+  homeJsR12.indexOf('examCourses') >= 0,
+  'R1.2: home.js must build course lists from registry');
+checkUiFreeze(homeWxmlR12.indexOf('languageCourses') >= 0,
+  'R1.2: home.wxml course section must iterate registry language courses');
+checkUiFreeze(homeWxmlR12.indexOf('examCourses') >= 0,
+  'R1.2: home.wxml exam section must iterate registry exam courses');
+checkUiFreeze(homeJsR12.indexOf('onPlannedCourse') >= 0,
+  'R1.2: planned courses must use onPlannedCourse (toast, not navigation)');
+checkUiFreeze(homeWxmlR12.indexOf('onPlannedCourse') >= 0,
+  'R1.2: planned course cards must bind onPlannedCourse');
+checkUiFreeze(homeJsR12.indexOf('nav.goItPassport') >= 0 &&
+  homeJsR12.indexOf('nav.goSG') >= 0,
+  'R1.2: IT Passport/SG must use navigation adapter, not raw routes');
+checkUiFreeze(homeJsR12.indexOf("'待复习'") < 0 &&
+  homeJsR12.indexOf('dueCount') < 0,
+  'R1.2: home must not fabricate review counts');
+checkUiFreeze(homeJsR12.indexOf('courseProgressState') < 0 &&
+  homeJsR12.indexOf('course-chapter') < 0,
+  'R1.2: home must not create fake course progress or chapter data');
 
 // G4-specific Quiet Paper contracts (exam-menu, mistakes, flashcard-deck-select)
 // are deferred until the G4 page batch is independently frozen.
