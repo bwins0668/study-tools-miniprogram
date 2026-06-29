@@ -8015,6 +8015,93 @@ checkFlashcard(playerPackageNames.every(function (packageName) {
 if (roundFlashcardOk) pass('Flashcard cold-start reliability checks');
 
 // ============================================================
+// R2.8: Course Question Organizer contract
+// ============================================================
+console.log('\n--- R2.8 course question organizer contract ---');
+var round28Ok = true;
+function checkR28(cond, msg) { if (!cond) { fail(msg); round28Ok = false; } }
+
+// A. Page file existence (4 files)
+checkR28(fileExists('pages/course-organize/course-organize.js'), 'R2.8: organizer JS exists');
+checkR28(fileExists('pages/course-organize/course-organize.wxml'), 'R2.8: organizer WXML exists');
+checkR28(fileExists('pages/course-organize/course-organize.wxss'), 'R2.8: organizer WXSS exists');
+checkR28(fileExists('pages/course-organize/course-organize.json'), 'R2.8: organizer JSON exists');
+
+// B. app.json page registration
+var appJson28 = JSON.parse(readFile('app.json'));
+checkR28((appJson28.pages || []).indexOf('pages/course-organize/course-organize') >= 0,
+  'R2.8: organizer registered in app.json pages');
+
+// C. Navigation safe route
+var navJs28 = readFile('utils/navigation.js');
+checkR28(navJs28.indexOf('goCourseQuestionOrganizer') >= 0,
+  'R2.8: goCourseQuestionOrganizer in navigation.js');
+checkR28(navJs28.indexOf('/pages/course-organize/course-organize') >= 0,
+  'R2.8: organizer route path in navigation.js');
+
+// D. Course shell entry
+var courseJs28 = readFile('pages/course/course.js');
+var courseWxml28 = readFile('pages/course/course.wxml');
+checkR28(courseJs28.indexOf('goQuestionOrganizer') >= 0,
+  'R2.8: goQuestionOrganizer handler in course.js');
+checkR28(courseWxml28.indexOf('questionOrganization') >= 0,
+  'R2.8: questionOrganization capability guard in course.wxml');
+
+// E. Wrong + favorite tabs in organizer page
+var coWxml28 = readFile('pages/course-organize/course-organize.wxml');
+checkR28(coWxml28.indexOf('tab === \'wrong\'') >= 0 && coWxml28.indexOf('tab === \'favorite\'') >= 0,
+  'R2.8: wrong and favorite tabs in organizer');
+checkR28(coWxml28.indexOf('暂无本课程错题') >= 0,
+  'R2.8: honest wrong empty state');
+// wx:else fallback is honest — never pretends deferred availability
+checkR28(coWxml28.indexOf('状态异常') >= 0,
+  'R2.8: wx:else fallback uses honest error text, not fake deferred');
+
+// F. Cross-course mistakes bridge preserved
+checkR28(courseWxml28.indexOf('全部错题复习') >= 0,
+  'R2.8: cross-course mistakes bridge retained');
+checkR28(courseWxml28.indexOf('跨课程错题') >= 0,
+  'R2.8: cross-course note retained');
+
+// G. No fake dueCount / expected time / fake progress
+checkR28(coWxml28.indexOf('预计时长') < 0, 'R2.8: no fake expected time');
+checkR28(coWxml28.indexOf('待复习') < 0, 'R2.8: no fake due count');
+checkR28(coWxml28.indexOf('掌握度') < 0, 'R2.8: no fake mastery');
+
+// H. No new storage key (same 5 keys as R2.7)
+var storage28 = readFile('utils/storage.js');
+var keyRx28 = /study-tools-mini-[a-z-]+-v1/g;
+var found28 = {};
+var km;
+while ((km = keyRx28.exec(storage28)) !== null) { found28[km[0]] = true; }
+var keyCount28 = Object.keys(found28).length;
+checkR28(keyCount28 === 5, 'R2.8: storage key count still 5 (got ' + keyCount28 + ')');
+
+// I. Organizer does NOT import canonical question bank, never returns deferred
+var coJs28 = readFile('utils/course-question-state.js');
+checkR28(coJs28.indexOf("require('../../data/questions')") < 0,
+  'R2.8: organizer does not import questions.js');
+checkR28(coJs28.indexOf('setStorageSync') < 0,
+  'R2.8: organizer does not write storage');
+// No producible deferred — verified against static registry
+checkR28(coJs28.indexOf("status: 'deferred'") < 0 && coJs28.indexOf('status: "deferred"') < 0,
+  'R2.8: organizer does not return deferred (no real source)');
+
+// J. Forbidden files untouched (R2.7 domain)
+var quizJs28 = readFile('packages/quiz/pages/quiz/quiz.js');
+checkR28(quizJs28.indexOf('_refreshFavoriteStateFor') >= 0,
+  'R2.8: R2.7 quiz favorite logic intact');
+checkR28(quizJs28.indexOf('toggleFavorite') >= 0,
+  'R2.8: R2.7 quiz toggleFavorite intact');
+var favJs28 = readFile('utils/favorite-questions.js');
+// favorite-questions uses storage internally; verify it exists and is intact
+checkR28(favJs28.indexOf("require('./storage')") >= 0 &&
+          favJs28.indexOf('module.exports') >= 0,
+  'R2.8: favorite-questions intact (internal storage use, proper exports)');
+
+if (round28Ok) pass('R2.8: course question organizer contract');
+
+// ============================================================
 // UI Freeze v1.0 full-page semantic contract
 // ============================================================
 console.log('\n--- UI Freeze v1.0 full-page semantic contract ---');

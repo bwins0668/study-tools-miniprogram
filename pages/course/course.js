@@ -84,6 +84,11 @@ Page({
     nav.goMistakes();
   },
 
+  // R2.8: navigate to course question organizer (wrong + favorite tabs)
+  goQuestionOrganizer: function () {
+    nav.goCourseQuestionOrganizer(this.data.courseId);
+  },
+
   goBackHome: function () {
     nav.goCourseTab();
   }

@@ -42,9 +42,16 @@
       </view>
     </view>
 
-    <!-- Honest cross-course mistakes bridge -->
+    <!-- R2.8: Course question organizer (wrong + favorite tabs) -->
     <view class="cs-section">
       <text class="cs-section__title">学习辅助</text>
+      <view class="cs-row cs-row--organizer" wx:if="{{course.capabilities.questionOrganization}}" bindtap="goQuestionOrganizer">
+        <view class="cs-row__body">
+          <text class="cs-row__text">题目整理</text>
+          <text class="cs-row__note">按课程查看错题与收藏题目</text>
+        </view>
+        <text class="cs-row__arrow">→</text>
+      </view>
       <view class="cs-row cs-row--secondary" bindtap="goMistakes">
         <view class="cs-row__body">
           <text class="cs-row__text">全部错题复习</text>

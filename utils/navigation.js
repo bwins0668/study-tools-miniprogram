@@ -109,6 +109,17 @@ function goCourseTopicPractice(courseId, topicId) {
   navigateToSafe(route);
 }
 
+// ---- R2.8: Course question organizer ----
+
+/** Navigate to the course question organizer. only itpass/sg allowed. */
+function goCourseQuestionOrganizer(courseId) {
+  if (courseId !== 'itpass' && courseId !== 'sg') {
+    wx.showToast({ title: '该课程暂不支持题目整理', icon: 'none' });
+    return;
+  }
+  navigateToSafe('/pages/course-organize/course-organize?courseId=' + courseId);
+}
+
 // Legacy aliases — delegate to goCoursePractice for backward compat
 function goItPassport() { goCoursePractice('itpass'); }
 function goSG()         { goCoursePractice('sg'); }
@@ -124,5 +135,6 @@ module.exports = {
   goFavoriteReview: goFavoriteReview, goAnkiPlayer: goAnkiPlayer,
   goAnalysisDetail: goAnalysisDetail, continueLastQuiz: continueLastQuiz,
   goCourseHome: goCourseHome, goCoursePractice: goCoursePractice,
-  goCourseTopic: goCourseTopic, goCourseTopicPractice: goCourseTopicPractice
+  goCourseTopic: goCourseTopic, goCourseTopicPractice: goCourseTopicPractice,
+  goCourseQuestionOrganizer: goCourseQuestionOrganizer
 };

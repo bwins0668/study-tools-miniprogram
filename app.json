@@ -5,6 +5,7 @@
     "pages/review/review",
     "pages/course/course",
     "pages/course-topic/course-topic",
+    "pages/course-organize/course-organize",
     "pages/flashcards/flashcards",
     "pages/glossary/glossary",
     "pages/mistakes/mistakes",
