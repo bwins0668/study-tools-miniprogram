@@ -251,6 +251,20 @@ function checkRule14() {
   }
 }
 
+// Rule 15: Profile page must use profile-commands for data mutations
+function checkRule15() {
+  var src = readFileSafe('pages/profile/profile.js');
+  if (!src) { fail(15, 'pages/profile/profile.js', 'file not readable'); return; }
+  if (/\bstorage\.clearQuizAttempts\s*\(/.test(src))
+    fail(15, 'pages/profile/profile.js', 'directly calls storage.clearQuizAttempts (use profile-commands)');
+  if (/\bstorage\.clearAllLocalUserData\s*\(/.test(src))
+    fail(15, 'pages/profile/profile.js', 'directly calls storage.clearAllLocalUserData (use profile-commands)');
+  if (/\bstorage\.importLocalBackup\s*\(/.test(src))
+    fail(15, 'pages/profile/profile.js', 'directly calls storage.importLocalBackup (use profile-commands)');
+  if (!/require\s*\(\s*["']\.\.\/\.\.\/utils\/profile-commands/.test(src))
+    fail(15, 'pages/profile/profile.js', 'does NOT require profile-commands');
+}
+
 function checkRule9() {
   var src = readFileSafe('pages/practice/practice.js');
   if (!src) { fail(9, 'pages/practice/practice.js', 'file not readable'); return; }
@@ -283,6 +297,7 @@ function run() {
   checkRule12();
   checkRule13();
   checkRule14();
+  checkRule15();
 
   console.log('\n--- Results ---');
   if (failures.length === 0) {

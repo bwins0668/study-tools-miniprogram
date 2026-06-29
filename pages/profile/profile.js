@@ -1,6 +1,7 @@
 // pages/profile/profile.js
 var app = getApp();
 var storage = require("../../utils/storage");
+var cmd = require("../../utils/profile-commands");
 var profileSessionViewCount = 0;
 
 /**
@@ -116,7 +117,7 @@ function buildBackupSummary() {
   var favCount = storage.getFavoriteTermCount ? storage.getFavoriteTermCount() : 0;
   var wrongCount = storage.getWrongQuestionCount ? storage.getWrongQuestionCount() : 0;
   var quizCount = storage.getQuizAttemptCount ? storage.getQuizAttemptCount() : 0;
-  var backup = storage.exportLocalBackup ? storage.exportLocalBackup() : null;
+  var backup = storage.exportLocalBackup ? cmd.exportLocalBackup() : null;
   var backupVersion = (backup && backup.version) ? backup.version : '未知';
   var backupTime = (backup && backup.exportedAt) ? formatBackupTime(backup.exportedAt) : '未知';
   return {
@@ -368,7 +369,7 @@ Page({
       cancelText: '取消',
       success: function (res) {
         if (res.confirm) {
-          storage.clearQuizAttempts();
+          cmd.clearQuizAttempts();
           wx.showToast({
             title: '学习记录已清空',
             icon: 'none',
@@ -398,7 +399,7 @@ Page({
       cancelText: '取消',
       success: function (res) {
         if (res.confirm) {
-          var backup = storage.exportLocalBackup();
+          var backup = cmd.exportLocalBackup();
           var jsonStr = JSON.stringify(backup, null, 2);
           wx.setClipboardData({
             data: jsonStr,
@@ -472,7 +473,7 @@ Page({
                 cancelText: '取消',
                 success: function (res2) {
                   if (res2.confirm) {
-                    storage.importLocalBackup(parsed);
+                    cmd.importLocalBackup(parsed);
                     wx.showToast({
                       title: '恢复成功',
                       icon: 'none',
@@ -506,7 +507,7 @@ Page({
       cancelText: '取消',
       success: function (res) {
         if (res.confirm) {
-          storage.clearAllLocalUserData();
+          cmd.clearAllLocalUserData();
           wx.showToast({
             title: '本地数据已清空',
             icon: 'none',
@@ -569,7 +570,7 @@ Page({
               cancelText: '取消',
               success: function (res3) {
                 if (res3.confirm) {
-                  storage.importLocalBackup(parsed);
+                  cmd.importLocalBackup(parsed);
                   wx.showToast({ title: '恢复成功', icon: 'none', duration: 1500 });
                   that.refreshAllData();
                 }
