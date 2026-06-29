@@ -1315,9 +1315,9 @@ if (glossaryTabJs.includes('data/glossary')) {
 
 // R1.2: Anki entry now via navigation.js; home does not need direct goToAnki handler
 
-// 6. 主包不包含 data/glossary.js require
+// 6. 主包不包含 data/glossary.js require (R3.3: glossary-state is a utils adapter, not data)
 const mainPages = ['pages/home/home.js', 'pages/glossary/glossary.js', 'pages/mistakes/mistakes.js', 'pages/profile/profile.js'];
-var glossaryRequireRx = /require\s*\(\s*['"][^'"]*glossary[^'"]*['"]\s*\)/;
+var glossaryRequireRx = /require\s*\(\s*['"][^'"]*glossary(?![^'"]*-state)[^'"]*['"]\s*\)/;
 for (var mp = 0; mp < mainPages.length; mp++) {
   if (fileExists(mainPages[mp])) {
     var mpContent = readFile(mainPages[mp]);
@@ -2636,9 +2636,9 @@ if (!mistakesJs317.includes('lastWrongTime')) {
   round317Ok = false;
 }
 
-// 9. mistakes.js 调用了 getWrongQuestionStats
-if (!mistakesJs317.includes('getWrongQuestionStats')) {
-  fail('Round 3.17: mistakes.js not calling getWrongQuestionStats');
+// 9. mistakes-state.js 调用了 getWrongQuestionStats (R3.3: migrated to read-model)
+if (!mistakesJs317.includes('getWrongQuestionStats') && !(readFile('utils/mistakes-state.js') || '').includes('getWrongQuestionStats')) {
+  fail('Round 3.17: mistakes-state.js missing getWrongQuestionStats call');
   round317Ok = false;
 }
 
@@ -2839,7 +2839,7 @@ if (!homeJs318.includes('goToItPassport') || !homeJs318.includes('goToSG')) {
 // 20. Round 3.17 mistakes 增强功能仍存在
 var mistakesJs318 = readFile('pages/mistakes/mistakes.js');
 var mistakesWxml318 = readFile('pages/mistakes/mistakes.wxml');
-if (!mistakesJs318.includes('getWrongQuestionStats')) {
+if (!mistakesJs318.includes('getWrongQuestionStats') && !(readFile('utils/mistakes-state.js') || '').includes('getWrongQuestionStats')) {
   fail('Round 3.18: Round 3.17 mistakes JS features broken');
   round318Ok = false;
 }
@@ -3028,7 +3028,7 @@ if (!favReviewWxml319.includes('goToGlossary') || !favReviewWxml319.includes('go
 
 // 17. Round 3.17 mistakes 功能仍存在
 var mistakesJs319 = readFile('pages/mistakes/mistakes.js');
-if (!mistakesJs319.includes('getWrongQuestionStats')) {
+if (!mistakesJs319.includes('getWrongQuestionStats') && !(readFile('utils/mistakes-state.js') || '').includes('getWrongQuestionStats')) {
   fail('Round 3.19: Round 3.17 mistakes JS features broken');
   round319Ok = false;
 }
@@ -3199,7 +3199,7 @@ for (var b320 = 0; b320 < banned320.length; b320++) {
 
 // 27. Round 3.17 mistakes 功能仍存在
 var mistakesJs320 = readFile('pages/mistakes/mistakes.js');
-if (!mistakesJs320.includes('getWrongQuestionStats')) {
+if (!mistakesJs320.includes('getWrongQuestionStats') && !(readFile('utils/mistakes-state.js') || '').includes('getWrongQuestionStats')) {
   fail('Round 3.20: Round 3.17 mistakes features broken');
   round320Ok = false;
 }
@@ -3456,7 +3456,7 @@ for (var b321 = 0; b321 < banned321.length; b321++) {
 // === F. 回归检查 ===
 // 30. Round 3.17 mistakes 功能仍存在
 var mistakesJs321 = readFile('pages/mistakes/mistakes.js');
-if (!mistakesJs321.includes('getWrongQuestionStats')) {
+if (!mistakesJs321.includes('getWrongQuestionStats') && !(readFile('utils/mistakes-state.js') || '').includes('getWrongQuestionStats')) {
   fail('Round 3.21: Round 3.17 mistakes features broken');
   round321Ok = false;
 }
@@ -3696,7 +3696,7 @@ for (var b322 = 0; b322 < banned322.length; b322++) {
 // === E. 回归检查 ===
 // 24. Round 3.17 mistakes 功能
 var mistakesJs322 = readFile('pages/mistakes/mistakes.js');
-if (!mistakesJs322.includes('getWrongQuestionStats')) {
+if (!mistakesJs322.includes('getWrongQuestionStats') && !(readFile('utils/mistakes-state.js') || '').includes('getWrongQuestionStats')) {
   fail('Round 3.22: Round 3.17 mistakes broken');
   round322Ok = false;
 }
@@ -3890,7 +3890,7 @@ for (var b323 = 0; b323 < banned323.length; b323++) {
 
 // === F. 回归检查 ===
 // 21. Round 3.17 mistakes
-if (!readFile('pages/mistakes/mistakes.js').includes('getWrongQuestionStats')) {
+if (!readFile('pages/mistakes/mistakes.js').includes('getWrongQuestionStats') && !(readFile('utils/mistakes-state.js') || '').includes('getWrongQuestionStats')) {
   fail('Round 3.23: Round 3.17 mistakes broken');
   round323Ok = false;
 }
@@ -4036,7 +4036,7 @@ var homeJs324 = readFile('pages/home/home.js');
 // === D. 跨轮功能共存验证（全部 7 轮 3.17~3.23） ===
 // 12. Round 3.17: mistakes stats + profile consecutive days
 var mistakesJs324 = readFile('pages/mistakes/mistakes.js');
-if (!mistakesJs324.includes('getWrongQuestionStats') || !profileJs324.includes('getConsecutiveLearningDays')) {
+if (!mistakesJs324.includes('getWrongQuestionStats') && !(readFile('utils/mistakes-state.js') || '').includes('getWrongQuestionStats') || !profileJs324.includes('getConsecutiveLearningDays')) {
   fail('Round 3.24: Round 3.17 coexistence broken');
   round324Ok = false;
 }
@@ -7829,7 +7829,7 @@ check3133(quizJs3133.indexOf('full_bank') < 0 && quizJs3133.indexOf('explanation
   'R3.133: lightweight quiz.js must not import old aggregate data');
 
 var runChecks3133 = readFile('tools/run_miniprogram_checks.js');
-check3133(runChecks3133.indexOf('TOTAL_CHECKS = 11') >= 0 &&
+check3133(runChecks3133.indexOf('TOTAL_CHECKS = 12') >= 0 &&
   runChecks3133.indexOf('tools/check_subpackage_registry.js') >= 0 &&
   runChecks3133.indexOf('tools/audit_miniprogram_package_size.js') >= 0 &&
   runChecks3133.indexOf('tools/check_quiz_explanations.js') >= 0,

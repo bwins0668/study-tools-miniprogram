@@ -206,6 +206,36 @@ function checkRule11() {
   }
 }
 
+// Rule 12: Mistakes page must use mistakes-state, not direct storage
+function checkRule12() {
+  var src = readFileSafe('pages/mistakes/mistakes.js');
+  if (!src) { fail(12, 'pages/mistakes/mistakes.js', 'file not readable'); return; }
+  if (/require\s*\(\s*["']\.\.\/\.\.\/utils\/storage/.test(src)) {
+    fail(12, 'pages/mistakes/mistakes.js', 'directly requires storage (use mistakes-state)');
+  }
+  if (!/require\s*\(\s*["']\.\.\/\.\.\/utils\/mistakes-state/.test(src)) {
+    fail(12, 'pages/mistakes/mistakes.js', 'does NOT require mistakes-state');
+  }
+  if (/\bgetWrongQuestionCount\b/.test(src) || /\bgetWrongQuestionStats\b/.test(src) || /\bgetLastWrongTime\b/.test(src)) {
+    fail(12, 'pages/mistakes/mistakes.js', 'directly calls storage API (use mistakes-state)');
+  }
+}
+
+// Rule 13: Glossary page must use glossary-state, not direct storage
+function checkRule13() {
+  var src = readFileSafe('pages/glossary/glossary.js');
+  if (!src) { fail(13, 'pages/glossary/glossary.js', 'file not readable'); return; }
+  if (/require\s*\(\s*["']\.\.\/\.\.\/utils\/storage/.test(src)) {
+    fail(13, 'pages/glossary/glossary.js', 'directly requires storage (use glossary-state)');
+  }
+  if (!/require\s*\(\s*["']\.\.\/\.\.\/utils\/glossary-state/.test(src)) {
+    fail(13, 'pages/glossary/glossary.js', 'does NOT require glossary-state');
+  }
+  if (/\bgetFavoriteTermCount\b/.test(src)) {
+    fail(13, 'pages/glossary/glossary.js', 'directly calls storage API (use glossary-state)');
+  }
+}
+
 function checkRule9() {
   var src = readFileSafe('pages/practice/practice.js');
   if (!src) { fail(9, 'pages/practice/practice.js', 'file not readable'); return; }
@@ -235,6 +265,8 @@ function run() {
   checkRule9();
   checkRule10();
   checkRule11();
+  checkRule12();
+  checkRule13();
 
   console.log('\n--- Results ---');
   if (failures.length === 0) {
