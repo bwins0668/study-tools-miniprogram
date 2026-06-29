@@ -94,6 +94,10 @@
       {
         "type": "folder",
         "value": ".playwright-cli"
+      },
+      {
+        "type": "folder",
+        "value": "scratch"
       }
     ],
     "include": []

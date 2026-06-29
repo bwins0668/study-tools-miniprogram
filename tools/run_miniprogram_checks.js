@@ -32,12 +32,12 @@ var LEAF_CHECKS = [
   { title: 'Tab read models', command: 'node tools/check_tab_read_models.js', cmd: 'node', args: ['tools/check_tab_read_models.js'] },
   { title: 'Flashcards boundaries', command: 'node tools/check_flashcards_boundaries.js', cmd: 'node', args: ['tools/check_flashcards_boundaries.js'] },
   { title: 'Profile commands', command: 'node tools/check_profile_command_boundaries.js', cmd: 'node', args: ['tools/check_profile_command_boundaries.js'] },
-  { title: 'Home streak contract', command: 'node tools/check_home_streak_contract.js', cmd: 'node', args: ['tools/check_home_streak_contract.js'] }
+  { title: 'Home streak contract', command: 'node tools/check_home_streak_contract.js', cmd: 'node', args: ['tools/check_home_streak_contract.js'] },
+  { title: 'Release packaging', command: 'node tools/check_release_packaging.js', cmd: 'node', args: ['tools/check_release_packaging.js'] }
 ];
-// Thirteen external leaf checks plus the inline JavaScript syntax leaf.
-var LEAF_TOTAL_CHECKS = 14;
-// Normal mode additionally runs smoke, which verifies the JSON leaf contract.
-var TOTAL_CHECKS = 15;
+// Fourteen external leaf checks plus the inline JavaScript syntax leaf.
+var LEAF_TOTAL_CHECKS = 15;
+var TOTAL_CHECKS = 16;
 if (JSON_MODE) TOTAL_CHECKS = LEAF_TOTAL_CHECKS;
 
 // --- Helpers ---
