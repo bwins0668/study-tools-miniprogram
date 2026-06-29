@@ -1,5 +1,5 @@
 // pages/glossary/glossary.js - 术语 tab 轻入口
-var storage = require("../../utils/storage");
+var glossaryState = require("../../utils/glossary-state");
 var nav = require("../../utils/navigation");
 
 Page({
@@ -16,8 +16,8 @@ Page({
   onShow: function () {
     this._applyTheme();
     this._applyTheme();
-    var count = storage.getFavoriteTermCount ? storage.getFavoriteTermCount() : 0;
-    this.setData({ favoriteCount: count });
+    var state = glossaryState.getGlossaryLandingState();
+    this.setData(state);
   },
 
   goToGlossarySearch: function () {
