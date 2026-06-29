@@ -1,12 +1,11 @@
 // utils/home-streak-persistence.js
-// R3.7 Narrow persistence adapter for the Home streak key.
+// R4.0 Narrow persistence adapter for the Home streak key.
 //
 // Reads/writes ONLY the single fixed key "study-tools-mini-streak-v1".
 // No dynamic keys. No generic storage method. No removeStorageSync.
 // Delegates pure calculation to utils/home-streak.js.
 //
-// Returns the streakCount value that the Page needs for setData.
-// Keep try/catch semantics identical to original home.js code.
+// R4.0 change: storage read failure also seeds (was: silently returns 0).
 
 var streak = require('./home-streak');
 
@@ -24,7 +23,10 @@ function getStreakCount() {
       wx.setStorageSync(KEY, result.nextRecord);
     }
   } catch (e) {
-    streakCount = 0;
+    // Storage read error → seed with count=1
+    var seed = streak.makeSeed(new Date());
+    try { wx.setStorageSync(KEY, seed); } catch (e2) {}
+    streakCount = 1;
   }
   return streakCount;
 }
