@@ -120,6 +120,24 @@ function goCourseQuestionOrganizer(courseId) {
   navigateToSafe('/pages/course-organize/course-organize?courseId=' + courseId);
 }
 
+// ---- R3.2: Legacy tab navigation compatibility intents ----
+// Each intent encodes ONE exact target path + fixed query. No free-form params.
+
+/** Navigate to anki-player for mistakes-sourced flashcard review. */
+function goMistakesAnkiReview() {
+  navigateToSafe('/packages/glossary/pages/anki-player/anki-player?source=mistakes&from=mistakes');
+}
+
+/** Navigate to anki-player from the glossary tab context. */
+function goGlossaryAnkiReview() {
+  navigateToSafe('/packages/glossary/pages/anki-player/anki-player?from=glossary');
+}
+
+/** Navigate to term-search with random=1 to trigger random term selection. */
+function goGlossaryRandomTerm() {
+  navigateToSafe('/packages/glossary/pages/term-search/term-search?random=1');
+}
+
 // Legacy aliases — delegate to goCoursePractice for backward compat
 function goItPassport() { goCoursePractice('itpass'); }
 function goSG()         { goCoursePractice('sg'); }
@@ -136,5 +154,8 @@ module.exports = {
   goAnalysisDetail: goAnalysisDetail, continueLastQuiz: continueLastQuiz,
   goCourseHome: goCourseHome, goCoursePractice: goCoursePractice,
   goCourseTopic: goCourseTopic, goCourseTopicPractice: goCourseTopicPractice,
-  goCourseQuestionOrganizer: goCourseQuestionOrganizer
+  goCourseQuestionOrganizer: goCourseQuestionOrganizer,
+  goMistakesAnkiReview: goMistakesAnkiReview,
+  goGlossaryAnkiReview: goGlossaryAnkiReview,
+  goGlossaryRandomTerm: goGlossaryRandomTerm
 };
