@@ -8164,6 +8164,42 @@ checkUiFreeze(homeWxmlR12.indexOf('bindtap="goToCourse"') >= 0,
 checkUiFreeze(homeWxmlR12.indexOf('onPlannedCourse') < 0,
   'R1.3: home must not use onPlannedCourse toast (superseded by course shell)');
 
+// R1.4: honest course state adapter
+checkUiFreeze(fileExists('utils/course-state.js'),
+  'R1.4: utils/course-state.js must exist');
+var courseStateJs = readFile('utils/course-state.js');
+checkUiFreeze(courseStateJs.indexOf('getLatestAttemptForCourse') >= 0 &&
+  courseStateJs.indexOf('getCertificationCourseState') >= 0,
+  'R1.4: course-state must export getLatestAttemptForCourse and getCertificationCourseState');
+checkUiFreeze(courseStateJs.indexOf('setStorageSync') < 0 &&
+  courseStateJs.indexOf('removeStorageSync') < 0,
+  'R1.4: course-state must not write storage');
+checkUiFreeze(courseStateJs.indexOf('a.exam !== courseId') >= 0 ||
+  courseStateJs.indexOf('attempt.exam === courseId') >= 0 ||
+  courseStateJs.indexOf('a.exam === courseId') >= 0,
+  'R1.4: course-state must match by exact exam field');
+checkUiFreeze(courseStateJs.indexOf('canResume: false') >= 0,
+  'R1.4: course-state must declare canResume=false (no checkpoint system)');
+
+// R1.4: course shell uses state adapter
+var courseJsR14 = readFile('pages/course/course.js');
+var courseWxmlR14 = readFile('pages/course/course.wxml');
+checkUiFreeze(courseJsR14.indexOf('course-state') >= 0 &&
+  courseJsR14.indexOf('getCertificationCourseState') >= 0,
+  'R1.4: course page must use course-state adapter');
+checkUiFreeze(courseWxmlR14.indexOf('state.hasHistoricalAttempt') >= 0,
+  'R1.4: course shell must gate history display on state.hasHistoricalAttempt');
+checkUiFreeze(courseWxmlR14.indexOf('选择练习方式') >= 0 ||
+  courseWxmlR14.indexOf('开始刷题') >= 0,
+  'R1.4: course shell must have single honest primary action');
+checkUiFreeze(courseWxmlR14.indexOf('全部错题复习') >= 0 &&
+  courseWxmlR14.indexOf('跨课程') >= 0,
+  'R1.4: mistakes bridge must say 全部错题 and note it is cross-course');
+checkUiFreeze(courseWxmlR14.indexOf('本课程错题') < 0,
+  'R1.4: course shell must not falsely claim course-specific mistakes');
+checkUiFreeze(courseJsR14.indexOf('nav.goMistakes') >= 0,
+  'R1.4: course shell must use nav.goMistakes for mistakes bridge');
+
 // G4-specific Quiet Paper contracts (exam-menu, mistakes, flashcard-deck-select)
 // are deferred until the G4 page batch is independently frozen.
 

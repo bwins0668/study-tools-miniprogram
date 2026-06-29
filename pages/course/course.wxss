@@ -25,10 +25,11 @@
 .cs-last__label { font-size: var(--qp-font-size-caption); color: var(--qp-color-text-tertiary); }
 .cs-last__meta { display: block; margin-top: 2rpx; font-size: var(--qp-font-size-body); color: var(--qp-color-ink); }
 
-.cs-actions { display: flex; gap: 16rpx; margin-bottom: 32rpx; }
+.cs-actions { display: flex; margin-bottom: 32rpx; }
+.cs-actions .cs-btn { flex: 1; }
 
 .cs-btn {
-  flex: 1; text-align: center; padding: 18rpx 0; border-radius: var(--qp-radius-md);
+  text-align: center; padding: 18rpx 0; border-radius: var(--qp-radius-md);
   font-size: 28rpx; font-weight: var(--qp-font-weight-semibold); line-height: 1.4;
 }
 .cs-btn--primary { background-color: var(--qp-color-primary); color: #fff; }
@@ -41,17 +42,17 @@
   letter-spacing: 2rpx; color: var(--qp-color-text-tertiary);
 }
 
-.cs-row {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 20rpx 0; border-top: var(--qp-border-width) solid var(--qp-color-line);
-}
+.cs-row { display: flex; align-items: center; justify-content: space-between;
+  padding: 20rpx 0; border-top: var(--qp-border-width) solid var(--qp-color-line); }
+.cs-row--secondary { padding: 16rpx 0; }
+.cs-row__body { flex: 1; min-width: 0; }
 .cs-row__text { font-size: var(--qp-font-size-body); color: var(--qp-color-ink); }
-.cs-row__arrow { font-size: 24rpx; color: var(--qp-color-text-tertiary); }
+.cs-row__note { display: block; margin-top: 4rpx; font-size: var(--qp-font-size-caption);
+  color: var(--qp-color-text-tertiary); }
+.cs-row__arrow { flex: none; margin-left: 12rpx; font-size: 24rpx; color: var(--qp-color-text-tertiary); }
 
-.cs-note {
-  display: block; margin-top: 16rpx; font-size: var(--qp-font-size-caption);
-  color: var(--qp-color-text-tertiary);
-}
+.cs-note { display: block; margin-top: 16rpx; font-size: var(--qp-font-size-caption);
+  color: var(--qp-color-text-tertiary); }
 
 .cs-empty { padding: 48rpx 0; text-align: center; }
 .cs-empty__title { font-size: 28rpx; font-weight: var(--qp-font-weight-semibold); color: var(--qp-color-ink); }

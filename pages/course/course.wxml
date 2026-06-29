@@ -1,4 +1,4 @@
-<!--pages/course/course.wxml · Unified course shell-->
+<!--pages/course/course.wxml · Unified course shell (R1.4: honest state)-->
 <view class="cs-page">
 
   <!-- Safety: unknown / unresolved courseId -->
@@ -17,20 +17,25 @@
       <text class="cs-head__kind">资格考试</text>
     </view>
 
-    <view class="cs-last" wx:if="{{hasLastAttempt}}">
+    <!-- Honest history: only if lastAttempt matches this course -->
+    <view class="cs-last" wx:if="{{state.hasHistoricalAttempt}}">
       <text class="cs-last__label">上次练习</text>
       <text class="cs-last__meta">{{lastMetaText}}</text>
     </view>
 
+    <!-- Single primary action -->
     <view class="cs-actions">
-      <view class="cs-btn cs-btn--primary" bindtap="goPractice">{{hasLastAttempt ? '再练一次' : '开始刷题'}}</view>
-      <view class="cs-btn cs-btn--outline" bindtap="goExamMenu">真题与模拟练习</view>
+      <view class="cs-btn cs-btn--primary" bindtap="goPractice">{{state.hasHistoricalAttempt ? '选择练习方式' : '开始刷题'}}</view>
     </view>
 
+    <!-- Honest cross-course mistakes bridge -->
     <view class="cs-section">
       <text class="cs-section__title">学习辅助</text>
-      <view class="cs-row" bindtap="goMistakes">
-        <text class="cs-row__text">全部错题复习</text>
+      <view class="cs-row cs-row--secondary" bindtap="goMistakes">
+        <view class="cs-row__body">
+          <text class="cs-row__text">全部错题复习</text>
+          <text class="cs-row__note">当前显示跨课程错题；课程筛选将在题目整理能力完成后开放。</text>
+        </view>
         <text class="cs-row__arrow">→</text>
       </view>
       <text class="cs-note">课程内容正在整理</text>
