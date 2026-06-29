@@ -8200,6 +8200,78 @@ checkUiFreeze(courseWxmlR14.indexOf('本课程错题') < 0,
 checkUiFreeze(courseJsR14.indexOf('nav.goMistakes') >= 0,
   'R1.4: course shell must use nav.goMistakes for mistakes bridge');
 
+// R1.5: verified exam-topic content registry
+console.log('\n--- R1.5 verified exam-topic content registry ---');
+var r15Ok = true;
+function checkR15(cond, msg) { if (!cond) { fail(msg); r15Ok = false; } }
+
+checkR15(fileExists('utils/course-content-registry.js'),
+  'R1.5: utils/course-content-registry.js must exist');
+checkR15(fileExists('tools/check_course_content_registry.js'),
+  'R1.5: tools/check_course_content_registry.js validator must exist');
+if (fileExists('utils/course-content-registry.js')) {
+  var ccRegSrc = readFile('utils/course-content-registry.js');
+  var ccReg = require(path.join(ROOT, 'utils/course-content-registry.js'));
+  // pure-read helpers present
+  checkR15(typeof ccReg.getTopicsForCourse === 'function' &&
+    typeof ccReg.getTopicById === 'function' &&
+    typeof ccReg.getAvailableTopicsForCourse === 'function' &&
+    typeof ccReg.isTopicPracticeAvailable === 'function',
+    'R1.5: registry must export the four pure-read helpers');
+  // no storage access
+  checkR15(ccRegSrc.indexOf('setStorageSync') < 0 &&
+    ccRegSrc.indexOf('getStorageSync') < 0 &&
+    ccRegSrc.indexOf('removeStorageSync') < 0,
+    'R1.5: registry must not read/write storage');
+  // no question-bank import (stays pure-static) — scan code only, comments stripped
+  var ccRegCode = ccRegSrc.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
+  checkR15(ccRegCode.indexOf('course_questions') < 0 &&
+    ccRegCode.indexOf('past_exam_bank') < 0 &&
+    /require\(/.test(ccRegCode) === false,
+    'R1.5: registry must not import the question bank');
+  // only certification courses (itpass / sg) own topics
+  var ccCourseIds = (ccReg.TOPICS || []).map(function (t) { return t.courseId; });
+  checkR15(ccCourseIds.length > 0 && ccCourseIds.every(function (id) { return id === 'itpass' || id === 'sg'; }),
+    'R1.5: registry topics must belong to itpass/sg only (no learning/mos365)');
+  // every topic is an exam-topic with a real category selector
+  checkR15((ccReg.TOPICS || []).every(function (t) {
+    return t.structureKind === 'exam-topic' &&
+      t.questionSelector && t.questionSelector.exactField === 'category' &&
+      Array.isArray(t.questionSelector.exactValues) && t.questionSelector.exactValues.length > 0;
+  }), 'R1.5: every topic must be exam-topic with a non-empty category selector');
+  // available topics must hit real lesson_quiz questions (selector verified against canonical data)
+  var ccQuestions = (require(path.join(ROOT, 'packages/quiz/data/course_questions.js')).questions) || [];
+  checkR15(ccReg.getAvailableTopicsForCourse('itpass').length > 0 &&
+    ccReg.getAvailableTopicsForCourse('sg').length > 0,
+    'R1.5: both itpass and sg must expose >=1 available topic');
+  checkR15((ccReg.TOPICS || []).filter(function (t) { return t.availability === 'available'; }).every(function (t) {
+    return ccQuestions.some(function (q) {
+      return q.exam === t.courseId && q.sourceType === 'lesson_quiz' &&
+        t.questionSelector.exactValues.indexOf(q[t.questionSelector.exactField]) >= 0;
+    });
+  }), 'R1.5: every available topic selector must hit >=1 real lesson_quiz question');
+  // honest practice gating: a topic claims verified practice ONLY if quiz really
+  // filters by that selector field. quiz.js reads exam/sourceType/yearId only.
+  var quizJsR15 = readFile('packages/quiz/pages/quiz/quiz.js');
+  var quizFiltersCategory = quizJsR15.indexOf('options.category') >= 0 ||
+    /question\.category\s*===|q\.category\s*===/.test(quizJsR15);
+  checkR15((ccReg.TOPICS || []).every(function (t) {
+    return t.practiceCapability !== 'verified' || quizFiltersCategory;
+  }), 'R1.5: no topic may claim practiceCapability=verified while quiz cannot filter by category');
+  // learning / unresolved courses must NOT get topics
+  checkR15(ccReg.getTopicsForCourse('python').length === 0 &&
+    ccReg.getTopicsForCourse('java').length === 0 &&
+    ccReg.getTopicsForCourse('algorithm').length === 0 &&
+    ccReg.getTopicsForCourse('mos365').length === 0,
+    'R1.5: python/java/algorithm/mos365 must have zero topics');
+  // unknown course/topic must fail safe
+  checkR15(ccReg.getTopicById('itpass', 'no-such-topic') === null &&
+    ccReg.getTopicById('mos365', 'technology') === null &&
+    ccReg.isTopicPracticeAvailable('itpass', 'technology') === false,
+    'R1.5: unknown topic resolves null and practice gates closed');
+}
+if (r15Ok) pass('R1.5: verified exam-topic content registry contract');
+
 // G4-specific Quiet Paper contracts (exam-menu, mistakes, flashcard-deck-select)
 // are deferred until the G4 page batch is independently frozen.
 
