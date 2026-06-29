@@ -57,6 +57,14 @@
   white-space: nowrap;
 }
 
+/* ===== R2.2: verified topic session context on the result card ===== */
+.result-topic {
+  display: block;
+  margin: 4rpx 0 0;
+  font-size: 24rpx;
+  color: var(--text-secondary);
+}
+
 /* ===== R2.0: verified topic practice range label ===== */
 .topic-scope-label {
   display: inline-block;

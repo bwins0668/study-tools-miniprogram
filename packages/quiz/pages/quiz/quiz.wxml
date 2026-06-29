@@ -139,6 +139,8 @@
   <block wx:if="{{showResult && totalQuestions > 0}}">
     <view class="card result-card">
       <text class="result-kicker">本次练习完成</text>
+      <!-- R2.2: verified topic session context (current session only; no progress/mastery) -->
+      <text class="result-topic" wx:if="{{topicScopeActive && topicLabel}}">{{topicLabel}}</text>
       <!-- R3.62 答题用时 -->
       <view class="result-timer" wx:if="{{timerText}}">
         <text class="result-timer-icon">T</text>

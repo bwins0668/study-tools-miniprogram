@@ -8550,6 +8550,38 @@ checkR21(topicJsR21.indexOf('nav.goCourseTopicPractice') >= 0 &&
 
 if (r21Ok) pass('R2.1: activated topic practice bridge contract');
 
+// R2.2: topic session result context without storage schema changes
+console.log('\n--- R2.2 topic session result semantics ---');
+var r22Ok = true;
+function checkR22(cond, msg) { if (!cond) { fail(msg); r22Ok = false; } }
+
+var quizWxmlR22 = readFile('packages/quiz/pages/quiz/quiz.js');
+var quizResultWxml = readFile('packages/quiz/pages/quiz/quiz.wxml');
+
+// result card shows topic context, gated on the current session only
+checkR22(/result-topic[\s\S]{0,80}wx:if="\{\{topicScopeActive && topicLabel\}\}"/.test(quizResultWxml) ||
+  /wx:if="\{\{topicScopeActive && topicLabel\}\}"[\s\S]{0,80}result-topic/.test(quizResultWxml) ||
+  (quizResultWxml.indexOf('result-topic') >= 0 && quizResultWxml.indexOf('topicScopeActive && topicLabel') >= 0),
+  'R2.2: result card must show topic context only for the current topic session');
+// no fake mastery / progress / chart on the topic result
+checkR22(quizResultWxml.indexOf('掌握度') < 0 && quizResultWxml.indexOf('总进度') < 0,
+  'R2.2: topic result must not show fake mastery/overall progress');
+
+// TOPIC_HISTORY_METADATA_DEFERRED: attempt schema is unchanged.
+// quiz must NOT push a topicId into the stored attempt payload, and storage's
+// addQuizAttempt object shape must remain the known required field set.
+checkR22(/addQuizAttempt\(\{[\s\S]*?\}\)/.test(quizWxmlR22) &&
+  /addQuizAttempt\(\{[^}]*topicId/.test(quizWxmlR22) === false,
+  'R2.2: quiz must not write topicId into the stored attempt (schema unchanged)');
+var storageJsR22 = readFile('utils/storage.js');
+var addAttemptBody = (storageJsR22.match(/function addQuizAttempt[\s\S]*?saveQuizAttempts\(list\)/) || [''])[0];
+checkR22(addAttemptBody.indexOf('topicId') < 0 &&
+  ['questionId', 'exam', 'sourceType', 'selectedAnswer', 'correctAnswer', 'isCorrect', 'answeredAt'].every(function (f) {
+    return addAttemptBody.indexOf(f) >= 0;
+  }), 'R2.2: stored attempt schema must remain unchanged (no new fields/keys)');
+
+if (r22Ok) pass('R2.2: topic session result semantics contract');
+
 // G4-specific Quiet Paper contracts (exam-menu, mistakes, flashcard-deck-select)
 // are deferred until the G4 page batch is independently frozen.
 
