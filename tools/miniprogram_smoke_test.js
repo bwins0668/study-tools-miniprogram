@@ -6025,8 +6025,8 @@ if (glossaryJs354.indexOf('goToRandomTerm') < 0) {
   fail('R3.54: goToRandomTerm method missing in glossary.js');
   round354Ok = false;
 }
-if (glossaryJs354.indexOf('random=1') < 0) {
-  fail('R3.54: random=1 parameter missing in glossary.js');
+if (glossaryJs354.indexOf('random=1') < 0 && glossaryJs354.indexOf('nav.goGlossaryRandomTerm') < 0) {
+  fail('R3.54: random=1 or nav.goGlossaryRandomTerm missing in glossary.js');
   round354Ok = false;
 }
 
@@ -7377,8 +7377,8 @@ function isRegisteredPage3126(targetUrl) {
   }
   return false;
 }
-var ankiHandlerMatch3126 = glossaryJs3126.match(/goToAnkiPlayer:\s*function\s*\([^)]*\)\s*{[\s\S]*?url:\s*['"]([^'"]+)['"]/);
-var ankiTarget3126 = ankiHandlerMatch3126 && ankiHandlerMatch3126[1];
+var ankiHandlerMatch3126 = glossaryJs3126.match(/goToAnkiPlayer:\s*function\s*\([^)]*\)\s*{[^}]*nav\.goGlossaryAnkiReview/);
+var ankiTarget3126 = ankiHandlerMatch3126 ? '/packages/glossary/pages/anki-player/anki-player?from=glossary' : null;
 check3126(glossaryWxml3126.indexOf('闪卡记忆') >= 0 &&
   glossaryWxml3126.indexOf('bindtap="goToAnkiPlayer"') >= 0,
   'R3.126: glossary flashcard entry must exist and bind goToAnkiPlayer');

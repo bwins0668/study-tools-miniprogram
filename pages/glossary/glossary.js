@@ -1,5 +1,6 @@
 // pages/glossary/glossary.js - 术语 tab 轻入口
 var storage = require("../../utils/storage");
+var nav = require("../../utils/navigation");
 
 Page({
   onLoad: function (options) {
@@ -20,28 +21,20 @@ Page({
   },
 
   goToGlossarySearch: function () {
-    wx.navigateTo({
-      url: '/packages/glossary/pages/term-search/term-search'
-    });
+    nav.goTermSearch();
   },
 
   goToFavoriteReview: function () {
-    wx.navigateTo({
-      url: '/packages/glossary/pages/favorite-review/favorite-review'
-    });
+    nav.goFavoriteReview();
   },
 
   goToAnkiPlayer: function () {
-    wx.navigateTo({
-      url: '/packages/glossary/pages/anki-player/anki-player?from=glossary'
-    });
+    nav.goGlossaryAnkiReview();
   },
 
   // R3.54 随机术语：跳转到术语搜索页，并触发随机筛选
   goToRandomTerm: function () {
-    wx.navigateTo({
-      url: '/packages/glossary/pages/term-search/term-search?random=1'
-    });
+    nav.goGlossaryRandomTerm();
   }
 ,
 

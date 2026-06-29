@@ -152,6 +152,31 @@ if (mistakesSrc) {
   console.log('  SKIP: mistakes.js not readable');
 }
 
+// glossary.js: must NOT contain the old inline wx.navigateTo URLs
+var glossarySrc;
+try { glossarySrc = fs.readFileSync(path.join(ROOT, 'pages/glossary/glossary.js'), 'utf8'); } catch (e) { glossarySrc = ''; }
+
+var oldGlossaryUrls = [
+  'from=glossary',
+  'random=1'
+];
+
+if (glossarySrc) {
+  for (var gu = 0; gu < oldGlossaryUrls.length; gu++) {
+    if (glossarySrc.indexOf(oldGlossaryUrls[gu]) >= 0) {
+      fail('glossary_migration', 'old inline URL still present: ' + oldGlossaryUrls[gu]);
+    } else {
+      console.log('  PASS: old glossary URL removed: ' + oldGlossaryUrls[gu]);
+    }
+  }
+  if (glossarySrc.indexOf('nav.goGlossaryAnkiReview()') === -1) fail('glossary_migration', 'missing nav.goGlossaryAnkiReview()');
+  else console.log('  PASS: glossary uses nav.goGlossaryAnkiReview()');
+  if (glossarySrc.indexOf('nav.goGlossaryRandomTerm()') === -1) fail('glossary_migration', 'missing nav.goGlossaryRandomTerm()');
+  else console.log('  PASS: glossary uses nav.goGlossaryRandomTerm()');
+} else {
+  console.log('  SKIP: glossary.js not readable');
+}
+
 // ---- Results ----
 console.log('\n--- Results ---');
 if (failures.length === 0) {
