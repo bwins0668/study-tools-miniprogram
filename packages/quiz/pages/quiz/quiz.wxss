@@ -57,6 +57,25 @@
   white-space: nowrap;
 }
 
+/* ===== R2.0: verified topic practice range label ===== */
+.topic-scope-label {
+  display: inline-block;
+  margin: 0 0 16rpx;
+  padding: 8rpx 20rpx;
+  max-width: 100%;
+  box-sizing: border-box;
+  background: var(--card-bg);
+  border: 1rpx solid var(--border-color);
+  border-radius: 999rpx;
+}
+.topic-scope-text {
+  font-size: 24rpx;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* ===== Timer ===== */
 .timer-section {
   display: flex;

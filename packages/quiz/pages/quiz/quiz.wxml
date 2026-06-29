@@ -12,6 +12,11 @@
     </view>
   </view>
 
+  <!-- R2.0: 轻量主题练习范围说明（仅 verified topic scope） -->
+  <view class="topic-scope-label" wx:if="{{!isFinished && topicScopeActive && topicLabel}}">
+    <text class="topic-scope-text">{{topicLabel}}</text>
+  </view>
+
   <!-- 进度条 + 百分比 -->
   <view class="progress-row" wx:if="{{!isFinished && totalQuestions > 0}}">
     <view class="progress-bar-wrap">
@@ -110,12 +115,23 @@
     </view>
   </block>
 
-  <block wx:if="{{isFinished && !showResult && totalQuestions === 0}}">
+  <block wx:if="{{isFinished && !showResult && totalQuestions === 0 && !topicScopeActive}}">
     <view class="card finish-card">
       <text class="finish-icon">-</text>
       <text class="finish-title">暂无题目</text>
       <view class="finish-btn" bindtap="finishQuiz">
         <text class="finish-btn-text">返回</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- R2.0: topic scope 受控空态（绝不回退全量题） -->
+  <block wx:if="{{isFinished && !showResult && totalQuestions === 0 && topicScopeActive}}">
+    <view class="card finish-card">
+      <text class="finish-icon">-</text>
+      <text class="finish-title">本主题暂时没有可用题目</text>
+      <view class="finish-btn" bindtap="returnToTopic">
+        <text class="finish-btn-text">返回主题</text>
       </view>
     </view>
   </block>

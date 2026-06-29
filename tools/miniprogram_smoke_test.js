@@ -8389,6 +8389,94 @@ checkR18(readFile('pages/course/course.wxml').indexOf('跨课程') >= 0 &&
 
 if (r18Ok) pass('R1.8: topic learning closure contract');
 
+// R2.0: verified topic scope engine + quiz exact category filtering
+console.log('\n--- R2.0 topic scope engine & quiz filtering ---');
+var r20Ok = true;
+function checkR20(cond, msg) { if (!cond) { fail(msg); r20Ok = false; } }
+
+checkR20(fileExists('utils/quiz-topic-scope.js'),
+  'R2.0: utils/quiz-topic-scope.js must exist');
+checkR20(fileExists('tools/check_course_topic_practice.js'),
+  'R2.0: tools/check_course_topic_practice.js validator must exist');
+
+if (fileExists('utils/quiz-topic-scope.js')) {
+  var scopeEngine = require(path.join(ROOT, 'utils/quiz-topic-scope.js'));
+  var scopeSrc = readFile('utils/quiz-topic-scope.js');
+  var scopeQ = (require(path.join(ROOT, 'packages/quiz/data/course_questions.js')).questions) || [];
+
+  checkR20(typeof scopeEngine.resolveTopicScope === 'function' &&
+    typeof scopeEngine.filterQuestionsForTopicScope === 'function' &&
+    typeof scopeEngine.getTopicPracticeLabel === 'function',
+    'R2.0: scope engine must export resolve/filter/label functions');
+
+  // topicId resolved only via registry, exact category, hits real questions
+  var techScope = scopeEngine.resolveTopicScope({ exam: 'itpass', sourceType: 'lesson_quiz', topicId: 'technology' });
+  checkR20(techScope && techScope.valid === true && techScope.exactField === 'category' &&
+    techScope.exactValues.indexOf('テクノロジ系') >= 0,
+    'R2.0: valid topicId resolves to exact category scope via registry');
+  var techHits = scopeEngine.filterQuestionsForTopicScope(scopeQ, techScope);
+  checkR20(techHits.length > 0 && techHits.every(function (q) {
+    return q.exam === 'itpass' && q.sourceType === 'lesson_quiz' && q.category === 'テクノロジ系';
+  }), 'R2.0: scope filtering returns only exact-category lesson questions');
+
+  // no topicId -> null -> original set unchanged (normal quiz behavior preserved)
+  checkR20(scopeEngine.resolveTopicScope({ exam: 'itpass', sourceType: 'lesson_quiz' }) === null,
+    'R2.0: absent topicId yields null scope');
+  var sampleArr = scopeQ.slice(0, 5);
+  checkR20(scopeEngine.filterQuestionsForTopicScope(sampleArr, null) === sampleArr,
+    'R2.0: null scope keeps the original question set unchanged');
+
+  // topicId + yearId conflict rejected -> empty, never full bank
+  var conflict = scopeEngine.resolveTopicScope({ exam: 'itpass', sourceType: 'lesson_quiz', topicId: 'technology', yearId: 'r5' });
+  checkR20(conflict && conflict.valid === false &&
+    scopeEngine.filterQuestionsForTopicScope(scopeQ, conflict).length === 0,
+    'R2.0: topicId + yearId is rejected and yields an empty set');
+
+  // exam mismatch / unknown topic rejected, never broad
+  checkR20((function () {
+    var unknown = scopeEngine.resolveTopicScope({ exam: 'itpass', sourceType: 'lesson_quiz', topicId: 'no-such' });
+    return unknown && unknown.valid === false &&
+      scopeEngine.filterQuestionsForTopicScope(scopeQ, unknown).length === 0;
+  })(), 'R2.0: unknown topicId is rejected and never returns a broad bank');
+
+  // wrong sourceType rejected
+  checkR20((function () {
+    var s = scopeEngine.resolveTopicScope({ exam: 'itpass', sourceType: 'past_exam_japanese', topicId: 'technology' });
+    return s && s.valid === false;
+  })(), 'R2.0: non-lesson_quiz sourceType is rejected');
+
+  // non-topic courses produce no valid scope
+  checkR20(['python', 'java', 'algorithm', 'mos365'].every(function (c) {
+    var s = scopeEngine.resolveTopicScope({ exam: c, sourceType: 'lesson_quiz', topicId: 'technology' });
+    return !(s && s.valid);
+  }), 'R2.0: python/java/algorithm/mos365 produce no valid topic scope');
+
+  // engine purity: no storage, no question import, no raw category trust
+  var scopeCode = scopeSrc.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
+  checkR20(scopeCode.indexOf('setStorageSync') < 0 && scopeCode.indexOf('removeStorageSync') < 0 &&
+    scopeCode.indexOf('course_questions') < 0,
+    'R2.0: scope engine must not write storage nor import the question bank');
+}
+
+// quiz wiring: reads topicId, applies scope filter, has controlled empty + safe return
+var quizJsR20 = readFile('packages/quiz/pages/quiz/quiz.js');
+var quizWxmlR20 = readFile('packages/quiz/pages/quiz/quiz.wxml');
+checkR20(quizJsR20.indexOf('quiz-topic-scope') >= 0 &&
+  quizJsR20.indexOf('options.topicId') >= 0 &&
+  quizJsR20.indexOf('filterQuestionsForTopicScope') >= 0,
+  'R2.0: quiz must read topicId and apply the scope filter');
+checkR20(quizJsR20.indexOf('returnToTopic') >= 0 && quizJsR20.indexOf('_fallbackToCourseShell') >= 0,
+  'R2.0: quiz must provide a safe topic return path');
+checkR20(quizWxmlR20.indexOf('topic-scope-label') >= 0 &&
+  quizWxmlR20.indexOf('topicScopeActive') >= 0 &&
+  quizWxmlR20.indexOf('本主题暂时没有可用题目') >= 0 &&
+  quizWxmlR20.indexOf('bindtap="returnToTopic"') >= 0,
+  'R2.0: quiz must render topic label, controlled empty state, and return-to-topic action');
+// topic session must NOT introduce resume/progress/fake-count semantics
+checkR20(quizWxmlR20.indexOf('继续学习') < 0 && quizWxmlR20.indexOf('恢复会话') < 0,
+  'R2.0: topic session must not show resume/continue semantics');
+if (r20Ok) pass('R2.0: topic scope engine & quiz exact filtering contract');
+
 // G4-specific Quiet Paper contracts (exam-menu, mistakes, flashcard-deck-select)
 // are deferred until the G4 page batch is independently frozen.
 

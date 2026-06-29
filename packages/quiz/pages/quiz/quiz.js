@@ -2,6 +2,7 @@
 var questionsModule = require('../../data/questions');
 var pastExamIndex = require('../../data/past_exam_bank/index');
 var storage = require('../../../../utils/storage');
+var topicScopeEngine = require('../../../../utils/quiz-topic-scope');
 
 // === Inline quiz dedup (moved from utils/quiz_dedupe.js to avoid main-package unused-JS warning) ===
 function normalizeQuizText(value) {
@@ -163,7 +164,10 @@ Page({
     timerText: '',
     startTime: 0,
     // R20.1: dark mode
-    __themeDark: false
+    __themeDark: false,
+    // R2.0: verified topic practice scope (only set when topicId present)
+    topicScopeActive: false,
+    topicLabel: ''
   },
 
   onLoad: function (options) {
@@ -172,6 +176,8 @@ Page({
     var exam = options.exam || 'itpass';
     var sourceType = options.sourceType || 'lesson_quiz';
     var yearId = options.yearId || '';
+    // R2.0: optional verified topic scope (only new query param)
+    var topicId = options.topicId || '';
 
     // R3.62 答题计时器：记录开始时间并启动计时器
     var startTime = Date.now();
@@ -200,7 +206,7 @@ Page({
       return;
     }
 
-    this.loadPracticeQuestions(exam, sourceType, yearId);
+    this.loadPracticeQuestions(exam, sourceType, yearId, topicId);
   },
 
   onShow: function () {
@@ -251,19 +257,35 @@ Page({
     });
   },
 
-  loadPracticeQuestions: function (exam, sourceType, yearId) {
+  loadPracticeQuestions: function (exam, sourceType, yearId, topicId) {
     var examTitle = exam === 'sg' ? 'SG 考试' : 'IT Passport';
     var examBadge = exam === 'sg' ? 'SG' : 'IT';
     var modeLabel = sourceType === 'past_exam_japanese' ? '日文题练习' : '课程练习';
-    var baseQuestions = questionsModule.questions;
-    var allQuestions = baseQuestions.filter(function (question) {
-      return question.exam === exam && question.sourceType === sourceType;
+
+    // R2.0: resolve the optional verified topic scope (topicId is the only new param).
+    // No topicId -> scope null -> original behavior is fully preserved.
+    var topicScope = topicScopeEngine.resolveTopicScope({
+      exam: exam, sourceType: sourceType, yearId: yearId, topicId: topicId
     });
-    if (yearId) {
-      allQuestions = allQuestions.filter(function (question) {
-        return question.yearId === yearId;
+    var topicScopeActive = !!topicId;
+    var topicLabel = topicScopeEngine.getTopicPracticeLabel(topicScope);
+
+    var allQuestions;
+    if (topicScopeActive) {
+      // Exact, registry-verified category scope. A rejected scope yields an empty
+      // set (controlled empty state) and NEVER falls back to the full question bank.
+      allQuestions = topicScopeEngine.filterQuestionsForTopicScope(questionsModule.questions, topicScope);
+    } else {
+      allQuestions = questionsModule.questions.filter(function (question) {
+        return question.exam === exam && question.sourceType === sourceType;
       });
+      if (yearId) {
+        allQuestions = allQuestions.filter(function (question) {
+          return question.yearId === yearId;
+        });
+      }
     }
+
     if (allQuestions.length > 0) {
       // P0-3: 清洗所有题目的 HTML 并生成中文解析 fallback
       var processed = dedupeQuestions(allQuestions).map(processQuestionForDisplay);
@@ -288,7 +310,9 @@ Page({
         showResult: false,
         showAnalysisDrawer: false,
         showFeedbackTip: false,
-        yearId: yearId
+        yearId: yearId,
+        topicScopeActive: topicScopeActive,
+        topicLabel: topicLabel
       });
     } else {
       this.setData({
@@ -306,7 +330,9 @@ Page({
         answerState: 'unanswered',
         showAnalysisDrawer: false,
         showFeedbackTip: false,
-        yearId: yearId
+        yearId: yearId,
+        topicScopeActive: topicScopeActive,
+        topicLabel: topicLabel
       });
     }
   },
@@ -571,6 +597,31 @@ Page({
 
   finishQuiz: function () {
     wx.navigateBack();
+  },
+
+  // R2.0: return from a topic-scoped (incl. empty) session. Prefer the natural
+  // back stack to the Topic page; if there is no stack, fall back safely to the
+  // matching Course Shell (never a wrong exam, never a white screen).
+  returnToTopic: function () {
+    var self = this;
+    var pages = getCurrentPages();
+    if (pages && pages.length > 1) {
+      wx.navigateBack({ fail: function () { self._fallbackToCourseShell(); } });
+    } else {
+      self._fallbackToCourseShell();
+    }
+  },
+
+  _fallbackToCourseShell: function () {
+    var exam = this.data.exam;
+    if (exam === 'itpass' || exam === 'sg') {
+      wx.redirectTo({
+        url: '/pages/course/course?courseId=' + exam,
+        fail: function () { wx.switchTab({ url: '/pages/home/home' }); }
+      });
+    } else {
+      wx.switchTab({ url: '/pages/home/home' });
+    }
   },
 
   // R3.43 切换答题回顾显示
