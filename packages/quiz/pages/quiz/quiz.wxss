@@ -1,4 +1,6 @@
-/* pages/quiz/quiz.wxss — monochrome quiz experience */
+@import "../../../../styles/tokens.wxss";
+
+/* pages/quiz/quiz.wxss — Quiet Paper quiz experience */
 
 /* ===== Container ===== */
 .container {
@@ -1043,4 +1045,162 @@
   font-size: 22rpx;
   line-height: 1.5;
   margin-top: 6rpx;
+}
+
+/* ===== UI Freeze v1.0 QuizContainer overrides ===== */
+.container {
+  background: var(--qp-color-canvas);
+  color: var(--qp-color-ink);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Hiragino Kaku Gothic ProN", "Microsoft YaHei", sans-serif;
+}
+
+.quiz-title,
+.question-zh,
+.result-kicker,
+.insight-label {
+  font-weight: var(--qp-font-weight-semibold);
+  color: var(--qp-color-ink);
+}
+
+.quiz-exam-badge,
+.timer-section,
+.question-card,
+.result-card,
+.review-section,
+.finish-card {
+  background: var(--qp-color-surface);
+  border: var(--qp-border-width) solid var(--qp-color-line);
+  border-radius: var(--qp-radius-lg);
+  box-shadow: none;
+}
+
+.timer-text,
+.result-timer-text,
+.progress-percent,
+.question-number,
+.accuracy-value,
+.result-stat-value {
+  font-family: var(--qp-font-family-data);
+}
+
+.progress-bar-wrap,
+.menu-card-progress,
+.question-progress-row,
+.review-header {
+  border-color: var(--qp-color-line);
+}
+
+.progress-bar {
+  background: var(--qp-color-primary);
+}
+
+.options-list option-item {
+  display: block;
+  margin-bottom: var(--qp-space-2);
+}
+
+.confirm-row {
+  margin: var(--qp-space-3) 28rpx var(--qp-space-4);
+}
+
+.confirm-note {
+  display: block;
+  margin-top: var(--qp-space-2);
+  font-size: var(--qp-font-size-caption);
+  color: var(--qp-color-text-tertiary);
+  text-align: center;
+}
+
+.analysis-drawer {
+  margin: var(--qp-space-3) 28rpx var(--qp-space-4);
+  border-color: var(--qp-color-line-strong);
+  border-radius: var(--qp-radius-lg) var(--qp-radius-lg) 0 0;
+  box-shadow: none;
+}
+
+.analysis-drawer::before {
+  background: var(--qp-color-primary);
+}
+
+.analysis-detail-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 76rpx;
+  margin-top: var(--qp-space-3);
+  padding-top: var(--qp-space-3);
+  border-top: var(--qp-border-width) solid var(--qp-color-line);
+}
+
+.analysis-detail-text {
+  font-size: var(--qp-font-size-body);
+  color: var(--qp-color-primary);
+  font-weight: var(--qp-font-weight-semibold);
+}
+
+.analysis-detail-arrow {
+  font-size: 34rpx;
+  color: var(--qp-color-text-tertiary);
+}
+
+.feedback-correct {
+  background: var(--qp-color-success-soft);
+  border-left-color: var(--qp-color-success);
+}
+
+.feedback-wrong {
+  background: var(--qp-color-danger-soft);
+  border-left-color: var(--qp-color-danger);
+}
+
+.feedback-correct .feedback-icon,
+.feedback-correct .feedback-text,
+.feedback-correct .feedback-tip,
+.result-correct,
+.text-correct {
+  color: var(--qp-color-success);
+}
+
+.feedback-wrong .feedback-icon,
+.feedback-wrong .feedback-text,
+.feedback-wrong .feedback-tip,
+.result-wrong,
+.text-wrong {
+  color: var(--qp-color-danger);
+}
+
+.result-insight,
+.weakness-list {
+  background: var(--qp-color-surface-muted);
+  border: var(--qp-border-width) solid var(--qp-color-line);
+  border-radius: var(--qp-radius-md);
+  box-shadow: none;
+}
+
+.weakness-list {
+  margin: var(--qp-space-3) 0;
+  padding: var(--qp-space-3);
+  text-align: left;
+}
+
+.weakness-label {
+  display: block;
+  margin-bottom: var(--qp-space-1);
+  font-size: var(--qp-font-size-label);
+  letter-spacing: 2rpx;
+  color: var(--qp-color-text-tertiary);
+}
+
+.weakness-text {
+  font-size: var(--qp-font-size-caption);
+  line-height: var(--qp-line-height-normal);
+  color: var(--qp-color-text-secondary);
+}
+
+.result-btn-primary,
+.next-btn,
+.finish-btn {
+  background: var(--qp-color-primary);
+  border-color: var(--qp-color-primary);
+  box-shadow: none;
 }

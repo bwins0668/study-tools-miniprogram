@@ -1,245 +1,142 @@
-<!--pages/home/home.wxml-->
-<view class="container home-page {{__themeDark ? 'dark-theme' : ''}}">
-
-  <!-- ===== Hero 仪表盘区 ===== -->
-  <view class="hero">
-    <view class="hero-grid"></view>
-    <view class="hero-top">
-      <view class="hero-brand">
-        <text class="hero-kicker">STUDY TOOLS MINI</text>
-        <text class="hero-title">今日学习状态</text>
-        <text class="hero-subtitle">中日双语 IT 学习工具</text>
-      </view>
-      <view class="streak-banner hero-streak" wx:if="{{streakCount > 0}}">
-        <view class="streak-icon hero-streak-icon">
-          <view class="mini-symbol mini-symbol-streak"></view>
-        </view>
-        <text class="streak-text hero-streak-text">{{streakText}}</text>
-        <button class="streak-share-btn" open-type="share">
-          <view class="streak-share-icon share-symbol"></view>
-        </button>
-      </view>
-    </view>
-
-    <view class="hero-focus">
-      <view class="hero-focus-copy">
-        <text class="hero-focus-label">Next Step</text>
-        <text class="hero-focus-title" wx:if="{{hasLastAttempt}}">继续上次练习</text>
-        <text class="hero-focus-title" wx:else>开始今日练习</text>
-        <text class="hero-focus-desc" wx:if="{{hasLastAttempt}}">{{lastExamLabel}} · {{lastSourceLabel}}</text>
-        <text class="hero-focus-desc" wx:else>建议从 IT Passport 课程练习入手</text>
-      </view>
-      <view class="hero-focus-action ui-pressable" wx:if="{{hasLastAttempt}}" bindtap="continueLearning" hover-class="home-button-pressed" hover-start-time="20" hover-stay-time="150">
-        <text class="hero-focus-action-text">继续练习</text>
-      </view>
-      <view class="hero-focus-action ui-pressable" wx:else bindtap="quickStart" hover-class="home-button-pressed" hover-start-time="20" hover-stay-time="150">
-        <text class="hero-focus-action-text">开始练习</text>
-      </view>
-    </view>
-
-    <!-- 今日数据概览 -->
-    <view class="hero-stats">
-      <view class="hero-stat">
-        <text class="hero-stat-value">{{todayTotal}}</text>
-        <text class="hero-stat-label">今日答题</text>
-      </view>
-      <view class="hero-stat-divider"></view>
-      <view class="hero-stat">
-        <text class="hero-stat-value">{{favoriteCount}}</text>
-        <text class="hero-stat-label">已收藏</text>
-      </view>
-      <view class="hero-stat-divider"></view>
-      <view class="hero-stat">
-        <text class="hero-stat-value hero-stat-accent">{{wrongQuestionCount}}</text>
-        <text class="hero-stat-label">错题</text>
-      </view>
-      <view class="hero-stat-divider"></view>
-      <view class="hero-stat">
-        <text class="hero-stat-value hero-stat-success">{{accuracy}}%</text>
-        <text class="hero-stat-label">正确率</text>
-      </view>
-    </view>
-
-    <view class="goal-section hero-progress" wx:if="{{todayTotal >= 0}}">
-      <view class="hero-progress-bar">
-        <view class="goal-bar hero-progress-fill {{goalProgress >= 100 ? 'goal-bar-complete hero-progress-fill-complete' : ''}}" style="width: {{goalProgress}}%"></view>
-      </view>
-      <text class="goal-text hero-progress-text">{{goalText}}</text>
-      <!-- R3.53 smoke anchor: 🎉 -->
-      <text class="goal-celebrate" wx:if="{{goalProgress >= 100}}">达成</text>
-    </view>
-    <text class="goal-reminder" wx:if="{{showGoalReminder}}">今天还没有练习，开始吧！</text>
-  </view>
-
-  <!-- ===== 核心入口矩阵（2×3） ===== -->
-  <view class="entry-grid card-list">
-    <view class="entry-card card card-entry entry-card-anki ui-pressable {{navigationTarget === 'anki' ? 'home-card-navigating' : ''}}" bindtap="goToAnki" hover-class="home-card-pressed" hover-start-time="20" hover-stay-time="150">
-      <view class="entry-card-icon-wrap entry-icon-anki">
-        <view class="entry-symbol symbol-anki">
-          <view class="symbol-line symbol-line-a"></view>
-          <view class="symbol-line symbol-line-b"></view>
-          <view class="symbol-dot symbol-dot-a"></view>
-          <view class="symbol-dot symbol-dot-b"></view>
-        </view>
-      </view>
-      <text class="entry-card-title">Anki 闪卡</text>
-      <text class="entry-card-desc">闪卡 / 记忆辅助</text>
-      <view class="card-badge entry-card-badge" wx:if="{{favoriteCount > 0}}">{{favoriteCount}}</view>
-    </view>
-
-    <view class="entry-card card card-entry entry-card-itpass entry-card-primary ui-pressable {{navigationTarget === 'itpass' ? 'home-card-navigating' : ''}}" bindtap="goToItPassport" hover-class="home-card-pressed" hover-start-time="20" hover-stay-time="150">
-      <view class="entry-card-icon-wrap entry-icon-itpass">
-        <view class="entry-symbol symbol-itpass">
-          <view class="symbol-frame"></view>
-          <view class="symbol-line symbol-line-a"></view>
-          <view class="symbol-line symbol-line-b"></view>
-          <view class="symbol-line symbol-line-c"></view>
-        </view>
-      </view>
-      <view class="card-title-wrap entry-card-title-wrap">
-        <text class="entry-card-title card-title">IT Passport</text>
-        <text class="card-weak-badge entry-tag-weak" wx:if="{{itpassWeak}}">建议优先复习</text>
-      </view>
-      <view class="card-stats entry-card-stats">
-        <text class="card-stat-text" wx:if="{{itpassTotal > 0}}">已做 {{itpassTotal}} 题 · 正确率 {{itpassAccuracy}}%</text>
-        <text class="card-stat-text card-stat-new" wx:else>开始练习</text>
-        <text class="card-stat-status">{{itpassStatusText}}</text>
-      </view>
-      <text class="card-last-time" wx:if="{{itpassLastTime}}">最近：{{itpassLastTime}}</text>
-    </view>
-
-    <view class="entry-card card card-entry entry-card-sg ui-pressable {{navigationTarget === 'sg' ? 'home-card-navigating' : ''}}" bindtap="goToSG" hover-class="home-card-pressed" hover-start-time="20" hover-stay-time="150">
-      <view class="entry-card-icon-wrap entry-icon-sg">
-        <view class="entry-symbol symbol-sg">
-          <view class="symbol-shield"></view>
-          <view class="symbol-dot symbol-dot-a"></view>
-        </view>
-      </view>
-      <view class="card-title-wrap entry-card-title-wrap">
-        <text class="entry-card-title card-title">SG 信息安全</text>
-        <text class="card-weak-badge entry-tag-weak" wx:if="{{sgWeak}}">建议优先复习</text>
-      </view>
-      <view class="card-stats entry-card-stats">
-        <text class="card-stat-text" wx:if="{{sgTotal > 0}}">已做 {{sgTotal}} 题 · 正确率 {{sgAccuracy}}%</text>
-        <text class="card-stat-text card-stat-new" wx:else>开始练习</text>
-        <text class="card-stat-status">{{sgStatusText}}</text>
-      </view>
-      <text class="card-last-time" wx:if="{{sgLastTime}}">最近：{{sgLastTime}}</text>
-    </view>
-
-    <view class="entry-card card card-entry entry-card-glossary ui-pressable {{navigationTarget === 'glossary' ? 'home-card-navigating' : ''}}" bindtap="goToGlossary" hover-class="home-card-pressed" hover-start-time="20" hover-stay-time="150">
-      <view class="entry-card-icon-wrap entry-icon-glossary">
-        <view class="entry-symbol symbol-glossary">
-          <view class="symbol-frame"></view>
-          <view class="symbol-line symbol-line-a"></view>
-          <view class="symbol-line symbol-line-b"></view>
-        </view>
-      </view>
-      <text class="entry-card-title card-title">术语表</text>
-      <text class="entry-card-desc">查词 / 中日英对照</text>
-    </view>
-
-    <view class="entry-card card card-entry entry-card-mistakes ui-pressable {{navigationTarget === 'mistakes' ? 'home-card-navigating' : ''}}" bindtap="goToMistakes" hover-class="home-card-pressed" hover-start-time="20" hover-stay-time="150">
-      <view class="entry-card-icon-wrap entry-icon-mistakes">
-        <view class="entry-symbol symbol-mistakes">
-          <view class="symbol-frame"></view>
-          <view class="symbol-cross symbol-cross-a"></view>
-          <view class="symbol-cross symbol-cross-b"></view>
-        </view>
-      </view>
-      <text class="entry-card-title card-title">错题本</text>
-      <text class="entry-card-desc">薄弱点复盘</text>
-      <view class="card-badge entry-card-badge" wx:if="{{wrongQuestionCount > 0}}">{{wrongQuestionCount}}</view>
-    </view>
-
-    <view class="entry-card card card-entry card-entry-profile entry-card-profile ui-pressable {{navigationTarget === 'profile' ? 'home-card-navigating' : ''}}" bindtap="goToProfile" hover-class="home-card-pressed" hover-start-time="20" hover-stay-time="150">
-      <view class="entry-card-icon-wrap entry-icon-profile">
-        <view class="entry-symbol symbol-profile">
-          <view class="symbol-bar symbol-bar-a"></view>
-          <view class="symbol-bar symbol-bar-b"></view>
-          <view class="symbol-bar symbol-bar-c"></view>
-        </view>
-      </view>
-      <text class="entry-card-title card-title">我的统计</text>
-      <text class="entry-card-desc">数据 / 备份管理</text>
+<!--pages/home/home.wxml · Quiet Paper 首页视觉冻结层-->
+<view class="qp-home {{__themeDark ? 'dark-theme' : ''}}" style="padding-top: {{navSafeTop}}px;">
+  <view class="qp-head">
+    <text class="qp-head__title">{{uiText.panelTitle}}</text>
+    <view class="qp-head__meta">
+      <text class="qp-head__date qp-num">{{headDateText}}</text>
+      <block wx:if="{{streakCount > 0}}">
+        <text class="qp-head__dot">·</text>
+        <text class="qp-head__streak">连续 <text class="qp-num qp-ink-strong">{{streakCount}}</text> 天</text>
+      </block>
     </view>
   </view>
 
-  <!-- ===== 今日建议 ===== -->
-  <view class="suggestion-card ui-pressable" wx:if="{{suggestion}}">
-    <view class="suggestion-icon">
-      <view class="mini-symbol mini-symbol-note"></view>
-    </view>
-    <view class="suggestion-content">
-      <text class="suggestion-text">{{suggestion}}</text>
-      <text class="next-action-hint" wx:if="{{nextActionHint}}">{{nextActionHint}}</text>
-      <view class="suggestion-action ui-pressable" wx:if="{{suggestionActionText}}" bindtap="suggestionActionTap">
-        <text class="suggestion-action-text">{{suggestionActionText}}</text>
+  <view class="qp-focus">
+    <block wx:if="{{hasLastAttempt}}">
+      <text class="qp-focus__kicker">{{uiText.continueKicker}}</text>
+      <text class="qp-focus__title">{{lastExamLabel}}</text>
+      <text class="qp-focus__sub" wx:if="{{lastMetaText}}">{{lastMetaText}}</text>
+
+      <view class="qp-structure-line" aria-hidden="true">
+        <view class="qp-structure-line__mark"></view>
       </view>
+
+      <ui-button variant="primary" text="{{uiText.continueButton}}" bind:qptap="continueLearning"></ui-button>
+    </block>
+
+    <block wx:else>
+      <text class="qp-focus__kicker">{{uiText.startKicker}}</text>
+      <text class="qp-focus__title">{{uiText.startTitle}}</text>
+      <text class="qp-focus__sub">{{uiText.startSub}}</text>
+      <text class="qp-focus__desc">{{uiText.startDesc}}</text>
+
+      <view class="qp-structure-line" aria-hidden="true"></view>
+
+      <ui-button variant="primary" text="{{uiText.startButton}}" bind:qptap="quickStart"></ui-button>
+    </block>
+  </view>
+
+  <view class="qp-metrics" wx:if="{{todayTotal > 0 || totalAttempts > 0 || favoriteCount > 0}}">
+    <view class="qp-metric" wx:if="{{todayTotal > 0}}">
+      <text class="qp-metric__value qp-num">{{todayTotal}}</text>
+      <text class="qp-metric__label">今日答题</text>
+    </view>
+    <view class="qp-metric__sep" wx:if="{{todayTotal > 0 && totalAttempts > 0}}"></view>
+    <view class="qp-metric" wx:if="{{totalAttempts > 0}}">
+      <text class="qp-metric__value qp-num">{{accuracy}}<text class="qp-metric__unit">%</text></text>
+      <text class="qp-metric__label">正确率</text>
+    </view>
+    <view class="qp-metric__sep" wx:if="{{(todayTotal > 0 || totalAttempts > 0) && favoriteCount > 0}}"></view>
+    <view class="qp-metric" wx:if="{{favoriteCount > 0}}">
+      <text class="qp-metric__value qp-num">{{favoriteCount}}</text>
+      <text class="qp-metric__label">已收藏</text>
     </view>
   </view>
 
-  <!-- ===== 继续学习 / 快速开始 ===== -->
-  <view class="continue-section" wx:if="{{hasLastAttempt}}">
-    <text class="section-title">{{sectionTitle}}</text>
-    <view class="continue-card ui-pressable" bindtap="continueLearning" hover-class="home-card-pressed" hover-start-time="20" hover-stay-time="150">
-      <view class="continue-icon-wrap">
-        <view class="mini-symbol mini-symbol-continue"></view>
+  <block wx:if="{{wrongQuestionCount > 0 || favoriteCount > 0}}">
+    <text class="qp-eyebrow">{{uiText.reviewSection}}</text>
+    <view class="qp-list">
+      <view class="qp-row ui-pressable" wx:if="{{wrongQuestionCount > 0}}" bindtap="goToMistakes" hover-class="qp-row--pressed" hover-stay-time="80">
+        <view class="qp-row__dot qp-row__dot--danger"></view>
+        <text class="qp-row__title">{{uiText.mistakeReview}}</text>
+        <text class="qp-row__value qp-num">{{wrongQuestionCount}}</text>
+        <text class="qp-row__chev">›</text>
       </view>
-      <view class="continue-info">
-        <text class="continue-exam">{{lastExamLabel}} · {{lastSourceLabel}}</text>
-        <view class="continue-meta-row">
-          <text class="continue-hint">继续上次的练习</text>
-          <text class="continue-time" wx:if="{{lastPracticeTimeText}}">{{lastPracticeTimeText}}</text>
+      <view class="qp-row ui-pressable" wx:if="{{favoriteCount > 0}}" bindtap="goToFavoriteReview" hover-class="qp-row--pressed" hover-stay-time="80">
+        <view class="qp-row__dot qp-row__dot--primary"></view>
+        <text class="qp-row__title">{{uiText.flashcardReview}}</text>
+        <text class="qp-row__value qp-num">{{favoriteCount}}</text>
+        <text class="qp-row__chev">›</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- E · 需要加强 -->
+  <block wx:if="{{itpassWeak || sgWeak}}">
+    <text class="qp-eyebrow">{{uiText.weakSection}}</text>
+    <view class="qp-list">
+      <view class="qp-row ui-pressable" wx:if="{{itpassWeak}}" bindtap="goToItPassport" hover-class="qp-row--pressed" hover-stay-time="80">
+        <view class="qp-row__dot qp-row__dot--danger"></view>
+        <view class="qp-row__body">
+          <text class="qp-row__title">{{uiText.itpassTitle}} · 需要加强</text>
+          <text class="qp-row__desc">正确率 {{itpassAccuracy}}%</text>
+          <view class="qp-structure-line" aria-hidden="true">
+            <view class="qp-structure-line__mark" style="background-color: var(--qp-color-danger); width: {{itpassAccuracy}}%"></view>
+          </view>
         </view>
+        <text class="qp-row__chev">›</text>
       </view>
-      <view class="continue-btn ui-pressable">继续练习</view>
-    </view>
-    <view class="continue-suggestion-bar" wx:if="{{continueSuggestion}}">
-      <text class="continue-suggestion-text">{{continueSuggestion}}</text>
-    </view>
-  </view>
-
-  <view class="continue-section" wx:if="{{!hasLastAttempt}}">
-    <text class="section-title">{{sectionTitle}}</text>
-    <view class="continue-empty">
-      <view class="empty-mark"></view>
-      <text class="continue-empty-text">还没有学习记录</text>
-      <text class="continue-empty-hint">建议先从 IT Passport 课程练习入手，也欢迎浏览术语表积累词汇</text>
-      <view class="quick-start-btn ui-pressable" bindtap="quickStart" hover-class="home-button-pressed" hover-start-time="20" hover-stay-time="150">快速开始 · IT Passport 课程练习</view>
-      <view class="empty-guide-chips">
-        <view class="empty-chip ui-pressable" bindtap="goToGlossary">浏览术语表</view>
-        <view class="empty-chip ui-pressable" bindtap="quickStart">开始练习</view>
-        <view class="empty-chip ui-pressable" bindtap="goToProfile">了解工具</view>
+      <view class="qp-row ui-pressable" wx:if="{{sgWeak}}" bindtap="goToSG" hover-class="qp-row--pressed" hover-stay-time="80">
+        <view class="qp-row__dot qp-row__dot--danger"></view>
+        <view class="qp-row__body">
+          <text class="qp-row__title">{{uiText.sgTitle}} · 需要加强</text>
+          <text class="qp-row__desc">正确率 {{sgAccuracy}}%</text>
+          <view class="qp-structure-line" aria-hidden="true">
+            <view class="qp-structure-line__mark" style="background-color: var(--qp-color-danger); width: {{sgAccuracy}}%"></view>
+          </view>
+        </view>
+        <text class="qp-row__chev">›</text>
       </view>
     </view>
-  </view>
+  </block>
 
-  <!-- ===== R3.47 学习成就 ===== -->
-  <view class="achievement-section" wx:if="{{showAchievements}}">
-    <text class="section-title">学习成就</text>
-    <scroll-view class="achievement-list" scroll-x="true">
-      <view class="achievement-item" wx:for="{{achievements}}" wx:key="id">
-        <view class="achievement-mark"></view>
-        <text class="achievement-name">{{item.name}}</text>
+  <text class="qp-eyebrow">{{uiText.practiceSection}}</text>
+  <view class="qp-list">
+    <view class="qp-row qp-row--lead ui-pressable" bindtap="goToItPassport" hover-class="qp-row--pressed" hover-stay-time="80">
+      <view class="qp-row__body">
+        <text class="qp-row__title">{{uiText.itpassTitle}}</text>
+        <text class="qp-row__desc" wx:if="{{itpassTotal > 0}}">已做 <text class="qp-num">{{itpassTotal}}</text> 题 · 正确率 <text class="qp-num">{{itpassAccuracy}}</text>%</text>
+        <text class="qp-row__desc qp-row__desc--muted" wx:else>{{uiText.itpassEmpty}}</text>
       </view>
-    </scroll-view>
+      <text class="qp-row__chev">›</text>
+    </view>
+    <view class="qp-row ui-pressable" bindtap="goToSG" hover-class="qp-row--pressed" hover-stay-time="80">
+      <view class="qp-row__body">
+        <text class="qp-row__title">{{uiText.sgTitle}}</text>
+        <text class="qp-row__desc" wx:if="{{sgTotal > 0}}">已做 <text class="qp-num">{{sgTotal}}</text> 题 · 正确率 <text class="qp-num">{{sgAccuracy}}</text>%</text>
+        <text class="qp-row__desc qp-row__desc--muted" wx:else>{{uiText.sgEmpty}}</text>
+      </view>
+      <text class="qp-row__chev">›</text>
+    </view>
   </view>
 
-  <view class="section-divider"></view>
-
-  <view class="quick-tips">
-    <text class="quick-tips-title">快捷操作</text>
-    <text class="quick-tips-text">长按术语可快速收藏 | 答题后可查看解析 | 定期备份学习数据</text>
+  <text class="qp-eyebrow">{{uiText.toolsSection}}</text>
+  <view class="qp-list qp-list--tools">
+    <view class="qp-row ui-pressable" bindtap="goToGlossary" hover-class="qp-row--pressed" hover-stay-time="80">
+      <text class="qp-row__title qp-row__title--regular">{{uiText.glossary}}</text>
+      <text class="qp-row__chev">›</text>
+    </view>
+    <view class="qp-row ui-pressable" bindtap="goToAnki" hover-class="qp-row--pressed" hover-stay-time="80">
+      <text class="qp-row__title qp-row__title--regular">{{uiText.anki}}</text>
+      <text class="qp-row__chev">›</text>
+    </view>
+    <view class="qp-row ui-pressable" bindtap="goToProfile" hover-class="qp-row--pressed" hover-stay-time="80">
+      <text class="qp-row__title qp-row__title--regular">{{uiText.profile}}</text>
+      <text class="qp-row__chev">›</text>
+    </view>
   </view>
 
-  <view class="footer">
-    <text class="footer-text">Study Tools Mini v{{version}}</text>
-    <text class="footer-hint">下拉可以刷新页面</text>
-    <text class="footer-view-count">本页已访问 {{viewCount}} 次</text>
-  </view>
-
-  <view class="back-to-top ui-pressable" wx:if="{{showBackToTop}}" bindtap="scrollToTop">
-    <text class="back-to-top-icon">↑</text>
+  <view class="qp-backtop ui-pressable" wx:if="{{showBackToTop}}" bindtap="scrollToTop">
+    <text class="qp-backtop__icon">↑</text>
   </view>
 </view>

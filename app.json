@@ -24,6 +24,7 @@
         "pages/exam-menu/exam-menu",
         "pages/quiz/quiz",
         "pages/mistakes/mistakes",
+        "pages/analysis-detail/analysis-detail",
         "pages/flashcard-quiz/flashcard-quiz",
         "pages/flashcard-deck-select/flashcard-deck-select"
       ]

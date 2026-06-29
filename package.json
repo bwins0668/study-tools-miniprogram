@@ -53,6 +53,7 @@
     "test:flashcard-translation-fingerprint-integrity": "node tools/check_flashcard_translation_fingerprint_integrity.js",
     "test:flashcard-explanation-zh-naturalness": "node tools/check_flashcard_explanation_zh_naturalness.js",
     "test:flashcard-explanation-zh-template-duplication": "node tools/check_flashcard_explanation_zh_template_duplication.js",
-    "test:flashcard-bilingual-semantic-audit": "node tools/check_flashcard_bilingual_semantic_audit.js"
+    "test:flashcard-bilingual-semantic-audit": "node tools/check_flashcard_bilingual_semantic_audit.js",
+    "test:tokens": "node tools/check_design_tokens.js"
   }
 }

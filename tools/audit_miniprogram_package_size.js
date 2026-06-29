@@ -26,6 +26,7 @@ var PACKAGE_WARN = 1.5 * ONE_MB;
 var PACKAGE_FAIL = 1.8 * ONE_MB;
 var HARD_LIMIT = 2 * ONE_MB;
 var excludedUntrackedP1Holds = [];
+var packIgnoreRules = null;
 
 function toRel(file) {
   return path.relative(ROOT, file).replace(/\\/g, '/');
@@ -33,6 +34,28 @@ function toRel(file) {
 
 function readJson(rel) {
   return JSON.parse(fs.readFileSync(path.join(ROOT, rel), 'utf8'));
+}
+
+function normalizeRel(value) {
+  return String(value || '').replace(/\\/g, '/').replace(/^\/+/, '').replace(/\/+$/, '');
+}
+
+function getPackIgnoreRules() {
+  if (packIgnoreRules !== null) return packIgnoreRules;
+  try {
+    var projectConfig = readJson('project.config.json');
+    packIgnoreRules = ((projectConfig.packOptions && projectConfig.packOptions.ignore) || [])
+      .filter(function (rule) { return rule && rule.type && rule.value; })
+      .map(function (rule) {
+        return {
+          type: String(rule.type),
+          value: normalizeRel(rule.value)
+        };
+      });
+  } catch (e) {
+    packIgnoreRules = [];
+  }
+  return packIgnoreRules;
 }
 
 function formatSize(bytes) {
@@ -58,6 +81,24 @@ function isSkippedRel(rel) {
     /translations_zh\.js$/i.test(rel);
 }
 
+function isPackIgnoredRel(rel) {
+  var normalized = normalizeRel(rel);
+  var rules = getPackIgnoreRules();
+  for (var i = 0; i < rules.length; i++) {
+    var rule = rules[i];
+    var value = rule.value;
+    if (!value) continue;
+    if (rule.type === 'folder') {
+      if (normalized === value || normalized.indexOf(value + '/') === 0) return true;
+    } else if (rule.type === 'file') {
+      if (normalized === value) return true;
+    } else if (rule.type === 'suffix') {
+      if (normalized.slice(-value.length) === value) return true;
+    }
+  }
+  return false;
+}
+
 function walk(dir, files) {
   files = files || [];
   var entries;
@@ -69,7 +110,7 @@ function walk(dir, files) {
   entries.forEach(function (name) {
     var full = path.join(dir, name);
     var rel = toRel(full);
-    if (isSkippedRel(rel)) return;
+    if (isSkippedRel(rel) || isPackIgnoredRel(rel)) return;
     var stat;
     try {
       stat = fs.statSync(full);
@@ -175,6 +216,7 @@ function main() {
   console.log('=== Miniprogram Package Size Audit ===');
   console.log('Root:', ROOT);
   console.log('Mode: P0 release-candidate auxiliary audit');
+  console.log('Pack ignore source: project.config.json packOptions.ignore (' + getPackIgnoreRules().length + ' rules)');
   console.log('Subpackages:', subRoots.join(', '));
 
   console.log('\n--- Size Summary ---');

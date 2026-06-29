@@ -102,8 +102,10 @@ Page({
     currentIndex: 0,
     currentQuestion: null,
     selectedAnswer: '',
+    answerState: 'unanswered',
     hasAnswered: false,
     isCorrect: false,
+    showAnalysisDrawer: false,
     isFinished: false,
     showResult: false,
     totalQuestions: 0,
@@ -177,10 +179,12 @@ Page({
         currentIndex: 0,
         progressPercent: Math.round(1 / processed.length * 100) || 0,
         selectedAnswer: '',
+        answerState: 'unanswered',
         hasAnswered: false,
         isCorrect: false,
         isFinished: false,
         showResult: false,
+        showAnalysisDrawer: false,
         showFeedbackTip: false,
         yearId: yearId
       });
@@ -197,6 +201,8 @@ Page({
         isFinished: true,
         showResult: false,
         totalQuestions: 0,
+        answerState: 'unanswered',
+        showAnalysisDrawer: false,
         showFeedbackTip: false,
         yearId: yearId
       });
@@ -205,7 +211,21 @@ Page({
 
   selectAnswer: function (event) {
     if (this.data.hasAnswered || !this.data.currentQuestion) return;
-    var key = event.currentTarget.dataset.key;
+    var key = (event.detail && event.detail.label) ||
+      (event.currentTarget && event.currentTarget.dataset && event.currentTarget.dataset.key);
+    if (!key) return;
+    this.setData({
+      selectedAnswer: key,
+      answerState: 'selected',
+      showFeedbackTip: false,
+      feedbackTip: '',
+      showAnalysisDrawer: false
+    });
+  },
+
+  confirmAnswer: function () {
+    if (this.data.hasAnswered || !this.data.currentQuestion || !this.data.selectedAnswer) return;
+    var key = this.data.selectedAnswer;
     var correctAnswer = this.data.currentQuestion.answer;
     var isCorrect = key === correctAnswer;
     var attemptExam = this.data.exam;
@@ -230,8 +250,10 @@ Page({
     var feedbackTip = isCorrect ? '回答正确，理解得不错！' : '正确答案是 ' + correctAnswer + '，建议结合解释理解知识点';
     this.setData({
       selectedAnswer: key,
+      answerState: isCorrect ? 'correct' : 'incorrect',
       hasAnswered: true,
       isCorrect: isCorrect,
+      showAnalysisDrawer: true,
       sessionTotal: sessionTotal,
       sessionCorrect: sessionCorrect,
       sessionWrong: sessionWrong,
@@ -251,8 +273,10 @@ Page({
       currentQuestion: this.data.questions[nextIndex],
       progressPercent: Math.round((nextIndex + 1) / this.data.totalQuestions * 100) || 0,
       selectedAnswer: '',
+      answerState: 'unanswered',
       hasAnswered: false,
       isCorrect: false,
+      showAnalysisDrawer: false,
       showFeedbackTip: false,
       feedbackTip: ''
     });
@@ -314,7 +338,7 @@ Page({
   resetSession: function () {
     this.setData({
       currentIndex: 0, currentQuestion: null, selectedAnswer: "", hasAnswered: false,
-      isCorrect: false, isFinished: false, showResult: false, sessionTotal: 0,
+      answerState: 'unanswered', isCorrect: false, showAnalysisDrawer: false, isFinished: false, showResult: false, sessionTotal: 0,
       sessionCorrect: 0, sessionWrong: 0, sessionAccuracy: 0, encouragementText: "",
       accuracyLevel: "", insightHint: "", nextAction: "", hasWrongQuestions: false,
       answeredList: [], showReview: false, wrongQuestionIds: [], showFeedbackTip: false, feedbackTip: ""
@@ -330,6 +354,26 @@ Page({
   },
 
   goMistakes: function () { wx.navigateTo({ url: '/packages/quiz/pages/mistakes/mistakes' }); },
+  goAnalysisDetail: function () {
+    if (!this.data.currentQuestion) return;
+    var app = getApp();
+    if (app && app.globalData) {
+      app.globalData.analysisDetailQuestion = createWrongQuestionSnapshot(this.data.currentQuestion);
+      app.globalData.analysisDetailMeta = {
+        selectedAnswer: this.data.selectedAnswer,
+        isCorrect: this.data.isCorrect,
+        from: 'quiz'
+      };
+    }
+    var q = this.data.currentQuestion;
+    wx.navigateTo({
+      url: '/packages/quiz/pages/analysis-detail/analysis-detail?questionId=' +
+        encodeURIComponent(q.id || '') +
+        '&exam=' + encodeURIComponent(q.exam || this.data.exam || '') +
+        '&sourceType=' + encodeURIComponent(q.sourceType || this.data.sourceType || '') +
+        '&yearId=' + encodeURIComponent(q.yearId || this.data.yearId || '')
+    });
+  },
   goHome: function () { wx.switchTab({ url: '/pages/home/home' }); },
   finishQuiz: function () { wx.navigateBack(); },
   toggleReview: function () { this.setData({ showReview: !this.data.showReview }); },
@@ -338,7 +382,8 @@ Page({
     this.setData({
       exam: 'wrong_only', examTitle: '错题练习', examBadge: '错题', sourceType: 'wrong_only',
       modeLabel: '错题重练', resultModeLabel: '错题练习 · 错题重练', questions: [],
-      currentQuestion: null, isFinished: true, showResult: false, totalQuestions: 0, showFeedbackTip: false
+      currentQuestion: null, isFinished: true, showResult: false, totalQuestions: 0,
+      answerState: 'unanswered', showAnalysisDrawer: false, showFeedbackTip: false
     });
   },
 
@@ -365,6 +410,7 @@ Page({
       questions: wrongQuestions, totalQuestions: wrongQuestions.length, currentIndex: 0,
       currentQuestion: wrongQuestions[0], progressPercent: Math.round(1 / wrongQuestions.length * 100) || 0,
       selectedAnswer: "", hasAnswered: false, isCorrect: false, isFinished: false, showResult: false,
+      answerState: 'unanswered', showAnalysisDrawer: false,
       sessionTotal: 0, sessionCorrect: 0, sessionWrong: 0, sessionAccuracy: 0, encouragementText: "",
       accuracyLevel: "", insightHint: "", nextAction: "", hasWrongQuestions: false, wrongQuestionIds: [],
       answeredList: [], showReview: false, showFeedbackTip: false

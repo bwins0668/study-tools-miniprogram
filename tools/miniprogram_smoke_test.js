@@ -1151,12 +1151,13 @@ if (!homeJs.includes('getLastAttempt')) {
   fail('home.js missing getLastAttempt usage');
   round20Ok = false;
 }
-if (!homeWxml.includes('继续练习') || !homeWxml.includes('continue-section')) {
-  fail('home.wxml missing continue learning section');
+if (!homeWxml.includes('qp-focus') || !homeWxml.includes('continueLearning')) {
+  fail('home.wxml missing Quiet Paper main action / continue learning binding');
   round20Ok = false;
 }
-if (!homeWxml.includes('还没有学习记录')) {
-  fail('home.wxml missing empty state for continue learning');
+// UI Freeze v1: no-record branch uses wx:else in qp-focus; quickStart handler verified
+if (!homeJs.includes('quickStart') || !homeWxml.includes('wx:else')) {
+  fail('home.wxml missing no-record Quiet Paper start branch');
   round20Ok = false;
 }
 
@@ -2011,15 +2012,7 @@ var homeWxss35 = readFile('pages/home/home.wxss');
     round35Ok = false;
   }
 
-// 2. 首页存在学习建议模块
-if (!homeJs35.includes('generateSuggestion') || !homeJs35.includes('suggestion')) {
-  fail('Round 3.5: home.js missing generateSuggestion or suggestion field');
-  round35Ok = false;
-}
-if (!homeWxml35.includes('今日建议') || !homeWxml35.includes('suggestion')) {
-  fail('Round 3.5: home.wxml missing suggestion card');
-  round35Ok = false;
-}
+// UI Freeze v1 supersedes retired Round 3.x home suggestion card assertions.
 
 // 3. 首页存在错题本入口
 if (!homeWxml35.includes('goToMistakes') || !homeJs35.includes('goToMistakes')) {
@@ -2044,10 +2037,7 @@ if (!homeWxml35.includes('goToProfile') || !homeJs35.includes('goToProfile')) {
   fail('Round 3.5: home missing profile entry');
   round35Ok = false;
 }
-if (!homeWxml35.includes('我的统计')) {
-  fail('Round 3.5: home.wxml missing "我的统计" label');
-  round35Ok = false;
-}
+// UI Freeze v1: profile label moved to uiText.profile data field (verified by goToProfile handler check above)
 
 // 7. 首页读取错题数量逻辑存在
 if (!homeJs35.includes('getWrongQuestionCount') || !homeJs35.includes('wrongQuestionCount')) {
@@ -2066,11 +2056,8 @@ if (!homeJs35.includes('getLastAttempt') || !homeJs35.includes('formatLastPracti
   fail('Round 3.5: home.js missing lastAttempt or formatLastPracticeTime');
   round35Ok = false;
 }
-// 兼容暂无记录（hasLastAttempt / !hasLastAttempt 双分支）
-if (!homeWxml35.includes('!hasLastAttempt')) {
-  fail('Round 3.5: home.wxml missing no-records empty state');
-  round35Ok = false;
-}
+// UI Freeze v1: home no-records empty state now rendered via wx:else in qp-focus (verified by UI Freeze v1 contract)
+// UI Freeze v1 supersedes old continue-section check; new continue block is qp-focus with hasLastAttempt
 
 // 10. 空数据不出现 NaN/undefined/null (formatLastPracticeTime null guard)
 if (!homeJs35.includes("if (!timestamp) return ''")) {
@@ -2078,8 +2065,8 @@ if (!homeJs35.includes("if (!timestamp) return ''")) {
   round35Ok = false;
 }
 // suggestion 有始终非空字符串
-if (!homeJs35.includes("'还没有学习记录，可以从术语表或练习开始，遇到重要术语先收藏再复习'")) {
-  fail('Round 3.5: home.js generateSuggestion missing fallback text');
+if (!homeJs35.includes('START · 今日练习') || homeWxml35.includes('0/10') || homeWxml35.includes('0%')) {
+  fail('Round 3.5: home missing neutral start state or renders fake zero progress');
   round35Ok = false;
 }
 
@@ -2114,28 +2101,12 @@ if (!profileJs35.includes('learningStatus') || !profileJs35.includes('getLearnin
 }
 
 // 15. 建议文案覆盖错题优先
-if (!homeJs35.includes("'有 ' + wrongCount + ' 道错题待复习，建议先去错题本巩固薄弱点'")) {
-  fail('Round 3.5: home.js missing mistake-first suggestion');
+if (!homeJs35.includes('wrongQuestionCount') || !homeWxml35.includes('goToMistakes')) {
+  fail('Round 3.5: home missing real mistake review gate');
   round35Ok = false;
 }
 
-// 16. 建议文案覆盖收藏优先
-if (!homeJs35.includes("'有 ' + favoriteCount + ' 个收藏术语，建议复习收藏加深记忆'")) {
-  fail('Round 3.5: home.js missing favorite-first suggestion');
-  round35Ok = false;
-}
-
-// 17. card-badge 徽标样式存在
-if (!homeWxss35.includes('card-badge')) {
-  fail('Round 3.5: home.wxss missing card-badge style');
-  round35Ok = false;
-}
-
-// 18. suggestion-card 样式存在
-if (!homeWxss35.includes('suggestion-card') || !homeWxss35.includes('suggestion-text')) {
-  fail('Round 3.5: home.wxss missing suggestion styles');
-  round35Ok = false;
-}
+// UI Freeze v1 supersedes old suggestion-specific assertion texts; real behavior verified by UI Freeze v1 contract
 
 // 19. 我的统计入口使用 switchTab（profile 是 tab 页）
 if (!homeJs35.includes('switchTab') || !homeJs35.includes('/pages/profile/profile')) {
@@ -2143,9 +2114,9 @@ if (!homeJs35.includes('switchTab') || !homeJs35.includes('/pages/profile/profil
   round35Ok = false;
 }
 
-// 20. lastPracticeTimeText 显示
-if (!homeJs35.includes('lastPracticeTimeText') || !homeWxml35.includes('lastPracticeTimeText')) {
-  fail('Round 3.5: home missing lastPracticeTimeText display');
+// UI Freeze v1: lastPracticeTimeText still computed in home.js but rendered as lastMetaText in WXML
+if (!homeJs35.includes('lastPracticeTimeText') || !homeWxml35.includes('lastMetaText')) {
+  fail('Round 3.5: home missing last practice time display');
   round35Ok = false;
 }
 
@@ -2225,13 +2196,7 @@ if (!profileJs36.includes("return map[sourceType] || (sourceType || '练习')"))
   round36Ok = false;
 }
 
-// 10. home 页面 Round Mini 3.5 学习建议入口仍存在
-var homeJs36 = readFile('pages/home/home.js');
-var homeWxml36 = readFile('pages/home/home.wxml');
-if (!homeJs36.includes('generateSuggestion') || !homeWxml36.includes('今日建议')) {
-  fail('Round 3.6: home page Round 3.5 suggestion entry broken');
-  round36Ok = false;
-}
+// UI Freeze v1 supersedes Round 3.5/3.6 home suggestion cascade; suggestion card removed from home
 
 // 11. mistakes 页面 Round Mini 3.4 关键功能仍存在
 var mistakesJs36 = readFile('packages/quiz/pages/mistakes/mistakes.js');
@@ -2324,15 +2289,12 @@ if (!storage37.includes("version: 'v0.28.0'")) {
   round37Ok = false;
 }
 
-// 3. home 页面存在快速开始 / 继续上次练习入口
+// UI Freeze v1: quickStart handler retained; old quick-start-btn WXML class superseded by qp-focus ui-button
 if (!homeJs37.includes('quickStart')) {
   fail('Round 3.7: home.js missing quickStart handler');
   round37Ok = false;
 }
-if (!homeWxml37.includes('quick-start-btn') || !homeWxml37.includes('快速开始')) {
-  fail('Round 3.7: home.wxml missing quick start button');
-  round37Ok = false;
-}
+// UI Freeze v1: continueLearning handler retained; old continue UI superseded by qp-focus block
 if (!homeJs37.includes('continueLearning')) {
   fail('Round 3.7: home.js continueLearning handler broken');
   round37Ok = false;
@@ -2354,25 +2316,13 @@ if (!homeJs37.includes("exam=itpass&sourceType=lesson_quiz")) {
   round37Ok = false;
 }
 
-// 6. 入口参数不直接出现 undefined/null/NaN（sectionTitle 动态计算）
-if (!homeJs37.includes("sectionTitle: '快速开始'") || !homeJs37.includes("sectionTitle = '继续学习'")) {
-  fail('Round 3.7: home.js sectionTitle missing safe default or dynamic switching');
-  round37Ok = false;
-}
+// UI Freeze v1 supersedes sectionTitle dynamic switching; new home uses static uiText fields
 if (!homeJs37.includes("if (!timestamp) return ''")) {
   fail('Round 3.7: home.js formatLastPracticeTime missing null guard');
   round37Ok = false;
 }
 
-// 7. 练习入口卡片显示已答题数或练习状态
-if (!homeWxml37.includes('itpassTotal') || !homeWxml37.includes('sgTotal')) {
-  fail('Round 3.7: home.wxml missing exam total display');
-  round37Ok = false;
-}
-if (!homeWxml37.includes('card-stats') || !homeWxml37.includes('card-stat-text')) {
-  fail('Round 3.7: home.wxml missing card stats UI');
-  round37Ok = false;
-}
+// UI Freeze v1: entry totals still displayed but via qp-row layout; old card-stats classes superseded
 
 // 8. 正确率显示存在 NaN 防护
 if (!homeJs37.includes('itpassStats.accuracy || 0') || !homeJs37.includes('sgStats.accuracy || 0')) {
@@ -2400,11 +2350,7 @@ if (!examMenuJs37.includes("sourceType=lesson_quiz") ||
   round37Ok = false;
 }
 
-// 11. home Round Mini 3.5 学习建议仍存在
-if (!homeJs37.includes('generateSuggestion') || !homeWxml37.includes('今日建议')) {
-  fail('Round 3.7: home Round 3.5 suggestion entry broken');
-  round37Ok = false;
-}
+// UI Freeze v1 supersedes R3.5/R3.7 home suggestion cascade; suggestion card removed
 
 // 12. profile Round Mini 3.6 时间线仍存在
 var profileWxml37 = readFile('pages/profile/profile.wxml');
@@ -2448,27 +2394,7 @@ for (var fi37 = 0; fi37 < forbidden37.length; fi37++) {
   }
 }
 
-// 18. 练习状态文案安全降级（未练习 / 继续练习 / 复习错题）
-if (!homeJs37.includes("if (total === 0) return '未练习'")) {
-  fail('Round 3.7: home.js getStatusText missing zero-count fallback');
-  round37Ok = false;
-}
-if (!homeWxml37.includes('itpassStatusText') || !homeWxml37.includes('sgStatusText')) {
-  fail('Round 3.7: home.wxml missing status text display');
-  round37Ok = false;
-}
-
-// 19. quick-start-btn 样式存在
-if (!homeWxss37.includes('quick-start-btn')) {
-  fail('Round 3.7: home.wxss missing quick-start-btn style');
-  round37Ok = false;
-}
-
-// 20. card-stats 和 card-stat-status 样式存在
-if (!homeWxss37.includes('card-stats') || !homeWxss37.includes('card-stat-status')) {
-  fail('Round 3.7: home.wxss missing card stats styles');
-  round37Ok = false;
-}
+// UI Freeze v1 supersedes old getStatusText and status text display; new home uses lastMetaText/itpassTotal/sgTotal
 
 if (round37Ok) pass('Round Mini 3.7 quiz entry experience checks');
 
@@ -2643,10 +2569,7 @@ if (!profileWxss39.includes('backup-local-notice')) {
 // 19. home Round Mini 3.7 快速开始仍存在
 var homeJs39 = readFile('pages/home/home.js');
 var homeWxml39 = readFile('pages/home/home.wxml');
-if (!homeJs39.includes('quickStart') || !homeWxml39.includes('quick-start-btn')) {
-  fail('Round 3.9: home Round 3.7 quickStart broken');
-  round39Ok = false;
-}
+// UI Freeze v1 supersedes R3.7/R3.9 quick-start-btn WXML check; quickStart verified via handler
 
 // 20. profile Round Mini 3.6 时间线仍存在
 if (!profileWxml39.includes('练习时间线') || !profileWxml39.includes('timeline-list')) {
@@ -2818,10 +2741,7 @@ if (!profileWxss317.includes('streak-value')) {
 // 19. 旧功能不受影响：home 页面仍正常
 var homeJs317 = readFile('pages/home/home.js');
 var homeWxml317 = readFile('pages/home/home.wxml');
-if (!homeJs317.includes('quickStart') || !homeWxml317.includes('快速开始')) {
-  fail('Round 3.17: home page quick start broken');
-  round317Ok = false;
-}
+// UI Freeze v1 supersedes R3.17 old quick-start WXML check
 
 // 20. 旧功能不受影响：mistakes 页面导航入口仍存在
 if (!mistakesJs317.includes('goToMistakesList') || !mistakesWxml317.includes('查看错题详情')) {
@@ -2893,17 +2813,9 @@ if (!storage318.includes('var list = getQuizAttempts()') || !storage318.includes
   round318Ok = false;
 }
 
-// 5. home.js 导入 getLastAttemptByExam
-if (!homeJs318.includes('getLastAttemptByExam')) {
-  fail('Round 3.18: home.js missing getLastAttemptByExam import');
-  round318Ok = false;
-}
+// UI Freeze v1: getLastAttemptByExam superseded; home uses getLastAttempt only
 
-// 6. home.js 存在 per-exam 最近练习时间字段
-if (!homeJs318.includes('itpassLastTime') || !homeJs318.includes('sgLastTime')) {
-  fail('Round 3.18: home.js missing itpassLastTime/sgLastTime');
-  round318Ok = false;
-}
+// UI Freeze v1: itpassLastTime/sgLastTime removed; time now via lastMetaText
 
 // 7. home.js 存在弱项检测逻辑
 if (!homeJs318.includes('itpassWeak') || !homeJs318.includes('sgWeak')) {
@@ -2917,41 +2829,17 @@ if (!homeJs318.includes('gap >= 20') || !homeJs318.includes('< 70')) {
   round318Ok = false;
 }
 
-// 9. home.wxml IT Passport 卡片显示最近练习时间
-if (!homeWxml318.includes('itpassLastTime')) {
-  fail('Round 3.18: home.wxml IT Passport card missing last time');
-  round318Ok = false;
-}
+// UI Freeze v1: IT Passport last-time superseded by qp-focus block
 
-// 10. home.wxml SG 卡片显示最近练习时间
-if (!homeWxml318.includes('sgLastTime')) {
-  fail('Round 3.18: home.wxml SG card missing last time');
-  round318Ok = false;
-}
+// UI Freeze v1: SG last-time superseded by qp-focus block
 
-// 11. home.wxml 存在弱项徽标
-if (!homeWxml318.includes('card-weak-badge') || !homeWxml318.includes('建议优先复习')) {
-  fail('Round 3.18: home.wxml missing weak badge');
-  round318Ok = false;
-}
+// UI Freeze v1: weak badge now rendered via qp-row__dot--danger; old card-weak-badge superseded
 
-// 12. home.wxss 存在弱项徽标样式
-if (!homeWxss318.includes('card-weak-badge')) {
-  fail('Round 3.18: home.wxss missing card-weak-badge style');
-  round318Ok = false;
-}
+// UI Freeze v1 supersedes card-weak-badge style check; weak items use qp-row__dot--danger
 
-// 13. home.wxss 存在最近练习时间样式
-if (!homeWxss318.includes('card-last-time')) {
-  fail('Round 3.18: home.wxss missing card-last-time style');
-  round318Ok = false;
-}
+// UI Freeze v1 supersedes card-last-time style check
 
-// 14. home.wxss 存在 card-title-wrap 样式
-if (!homeWxss318.includes('card-title-wrap')) {
-  fail('Round 3.18: home.wxss missing card-title-wrap style');
-  round318Ok = false;
-}
+// UI Freeze v1 supersedes card-title-wrap style check
 
 // 15. 无高风险承诺文案
 var all318 = homeJs318 + homeWxml318 + storage318;
@@ -3009,11 +2897,7 @@ if (!profileJs318.includes('getConsecutiveLearningDays')) {
   round318Ok = false;
 }
 
-// 22. home 继续学习入口仍存在
-if (!homeJs318.includes('continueLearning') || !homeWxml318.includes('继续上次的练习')) {
-  fail('Round 3.18: home continue learning broken');
-  round318Ok = false;
-}
+// UI Freeze v1: continueLearning handler retained; old WXML string replaced by uiText.continueKicker
 
 if (round318Ok) pass('Round Mini 3.18 quiz entry enhancement checks');
 
@@ -3200,10 +3084,7 @@ if (!profileJs319.includes('getConsecutiveLearningDays')) {
 
 // 19. Round 3.18 首页弱项徽标仍存在
 var homeWxml319 = readFile('pages/home/home.wxml');
-if (!homeWxml319.includes('card-weak-badge')) {
-  fail('Round 3.19: Round 3.18 home weak badge broken');
-  round319Ok = false;
-}
+// UI Freeze v1 supersedes R3.18/R3.19 weak badge cascade
 
 // 20. favorite-review 列表模式和复习模式仍存在
 if (!favReviewJs319.includes('switchToListMode') || !favReviewJs319.includes('switchToReviewMode')) {
@@ -3236,65 +3117,7 @@ if (!appJs320.includes('v0.28.0')) {
 
 // === A. 首页继续练习入口增强 ===
 
-// 1. home.js 存在 lastAttemptAccuracy 字段
-if (!homeJs320.includes('lastAttemptAccuracy')) {
-  fail('Round 3.20: home.js missing lastAttemptAccuracy');
-  round320Ok = false;
-}
-
-// 2. home.js 存在 continueSuggestion 字段
-if (!homeJs320.includes('continueSuggestion')) {
-  fail('Round 3.20: home.js missing continueSuggestion');
-  round320Ok = false;
-}
-
-// 3. home.js 计算 continueSuggestion（基于准确率级别）
-if (!homeJs320.includes('继续保持节奏') || !homeJs320.includes('建议再练一组') || !homeJs320.includes('先复盘错题')) {
-  fail('Round 3.20: home.js incomplete continueSuggestion logic');
-  round320Ok = false;
-}
-
-// 4. home.js 准确率判断使用 >= 80 / >= 60 / else 三级
-if (!homeJs320.includes('>= 80') || !homeJs320.includes('>= 60')) {
-  fail('Round 3.20: home.js missing accuracy tier thresholds');
-  round320Ok = false;
-}
-
-// 5. home.wxml 继续练习卡片有 continue-meta-row
-if (!homeWxml320.includes('continue-meta-row')) {
-  fail('Round 3.20: home.wxml continue card missing continue-meta-row');
-  round320Ok = false;
-}
-
-// 6. home.wxml 继续练习卡片有 continue-time（最后练习时间）
-if (!homeWxml320.includes('continue-time')) {
-  fail('Round 3.20: home.wxml continue card missing continue-time');
-  round320Ok = false;
-}
-
-// 7. home.wxml 有 continue-suggestion-bar
-if (!homeWxml320.includes('continue-suggestion-bar')) {
-  fail('Round 3.20: home.wxml missing continue-suggestion-bar');
-  round320Ok = false;
-}
-
-// 8. home.wxss 有 continue-meta-row 样式
-if (!homeWxss320.includes('continue-meta-row')) {
-  fail('Round 3.20: home.wxss missing continue-meta-row style');
-  round320Ok = false;
-}
-
-// 9. home.wxss 有 continue-time 样式
-if (!homeWxss320.includes('continue-time')) {
-  fail('Round 3.20: home.wxss missing continue-time style');
-  round320Ok = false;
-}
-
-// 10. home.wxss 有 continue-suggestion-bar 样式
-if (!homeWxss320.includes('continue-suggestion-bar')) {
-  fail('Round 3.20: home.wxss missing continue-suggestion-bar style');
-  round320Ok = false;
-}
+// UI Freeze v1 supersedes R3.20 old continue-section assertions (lastAttemptAccuracy, continueSuggestion, accuracy tiers, continue-meta-row, continue-time, continue-suggestion-bar); real continue behavior verified by UI Freeze v1 contract
 
 // 11. home 继续练习入口点击行为不变
 if (!homeJs320.includes('continueLearning')) {
@@ -3302,8 +3125,8 @@ if (!homeJs320.includes('continueLearning')) {
   round320Ok = false;
 }
 
-// 12. home 无记录空状态仍显示
-if (!homeWxml320.includes('快速开始') || !homeJs320.includes('quickStart')) {
+// UI Freeze v1: empty state quick start now via qp-focus wx:else block; quickStart handler retained
+if (!homeJs320.includes('quickStart')) {
   fail('Round 3.20: home empty state quick start broken');
   round320Ok = false;
 }
@@ -3431,10 +3254,7 @@ if (!profileJs320.includes('getConsecutiveLearningDays')) {
 }
 
 // 29. Round 3.18 home 弱项徽标仍存在
-if (!homeWxml320.includes('card-weak-badge')) {
-  fail('Round 3.20: Round 3.18 home weak badge broken');
-  round320Ok = false;
-}
+// UI Freeze v1 supersedes R3.18/R3.20 weak badge cascade
 
 // 30. Round 3.19 favorite-review 增强仍存在
 var favReviewJs320 = readFile('packages/glossary/pages/favorite-review/favorite-review.js');
@@ -3691,10 +3511,7 @@ if (!profileJs321.includes('getConsecutiveLearningDays')) {
 
 // 32. Round 3.18 home 弱项徽标仍存在
 var homeWxml321 = readFile('pages/home/home.wxml');
-if (!homeWxml321.includes('card-weak-badge')) {
-  fail('Round 3.21: Round 3.18 home weak badge broken');
-  round321Ok = false;
-}
+// UI Freeze v1 supersedes R3.18/R3.21 weak badge cascade
 
 // 33. Round 3.19 favorite-review 增强仍存在
 var favReviewJs321 = readFile('packages/glossary/pages/favorite-review/favorite-review.js');
@@ -3709,10 +3526,7 @@ if (!storage321.includes('getFavoriteTermStats')) {
 
 // 34. Round 3.20 home continue suggestion 仍存在
 var homeJs321 = readFile('pages/home/home.js');
-if (!homeJs321.includes('lastAttemptAccuracy') || !homeJs321.includes('continueSuggestion')) {
-  fail('Round 3.21: Round 3.20 home continue practice broken');
-  round321Ok = false;
-}
+// UI Freeze v1 supersedes R3.20/R3.21 continue practice cascade
 
 // 35. Round 3.20 quiz insights 仍存在
 var quizJs321 = readFile('packages/quiz/pages/quiz/quiz.js');
@@ -3931,10 +3745,7 @@ if (!mistakesJs322.includes('getWrongQuestionStats')) {
 
 // 25. Round 3.18 home 弱项徽标
 var homeWxml322 = readFile('pages/home/home.wxml');
-if (!homeWxml322.includes('card-weak-badge')) {
-  fail('Round 3.22: Round 3.18 home weak badge broken');
-  round322Ok = false;
-}
+// UI Freeze v1 supersedes R3.18/R3.22 weak badge cascade
 
 // 26. Round 3.19 favorite-review
 var favReviewJs322 = readFile('packages/glossary/pages/favorite-review/favorite-review.js');
@@ -3945,10 +3756,7 @@ if (!favReviewJs322.includes('lastSavedAtFormatted')) {
 
 // 27. Round 3.20 home continue suggestion
 var homeJs322 = readFile('pages/home/home.js');
-if (!homeJs322.includes('continueSuggestion')) {
-  fail('Round 3.22: Round 3.20 home continue suggestion broken');
-  round322Ok = false;
-}
+// UI Freeze v1 supersedes R3.20/R3.22 continue suggestion cascade
 
 // 28. Round 3.20 quiz insights
 var quizJs322 = readFile('packages/quiz/pages/quiz/quiz.js');
@@ -4130,10 +3938,7 @@ if (!readFile('pages/mistakes/mistakes.js').includes('getWrongQuestionStats')) {
 }
 
 // 22. Round 3.18 home 弱项徽标
-if (!readFile('pages/home/home.wxml').includes('card-weak-badge')) {
-  fail('Round 3.23: Round 3.18 home weak badge broken');
-  round323Ok = false;
-}
+// UI Freeze v1 supersedes R3.18/R3.23 weak badge cascade
 
 // 23. Round 3.19 favorite-review
 if (!readFile('packages/glossary/pages/favorite-review/favorite-review.js').includes('lastSavedAtFormatted')) {
@@ -4142,10 +3947,7 @@ if (!readFile('packages/glossary/pages/favorite-review/favorite-review.js').incl
 }
 
 // 24. Round 3.20 home continue suggestion
-if (!readFile('pages/home/home.js').includes('continueSuggestion')) {
-  fail('Round 3.23: Round 3.20 home continue suggestion broken');
-  round323Ok = false;
-}
+// UI Freeze v1 supersedes R3.20/R3.23 continue suggestion cascade
 
 // 25. Round 3.20 quiz insights
 if (!readFile('packages/quiz/pages/quiz/quiz.js').includes('insightHint')) {
@@ -4271,10 +4073,7 @@ if (!examMenuJs324.includes('overallTotal > 0')) {
 
 // 11. home.js suggestion 有 accuracy 守卫
 var homeJs324 = readFile('pages/home/home.js');
-if (!homeJs324.includes('lastAttemptAccuracy') || !homeJs324.includes('continueSuggestion')) {
-  fail('Round 3.24: home.js suggestion logic broken');
-  round324Ok = false;
-}
+// UI Freeze v1 supersedes R3.24 old home suggestion logic check
 
 // === D. 跨轮功能共存验证（全部 7 轮 3.17~3.23） ===
 // 12. Round 3.17: mistakes stats + profile consecutive days
@@ -4284,9 +4083,8 @@ if (!mistakesJs324.includes('getWrongQuestionStats') || !profileJs324.includes('
   round324Ok = false;
 }
 
-// 13. Round 3.18: home weak badge + storage getLastAttemptByExam
-var homeWxml324 = readFile('pages/home/home.wxml');
-if (!homeWxml324.includes('card-weak-badge') || !storage324.includes('getLastAttemptByExam')) {
+// UI Freeze v1 supersedes R3.18 coexistence home weak badge check; getLastAttemptByExam still verified in storage
+if (!storage324.includes('getLastAttemptByExam')) {
   fail('Round 3.24: Round 3.18 coexistence broken');
   round324Ok = false;
 }
@@ -4298,11 +4096,7 @@ if (!favReviewJs324.includes('lastSavedAtFormatted') || !storage324.includes('ge
   round324Ok = false;
 }
 
-// 15. Round 3.20: home continueSuggestion + quiz insightHint
-if (!homeJs324.includes('continueSuggestion') || !quizJs324.includes('insightHint')) {
-  fail('Round 3.24: Round 3.20 coexistence broken');
-  round324Ok = false;
-}
+// UI Freeze v1 supersedes R3.20/R3.24 coexistence check; quiz insightHint still verified separately
 
 // 16. Round 3.21: profile reviewHints + glossary empty-suggestions
 if (!profileJs324.includes('reviewHints') || !readFile('packages/glossary/pages/term-search/term-search.wxml').includes('empty-suggestions')) {
@@ -5230,26 +5024,7 @@ if (round333Ok) pass('Round Mini 3.33 mistakes group stats enhancement');
 console.log('\n--- Round Mini 3.34 home learning path enhancement ---');
 var round334Ok = true;
 
-// A. home.js 包含 nextActionHint 字段
-var homeJs334 = readFile('pages/home/home.js');
-if (homeJs334.indexOf('nextActionHint') < 0) {
-  fail('R3.34: nextActionHint field missing in home.js');
-  round334Ok = false;
-}
-
-// B. home.wxml 包含 next-action-hint 显示
-var homeWxml334 = readFile('pages/home/home.wxml');
-if (homeWxml334.indexOf('next-action-hint') < 0 && homeWxml334.indexOf('nextActionHint') < 0) {
-  fail('R3.34: next-action-hint missing in home.wxml');
-  round334Ok = false;
-}
-
-// C. home.wxss 包含对应样式
-var homeWxss334 = readFile('pages/home/home.wxss');
-if (homeWxss334.indexOf('.next-action-hint') < 0) {
-  fail('R3.34: .next-action-hint style missing in home.wxss');
-  round334Ok = false;
-}
+// UI Freeze v1 supersedes R3.34 nextActionHint home assertions (nextActionHint removed from home)
 
 // D. 回归：R3.29 功能未退化
 var termDetailJs334 = readFile('packages/glossary/pages/term-detail/term-detail.js');
@@ -5322,11 +5097,7 @@ if (mistakesJs335.indexOf('itCount') < 0) {
   fail('R3.35: R3.33 itCount regressed in mistakes.js');
   round335Ok = false;
 }
-var homeJs335 = readFile('pages/home/home.js');
-if (homeJs335.indexOf('nextActionHint') < 0) {
-  fail('R3.35: R3.34 nextActionHint regressed in home.js');
-  round335Ok = false;
-}
+// UI Freeze v1 supersedes R3.35 nextActionHint cascade check
 
 if (round335Ok) pass('Round Mini 3.35 favorite-review completion hint');
 
@@ -5370,11 +5141,7 @@ if (mistakesJs336.indexOf('itCount') < 0) {
   fail('R3.36: R3.33 itCount regressed in mistakes.js');
   round336Ok = false;
 }
-var homeJs336 = readFile('pages/home/home.js');
-if (homeJs336.indexOf('nextActionHint') < 0) {
-  fail('R3.36: R3.34 nextActionHint regressed in home.js');
-  round336Ok = false;
-}
+// UI Freeze v1 supersedes R3.36 nextActionHint cascade check
 var favReviewJs336 = readFile('packages/glossary/pages/favorite-review/favorite-review.js');
 if (favReviewJs336.indexOf('reviewCompletionHint') < 0) {
   fail('R3.36: R3.35 reviewCompletionHint regressed in favorite-review.js');
@@ -5441,11 +5208,7 @@ if (mistakesJs337.indexOf('itCount') < 0) {
   fail('R3.37: R3.33 itCount regressed in mistakes.js');
   round337Ok = false;
 }
-var homeJs337 = readFile('pages/home/home.js');
-if (homeJs337.indexOf('nextActionHint') < 0) {
-  fail('R3.37: R3.34 nextActionHint regressed in home.js');
-  round337Ok = false;
-}
+// UI Freeze v1 supersedes R3.37 nextActionHint cascade check
 
 if (round337Ok) pass('Round Mini 3.37 term category learning path');
 
@@ -5757,10 +5520,7 @@ if (homeJs342.indexOf('streakCount') < 0) {
   fail('R3.42: streakCount data field missing in home.js');
   round342Ok = false;
 }
-if (homeJs342.indexOf('streakText') < 0) {
-  fail('R3.42: streakText data field missing in home.js');
-  round342Ok = false;
-}
+// UI Freeze v1: streakText removed; streak now displayed inline in qp-head
 
 // B. home.js 包含 streak 计算逻辑
 if (homeJs342.indexOf('streakCount = 0') < 0) {
@@ -5772,27 +5532,11 @@ if (homeJs342.indexOf('streakData') < 0) {
   round342Ok = false;
 }
 
-// C. home.wxml 包含 streak 显示
-var homeWxml342 = readFile('pages/home/home.wxml');
-if (homeWxml342.indexOf('streak-banner') < 0) {
-  fail('R3.42: streak-banner missing in home.wxml');
-  round342Ok = false;
-}
-if (homeWxml342.indexOf('streakText') < 0) {
-  fail('R3.42: streakText binding missing in home.wxml');
-  round342Ok = false;
-}
+// UI Freeze v1: streak shown inline in qp-head; old streak-banner/streakText superseded
 
 // D. home.wxss 包含 streak 样式
 var homeWxss342 = readFile('pages/home/home.wxss');
-if (homeWxss342.indexOf('.streak-banner') < 0) {
-  fail('R3.42: .streak-banner style missing in home.wxss');
-  round342Ok = false;
-}
-if (homeWxss342.indexOf('.streak-text') < 0) {
-  fail('R3.42: .streak-text style missing in home.wxss');
-  round342Ok = false;
-}
+// UI Freeze v1: streak styles superseded by qp-head inline rendering
 
 // E. 回归：R3.32~R3.41 功能未退化
 var quizJs342 = readFile('packages/quiz/pages/quiz/quiz.js');
@@ -5889,64 +5633,8 @@ if (round343Ok) pass('Round Mini 3.43 quiz result detail enhancement');
 // ============================================================
 var round344Ok = true;
 
-// A. home.js 包含今日练习进度数据字段
-var homeJs344 = readFile('pages/home/home.js');
-if (homeJs344.indexOf('dailyGoal') < 0) {
-  fail('R3.44: dailyGoal data field missing in home.js');
-  round344Ok = false;
-}
-if (homeJs344.indexOf('goalProgress') < 0) {
-  fail('R3.44: goalProgress data field missing in home.js');
-  round344Ok = false;
-}
-if (homeJs344.indexOf('goalText') < 0) {
-  fail('R3.44: goalText data field missing in home.js');
-  round344Ok = false;
-}
-if (homeJs344.indexOf('showGoalReminder') < 0) {
-  fail('R3.44: showGoalReminder data field missing in home.js');
-  round344Ok = false;
-}
-
-// B. home.js onShow 包含今日练习进度计算逻辑
-if (homeJs344.indexOf('todayTotal') < 0) {
-  fail('R3.44: todayTotal calculation missing in home.js onShow');
-  round344Ok = false;
-}
-if (homeJs344.indexOf('goalProgress') < 0) {
-  fail('R3.44: goalProgress calculation missing in home.js onShow');
-  round344Ok = false;
-}
-
-// C. home.wxml 包含今日练习进度 UI
-var homeWxml344 = readFile('pages/home/home.wxml');
-if (homeWxml344.indexOf('goal-section') < 0) {
-  fail('R3.44: goal-section missing in home.wxml');
-  round344Ok = false;
-}
-if (homeWxml344.indexOf('goal-bar') < 0) {
-  fail('R3.44: goal-bar missing in home.wxml');
-  round344Ok = false;
-}
-if (homeWxml344.indexOf('goalText') < 0) {
-  fail('R3.44: goalText binding missing in home.wxml');
-  round344Ok = false;
-}
-
-// D. home.wxss 包含今日练习进度样式
-var homeWxss344 = readFile('pages/home/home.wxss');
-if (homeWxss344.indexOf('.goal-section') < 0) {
-  fail('R3.44: .goal-section style missing in home.wxss');
-  round344Ok = false;
-}
-if (homeWxss344.indexOf('.goal-bar') < 0) {
-  fail('R3.44: .goal-bar style missing in home.wxss');
-  round344Ok = false;
-}
-if (homeWxss344.indexOf('.goal-text') < 0) {
-  fail('R3.44: .goal-text style missing in home.wxss');
-  round344Ok = false;
-}
+// UI Freeze v1 supersedes R3.44 dailyGoal/goalProgress/goalText/goal-section (daily goal module removed from home)
+// Regression checks for streakCount and reviewList retained below
 
 // E. 回归：R3.32~R3.43 功能未退化
 var homeJs344b = readFile('pages/home/home.js');
@@ -5967,26 +5655,11 @@ if (round344Ok) pass('Round Mini 3.44 home daily practice progress');
 // ============================================================
 var round345Ok = true;
 
-// A. home.js 包含 R3.45 性能优化注释
-var homeJs345 = readFile('pages/home/home.js');
-if (homeJs345.indexOf('R3.45 优化') < 0) {
-  fail('R3.45: R3.45 性能优化注释 missing in home.js');
-  round345Ok = false;
-}
-
-// B. home.js streak 计算逻辑优化 (只在 streak 变化时写入 storage)
-if (homeJs345.indexOf('不需要写入 storage') < 0) {
-  fail('R3.45: streak storage write optimization missing in home.js');
-  round345Ok = false;
-}
-
-// C. home.js 包含 todayTotal 缓存优化注释
-if (homeJs345.indexOf('R3.45 缓存') < 0) {
-  fail('R3.45: todayTotal cache optimization comment missing in home.js');
-  round345Ok = false;
-}
+// UI Freeze v1 supersedes R3.45 A-C (performance optimization comments) and E-F (streak-banner/goal-section regression);
+// streakCount/diffDays calculation and quiz regression retained
 
 // D. home.js onShow 仍然包含完整的 streak 计算逻辑
+var homeJs345 = readFile('pages/home/home.js');
 if (homeJs345.indexOf('streakCount') < 0) {
   fail('R3.45: streakCount calculation missing in home.js');
   round345Ok = false;
@@ -5996,27 +5669,7 @@ if (homeJs345.indexOf('diffDays') < 0) {
   round345Ok = false;
 }
 
-// E. home.wxml 仍然包含 streak 和 goal UI
-var homeWxml345 = readFile('pages/home/home.wxml');
-if (homeWxml345.indexOf('streak-banner') < 0) {
-  fail('R3.45: streak-banner regressed in home.wxml');
-  round345Ok = false;
-}
-if (homeWxml345.indexOf('goal-section') < 0) {
-  fail('R3.45: goal-section regressed in home.wxml');
-  round345Ok = false;
-}
-
-// F. home.wxss 仍然包含 streak 和 goal 样式
-var homeWxss345 = readFile('pages/home/home.wxss');
-if (homeWxss345.indexOf('.streak-banner') < 0) {
-  fail('R3.45: .streak-banner style regressed in home.wxss');
-  round345Ok = false;
-}
-if (homeWxss345.indexOf('.goal-section') < 0) {
-  fail('R3.45: .goal-section style regressed in home.wxss');
-  round345Ok = false;
-}
+// UI Freeze v1 supersedes R3.45 E-F: old streak-banner/goal-section regression checks
 
 // G. 回归：R3.32~R3.44 功能未退化
 var quizJs345 = readFile('packages/quiz/pages/quiz/quiz.js');
@@ -6094,46 +5747,27 @@ if (round346Ok) pass('Round Mini 3.46 quiz result share functionality');
 // ============================================================
 var round347Ok = true;
 
-// A. home.js 包含成就数据字段
-var homeJs347 = readFile('pages/home/home.js');
-if (homeJs347.indexOf('achievements') < 0) {
-  fail('R3.47: achievements data field missing in home.js');
-  round347Ok = false;
-}
-if (homeJs347.indexOf('showAchievements') < 0) {
-  fail('R3.47: showAchievements data field missing in home.js');
-  round347Ok = false;
-}
+// UI Freeze v1 supersedes R3.47 achievements/showAchievements (achievement module removed from home)
 
-// B. home.js onShow 包含成就计算逻辑
-if (homeJs347.indexOf('totalAttemptsCount') < 0) {
-  fail('R3.47: achievement calculation missing in home.js onShow');
-  round347Ok = false;
-}
-if (homeJs347.indexOf('first_quiz') < 0) {
-  fail('R3.47: first_quiz achievement missing in home.js');
-  round347Ok = false;
-}
-
-// C. home.wxml 包含成就展示 UI
+// C. UI Freeze 首页不再渲染旧成就墙；成就数据可保留在 JS，不抢占首页主行动
 var homeWxml347 = readFile('pages/home/home.wxml');
-if (homeWxml347.indexOf('achievement-section') < 0) {
-  fail('R3.47: achievement-section missing in home.wxml');
+if (homeWxml347.indexOf('achievement-section') >= 0) {
+  fail('R3.47/UI Freeze: legacy achievement-section must not render on home');
   round347Ok = false;
 }
-if (homeWxml347.indexOf('achievements') < 0) {
-  fail('R3.47: achievements binding missing in home.wxml');
+if (homeWxml347.indexOf('qp-focus') < 0 || homeWxml347.indexOf('qp-metrics') < 0) {
+  fail('R3.47/UI Freeze: home must render focus action and gated metrics instead of achievement wall');
   round347Ok = false;
 }
 
-// D. home.wxss 包含成就样式
+// D. home.wxss 使用 Quiet Paper 页面结构；不再要求旧成就卡样式
 var homeWxss347 = readFile('pages/home/home.wxss');
-if (homeWxss347.indexOf('.achievement-section') < 0) {
-  fail('R3.47: .achievement-section style missing in home.wxss');
+if (homeWxss347.indexOf('.qp-focus') < 0) {
+  fail('R3.47/UI Freeze: .qp-focus style missing in home.wxss');
   round347Ok = false;
 }
-if (homeWxss347.indexOf('.achievement-item') < 0) {
-  fail('R3.47: .achievement-item style missing in home.wxss');
+if (homeWxss347.indexOf('.achievement-item') >= 0) {
+  fail('R3.47/UI Freeze: legacy .achievement-item style should not be required');
   round347Ok = false;
 }
 
@@ -6192,8 +5826,8 @@ if (quizJs348b.indexOf('onShareAppMessage') < 0) {
   round348Ok = false;
 }
 var homeJs348 = readFile('pages/home/home.js');
-if (homeJs348.indexOf('achievements') < 0) {
-  fail('R3.48: R3.47 achievements regressed in home.js');
+if (homeJs348.indexOf('hasLastAttempt') < 0 || readFile('pages/home/home.wxml').indexOf('qp-focus') < 0) {
+  fail('R3.48/UI Freeze: home main action regressed');
   round348Ok = false;
 }
 
@@ -6248,8 +5882,8 @@ if (quizJs349.indexOf('hint') < 0) {
   round349Ok = false;
 }
 var homeJs349 = readFile('pages/home/home.js');
-if (homeJs349.indexOf('achievements') < 0) {
-  fail('R3.49: R3.47 achievements regressed in home.js');
+if (homeJs349.indexOf('hasLastAttempt') < 0 || readFile('pages/home/home.wxml').indexOf('qp-focus') < 0) {
+  fail('R3.49/UI Freeze: home main action regressed');
   round349Ok = false;
 }
 
@@ -6300,8 +5934,8 @@ if (quizJs350b.indexOf('hint') < 0) {
   round350Ok = false;
 }
 var homeJs350 = readFile('pages/home/home.js');
-if (homeJs350.indexOf('achievements') < 0) {
-  fail('R3.50: R3.47 achievements regressed in home.js');
+if (homeJs350.indexOf('hasLastAttempt') < 0 || readFile('pages/home/home.wxml').indexOf('qp-focus') < 0) {
+  fail('R3.50/UI Freeze: home main action regressed');
   round350Ok = false;
 }
 
@@ -6312,44 +5946,27 @@ if (round350Ok) pass('Round Mini 3.50 quiz retry wrong questions');
 // ============================================================
 var round351Ok = true;
 
-// A. home.js 包含 generateEnhancedSuggestion 函数和相关数据字段
-var homeJs351 = readFile('pages/home/home.js');
-if (homeJs351.indexOf('generateEnhancedSuggestion') < 0) {
-  fail('R3.51: generateEnhancedSuggestion function missing in home.js');
-  round351Ok = false;
-}
-if (homeJs351.indexOf('suggestionActionText') < 0) {
-  fail('R3.51: suggestionActionText data field missing in home.js');
-  round351Ok = false;
-}
-if (homeJs351.indexOf('suggestionActionPath') < 0) {
-  fail('R3.51: suggestionActionPath data field missing in home.js');
-  round351Ok = false;
-}
-if (homeJs351.indexOf('suggestionActionTap') < 0) {
-  fail('R3.51: suggestionActionTap method missing in home.js');
-  round351Ok = false;
-}
+// UI Freeze v1 supersedes R3.51 generateEnhancedSuggestion/suggestionActionTap (enhanced suggestion module removed from home)
 
-// B. home.wxml 包含建议操作按钮
+// B. UI Freeze 首页不渲染旧建议操作按钮；入口必须由真实行项目承载
 var homeWxml351 = readFile('pages/home/home.wxml');
-if (homeWxml351.indexOf('suggestionActionTap') < 0) {
-  fail('R3.51: suggestionActionTap button missing in home.wxml');
+if (homeWxml351.indexOf('suggestionActionTap') >= 0 || homeWxml351.indexOf('suggestionActionText') >= 0) {
+  fail('R3.51/UI Freeze: legacy suggestion action button must not render on home');
   round351Ok = false;
 }
-if (homeWxml351.indexOf('suggestionActionText') < 0) {
-  fail('R3.51: suggestionActionText binding missing in home.wxml');
+if (homeWxml351.indexOf('goToItPassport') < 0 || homeWxml351.indexOf('goToSG') < 0) {
+  fail('R3.51/UI Freeze: practice entries must remain directly reachable');
   round351Ok = false;
 }
 
-// C. home.wxss 包含建议操作按钮样式
+// C. home.wxss 不再要求旧 suggestion action 样式
 var homeWxss351 = readFile('pages/home/home.wxss');
-if (homeWxss351.indexOf('.suggestion-action') < 0) {
-  fail('R3.51: .suggestion-action style missing in home.wxss');
+if (homeWxss351.indexOf('.suggestion-action') >= 0) {
+  fail('R3.51/UI Freeze: legacy .suggestion-action style should not remain');
   round351Ok = false;
 }
-if (homeWxss351.indexOf('.suggestion-action-text') < 0) {
-  fail('R3.51: .suggestion-action-text style missing in home.wxss');
+if (homeWxss351.indexOf('.qp-row') < 0) {
+  fail('R3.51/UI Freeze: Quiet Paper row style missing');
   round351Ok = false;
 }
 
@@ -6372,16 +5989,7 @@ if (round351Ok) pass('Round Mini 3.51 home suggestion action button');
 // ============================================================
 var round352Ok = true;
 
-// A. home.js 包含 generateLearningReminder 函数和相关数据字段
-var homeJs352 = readFile('pages/home/home.js');
-if (homeJs352.indexOf('generateLearningReminder') < 0) {
-  fail('R3.52: generateLearningReminder function missing in home.js');
-  round352Ok = false;
-}
-if (homeJs352.indexOf('learningReminder') < 0) {
-  fail('R3.52: learningReminder data field missing in home.js');
-  round352Ok = false;
-}
+// UI Freeze v1 supersedes R3.52 generateLearningReminder (learning reminder module removed from home)
 
 // B. home.wxml 顶部提示条已移除（R3.129）
 var homeWxml352 = readFile('pages/home/home.wxml');
@@ -6390,23 +5998,19 @@ if (homeWxml352.indexOf('reminder-banner') >= 0 && homeWxml352.indexOf('class="r
   round352Ok = false;
 }
 
-// C. home.wxss 包含提醒横幅样式
+// C. UI Freeze 首页不再要求旧提醒横幅样式
 var homeWxss352 = readFile('pages/home/home.wxss');
-if (homeWxss352.indexOf('.reminder-banner') < 0) {
-  fail('R3.52: .reminder-banner style missing in home.wxss');
+if (homeWxss352.indexOf('.reminder-banner') >= 0) {
+  fail('R3.52/UI Freeze: legacy reminder banner style should not remain');
   round352Ok = false;
 }
-if (homeWxss352.indexOf('.reminder-text') < 0) {
-  fail('R3.52: .reminder-text style missing in home.wxss');
+if (homeWxss352.indexOf('.qp-head') < 0) {
+  fail('R3.52/UI Freeze: custom head style missing');
   round352Ok = false;
 }
 
 // D. 回归：R3.32~R3.51 功能未退化
-var homeJs352b = readFile('pages/home/home.js');
-if (homeJs352b.indexOf('suggestionActionTap') < 0) {
-  fail('R3.52: R3.51 suggestionActionTap regressed in home.js');
-  round352Ok = false;
-}
+// UI Freeze v1 supersedes R3.52 suggestionActionTap cascade check
 var quizJs352 = readFile('packages/quiz/pages/quiz/quiz.js');
 if (quizJs352.indexOf('retryWrongQuestions') < 0) {
   fail('R3.52: R3.50 retryWrongQuestions regressed in quiz.js');
@@ -6420,38 +6024,30 @@ if (round352Ok) pass('Round Mini 3.52 home learning reminder');
 // ============================================================
 var round353Ok = true;
 
-// A. home.wxml 包含庆祝图标和条件渲染
+// A. UI Freeze 首页不得继续渲染旧 daily goal 庆祝/假进度
 var homeWxml353 = readFile('pages/home/home.wxml');
-if (homeWxml353.indexOf('🎉') < 0) {
-  fail('R3.53: celebration icon missing in home.wxml');
+if (homeWxml353.indexOf('goalProgress') >= 0 || homeWxml353.indexOf('goal-bar') >= 0) {
+  fail('R3.53/UI Freeze: legacy daily goal progress must not render on home');
   round353Ok = false;
 }
-if (homeWxml353.indexOf('goalProgress >= 100') < 0) {
-  fail('R3.53: goalProgress condition missing in home.wxml');
+if (homeWxml353.indexOf('qp-structure-line') < 0) {
+  fail('R3.53/UI Freeze: neutral structure line missing from main action');
   round353Ok = false;
 }
 
-// B. home.wxss 包含庆祝样式和动画
+// B. home.wxss 不再要求旧庆祝动画
 var homeWxss353 = readFile('pages/home/home.wxss');
-if (homeWxss353.indexOf('.goal-celebrate') < 0) {
-  fail('R3.53: .goal-celebrate style missing in home.wxss');
+if (homeWxss353.indexOf('.goal-celebrate') >= 0 || homeWxss353.indexOf('celebrate-bounce') >= 0) {
+  fail('R3.53/UI Freeze: legacy celebration styles should not remain');
   round353Ok = false;
 }
-if (homeWxss353.indexOf('.goal-bar-complete') < 0) {
-  fail('R3.53: .goal-bar-complete style missing in home.wxss');
-  round353Ok = false;
-}
-if (homeWxss353.indexOf('celebrate-bounce') < 0) {
-  fail('R3.53: celebrate-bounce animation missing in home.wxss');
+if (homeWxss353.indexOf('.qp-structure-line') < 0) {
+  fail('R3.53/UI Freeze: .qp-structure-line style missing');
   round353Ok = false;
 }
 
 // C. 回归：R3.32~R3.52 功能未退化
-var homeJs353 = readFile('pages/home/home.js');
-if (homeJs353.indexOf('generateLearningReminder') < 0) {
-  fail('R3.53: R3.52 generateLearningReminder regressed in home.js');
-  round353Ok = false;
-}
+// UI Freeze v1 supersedes R3.53 generateLearningReminder cascade check
 var quizJs353 = readFile('packages/quiz/pages/quiz/quiz.js');
 if (quizJs353.indexOf('retryWrongQuestions') < 0) {
   fail('R3.53: R3.50 retryWrongQuestions regressed in quiz.js');
@@ -6506,11 +6102,7 @@ if (termSearchJs354.indexOf('randomIndex') < 0) {
 }
 
 // E. 回归：R3.32~R3.53 功能未退化
-var homeJs354 = readFile('pages/home/home.js');
-if (homeJs354.indexOf('generateLearningReminder') < 0) {
-  fail('R3.54: R3.52 generateLearningReminder regressed in home.js');
-  round354Ok = false;
-}
+// UI Freeze v1 supersedes R3.54 generateLearningReminder cascade check
 var quizJs354 = readFile('packages/quiz/pages/quiz/quiz.js');
 if (quizJs354.indexOf('retryWrongQuestions') < 0) {
   fail('R3.54: R3.50 retryWrongQuestions regressed in quiz.js');
@@ -6535,21 +6127,21 @@ if (homeJs355.indexOf('streakCount') < 0) {
   round355Ok = false;
 }
 
-// B. home.wxml 包含分享按钮
+// B. UI Freeze 首页只在真实连续天数存在时展示文本，不强制旧分享按钮抢占顶部
 var homeWxml355 = readFile('pages/home/home.wxml');
-if (homeWxml355.indexOf('streak-share-btn') < 0) {
-  fail('R3.55: streak-share-btn missing in home.wxml');
+if (homeWxml355.indexOf('streak-share-btn') >= 0) {
+  fail('R3.55/UI Freeze: legacy streak share button must not render on home');
   round355Ok = false;
 }
-if (homeWxml355.indexOf('open-type="share"') < 0) {
-  fail('R3.55: open-type="share" missing in home.wxml');
+if (homeWxml355.indexOf('streakCount > 0') < 0) {
+  fail('R3.55/UI Freeze: streak text must stay gated by real streak count');
   round355Ok = false;
 }
 
-// C. home.wxss 包含分享按钮样式
+// C. home.wxss 不再要求旧分享按钮样式
 var homeWxss355 = readFile('pages/home/home.wxss');
-if (homeWxss355.indexOf('.streak-share-btn') < 0) {
-  fail('R3.55: .streak-share-btn style missing in home.wxss');
+if (homeWxss355.indexOf('.streak-share-btn') >= 0) {
+  fail('R3.55/UI Freeze: legacy streak share style should not remain');
   round355Ok = false;
 }
 
@@ -6672,20 +6264,7 @@ if (round357Ok) pass('Round Mini 3.57 profile version copy button');
 // ============================================================
 var round358Ok = true;
 
-// A. home.js 包含 getDailyQuote 函数和相关数据字段
-var homeJs358 = readFile('pages/home/home.js');
-if (homeJs358.indexOf('getDailyQuote') < 0) {
-  fail('R3.58: getDailyQuote function missing in home.js');
-  round358Ok = false;
-}
-if (homeJs358.indexOf('DAILY_QUOTES') < 0) {
-  fail('R3.58: DAILY_QUOTES array missing in home.js');
-  round358Ok = false;
-}
-if (homeJs358.indexOf('dailyQuote') < 0) {
-  fail('R3.58: dailyQuote data field missing in home.js');
-  round358Ok = false;
-}
+// UI Freeze v1 supersedes R3.58 getDailyQuote/DAILY_QUOTES/dailyQuote (daily quote module removed from home)
 
 // B. home.wxml 顶部格言条已移除（R3.129）
 var homeWxml358 = readFile('pages/home/home.wxml');
@@ -6694,16 +6273,7 @@ if (homeWxml358.indexOf('quote-banner') >= 0 && homeWxml358.indexOf('class="quot
   round358Ok = false;
 }
 
-// C. home.wxss 包含格言样式
-var homeWxss358 = readFile('pages/home/home.wxss');
-if (homeWxss358.indexOf('.quote-banner') < 0) {
-  fail('R3.58: .quote-banner style missing in home.wxss');
-  round358Ok = false;
-}
-if (homeWxss358.indexOf('.quote-text') < 0) {
-  fail('R3.58: .quote-text style missing in home.wxss');
-  round358Ok = false;
-}
+// UI Freeze v1 supersedes R3.58 quote-banner/quote-text style checks
 
 // D. 回归：R3.32~R3.57 功能未退化
 var profileJs358 = readFile('pages/profile/profile.js');
@@ -6743,11 +6313,7 @@ if (termSearchWxml359.indexOf('clearHistory') < 0) {
 }
 
 // C. 回归：R3.32~R3.58 功能未退化
-var homeJs359 = readFile('pages/home/home.js');
-if (homeJs359.indexOf('getDailyQuote') < 0) {
-  fail('R3.59: R3.58 getDailyQuote regressed in home.js');
-  round359Ok = false;
-}
+// UI Freeze v1 supersedes R3.59 getDailyQuote cascade check
 var profileJs359 = readFile('pages/profile/profile.js');
 if (profileJs359.indexOf('copyVersion') < 0) {
   fail('R3.59: R3.57 copyVersion regressed in profile.js');
@@ -6800,11 +6366,7 @@ if (termSearchJs360.indexOf('clearSearchHistory') < 0) {
   fail('R3.60: R3.59 clearSearchHistory regressed in term-search.js');
   round360Ok = false;
 }
-var homeJs360 = readFile('pages/home/home.js');
-if (homeJs360.indexOf('getDailyQuote') < 0) {
-  fail('R3.60: R3.58 getDailyQuote regressed in home.js');
-  round360Ok = false;
-}
+// UI Freeze v1 supersedes R3.60 getDailyQuote cascade check
 
 if (round360Ok) pass('Round Mini 3.60 quiz hint button');
 
@@ -6813,16 +6375,7 @@ if (round360Ok) pass('Round Mini 3.60 quiz hint button');
 // ============================================================
 var round361Ok = true;
 
-// A. home.js contains practiceReminder field
-var homeJs361 = readFile("pages/home/home.js");
-if (homeJs361.indexOf("practiceReminder") < 0) {
-  fail("R3.61: practiceReminder field missing in home.js");
-  round361Ok = false;
-}
-if (homeJs361.indexOf("天前") < 0) {
-  fail("R3.61: days ago calculation missing in home.js");
-  round361Ok = false;
-}
+// UI Freeze v1 supersedes R3.61 practiceReminder field; reminder removed from home
 
 // B. home.wxml 练习提醒已移除（R3.129）
 var homeWxml361 = readFile("pages/home/home.wxml");
@@ -6870,12 +6423,7 @@ if (round362Ok) pass("Round Mini 3.62 quiz answer timer");
 // ===========================================================
 var round363Ok = true;
 
-// A. home.js 包含 dismissReminder 方法
-var homeJs363 = readFile("pages/home/home.js");
-if (homeJs363.indexOf("dismissReminder") < 0) {
-  fail("R3.63: dismissReminder method missing in home.js");
-  round363Ok = false;
-}
+// UI Freeze v1 supersedes R3.63 dismissReminder; reminder module removed from home
 
 // B. home.wxml 包含关闭按钮
 var homeWxml363 = readFile("pages/home/home.wxml");
@@ -6979,20 +6527,21 @@ check382(homeJs382.indexOf("onPullDownRefresh") >= 0, "R3.65/R3.82: onPullDownRe
 check382(homeJs382.indexOf("stopPullDownRefresh") >= 0, "R3.65/R3.82: stopPullDownRefresh missing");
 check382(profileJs382.indexOf("backupTime") >= 0 && profileJs382.indexOf("formatBackupTime") >= 0, "R3.66/R3.82: backup time logic missing");
 check382(profileWxml382.indexOf("backupTime") >= 0, "R3.66/R3.82: backup time UI missing");
-check382(homeWxml382.indexOf("v{{version}}") >= 0 && homeJs382.indexOf("globalData.version") >= 0, "R3.67/R3.82: home footer version binding missing");
+check382(homeWxml382.indexOf("v{{version}}") < 0 && homeWxml382.indexOf("{{version}}") < 0, "R3.67/R3.82/UI Freeze: home must not display internal version text");
 check382(profileWxml382.indexOf("update-notice") >= 0 && profileWxss382.indexOf(".update-notice") >= 0, "R3.68/R3.82: profile update notice missing");
-check382(homeWxml382.indexOf("section-divider") >= 0 && homeWxss382.indexOf(".section-divider") >= 0, "R3.69/R3.82: home section divider missing");
+check382(homeWxml382.indexOf("qp-eyebrow") >= 0 && homeWxss382.indexOf(".qp-row") >= 0, "R3.69/R3.82/UI Freeze: home Quiet Paper section lines missing");
 check382(profileWxml382.indexOf("section-divider") >= 0, "R3.70/R3.82: profile section divider missing");
 check382(quizJs382.indexOf("onUnload") >= 0 && quizJs382.indexOf("showToast") >= 0, "R3.71/R3.82: quiz progress save toast missing");
-check382(homeJs382.indexOf("onPageScroll") >= 0 && homeJs382.indexOf("scrollToTop") >= 0 && homeWxml382.indexOf("back-to-top") >= 0, "R3.72/R3.82: back-to-top support missing");
+check382(homeJs382.indexOf("onPageScroll") >= 0 && homeJs382.indexOf("scrollToTop") >= 0 && homeWxml382.indexOf("qp-backtop") >= 0, "R3.72/R3.82/UI Freeze: quiet back-to-top support missing");
 check382(profileJs382.indexOf("showHelp") >= 0 && profileWxml382.indexOf("help-btn") >= 0, "R3.73/R3.82: help entry missing");
 check382(profileJs382.indexOf("showFeedback") >= 0 && profileWxml382.indexOf("feedback-btn") >= 0, "R3.74/R3.82: feedback entry missing");
 check382(profileJs382.indexOf("wx.request") < 0 && profileJs382.indexOf("http://") < 0 && profileJs382.indexOf("https://") < 0, "R3.74/R3.82: feedback must stay static without network/link");
-check382(homeWxml382.indexOf("quick-tips") >= 0 && homeWxss382.indexOf(".quick-tips") >= 0, "R3.75/R3.82: quick tips missing");
-check382(homeWxml382.indexOf("footer-hint") >= 0 && homeWxss382.indexOf(".footer-hint") >= 0, "R3.76/R3.82: pull-down refresh hint missing");
-check382(homeJs382.indexOf("viewCount") >= 0 && homeWxml382.indexOf("viewCount") >= 0, "R3.77/R3.82: home view count display missing");
+check382(homeWxml382.indexOf("quick-tips") < 0 && homeWxss382.indexOf(".quick-tips") < 0, "R3.75/R3.82/UI Freeze: old quick tips must not render on home");
+check382(homeWxml382.indexOf("footer-hint") < 0 && homeWxss382.indexOf(".footer-hint") < 0, "R3.76/R3.82/UI Freeze: pull-down refresh hint must not occupy home");
+check382(homeWxml382.indexOf("viewCount") < 0, "R3.77/R3.82/UI Freeze: home view count must not display");
 check382(profileJs382.indexOf("viewCount") >= 0 && profileWxml382.indexOf("viewCount") >= 0, "R3.78/R3.82: profile view count display missing");
-check382(homeJs382.indexOf("homeSessionViewCount") >= 0 && homeJs382.indexOf("homeViewCount") < 0, "R3.77/R3.82: home view count must be session-only");
+// UI Freeze v1 supersedes R3.77/R3.82 home view count (view counting removed from home)
+pass("R3.77/R3.82: home view count superseded by UI Freeze v1");
 check382(profileJs382.indexOf("profileSessionViewCount") >= 0 && profileJs382.indexOf("profileViewCount") < 0, "R3.78/R3.82: profile view count must be session-only");
 check382(homeJs382.indexOf("dismissUpdateBanner") >= 0, "R3.79/R3.82: dismissUpdateBanner handler missing in home.js");
 check382(homeJs382.indexOf("[R3.80]") < 0 && homeJs382.indexOf("console.log") < 0, "R3.80/R3.82: home debug console output must be removed");
@@ -7767,24 +7316,20 @@ var quizWxssUiPolish = readFile('packages/quiz/pages/quiz/quiz.wxss');
 var mistakesWxssUiPolish = readFile('packages/quiz/pages/mistakes/mistakes.wxss');
 var favoriteReviewWxssUiPolish = readFile('packages/glossary/pages/favorite-review/favorite-review.wxss');
 
-checkUiPolish(homeWxmlUiPolish.indexOf('entry-card-anki') >= 0,
-  'UI polish: Anki entry card must carry its theme class');
-checkUiPolish(homeWxmlUiPolish.indexOf('hover-class="home-card-pressed"') >= 0 &&
-  homeWxssUiPolish.indexOf('.home-card-pressed') >= 0 &&
-  homeWxssUiPolish.indexOf('scale(0.98)') >= 0 &&
-  homeWxssUiPolish.indexOf('background: var(--press-bg)') >= 0 &&
-  homeWxssUiPolish.indexOf('border-color: var(--border-strong)') >= 0 &&
-  homeWxssUiPolish.indexOf('box-shadow:') >= 0,
-  'UI polish: home entry cards must keep pressed feedback');
-checkUiPolish(homeWxssUiPolish.indexOf('.entry-card-badge') >= 0 &&
-  homeWxssUiPolish.indexOf('linear-gradient(135deg, #ef4444, #dc2626)') >= 0,
-  'UI polish: home badges must keep gradient treatment');
-checkUiPolish(homeWxssUiPolish.indexOf('.entry-card-anki') >= 0 &&
-  homeWxssUiPolish.indexOf('.entry-card-profile') >= 0,
-  'UI polish: home cards must keep per-module color classes');
-checkUiPolish(homeWxssUiPolish.indexOf('.hero') >= 0 &&
-  homeWxssUiPolish.indexOf('radial-gradient') >= 0,
-  'UI polish: home hero must keep textured visual layer');
+checkUiPolish(homeWxmlUiPolish.indexOf('qp-home') >= 0 &&
+  homeWxmlUiPolish.indexOf('qp-focus') >= 0 &&
+  homeWxmlUiPolish.indexOf('qp-row') >= 0,
+  'UI Freeze: home must use Quiet Paper shell, focus action, and row entries');
+checkUiPolish(homeWxssUiPolish.indexOf('@import "../../styles/tokens.wxss";') >= 0 &&
+  homeWxssUiPolish.indexOf('.qp-focus') >= 0 &&
+  homeWxssUiPolish.indexOf('.qp-row--lead') >= 0 &&
+  homeWxssUiPolish.indexOf('box-shadow') < 0,
+  'UI Freeze: home styles must import tokens and avoid heavy shadows');
+checkUiPolish(homeWxmlUiPolish.indexOf('entry-card-') < 0 &&
+  homeWxmlUiPolish.indexOf('card-list') < 0 &&
+  homeWxssUiPolish.indexOf('radial-gradient') < 0 &&
+  homeWxssUiPolish.indexOf('linear-gradient') < 0,
+  'UI Freeze: home must not keep old card wall or gradient visual layer');
 
 checkUiPolish(appWxssUiPolish.indexOf('.btn-primary') >= 0 &&
   appWxssUiPolish.indexOf('.btn-secondary') >= 0 &&
@@ -7795,30 +7340,19 @@ checkUiPolish(appWxssUiPolish.indexOf('.tag-itpass') >= 0 &&
   appWxssUiPolish.indexOf('border-color') >= 0,
   'UI polish: global tags must keep themed border treatment');
 checkUiPolish(themeJsonUiPolish.indexOf('tabSelectedColor') >= 0 &&
-  themeJsonUiPolish.indexOf('#3b82f6') >= 0 &&
-  themeJsonUiPolish.indexOf('#93c5fd') >= 0,
-  'UI polish: tab theme colors must keep light and dark active states');
+  themeJsonUiPolish.indexOf('#37418A') >= 0,
+  'UI Freeze: tab light selected color should align to Quiet Paper primary');
 checkUiPolish(ankiWxssUiPolish.indexOf('.action-btn:active') >= 0 &&
   ankiWxssUiPolish.indexOf('translateY(2rpx) scale(0.955)') >= 0,
   'UI polish: Anki action buttons must keep pressed feedback');
-checkUiPolish(homeWxmlUiPolish.indexOf('闪卡') >= 0 &&
-  homeWxmlUiPolish.indexOf('记忆辅助') >= 0,
-  'UI polish: Anki entry shows flashcard + memory assist tag');
-checkUiPolish(homeWxmlUiPolish.indexOf('查词') >= 0 &&
-  homeWxmlUiPolish.indexOf('中日英对照') >= 0,
-  'UI polish: Glossary entry shows lookup + language tag');
-checkUiPolish(homeWxmlUiPolish.indexOf('薄弱点复盘') >= 0,
-  'UI polish: Mistakes entry shows weakness review tag');
-checkUiPolish(homeWxmlUiPolish.indexOf('数据 / 备份管理') >= 0,
-  'UI polish: Profile entry shows data + backup tag');
-checkUiPolish(homeWxmlUiPolish.indexOf('开始练习') >= 0,
-  'UI polish: Untouched exam cards show start-practice prompt');
-checkUiPolish(homeWxmlUiPolish.indexOf('积累词汇') >= 0,
-  'UI polish: Empty state suggests glossary + practice start');
-checkUiPolish(homeWxmlUiPolish.indexOf('浏览术语表') >= 0,
-  'UI polish: Empty state shows glossary entry chip');
-checkUiPolish(homeWxmlUiPolish.indexOf('了解工具') >= 0,
-  'UI polish: Empty state shows tool intro chip');
+checkUiPolish(homeWxmlUiPolish.indexOf('goToAnki') >= 0 &&
+  homeWxmlUiPolish.indexOf('goToGlossary') >= 0 &&
+  homeWxmlUiPolish.indexOf('goToProfile') >= 0,
+  'UI Freeze: low-priority tools remain reachable from compact rows');
+checkUiPolish(homeWxmlUiPolish.indexOf('0/10') < 0 &&
+  homeWxmlUiPolish.indexOf('goalProgress') < 0 &&
+  homeWxmlUiPolish.indexOf('viewCount') < 0,
+  'UI Freeze: home must not render fake zero progress or internal debug data');
 
 if (uiPolishOk) pass('UI polish PR visual contract smoke');
 
@@ -7831,16 +7365,16 @@ function check3125(cond, msg) {
   if (!cond) { fail(msg); round3125Ok = false; }
 }
 
-check3125(homeWxssUiPolish.indexOf('min-height: 184rpx') >= 0 &&
-  homeWxssUiPolish.indexOf('border-left: 5rpx solid rgba(250, 140, 22, 0.38)') >= 0,
-  'R3.125: home entry cards and quick tips must keep polished hierarchy');
-check3125(quizWxssUiPolish.indexOf('min-height: 88rpx') >= 0 &&
-  quizWxssUiPolish.indexOf('--color-success') >= 0 &&
-  quizWxssUiPolish.indexOf('--color-error') >= 0,
-  'R3.125: quiz feedback must keep touch comfort and dark contrast');
-check3125(mistakesWxssUiPolish.indexOf('.go-study-btn:active') >= 0 &&
-  mistakesWxssUiPolish.indexOf('border-radius: 22rpx') >= 0,
-  'R3.125: mistakes empty state must keep card treatment and pressed action');
+check3125(homeWxssUiPolish.indexOf('.qp-row--lead::before') >= 0 &&
+  homeWxssUiPolish.indexOf('border-bottom: var(--qp-border-width) solid var(--qp-color-line)') >= 0,
+  'R3.125/UI Freeze: home must keep left rule and hairline row hierarchy');
+check3125(quizWxssUiPolish.indexOf('--qp-color-success') >= 0 &&
+  quizWxssUiPolish.indexOf('--qp-color-danger') >= 0 &&
+  quizWxssUiPolish.indexOf('analysis-drawer') >= 0,
+  'R3.125/UI Freeze: quiz feedback and drawer must use Quiet Paper semantic tokens');
+check3125(mistakesWxssUiPolish.indexOf('--qp-color') >= 0 &&
+  mistakesWxssUiPolish.indexOf('review-mode') >= 0,
+  'R3.125/UI Freeze: mistakes review must use Quiet Paper tokens and task flow');
 check3125(favoriteReviewWxssUiPolish.indexOf('.fav-list-card:active') >= 0 &&
   favoriteReviewWxssUiPolish.indexOf('.go-search-btn:active') >= 0,
   'R3.125: favorite review cards and empty actions must keep pressed feedback');
@@ -7919,9 +7453,9 @@ var examMenuWxss3126 = readFile('packages/quiz/pages/exam-menu/exam-menu.wxss');
 check3126(examMenuWxml3126.indexOf('catchtap="goPastExamYear"') >= 0,
   'R3.126: past exam year chips should not bubble into card toggle');
 check3126(examMenuWxss3126.indexOf('.past-exam-year-count') >= 0 &&
-  examMenuWxss3126.indexOf('min-width: 56rpx') >= 0 &&
-  examMenuWxss3126.indexOf('background-color: rgba(245, 158, 11, 0.12)') >= 0,
-  'R3.126: past exam year count must keep badge treatment');
+  examMenuWxss3126.indexOf('--qp-color-primary') >= 0 &&
+  examMenuWxss3126.indexOf('linear-gradient') < 0,
+  'R3.126/UI Freeze: past exam year count must use Quiet Paper badge treatment');
 
 if (round3126Ok) pass('R3.126 package and flashcard usability fixes');
 
@@ -8527,6 +8061,153 @@ checkFlashcard(playerPackageNames.every(function (packageName) {
 }), 'Flashcard: formal player route is registered for every data subpackage');
 
 if (roundFlashcardOk) pass('Flashcard cold-start reliability checks');
+
+// ============================================================
+// UI Freeze v1.0 full-page semantic contract
+// ============================================================
+console.log('\n--- UI Freeze v1.0 full-page semantic contract ---');
+var uiFreezeOk = true;
+function checkUiFreeze(cond, msg) {
+  if (!cond) { fail(msg); uiFreezeOk = false; }
+}
+
+function registeredUiFreezeRoute(route) {
+  var target = route.replace(/^\//, '').split('?')[0];
+  if ((appJson.pages || []).indexOf(target) >= 0) return true;
+  var packages = appJson.subpackages || [];
+  for (var i = 0; i < packages.length; i++) {
+    var root = String(packages[i].root || '').replace(/\/$/, '');
+    if (target.indexOf(root + '/') !== 0) continue;
+    var subPath = target.slice(root.length + 1);
+    if ((packages[i].pages || []).indexOf(subPath) >= 0) return true;
+  }
+  return false;
+}
+
+var homeJsonFreeze = JSON.parse(readFile('pages/home/home.json'));
+var homeJsFreeze = readFile('pages/home/home.js');
+var homeWxmlFreeze = readFile('pages/home/home.wxml');
+var homeWxssFreeze = readFile('pages/home/home.wxss');
+checkUiFreeze(homeJsonFreeze.navigationStyle === 'custom',
+  'UI Freeze: home must use page-level custom navigation');
+checkUiFreeze(homeWxmlFreeze.indexOf('qp-home') >= 0 &&
+  homeWxmlFreeze.indexOf('qp-focus') >= 0 &&
+  homeWxmlFreeze.indexOf('ui-button') >= 0,
+  'UI Freeze: home must render Quiet Paper shell, focus action, and primary button');
+checkUiFreeze(homeJsFreeze.indexOf('getMenuButtonBoundingClientRect') >= 0 &&
+  homeJsFreeze.indexOf('navSafeTop') >= 0,
+  'UI Freeze: home must respect WeChat capsule safe area');
+checkUiFreeze(homeWxmlFreeze.indexOf('Study Tools') < 0 &&
+  homeWxmlFreeze.indexOf('0/10') < 0 &&
+  homeWxmlFreeze.indexOf('goalProgress') < 0 &&
+  homeWxmlFreeze.indexOf('viewCount') < 0,
+  'UI Freeze: home must not render default title, fake progress, or debug stats');
+checkUiFreeze(homeWxssFreeze.indexOf('@import "../../styles/tokens.wxss";') >= 0 &&
+  homeWxssFreeze.indexOf('font-weight: 700') < 0 &&
+  homeWxssFreeze.indexOf('font-weight: 800') < 0,
+  'UI Freeze: home must import tokens and avoid 700/800 font weights');
+
+var tabRoutesFreeze = (appJson.tabBar && appJson.tabBar.list || []).map(function (item) { return item.pagePath; }).join('|');
+checkUiFreeze(tabRoutesFreeze === 'pages/home/home|pages/flashcards/flashcards|pages/mistakes/mistakes|pages/profile/profile',
+  'UI Freeze: tab order and routes must remain unchanged');
+
+var examMenuJsFreeze = readFile('packages/quiz/pages/exam-menu/exam-menu.js');
+var examMenuWxmlFreeze = readFile('packages/quiz/pages/exam-menu/exam-menu.wxml');
+var examMenuWxssFreeze = readFile('packages/quiz/pages/exam-menu/exam-menu.wxss');
+checkUiFreeze(examMenuJsFreeze.indexOf('getQuizStatsByFilter') >= 0 &&
+  examMenuJsFreeze.indexOf('pastExamIndex.getYears') >= 0 &&
+  examMenuJsFreeze.indexOf('pastExamIndex.getRoute') >= 0,
+  'UI Freeze: exam menu must keep real stats and split paper routing');
+checkUiFreeze(examMenuWxmlFreeze.indexOf('继续上次') >= 0 &&
+  examMenuWxmlFreeze.indexOf('开始新训练') >= 0 &&
+  examMenuWxmlFreeze.indexOf('按知识点练习') >= 0,
+  'UI Freeze: exam menu must separate continue, new training, and knowledge practice');
+checkUiFreeze(examMenuWxssFreeze.indexOf('@import "../../../../styles/tokens.wxss";') >= 0 &&
+  examMenuWxssFreeze.indexOf('linear-gradient') < 0,
+  'UI Freeze: exam menu must use tokens and avoid old gradient cards');
+
+var quizJsFreeze = readFile('packages/quiz/pages/quiz/quiz.js');
+var quizWxmlFreeze = readFile('packages/quiz/pages/quiz/quiz.wxml');
+var quizJsonFreeze = readFile('packages/quiz/pages/quiz/quiz.json');
+var splitQuizJsFreeze = readFile('packages/quiz-itpass-1/pages/quiz/quiz.js');
+var splitQuizWxmlFreeze = readFile('packages/quiz-itpass-1/pages/quiz/quiz.wxml');
+checkUiFreeze(quizJsFreeze.indexOf('answerState') >= 0 &&
+  quizJsFreeze.indexOf('confirmAnswer') >= 0 &&
+  quizJsFreeze.indexOf('showAnalysisDrawer') >= 0,
+  'UI Freeze: main quiz must expose C1-C5 state machine and confirmAnswer');
+checkUiFreeze(splitQuizJsFreeze.indexOf('answerState') >= 0 &&
+  splitQuizJsFreeze.indexOf('confirmAnswer') >= 0 &&
+  splitQuizJsFreeze.indexOf('showAnalysisDrawer') >= 0,
+  'UI Freeze: split quiz pages must share C1-C5 state machine and confirmAnswer');
+checkUiFreeze(quizJsFreeze.indexOf('selectAnswer: function') < quizJsFreeze.indexOf('confirmAnswer: function') &&
+  quizJsFreeze.indexOf('storage.addQuizAttempt') > quizJsFreeze.indexOf('confirmAnswer: function'),
+  'UI Freeze: quiz must update storage only after confirmAnswer');
+checkUiFreeze(quizWxmlFreeze.indexOf('bind:qptap="confirmAnswer"') >= 0 &&
+  quizWxmlFreeze.indexOf('analysis-drawer') >= 0 &&
+  quizWxmlFreeze.indexOf('goAnalysisDetail') >= 0,
+  'UI Freeze: quiz WXML must render confirm button, analysis drawer, and detail link');
+checkUiFreeze(quizJsonFreeze.indexOf('"option-item"') >= 0 &&
+  quizJsonFreeze.indexOf('"ui-button"') >= 0 &&
+  quizJsonFreeze.indexOf('"status-badge"') >= 0,
+  'UI Freeze: quiz must register Quiet Paper base components');
+checkUiFreeze(splitQuizWxmlFreeze.indexOf('bind:qptap="confirmAnswer"') >= 0 &&
+  splitQuizWxmlFreeze.indexOf('analysis-drawer') >= 0,
+  'UI Freeze: split quiz WXML must render confirm flow and analysis drawer');
+
+checkUiFreeze(quizWxmlFreeze.indexOf('result-insight') >= 0 &&
+  quizWxmlFreeze.indexOf('weakness-list') >= 0 &&
+  quizWxmlFreeze.indexOf('retryWrongQuestions') >= 0,
+  'UI Freeze: result state must expose insight, weak-review action, and retry wrong questions');
+
+var mistakesJsFreeze = readFile('packages/quiz/pages/mistakes/mistakes.js');
+var mistakesWxmlFreeze = readFile('packages/quiz/pages/mistakes/mistakes.wxml');
+var mistakesWxssFreeze = readFile('packages/quiz/pages/mistakes/mistakes.wxss');
+checkUiFreeze(mistakesJsFreeze.indexOf("reviewType: 'wrong'") >= 0 &&
+  mistakesJsFreeze.indexOf('sortMode') >= 0 &&
+  mistakesJsFreeze.indexOf('loadFavoriteItems') >= 0,
+  'UI Freeze: mistakes page must support wrong/favorite toggle and review sorting');
+checkUiFreeze(mistakesWxmlFreeze.indexOf('错题 / 收藏') >= 0 &&
+  mistakesWxmlFreeze.indexOf('goAnalysisDetail') >= 0 &&
+  mistakesWxmlFreeze.indexOf('goPracticeWrong') >= 0,
+  'UI Freeze: mistakes WXML must expose wrong/favorite switch, analysis detail, and redo');
+checkUiFreeze(mistakesWxssFreeze.indexOf('@import "../../../../styles/tokens.wxss";') >= 0 &&
+  mistakesWxssFreeze.indexOf('linear-gradient') < 0,
+  'UI Freeze: mistakes styles must use tokens and avoid gradients');
+
+var deckJsFreeze = readFile('packages/quiz/pages/flashcard-deck-select/flashcard-deck-select.js');
+var deckWxmlFreeze = readFile('packages/quiz/pages/flashcard-deck-select/flashcard-deck-select.wxml');
+var deckWxssFreeze = readFile('packages/quiz/pages/flashcard-deck-select/flashcard-deck-select.wxss');
+checkUiFreeze(deckJsFreeze.indexOf('courseProgressState') >= 0 &&
+  deckJsFreeze.indexOf('continueCourse') >= 0,
+  'UI Freeze: course chapter page must expose real progress state and primary continue action');
+checkUiFreeze(deckWxmlFreeze.indexOf('继续学习') >= 0 &&
+  deckWxmlFreeze.indexOf('章节') >= 0,
+  'UI Freeze: course chapter WXML must render chapter framing and continue action');
+checkUiFreeze(deckWxssFreeze.indexOf('@import "../../../../styles/tokens.wxss";') >= 0,
+  'UI Freeze: course chapter styles must use Quiet Paper tokens');
+
+checkUiFreeze(registeredUiFreezeRoute('/packages/quiz/pages/analysis-detail/analysis-detail'),
+  'UI Freeze: analysis detail route must be registered in quiz subpackage');
+checkUiFreeze(fileExists('packages/quiz/pages/analysis-detail/analysis-detail.js') &&
+  fileExists('packages/quiz/pages/analysis-detail/analysis-detail.wxml') &&
+  fileExists('packages/quiz/pages/analysis-detail/analysis-detail.wxss') &&
+  fileExists('packages/quiz/pages/analysis-detail/analysis-detail.json'),
+  'UI Freeze: analysis detail page files must exist');
+if (fileExists('packages/quiz/pages/analysis-detail/analysis-detail.wxml')) {
+  var analysisWxmlFreeze = readFile('packages/quiz/pages/analysis-detail/analysis-detail.wxml');
+  checkUiFreeze(analysisWxmlFreeze.indexOf('日文题干') >= 0 &&
+    analysisWxmlFreeze.indexOf('中文辅助') >= 0 &&
+    analysisWxmlFreeze.indexOf('逐项排错') >= 0 &&
+    analysisWxmlFreeze.indexOf('返回复习') >= 0,
+    'UI Freeze: analysis detail must layer Japanese stem, Chinese aid, option elimination, and review return');
+}
+
+var auditSizeFreeze = readFile('tools/audit_miniprogram_package_size.js');
+checkUiFreeze(auditSizeFreeze.indexOf('packOptions') >= 0 &&
+  auditSizeFreeze.indexOf('project.config.json') >= 0,
+  'UI Freeze: package audit must honor project.config packOptions.ignore');
+
+if (uiFreezeOk) pass('UI Freeze v1.0 full-page semantic contract');
 
 console.log('\n========================================');
 console.log('Passed: ' + passed);

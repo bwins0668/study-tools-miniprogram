@@ -129,8 +129,10 @@ Page({
     currentIndex: 0,
     currentQuestion: null,
     selectedAnswer: '',
+    answerState: 'unanswered',
     hasAnswered: false,
     isCorrect: false,
+    showAnalysisDrawer: false,
     isFinished: false,
     showResult: false,
     totalQuestions: 0,
@@ -232,6 +234,8 @@ Page({
         isFinished: true,
         showResult: false,
         totalQuestions: 0,
+        answerState: 'unanswered',
+        showAnalysisDrawer: false,
         showFeedbackTip: false,
         yearId: yearId
       });
@@ -277,10 +281,12 @@ Page({
         currentIndex: 0,
         progressPercent: Math.round(1 / processed.length * 100) || 0,
         selectedAnswer: '',
+        answerState: 'unanswered',
         hasAnswered: false,
         isCorrect: false,
         isFinished: false,
         showResult: false,
+        showAnalysisDrawer: false,
         showFeedbackTip: false,
         yearId: yearId
       });
@@ -297,6 +303,8 @@ Page({
         isFinished: true,
         showResult: false,
         totalQuestions: 0,
+        answerState: 'unanswered',
+        showAnalysisDrawer: false,
         showFeedbackTip: false,
         yearId: yearId
       });
@@ -306,7 +314,22 @@ Page({
   selectAnswer: function (event) {
     if (this.data.hasAnswered || !this.data.currentQuestion) return;
 
-    var key = event.currentTarget.dataset.key;
+    var key = (event.detail && event.detail.label) ||
+      (event.currentTarget && event.currentTarget.dataset && event.currentTarget.dataset.key);
+    if (!key) return;
+    this.setData({
+      selectedAnswer: key,
+      answerState: 'selected',
+      showFeedbackTip: false,
+      feedbackTip: '',
+      showAnalysisDrawer: false
+    });
+  },
+
+  confirmAnswer: function () {
+    if (this.data.hasAnswered || !this.data.currentQuestion || !this.data.selectedAnswer) return;
+
+    var key = this.data.selectedAnswer;
     var correctAnswer = this.data.currentQuestion.answer;
     var isCorrect = key === correctAnswer;
     var attemptExam = this.data.sourceType === 'wrong_only'
@@ -360,8 +383,10 @@ Page({
 
     this.setData({
       selectedAnswer: key,
+      answerState: isCorrect ? 'correct' : 'incorrect',
       hasAnswered: true,
       isCorrect: isCorrect,
+      showAnalysisDrawer: true,
       sessionTotal: sessionTotal,
       sessionCorrect: sessionCorrect,
       sessionWrong: sessionWrong,
@@ -383,8 +408,10 @@ Page({
       currentQuestion: this.data.questions[nextIndex],
       progressPercent: Math.round((nextIndex + 1) / this.data.totalQuestions * 100) || 0,
       selectedAnswer: '',
+      answerState: 'unanswered',
       hasAnswered: false,
       isCorrect: false,
+      showAnalysisDrawer: false,
       showFeedbackTip: false,
       feedbackTip: ''
     });
@@ -482,8 +509,10 @@ Page({
       currentIndex: 0,
       currentQuestion: null,
       selectedAnswer: '',
+      answerState: 'unanswered',
       hasAnswered: false,
       isCorrect: false,
+      showAnalysisDrawer: false,
       isFinished: false,
       showResult: false,
       sessionTotal: 0,
@@ -512,6 +541,26 @@ Page({
     wx.navigateTo({
       url: '/packages/quiz/pages/mistakes/mistakes'
     });
+  },
+
+  goAnalysisDetail: function () {
+    if (!this.data.currentQuestion) return;
+    var app = getApp();
+    if (app && app.globalData) {
+      app.globalData.analysisDetailQuestion = createWrongQuestionSnapshot(this.data.currentQuestion);
+      app.globalData.analysisDetailMeta = {
+        selectedAnswer: this.data.selectedAnswer,
+        isCorrect: this.data.isCorrect,
+        from: 'quiz'
+      };
+    }
+    var q = this.data.currentQuestion;
+    var url = '/packages/quiz/pages/analysis-detail/analysis-detail?questionId=' +
+      encodeURIComponent(q.id || '') +
+      '&exam=' + encodeURIComponent(q.exam || this.data.exam || '') +
+      '&sourceType=' + encodeURIComponent(q.sourceType || this.data.sourceType || '') +
+      '&yearId=' + encodeURIComponent(q.yearId || this.data.yearId || '');
+    wx.navigateTo({ url: url });
   },
 
   goHome: function () {
@@ -561,10 +610,12 @@ Page({
         currentIndex: 0,
         progressPercent: Math.round(1 / matched.length * 100) || 0,
         selectedAnswer: '',
+        answerState: 'unanswered',
         hasAnswered: false,
         isCorrect: false,
         isFinished: false,
         showResult: false,
+        showAnalysisDrawer: false,
         showFeedbackTip: false
       });
     } else {
@@ -580,6 +631,8 @@ Page({
         isFinished: true,
         showResult: false,
         totalQuestions: 0,
+        answerState: 'unanswered',
+        showAnalysisDrawer: false,
         showFeedbackTip: false
       });
     }
@@ -633,10 +686,12 @@ Page({
       currentQuestion: wrongQuestions[0],
       progressPercent: Math.round(1 / wrongQuestions.length * 100) || 0,
       selectedAnswer: '',
+      answerState: 'unanswered',
       hasAnswered: false,
       isCorrect: false,
       isFinished: false,
       showResult: false,
+      showAnalysisDrawer: false,
       sessionTotal: 0,
       sessionCorrect: 0,
       sessionWrong: 0,

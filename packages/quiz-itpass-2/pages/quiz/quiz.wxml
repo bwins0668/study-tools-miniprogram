@@ -59,20 +59,25 @@
       </view>
     </view>
 
-    <view class="options-list">
-      <view
+    <view class="options-list quiz-container-state-{{answerState}}">
+      <option-item
         wx:for="{{currentQuestion.options}}"
         wx:key="key"
-        class="option-item {{hasAnswered && item.key === selectedAnswer ? (isCorrect ? 'option-correct' : 'option-wrong') : ''}} {{hasAnswered && item.key === currentQuestion.answer && !isCorrect ? 'option-answer' : ''}}"
-        bindtap="selectAnswer"
-        data-key="{{item.key}}"
+        label="{{item.key}}"
+        state="{{hasAnswered ? (item.key === currentQuestion.answer ? 'correct' : (item.key === selectedAnswer ? 'incorrect' : 'default')) : (item.key === selectedAnswer ? 'selected' : 'default')}}"
+        disabled="{{hasAnswered}}"
+        bind:qpselect="selectAnswer"
       >
-        <view class="option-key">{{item.key}}</view>
         <view class="option-content">
           <text class="option-zh" user-select="true">{{item.textZh}}</text>
           <text class="option-ja" user-select="true">{{item.textJa}}</text>
         </view>
-      </view>
+      </option-item>
+    </view>
+
+    <view class="confirm-row" wx:if="{{answerState === 'selected' && !hasAnswered}}">
+      <ui-button variant="primary" text="确认作答" bind:qptap="confirmAnswer"></ui-button>
+      <text class="confirm-note">确认前可以重新选择选项</text>
     </view>
 
     <view class="feedback-section" wx:if="{{hasAnswered}}">
@@ -84,15 +89,19 @@
         </view>
       </view>
 
-      <view class="card explanation-card">
+      <view class="card explanation-card analysis-drawer" wx:if="{{showAnalysisDrawer}}">
         <view class="explanation-warning" wx:if="{{currentQuestion.explanationStatus === 'shared_hint'}}">
           <text class="warning-icon">!</text>
           <text class="warning-text">当前为通用说明，中文解释待补充。</text>
         </view>
-        <text class="explanation-title">中文解释</text>
+        <text class="explanation-title">简要解析</text>
         <view class="explanation-body" user-select="true">{{currentQuestion.explanationZhClean}}</view>
-        <text class="explanation-title">日文原文</text>
+        <text class="explanation-title" wx:if="{{currentQuestion.explanationJaClean}}">日文原文</text>
         <view class="explanation-body" user-select="true">{{currentQuestion.explanationJaClean}}</view>
+        <view class="analysis-detail-link" bindtap="goAnalysisDetail">
+          <text class="analysis-detail-text">查看完整解析</text>
+          <text class="analysis-detail-arrow">›</text>
+        </view>
       </view>
 
       <view class="next-btn" bindtap="nextQuestion">
@@ -142,12 +151,19 @@
       </view>
 
       <!-- 学习洞察 -->
-      <view class="insight-block insight-{{accuracyLevel}}">
+      <view class="insight-block result-insight insight-{{accuracyLevel}}">
         <view class="insight-header">
           <view class="insight-symbol insight-symbol-{{accuracyLevel}}"></view>
           <text class="insight-label">{{encouragementText}}</text>
         </view>
         <text class="insight-hint" wx:if="{{insightHint}}">{{insightHint}}</text>
+      </view>
+
+      <view class="weakness-list" wx:if="{{sessionWrong > 0}}">
+        <view class="weakness-item">
+          <text class="weakness-label">薄弱方向</text>
+          <text class="weakness-text">本次错题 {{sessionWrong}} 题，建议先重练本次错题或进入错题本复盘。</text>
+        </view>
       </view>
 
       <!-- 下一步建议 -->
