@@ -265,6 +265,16 @@ function checkRule15() {
     fail(15, 'pages/profile/profile.js', 'does NOT require profile-commands');
 }
 
+// Rule 16: Home page must not directly wx.getStorageSync/setStorageSync for streak
+function checkRule16() {
+  var src = readFileSafe('pages/home/home.js');
+  if (!src) { fail(16, 'pages/home/home.js', 'file not readable'); return; }
+  if (/wx\.(get|set)StorageSync\s*\(\s*['"]study-tools-mini-streak/.test(src))
+    fail(16, 'pages/home/home.js', 'directly accesses streak key via wx (use home-streak-persistence)');
+  if (!/require\s*\(\s*['"]\.\.\/\.\.\/utils\/home-streak-persistence/.test(src))
+    fail(16, 'pages/home/home.js', 'does NOT require home-streak-persistence');
+}
+
 function checkRule9() {
   var src = readFileSafe('pages/practice/practice.js');
   if (!src) { fail(9, 'pages/practice/practice.js', 'file not readable'); return; }
@@ -298,6 +308,7 @@ function run() {
   checkRule13();
   checkRule14();
   checkRule15();
+  checkRule16();
 
   console.log('\n--- Results ---');
   if (failures.length === 0) {

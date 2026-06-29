@@ -5480,8 +5480,8 @@ if (homeJs342.indexOf('streakCount') < 0) {
 }
 // UI Freeze v1: streakText removed; streak now displayed inline in qp-head
 
-// B. home.js 包含 streak 计算逻辑
-if (homeJs342.indexOf('streakCount = 0') < 0) {
+// B. home.js 包含 streak 计算逻辑 (R3.7: extracted to home-streak-persistence)
+if (homeJs342.indexOf('streakCount = 0') < 0 && homeJs342.indexOf('streakPersistence.getStreakCount') < 0) {
   fail('R3.42: streak calculation logic missing in home.js');
   round342Ok = false;
 }

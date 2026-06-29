@@ -3,6 +3,7 @@ var app = getApp();
 var nav = require('../../utils/navigation');
 var registry = require('../../utils/course-registry');
 var storage = require('../../utils/storage');
+var streakPersistence = require('../../utils/home-streak-persistence');
 
 var EXAM_LABELS = { itpass: 'IT Passport', sg: 'SG 信息安全' };
 var SOURCE_LABELS = { lesson_quiz: '模拟练习', past_exam_japanese: '真题练习', wrong_only: '错题重练' };
@@ -89,22 +90,8 @@ Page({
     var lastMetaText = lastSourceLabel;
     if (lastPracticeTimeText) lastMetaText = lastMetaText ? lastMetaText + ' · ' + lastPracticeTimeText : lastPracticeTimeText;
 
-    // Streak
-    var streakCount = 0;
-    try {
-      var sd = wx.getStorageSync('study-tools-mini-streak-v1');
-      if (sd && sd.lastDate) {
-        var ld = new Date(sd.lastDate); var td = new Date();
-        td.setHours(0,0,0,0);
-        var ldDay = new Date(ld.getFullYear(), ld.getMonth(), ld.getDate());
-        var tdDay = new Date(td.getFullYear(), td.getMonth(), td.getDate());
-        var diff = Math.floor((tdDay - ldDay) / 86400000);
-        if (diff === 0) streakCount = sd.count || 1;
-        else if (diff === 1) { streakCount = (sd.count || 0) + 1;
-          wx.setStorageSync('study-tools-mini-streak-v1', { lastDate: td.toISOString(), count: streakCount }); }
-        else streakCount = 0;
-      }
-    } catch (e) { streakCount = 0; }
+    // Streak (R3.7: extracted to home-streak-persistence)
+    var streakCount = streakPersistence.getStreakCount();
 
     // Course sections from registry (no hardcoding)
     var languageCourses = registry.getCoursesByKind('language').concat(registry.getCoursesByKind('fundamentals'));
