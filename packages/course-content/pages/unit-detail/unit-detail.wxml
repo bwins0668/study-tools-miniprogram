@@ -1,0 +1,77 @@
+<view class="td-page {{__themeDark ? 'dark-theme' : ''}}">
+  <view class="td-top">
+    <view class="td-back" bindtap="goBack">返回</view>
+  </view>
+
+  <block wx:if="{{notFound}}">
+    <view class="td-empty">
+      <text class="td-empty__title">章节暂不可用</text>
+      <text class="td-empty__sub">该教材单元不存在或尚未开放</text>
+    </view>
+  </block>
+
+  <block wx:else>
+    <view class="td-head">
+      <text class="td-head__ja">{{unit.titleJa}}</text>
+      <text class="td-head__zh">{{unit.titleZh}}</text>
+      <text class="td-source">{{sourceText}}</text>
+    </view>
+
+    <view class="td-band">
+      <text class="td-band__label">学習目標</text>
+      <text class="td-band__ja">{{unit.learningGoalJa}}</text>
+      <text class="td-band__zh">{{unit.learningGoalZh}}</text>
+    </view>
+
+    <view class="td-section">
+      <text class="td-section__title">概要</text>
+      <text class="td-copy td-copy--ja">{{unit.overviewJa}}</text>
+      <text class="td-copy">{{unit.overviewZh}}</text>
+    </view>
+
+    <view class="td-section" wx:for="{{unit.sections}}" wx:key="headingJa">
+      <text class="td-section__title">{{item.headingJa}}</text>
+      <text class="td-section__sub">{{item.headingZh}}</text>
+      <text class="td-copy td-copy--ja">{{item.explanationJa}}</text>
+      <text class="td-copy">{{item.explanationZh}}</text>
+      <view class="td-focus">
+        <text class="td-focus__ja">{{item.examFocusJa}}</text>
+        <text class="td-focus__zh">{{item.examFocusZh}}</text>
+      </view>
+      <view class="td-trap">
+        <text class="td-trap__ja">{{item.commonMistakeJa}}</text>
+        <text class="td-trap__zh">{{item.commonMistakeZh}}</text>
+      </view>
+      <view class="td-tags">
+        <text class="td-tag" wx:for="{{item.englishTerms}}" wx:for-item="term" wx:key="*this">{{term}}</text>
+      </view>
+      <view class="td-locator" wx:for="{{item.sourceRefs}}" wx:for-item="ref" wx:key="headingJa">
+        <text>原书定位：PDF 第 {{ref.pdfPageStart}} 页{{ref.pdfPageEnd > ref.pdfPageStart ? ' - ' + ref.pdfPageEnd + ' 页' : ''}} / 纸质页未验证</text>
+      </view>
+    </view>
+
+    <view class="td-section">
+      <text class="td-section__title">关键术语</text>
+      <view class="td-term" wx:for="{{unit.keyTerms}}" wx:key="termJa">
+        <text class="td-term__ja">{{item.termJa}}</text>
+        <text class="td-term__zh">{{item.termZh}}</text>
+        <text class="td-term__en">{{item.english || ''}}</text>
+      </view>
+    </view>
+
+    <view class="td-section">
+      <text class="td-section__title">易错点</text>
+      <view class="td-trap-row" wx:for="{{unit.commonTraps}}" wx:key="trapJa">
+        <text class="td-trap-row__ja">{{item.trapJa}}</text>
+        <text class="td-trap-row__zh">{{item.trapZh}}</text>
+      </view>
+    </view>
+
+    <view class="td-section">
+      <text class="td-section__title">关联练习</text>
+      <text class="td-copy" wx:if="{{unit.relatedQuestionIds.length > 0}}">已关联既有课程题 {{unit.relatedQuestionIds.length}} 题。</text>
+      <text class="td-copy" wx:else>当前没有可直接关联的既有课程题。</text>
+      <view class="td-btn {{practiceAvailable ? 'td-btn--primary' : 'td-btn--disabled'}}" bindtap="startPractice">开始本主题练习</view>
+    </view>
+  </block>
+</view>

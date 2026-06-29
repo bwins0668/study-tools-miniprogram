@@ -1,0 +1,136 @@
+.tc-page {
+  min-height: 100vh;
+  padding: 28rpx;
+  background: #f6f8fb;
+  color: #1f2937;
+}
+
+.tc-page.dark-theme {
+  background: #101827;
+  color: #e5edf7;
+}
+
+.tc-top {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 20rpx;
+}
+
+.tc-back {
+  padding: 12rpx 22rpx;
+  border-radius: 8rpx;
+  border: 1rpx solid #c7d2fe;
+  color: #315bbd;
+  font-size: 26rpx;
+}
+
+.tc-head {
+  margin-bottom: 24rpx;
+}
+
+.tc-head__course,
+.tc-head__source,
+.tc-chapter__zh,
+.tc-unit__zh,
+.tc-unit__meta,
+.tc-empty__sub {
+  display: block;
+  color: #64748b;
+  font-size: 24rpx;
+  line-height: 1.55;
+}
+
+.tc-head__title {
+  display: block;
+  margin: 4rpx 0;
+  font-size: 44rpx;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.tc-chapter {
+  margin-bottom: 26rpx;
+}
+
+.tc-chapter__head {
+  padding: 18rpx 4rpx 12rpx;
+}
+
+.tc-chapter__ja {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.tc-section-group {
+  margin-bottom: 14rpx;
+}
+
+.tc-section-group__head {
+  padding: 10rpx 8rpx;
+}
+
+.tc-section-group__ja {
+  display: block;
+  color: #334155;
+  font-size: 26rpx;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.tc-page.dark-theme .tc-section-group__ja {
+  color: #e5edf7;
+}
+
+.tc-section-group__zh {
+  display: block;
+  color: #64748b;
+  font-size: 23rpx;
+  line-height: 1.45;
+}
+
+.tc-unit {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  min-height: 112rpx;
+  margin-bottom: 10rpx;
+  padding: 18rpx 20rpx;
+  border-radius: 8rpx;
+  background: #ffffff;
+  border: 1rpx solid #dbe4f0;
+}
+
+.tc-page.dark-theme .tc-unit {
+  background: #162033;
+  border-color: #26364f;
+}
+
+.tc-unit__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.tc-unit__ja {
+  display: block;
+  font-size: 27rpx;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.tc-unit__arrow {
+  color: #315bbd;
+  font-size: 32rpx;
+}
+
+.tc-empty {
+  padding: 56rpx 16rpx;
+}
+
+.tc-empty__title {
+  display: block;
+  font-size: 34rpx;
+  font-weight: 700;
+  margin-bottom: 8rpx;
+}

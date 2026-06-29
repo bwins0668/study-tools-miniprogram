@@ -33,11 +33,12 @@ var LEAF_CHECKS = [
   { title: 'Flashcards boundaries', command: 'node tools/check_flashcards_boundaries.js', cmd: 'node', args: ['tools/check_flashcards_boundaries.js'] },
   { title: 'Profile commands', command: 'node tools/check_profile_command_boundaries.js', cmd: 'node', args: ['tools/check_profile_command_boundaries.js'] },
   { title: 'Home streak contract', command: 'node tools/check_home_streak_contract.js', cmd: 'node', args: ['tools/check_home_streak_contract.js'] },
-  { title: 'Release packaging', command: 'node tools/check_release_packaging.js', cmd: 'node', args: ['tools/check_release_packaging.js'] }
+  { title: 'Release packaging', command: 'node tools/check_release_packaging.js', cmd: 'node', args: ['tools/check_release_packaging.js'] },
+  { title: 'Textbook course content', command: 'node tools/check_textbook_course_content.js', cmd: 'node', args: ['tools/check_textbook_course_content.js'] }
 ];
-// Fourteen external leaf checks plus the inline JavaScript syntax leaf.
-var LEAF_TOTAL_CHECKS = 15;
-var TOTAL_CHECKS = 16;
+// Fifteen external leaf checks plus the inline JavaScript syntax leaf.
+var LEAF_TOTAL_CHECKS = 16;
+var TOTAL_CHECKS = 17;
 if (JSON_MODE) TOTAL_CHECKS = LEAF_TOTAL_CHECKS;
 
 // --- Helpers ---

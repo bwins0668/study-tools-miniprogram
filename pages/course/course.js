@@ -89,6 +89,10 @@ Page({
     nav.goCourseQuestionOrganizer(this.data.courseId);
   },
 
+  goTextbook: function () {
+    nav.goCourseTextbook(this.data.courseId);
+  },
+
   goBackHome: function () {
     nav.goCourseTab();
   }

@@ -120,6 +120,17 @@ function goCourseQuestionOrganizer(courseId) {
   navigateToSafe('/pages/course-organize/course-organize?courseId=' + courseId);
 }
 
+// ---- R5: textbook-grounded course content ----
+
+/** Navigate to the lazy textbook chapter directory for IT Passport / SG. */
+function goCourseTextbook(courseId) {
+  if (courseId !== 'itpass' && courseId !== 'sg') {
+    wx.showToast({ title: '该课程暂未开放教材章节', icon: 'none' });
+    return;
+  }
+  navigateToSafe('/packages/course-content/pages/chapter-list/chapter-list?courseId=' + courseId);
+}
+
 // ---- R3.2: Legacy tab navigation compatibility intents ----
 // Each intent encodes ONE exact target path + fixed query. No free-form params.
 
@@ -155,6 +166,7 @@ module.exports = {
   goCourseHome: goCourseHome, goCoursePractice: goCoursePractice,
   goCourseTopic: goCourseTopic, goCourseTopicPractice: goCourseTopicPractice,
   goCourseQuestionOrganizer: goCourseQuestionOrganizer,
+  goCourseTextbook: goCourseTextbook,
   goMistakesAnkiReview: goMistakesAnkiReview,
   goGlossaryAnkiReview: goGlossaryAnkiReview,
   goGlossaryRandomTerm: goGlossaryRandomTerm

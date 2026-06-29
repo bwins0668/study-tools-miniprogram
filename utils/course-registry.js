@@ -15,8 +15,8 @@ var COURSES = [
     capabilities: {
       courseShell: true,
       practice: true,
-      textbook: false,
-      chapterDirectory: false,
+      textbook: true,
+      chapterDirectory: true,
       questionOrganization: true
     }
   },
@@ -32,8 +32,8 @@ var COURSES = [
     capabilities: {
       courseShell: true,
       practice: true,
-      textbook: false,
-      chapterDirectory: false,
+      textbook: true,
+      chapterDirectory: true,
       questionOrganization: true
     }
   },
