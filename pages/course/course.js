@@ -1,7 +1,9 @@
-// pages/course/course.js · Unified course shell (R1.4: honest state adapter)
+// pages/course/course.js · Unified course shell (R1.4: honest state adapter;
+// R1.6: surface verified exam-topic structure)
 var nav = require('../../utils/navigation');
 var registry = require('../../utils/course-registry');
 var courseState = require('../../utils/course-state');
+var contentRegistry = require('../../utils/course-content-registry');
 
 Page({
   data: {
@@ -10,10 +12,14 @@ Page({
     notFound: false,
     // certification state
     state: null,
-    lastMetaText: ''
+    lastMetaText: '',
+    // R1.6: verified exam-topic structure (only real registry topics)
+    topics: [],
+    __themeDark: false
   },
 
   onLoad: function (options) {
+    this._applyTheme();
     var courseId = options.courseId || '';
     var course = registry.getCourseById(courseId);
 
@@ -35,14 +41,42 @@ Page({
         metaText = label;
         if (time) metaText = metaText ? metaText + ' · ' + time : time;
       }
-      this.setData({ state: state, lastMetaText: metaText });
+      // Only certification courses surface verified topic structure.
+      var topics = contentRegistry.getTopicsForCourse(courseId).map(function (t) {
+        return {
+          id: t.id,
+          title: t.title,
+          titleJa: t.titleJa,
+          enterable: t.availability === 'available'
+        };
+      });
+      this.setData({ state: state, lastMetaText: metaText, topics: topics });
     }
+  },
+
+  onShow: function () {
+    this._applyTheme();
   },
 
   // Single primary action: go to real exam-menu practice
   goPractice: function () {
     var id = this.data.courseId;
     nav.goCoursePractice(id);
+  },
+
+  // Enter a verified exam-topic page (R1.6). Non-enterable rows fail safe in nav.
+  goTopic: function (e) {
+    var topicId = e.currentTarget && e.currentTarget.dataset && e.currentTarget.dataset.topicId;
+    if (!topicId) return;
+    nav.goCourseTopic(this.data.courseId, topicId);
+  },
+
+  _applyTheme: function () {
+    var app = getApp();
+    var themeDark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== themeDark) {
+      this.setData({ __themeDark: themeDark });
+    }
   },
 
   // Honest cross-course mistakes bridge

@@ -3,6 +3,7 @@
 // No storage reads/writes. No business logic. No G4 WIP dependencies.
 
 var registry = require('./course-registry');
+var contentRegistry = require('./course-content-registry');
 
 var TAB = {
   COURSE:   '/pages/home/home',
@@ -77,6 +78,22 @@ function goCoursePractice(courseId) {
   wx.showToast({ title: '暂无练习入口', icon: 'none' });
 }
 
+// ---- R1.6: verified exam-topic navigation ----
+
+/**
+ * Navigate to the generic exam-topic page. Only opens when the topic is a real,
+ * available structure resolved from course-content-registry. Unknown course/topic
+ * (including MOS/Python/Java/algorithm, which own no topics) fails safe.
+ */
+function goCourseTopic(courseId, topicId) {
+  var topic = contentRegistry.getTopicById(courseId, topicId);
+  if (!topic || topic.availability !== 'available') {
+    wx.showToast({ title: '主题暂不可进入', icon: 'none' });
+    return;
+  }
+  navigateToSafe('/pages/course-topic/course-topic?courseId=' + courseId + '&topicId=' + topicId);
+}
+
 // Legacy aliases — delegate to goCoursePractice for backward compat
 function goItPassport() { goCoursePractice('itpass'); }
 function goSG()         { goCoursePractice('sg'); }
@@ -91,5 +108,6 @@ module.exports = {
   goQuickPractice: goQuickPractice, goTermSearch: goTermSearch,
   goFavoriteReview: goFavoriteReview, goAnkiPlayer: goAnkiPlayer,
   goAnalysisDetail: goAnalysisDetail, continueLastQuiz: continueLastQuiz,
-  goCourseHome: goCourseHome, goCoursePractice: goCoursePractice
+  goCourseHome: goCourseHome, goCoursePractice: goCoursePractice,
+  goCourseTopic: goCourseTopic
 };

@@ -8272,6 +8272,80 @@ if (fileExists('utils/course-content-registry.js')) {
 }
 if (r15Ok) pass('R1.5: verified exam-topic content registry contract');
 
+// R1.6: surface verified exam-topic structure (Course Shell + topic page)
+console.log('\n--- R1.6 exam-topic structure & topic page ---');
+var r16Ok = true;
+function checkR16(cond, msg) { if (!cond) { fail(msg); r16Ok = false; } }
+
+// topic page files exist + registered
+checkR16(fileExists('pages/course-topic/course-topic.js') &&
+  fileExists('pages/course-topic/course-topic.wxml') &&
+  fileExists('pages/course-topic/course-topic.wxss') &&
+  fileExists('pages/course-topic/course-topic.json'),
+  'R1.6: course-topic page files must exist');
+checkR16((appJson.pages || []).indexOf('pages/course-topic/course-topic') >= 0,
+  'R1.6: pages/course-topic/course-topic must be registered');
+
+// navigation exposes a safe topic entry
+var navJsR16 = readFile('utils/navigation.js');
+checkR16(navJsR16.indexOf('goCourseTopic') >= 0 &&
+  navJsR16.indexOf('course-content-registry') >= 0,
+  'R1.6: navigation must expose goCourseTopic resolved via course-content-registry');
+checkR16(navJsR16.indexOf("topic.availability !== 'available'") >= 0,
+  'R1.6: goCourseTopic must gate on availability=available');
+
+// Course Shell surfaces verified topic structure
+var courseJsR16 = readFile('pages/course/course.js');
+var courseWxmlR16 = readFile('pages/course/course.wxml');
+checkR16(courseJsR16.indexOf('course-content-registry') >= 0 &&
+  courseJsR16.indexOf('getTopicsForCourse') >= 0 &&
+  courseJsR16.indexOf('goTopic') >= 0,
+  'R1.6: course page must load topics and expose goTopic');
+checkR16(courseWxmlR16.indexOf('考试知识结构') >= 0 &&
+  courseWxmlR16.indexOf('topics.length > 0') >= 0 &&
+  courseWxmlR16.indexOf('data-topic-id') >= 0 &&
+  courseWxmlR16.indexOf('bindtap="goTopic"') >= 0,
+  'R1.6: course shell must render 考试知识结构 only when real topics exist');
+checkR16(courseWxmlR16.indexOf('主题映射整理中') >= 0,
+  'R1.6: course shell must show honest pending label for non-enterable topics');
+checkR16(courseWxmlR16.indexOf("__themeDark ? 'dark-theme'") >= 0,
+  'R1.6: course shell root must bind dark-theme for readability');
+// must not fabricate per-topic counts/progress/accuracy in the shell
+checkR16(/cs-topic__title[^>]*>\{\{item\.title\}\}/.test(courseWxmlR16) &&
+  courseWxmlR16.indexOf('item.count') < 0 &&
+  courseWxmlR16.indexOf('item.progress') < 0 &&
+  courseWxmlR16.indexOf('item.accuracy') < 0,
+  'R1.6: topic rows must not render fabricated count/progress/accuracy');
+
+// Topic page: honest, read-only, safe
+var topicJsR16 = readFile('pages/course-topic/course-topic.js');
+var topicWxmlR16 = readFile('pages/course-topic/course-topic.wxml');
+checkR16(topicJsR16.indexOf('course-content-registry') >= 0 &&
+  topicJsR16.indexOf('getTopicById') >= 0 &&
+  topicJsR16.indexOf('options.courseId') >= 0 &&
+  topicJsR16.indexOf('options.topicId') >= 0,
+  'R1.6: topic page must resolve courseId+topicId via registry');
+checkR16(topicJsR16.indexOf('notFound') >= 0 &&
+  topicJsR16.indexOf("topic.availability !== 'available'") >= 0,
+  'R1.6: topic page must fail safe for unknown/non-available topic');
+checkR16(topicJsR16.indexOf('setStorageSync') < 0 &&
+  topicJsR16.indexOf('removeStorageSync') < 0,
+  'R1.6: topic page must not write storage');
+checkR16(topicWxmlR16.indexOf('关联练习') >= 0 &&
+  topicWxmlR16.indexOf('本主题的题目筛选能力正在核验中') >= 0,
+  'R1.6: topic page must show related-practice section with honest deferred copy');
+checkR16(topicWxmlR16.indexOf('全部错题复习') >= 0 &&
+  topicWxmlR16.indexOf('跨课程') >= 0,
+  'R1.6: topic page mistakes bridge must stay cross-course honest');
+checkR16(topicWxmlR16.indexOf('返回') >= 0 && topicJsR16.indexOf('navigateBack') >= 0,
+  'R1.6: topic page must offer safe back navigation');
+// topic page must NOT fabricate textbook / progress / counts / accuracy / resume
+checkR16(['教材', '章节进度', '正确率', '继续学习', '预计时长', '第'].every(function (w) {
+  if (w === '第') return topicWxmlR16.indexOf('第 ') < 0 && /第\s*\{\{/.test(topicWxmlR16) === false;
+  return topicWxmlR16.indexOf(w) < 0;
+}), 'R1.6: topic page must not render textbook/progress/accuracy/resume/question-number');
+if (r16Ok) pass('R1.6: exam-topic structure & honest topic page contract');
+
 // G4-specific Quiet Paper contracts (exam-menu, mistakes, flashcard-deck-select)
 // are deferred until the G4 page batch is independently frozen.
 

@@ -1,5 +1,5 @@
-<!--pages/course/course.wxml · Unified course shell (R1.4: honest state)-->
-<view class="cs-page">
+<!--pages/course/course.wxml · Unified course shell (R1.4: honest state; R1.6: topic structure)-->
+<view class="cs-page {{__themeDark ? 'dark-theme' : ''}}">
 
   <!-- Safety: unknown / unresolved courseId -->
   <block wx:if="{{notFound}}">
@@ -28,6 +28,20 @@
       <view class="cs-btn cs-btn--primary" bindtap="goPractice">{{state.hasHistoricalAttempt ? '选择练习方式' : '开始刷题'}}</view>
     </view>
 
+    <!-- R1.6: verified exam knowledge structure (only real registry topics) -->
+    <view class="cs-section" wx:if="{{topics.length > 0}}">
+      <text class="cs-section__title">考试知识结构</text>
+      <view class="cs-topic" wx:for="{{topics}}" wx:key="id"
+            data-topic-id="{{item.id}}" bindtap="goTopic">
+        <view class="cs-topic__body">
+          <text class="cs-topic__title">{{item.title}}</text>
+          <text class="cs-topic__ja">{{item.titleJa}}</text>
+        </view>
+        <text class="cs-topic__arrow" wx:if="{{item.enterable}}">→</text>
+        <text class="cs-topic__pending" wx:else>主题映射整理中</text>
+      </view>
+    </view>
+
     <!-- Honest cross-course mistakes bridge -->
     <view class="cs-section">
       <text class="cs-section__title">学习辅助</text>
@@ -38,7 +52,7 @@
         </view>
         <text class="cs-row__arrow">→</text>
       </view>
-      <text class="cs-note">课程内容正在整理</text>
+      <text class="cs-note">教材与章节练习仍在整理中</text>
     </view>
   </block>
 

@@ -42,6 +42,18 @@
   letter-spacing: 2rpx; color: var(--qp-color-text-tertiary);
 }
 
+/* R1.6: exam knowledge structure rows */
+.cs-topic { display: flex; align-items: center; justify-content: space-between;
+  padding: 20rpx 0; border-top: var(--qp-border-width) solid var(--qp-color-line); }
+.cs-topic:first-of-type { border-top: none; }
+.cs-topic__body { flex: 1; min-width: 0; }
+.cs-topic__title { font-size: var(--qp-font-size-body); color: var(--qp-color-ink); }
+.cs-topic__ja { display: block; margin-top: 2rpx; font-size: var(--qp-font-size-caption);
+  color: var(--qp-color-text-tertiary); }
+.cs-topic__arrow { flex: none; margin-left: 12rpx; font-size: 24rpx; color: var(--qp-color-text-tertiary); }
+.cs-topic__pending { flex: none; margin-left: 12rpx; font-size: var(--qp-font-size-caption);
+  color: var(--qp-color-text-tertiary); }
+
 .cs-row { display: flex; align-items: center; justify-content: space-between;
   padding: 20rpx 0; border-top: var(--qp-border-width) solid var(--qp-color-line); }
 .cs-row--secondary { padding: 16rpx 0; }
@@ -60,8 +72,11 @@
 .cs-empty .cs-btn { display: inline-block; margin-top: 24rpx; padding: 14rpx 48rpx; width: auto; }
 
 /* Dark theme */
-.dark-theme .cs-page { background-color: var(--bg-color); color: var(--text-primary); }
+.cs-page.dark-theme { background-color: var(--bg-color); color: var(--text-primary); }
 .dark-theme .cs-head__title, .dark-theme .cs-last__meta, .dark-theme .cs-row__text,
-.dark-theme .cs-empty__title { color: var(--text-primary); }
+.dark-theme .cs-topic__title, .dark-theme .cs-empty__title { color: var(--text-primary); }
+.dark-theme .cs-head__kind, .dark-theme .cs-row__note, .dark-theme .cs-note,
+.dark-theme .cs-topic__ja, .dark-theme .cs-empty__sub { color: var(--text-secondary); }
 .dark-theme .cs-last, .dark-theme .cs-row { background-color: var(--card-bg); border-color: var(--border-color); }
+.dark-theme .cs-topic { border-color: var(--border-color); }
 .dark-theme .cs-btn--outline { color: var(--text-primary); border-color: var(--border-color); }
