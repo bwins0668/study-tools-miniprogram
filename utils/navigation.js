@@ -94,6 +94,21 @@ function goCourseTopic(courseId, topicId) {
   navigateToSafe('/pages/course-topic/course-topic?courseId=' + courseId + '&topicId=' + topicId);
 }
 
+/**
+ * Start verified topic practice (R2.1). Route is built ONLY by the route builder
+ * (never hand-assembled here); deferred/unknown topics show a low-noise toast and
+ * never navigate to a wrong page.
+ */
+function goCourseTopicPractice(courseId, topicId) {
+  var topicPractice = require('./course-topic-practice');
+  var route = topicPractice.buildTopicPracticeRoute(courseId, topicId);
+  if (!route) {
+    wx.showToast({ title: '本主题练习暂未开放', icon: 'none' });
+    return;
+  }
+  navigateToSafe(route);
+}
+
 // Legacy aliases — delegate to goCoursePractice for backward compat
 function goItPassport() { goCoursePractice('itpass'); }
 function goSG()         { goCoursePractice('sg'); }
@@ -109,5 +124,5 @@ module.exports = {
   goFavoriteReview: goFavoriteReview, goAnkiPlayer: goAnkiPlayer,
   goAnalysisDetail: goAnalysisDetail, continueLastQuiz: continueLastQuiz,
   goCourseHome: goCourseHome, goCoursePractice: goCoursePractice,
-  goCourseTopic: goCourseTopic
+  goCourseTopic: goCourseTopic, goCourseTopicPractice: goCourseTopicPractice
 };

@@ -43,14 +43,12 @@ Page({
     this._applyTheme();
   },
 
-  // Topic-scoped practice is deferred (R1.7): the existing quiz selects only by
-  // exam/sourceType/yearId and cannot filter by the topic's category selector,
-  // so no verified topic exists yet. This guard keeps the (currently never
-  // rendered) practice action a safe no-op rather than a dangling bindtap.
+  // Start verified topic practice (R2.1). Only acts for a verified topic and
+  // delegates route building entirely to nav.goCourseTopicPractice (never builds
+  // a route here, never bypasses the route builder).
   goPractice: function () {
     if (!this.data.practiceVerified) return;
-    // A verified bridge route will be wired here once the quiz can filter by
-    // the topic selector (R1.7 precondition); never fabricate a route before then.
+    nav.goCourseTopicPractice(this.data.courseId, this.data.topicId);
   },
 
   // Honest cross-course mistakes bridge (same contract as Course Shell).

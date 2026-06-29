@@ -8251,24 +8251,28 @@ if (fileExists('utils/course-content-registry.js')) {
     });
   }), 'R1.5: every available topic selector must hit >=1 real lesson_quiz question');
   // honest practice gating: a topic claims verified practice ONLY if quiz really
-  // filters by that selector field. quiz.js reads exam/sourceType/yearId only.
+  // filters by the registry selector. Since R2.0 the quiz delegates to the pure
+  // quiz-topic-scope engine (resolveTopicScope + filterQuestionsForTopicScope),
+  // which is the mechanism that performs the exact category filtering.
   var quizJsR15 = readFile('packages/quiz/pages/quiz/quiz.js');
-  var quizFiltersCategory = quizJsR15.indexOf('options.category') >= 0 ||
-    /question\.category\s*===|q\.category\s*===/.test(quizJsR15);
+  var quizFiltersCategory = quizJsR15.indexOf('quiz-topic-scope') >= 0 &&
+    quizJsR15.indexOf('filterQuestionsForTopicScope') >= 0 &&
+    quizJsR15.indexOf('options.topicId') >= 0;
   checkR15((ccReg.TOPICS || []).every(function (t) {
     return t.practiceCapability !== 'verified' || quizFiltersCategory;
-  }), 'R1.5: no topic may claim practiceCapability=verified while quiz cannot filter by category');
+  }), 'R1.5: no topic may claim practiceCapability=verified while quiz cannot filter by topic scope');
   // learning / unresolved courses must NOT get topics
   checkR15(ccReg.getTopicsForCourse('python').length === 0 &&
     ccReg.getTopicsForCourse('java').length === 0 &&
     ccReg.getTopicsForCourse('algorithm').length === 0 &&
     ccReg.getTopicsForCourse('mos365').length === 0,
     'R1.5: python/java/algorithm/mos365 must have zero topics');
-  // unknown course/topic must fail safe
+  // unknown course/topic must fail safe (gates closed for unknown + non-topic courses)
   checkR15(ccReg.getTopicById('itpass', 'no-such-topic') === null &&
     ccReg.getTopicById('mos365', 'technology') === null &&
-    ccReg.isTopicPracticeAvailable('itpass', 'technology') === false,
-    'R1.5: unknown topic resolves null and practice gates closed');
+    ccReg.isTopicPracticeAvailable('itpass', 'no-such-topic') === false &&
+    ccReg.isTopicPracticeAvailable('mos365', 'technology') === false,
+    'R1.5: unknown/non-topic course resolves null and practice gates closed');
 }
 if (r15Ok) pass('R1.5: verified exam-topic content registry contract');
 
@@ -8476,6 +8480,75 @@ checkR20(quizWxmlR20.indexOf('topic-scope-label') >= 0 &&
 checkR20(quizWxmlR20.indexOf('继续学习') < 0 && quizWxmlR20.indexOf('恢复会话') < 0,
   'R2.0: topic session must not show resume/continue semantics');
 if (r20Ok) pass('R2.0: topic scope engine & quiz exact filtering contract');
+
+// R2.1: activated topic practice bridge (registry + route builder + UI)
+console.log('\n--- R2.1 topic practice bridge activation ---');
+var r21Ok = true;
+function checkR21(cond, msg) { if (!cond) { fail(msg); r21Ok = false; } }
+
+checkR21(fileExists('utils/course-topic-practice.js'),
+  'R2.1: utils/course-topic-practice.js route builder must exist');
+
+if (fileExists('utils/course-topic-practice.js')) {
+  var routeBuilder = require(path.join(ROOT, 'utils/course-topic-practice.js'));
+  var ccRegR21 = require(path.join(ROOT, 'utils/course-content-registry.js'));
+
+  checkR21(typeof routeBuilder.buildTopicPracticeRoute === 'function' &&
+    typeof routeBuilder.canStartTopicPractice === 'function',
+    'R2.1: route builder must export buildTopicPracticeRoute and canStartTopicPractice');
+
+  // at least one verified topic per certification exam
+  var itpassVerified = ccRegR21.getTopicsForCourse('itpass').filter(function (t) { return t.practiceCapability === 'verified'; });
+  var sgVerified = ccRegR21.getTopicsForCourse('sg').filter(function (t) { return t.practiceCapability === 'verified'; });
+  checkR21(itpassVerified.length > 0 && sgVerified.length > 0,
+    'R2.1: itpass and sg must each have >=1 verified topic');
+
+  // every verified topic builds a real, well-formed route
+  checkR21(itpassVerified.concat(sgVerified).every(function (t) {
+    var r = routeBuilder.buildTopicPracticeRoute(t.courseId, t.id);
+    return typeof r === 'string' &&
+      r.indexOf('/packages/quiz/pages/quiz/quiz') === 0 &&
+      r.indexOf('exam=' + t.courseId) >= 0 &&
+      r.indexOf('sourceType=lesson_quiz') >= 0 &&
+      r.indexOf('topicId=' + t.id) >= 0 &&
+      r.indexOf('yearId=') < 0 &&
+      /category=/.test(r) === false;
+  }), 'R2.1: verified topic route must carry topicId (not raw category), fix lesson_quiz, omit yearId');
+
+  // unknown / deferred / non-topic courses -> null route
+  checkR21(routeBuilder.buildTopicPracticeRoute('itpass', 'no-such') === null &&
+    routeBuilder.buildTopicPracticeRoute('python', 'technology') === null &&
+    routeBuilder.buildTopicPracticeRoute('java', 'technology') === null &&
+    routeBuilder.buildTopicPracticeRoute('algorithm', 'technology') === null &&
+    routeBuilder.buildTopicPracticeRoute('mos365', 'technology') === null,
+    'R2.1: route builder must return null for unknown/non-topic courses');
+
+  // route builder must not write storage
+  var rbSrc = readFile('utils/course-topic-practice.js');
+  checkR21(rbSrc.indexOf('setStorageSync') < 0 && rbSrc.indexOf('removeStorageSync') < 0,
+    'R2.1: route builder must not write storage');
+}
+
+// navigation delegates to the route builder
+var navJsR21 = readFile('utils/navigation.js');
+checkR21(navJsR21.indexOf('goCourseTopicPractice') >= 0 &&
+  navJsR21.indexOf('course-topic-practice') >= 0 &&
+  navJsR21.indexOf('buildTopicPracticeRoute') >= 0,
+  'R2.1: navigation must expose goCourseTopicPractice via the route builder');
+
+// topic page button only behind verified, and only calls the nav helper
+var topicJsR21 = readFile('pages/course-topic/course-topic.js');
+var topicWxmlR21 = readFile('pages/course-topic/course-topic.wxml');
+checkR21(topicWxmlR21.indexOf('wx:if="{{practiceVerified}}"') >= 0 &&
+  topicWxmlR21.indexOf('开始本主题练习') >= 0 &&
+  topicWxmlR21.indexOf('本主题的题目筛选能力正在核验中') >= 0,
+  'R2.1: topic page must gate 开始本主题练习 behind practiceVerified with deferred fallback');
+checkR21(topicJsR21.indexOf('nav.goCourseTopicPractice') >= 0 &&
+  topicJsR21.indexOf('quiz?') < 0 &&
+  topicJsR21.indexOf('/packages/quiz') < 0,
+  'R2.1: topic page must call nav.goCourseTopicPractice and never hand-build a quiz route');
+
+if (r21Ok) pass('R2.1: activated topic practice bridge contract');
 
 // G4-specific Quiet Paper contracts (exam-menu, mistakes, flashcard-deck-select)
 // are deferred until the G4 page batch is independently frozen.

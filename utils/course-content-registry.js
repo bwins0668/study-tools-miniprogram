@@ -14,11 +14,14 @@
 // string values matched by equality via questionSelector — NEVER inferred
 // from titles, kana keywords, or display copy.
 //
-// practiceCapability is 'deferred' for EVERY topic on purpose: the existing
-// quiz page (packages/quiz/pages/quiz/quiz.js) selects questions only by
-// `exam` + `sourceType` + `yearId` and does NOT read or filter by `category`.
-// A topic-scoped practice route therefore cannot be launched through the
-// existing (frozen) quiz logic, so the practice bridge stays deferred (R1.7).
+// practiceCapability is 'verified' for these six topics as of R2.1: the quiz
+// page now accepts a `topicId` query param and delegates to the pure
+// utils/quiz-topic-scope engine, which resolves topicId through THIS registry
+// and filters by the exact `category` selector. Activation is gated by
+// tools/check_course_topic_practice.js, which proves each verified topic
+// resolves to a valid scope, hits >=1 real lesson_quiz question, and is backed
+// by a real route from utils/course-topic-practice.js. A topic must NEVER be
+// hand-flipped to 'verified' without passing that validator.
 //
 // SG's `科目B` category (a single lesson_quiz question) is intentionally NOT
 // registered: one question is an incomplete exam-section fragment, not a
@@ -35,7 +38,7 @@ var TOPICS = [
     structureKind: 'exam-topic',
     availability: 'available',
     questionSelector: { exactField: 'category', exactValues: ['テクノロジ系'] },
-    practiceCapability: 'deferred'
+    practiceCapability: 'verified'
   },
   {
     id: 'management',
@@ -45,7 +48,7 @@ var TOPICS = [
     structureKind: 'exam-topic',
     availability: 'available',
     questionSelector: { exactField: 'category', exactValues: ['マネジメント系'] },
-    practiceCapability: 'deferred'
+    practiceCapability: 'verified'
   },
   {
     id: 'strategy',
@@ -55,7 +58,7 @@ var TOPICS = [
     structureKind: 'exam-topic',
     availability: 'available',
     questionSelector: { exactField: 'category', exactValues: ['ストラテジ系'] },
-    practiceCapability: 'deferred'
+    practiceCapability: 'verified'
   },
 
   // ---- SG 情報セキュリティ (sg) — same three IPA strands ----
@@ -67,7 +70,7 @@ var TOPICS = [
     structureKind: 'exam-topic',
     availability: 'available',
     questionSelector: { exactField: 'category', exactValues: ['テクノロジ系'] },
-    practiceCapability: 'deferred'
+    practiceCapability: 'verified'
   },
   {
     id: 'management',
@@ -77,7 +80,7 @@ var TOPICS = [
     structureKind: 'exam-topic',
     availability: 'available',
     questionSelector: { exactField: 'category', exactValues: ['マネジメント系'] },
-    practiceCapability: 'deferred'
+    practiceCapability: 'verified'
   },
   {
     id: 'strategy',
@@ -87,7 +90,7 @@ var TOPICS = [
     structureKind: 'exam-topic',
     availability: 'available',
     questionSelector: { exactField: 'category', exactValues: ['ストラテジ系'] },
-    practiceCapability: 'deferred'
+    practiceCapability: 'verified'
   }
 ];
 
