@@ -2,7 +2,7 @@
 /**
  * run_miniprogram_checks.js — One-command gate for all miniprogram maintenance checks.
  *
- * Normal mode runs eight checks, including miniprogram_smoke_test.js.
+ * Normal mode runs nine checks, including miniprogram_smoke_test.js.
  * JSON mode is intentionally leaf-only: it excludes the smoke test so R3.91
  * can query this command without spawning the smoke test again.
  *
@@ -26,12 +26,13 @@ var LEAF_CHECKS = [
   { title: 'Content compliance', command: 'node tools/check_content_compliance.js', cmd: 'node', args: ['tools/check_content_compliance.js'] },
   { title: 'Quiz explanations', command: 'node tools/check_quiz_explanations.js', cmd: 'node', args: ['tools/check_quiz_explanations.js'] },
   { title: 'Package size audit', command: 'node tools/audit_miniprogram_package_size.js', cmd: 'node', args: ['tools/audit_miniprogram_package_size.js'] },
-  { title: 'Architecture boundaries', command: 'node tools/check_architecture_boundaries.js', cmd: 'node', args: ['tools/check_architecture_boundaries.js'] }
+  { title: 'Architecture boundaries', command: 'node tools/check_architecture_boundaries.js', cmd: 'node', args: ['tools/check_architecture_boundaries.js'] },
+  { title: 'Practice tab boundaries', command: 'node tools/check_practice_boundaries.js', cmd: 'node', args: ['tools/check_practice_boundaries.js'] }
 ];
-// Seven external leaf checks plus the inline JavaScript syntax leaf.
-var LEAF_TOTAL_CHECKS = 8;
+// Eight external leaf checks plus the inline JavaScript syntax leaf.
+var LEAF_TOTAL_CHECKS = 9;
 // Normal mode additionally runs smoke, which verifies the JSON leaf contract.
-var TOTAL_CHECKS = 9;
+var TOTAL_CHECKS = 10;
 if (JSON_MODE) TOTAL_CHECKS = LEAF_TOTAL_CHECKS;
 
 // --- Helpers ---
@@ -84,7 +85,7 @@ function runStep(index, total, title, cmd, args, opts) {
 // --- JS syntax check (inline, same logic as the one-liner) ---
 
 function checkJsSyntax() {
-  var index = arguments.length > 0 ? arguments[0] : 7;
+  var index = arguments.length > 0 ? arguments[0] : 8;
   var total = arguments.length > 1 ? arguments[1] : TOTAL_CHECKS;
   log('\n[' + index + '/' + total + '] JS syntax check');
   log('-'.repeat(40));
@@ -147,7 +148,7 @@ function checkJsSyntax() {
 // --- WXSS escaped newline guard (inline) ---
 
 function checkWxssEscapedNewline() {
-  var index = arguments.length > 0 ? arguments[0] : 8;
+  var index = arguments.length > 0 ? arguments[0] : 9;
   var total = arguments.length > 1 ? arguments[1] : TOTAL_CHECKS;
   log('\n[' + index + '/' + total + '] WXSS escaped newline guard');
   log('-'.repeat(40));
@@ -221,7 +222,7 @@ function main() {
   var checkIndex = 1;
 
   // The declaration above is the executable P0 leaf contract. JSON runs these
-  // seven leaves only; normal mode then runs one smoke process after they pass.
+  // eight leaves only; normal mode then runs one smoke process after they pass.
   for (var leafIndex = 0; leafIndex < LEAF_CHECKS.length; leafIndex++) {
     var leaf = LEAF_CHECKS[leafIndex];
     results.push(runStep(checkIndex++, TOTAL_CHECKS, leaf.title, leaf.cmd, leaf.args));

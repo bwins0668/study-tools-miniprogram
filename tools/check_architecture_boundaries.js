@@ -11,9 +11,10 @@
 //   7. Forbidden files must not appear in the current diff
 //   8. No new storage keys must be introduced
 //
-// Scope: pages/course/**, pages/course-organize/**, utils/course-question-state.js,
-//        utils/navigation.js. Other pages (home, practice, mistakes, glossary,
-//        flashcards, profile) are legacy and NOT evaluated by this checker.
+// Scope: pages/course/**, pages/course-organize/**, pages/practice/**,
+//        utils/course-question-state.js, utils/navigation.js.
+//        Other pages (home, mistakes, glossary, flashcards, profile)
+//        are legacy and NOT evaluated by this checker.
 //
 // Never reads question bank text, never writes storage, never does broad repo grep.
 
@@ -37,9 +38,9 @@ function fail(rule, file, detail) {
 
 // ---- Boundary Rules ----
 
-// Rule 1: Course / Organizer pages must NOT directly require utils/storage.js
+// Rule 1: Course / Organizer / Practice pages must NOT directly require utils/storage.js
 function checkRule1() {
-  var pages = ['pages/course/course.js', 'pages/course-organize/course-organize.js'];
+  var pages = ['pages/course/course.js', 'pages/course-organize/course-organize.js', 'pages/practice/practice.js'];
   for (var i = 0; i < pages.length; i++) {
     var src = readFileSafe(pages[i]);
     if (!src) { fail(1, pages[i], 'file not readable'); continue; }
@@ -68,9 +69,9 @@ function checkRule2() {
   }
 }
 
-// Rule 3: Course / Organizer pages must NOT directly call setStorageSync / removeStorageSync
+// Rule 3: Course / Organizer / Practice pages must NOT directly call setStorageSync / removeStorageSync
 function checkRule3() {
-  var pages = ['pages/course/course.js', 'pages/course-organize/course-organize.js'];
+  var pages = ['pages/course/course.js', 'pages/course-organize/course-organize.js', 'pages/practice/practice.js'];
   for (var i = 0; i < pages.length; i++) {
     var src = readFileSafe(pages[i]);
     if (!src) continue;
@@ -177,11 +178,23 @@ function checkRule8() {
   }
 }
 
+// Rule 9: Practice page must use practice-state read-model, not direct storage
+function checkRule9() {
+  var src = readFileSafe('pages/practice/practice.js');
+  if (!src) { fail(9, 'pages/practice/practice.js', 'file not readable'); return; }
+  if (!/require\s*\(\s*["']\.\.\/\.\.\/utils\/practice-state["']\s*\)/.test(src)) {
+    fail(9, 'pages/practice/practice.js', 'does NOT require practice-state');
+  }
+  if (/\bgetLastAttempt\b/.test(src)) {
+    fail(9, 'pages/practice/practice.js', 'directly calls getLastAttempt (use practice-state)');
+  }
+}
+
 // ---- Run All Checks ----
 
 function run() {
-  console.log('=== Architecture Boundary Guardrails (M3) ===\n');
-  console.log('Scope: pages/course/**, pages/course-organize/**,');
+  console.log('=== Architecture Boundary Guardrails (M3+R3.1) ===\n');
+  console.log('Scope: pages/course/**, pages/course-organize/**, pages/practice/**');
   console.log('       utils/course-question-state.js, utils/navigation.js\n');
 
   checkRule1();
@@ -192,6 +205,7 @@ function run() {
   checkRule6();
   checkRule7_info();
   checkRule8();
+  checkRule9();
 
   console.log('\n--- Results ---');
   if (failures.length === 0) {
