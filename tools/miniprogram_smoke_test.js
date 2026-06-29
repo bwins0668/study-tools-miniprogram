@@ -8582,6 +8582,30 @@ checkR22(addAttemptBody.indexOf('topicId') < 0 &&
 
 if (r22Ok) pass('R2.2: topic session result semantics contract');
 
+// R2.4: closure — normal quiz routes (past exam / yearId / wrong / lesson) intact
+console.log('\n--- R2.4 normal quiz route integrity ---');
+var r24Ok = true;
+function checkR24(cond, msg) { if (!cond) { fail(msg); r24Ok = false; } }
+var quizJsR24 = readFile('packages/quiz/pages/quiz/quiz.js');
+checkR24(quizJsR24.indexOf('redirectToPastExamPackage') >= 0 &&
+  quizJsR24.indexOf("sourceType === 'past_exam_japanese'") >= 0,
+  'R2.4: past_exam_japanese redirect path must remain intact');
+checkR24(quizJsR24.indexOf('question.yearId === yearId') >= 0,
+  'R2.4: yearId filtering for normal practice must remain intact');
+checkR24(quizJsR24.indexOf('topicScopeActive') >= 0 &&
+  quizJsR24.indexOf('question.exam === exam && question.sourceType === sourceType') >= 0,
+  'R2.4: normal practice branch must keep exam+sourceType filtering when no topicId');
+checkR24(quizJsR24.indexOf("sourceType === 'wrong_only'") >= 0 &&
+  quizJsR24.indexOf('loadWrongQuestions') >= 0,
+  'R2.4: wrong_only path must remain intact');
+// non-topic courses still produce no topic scope at the engine level (defense in depth)
+var scopeEngineR24 = require(path.join(ROOT, 'utils/quiz-topic-scope.js'));
+checkR24(['python', 'java', 'algorithm', 'mos365'].every(function (c) {
+  var s = scopeEngineR24.resolveTopicScope({ exam: c, sourceType: 'lesson_quiz', topicId: 'technology' });
+  return !(s && s.valid);
+}), 'R2.4: learning/unresolved courses must never resolve a valid topic scope');
+if (r24Ok) pass('R2.4: normal quiz route integrity contract');
+
 // G4-specific Quiet Paper contracts (exam-menu, mistakes, flashcard-deck-select)
 // are deferred until the G4 page batch is independently frozen.
 
