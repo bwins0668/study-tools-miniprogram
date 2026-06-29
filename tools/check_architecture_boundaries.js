@@ -236,6 +236,21 @@ function checkRule13() {
   }
 }
 
+// Rule 14: Flashcards page must use flashcards-state, not direct canonical/wx
+function checkRule14() {
+  var src = readFileSafe('pages/flashcards/flashcards.js');
+  if (!src) { fail(14, 'pages/flashcards/flashcards.js', 'file not readable'); return; }
+  if (/require\s*\(\s*['"]\.\.\/\.\.\/data\/flashcard-summary-manifest/.test(src)) {
+    fail(14, 'pages/flashcards/flashcards.js', 'directly requires flashcard-summary-manifest (use flashcards-state)');
+  }
+  if (/wx\.getStorageSync/.test(src)) {
+    fail(14, 'pages/flashcards/flashcards.js', 'directly calls wx.getStorageSync (use flashcards-state)');
+  }
+  if (!/require\s*\(\s*['"]\.\.\/\.\.\/utils\/flashcards-state/.test(src)) {
+    fail(14, 'pages/flashcards/flashcards.js', 'does NOT require flashcards-state');
+  }
+}
+
 function checkRule9() {
   var src = readFileSafe('pages/practice/practice.js');
   if (!src) { fail(9, 'pages/practice/practice.js', 'file not readable'); return; }
@@ -267,6 +282,7 @@ function run() {
   checkRule11();
   checkRule12();
   checkRule13();
+  checkRule14();
 
   console.log('\n--- Results ---');
   if (failures.length === 0) {

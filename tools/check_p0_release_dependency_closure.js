@@ -141,7 +141,10 @@ function checkNoP1RuntimeDependency(files) {
 function checkFlashcardCenter() {
   var rel = 'pages/flashcards/flashcards.js';
   var text = readFile(rel);
-  if (!/flashcard-summary-manifest/.test(text)) fail('CENTER_MISSING_LIGHTWEIGHT_MANIFEST', rel, 'Flashcard center must read the summary manifest');
+  // R3.4: manifest is now read through utils/flashcards-state.js instead of the page directly
+  var stateText = readFile('utils/flashcards-state.js');
+  if (!/flashcard-summary-manifest/.test(text) && !/flashcard-summary-manifest/.test(stateText))
+    fail('CENTER_MISSING_LIGHTWEIGHT_MANIFEST', rel, 'Flashcard center must read the summary manifest (via page or flashcards-state)');
   if (/wx\.loadSubPackage|flashcard_adapter|flashcard-export|getAllQuestions|\/data\/loader|require\s*\([^)]*quiz-(?:itpass|sg)-/.test(text)) {
     fail('CENTER_EAGER_OR_CROSS_PACKAGE_LOAD', rel, 'Center may only show summary and navigate to deck-select');
   }
