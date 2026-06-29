@@ -220,7 +220,7 @@ function saveQuizAttempts(list) {
 function addQuizAttempt(payload) {
   var list = getQuizAttempts();
   var now = Date.now();
-  list.push({
+  var attempt = {
     id: "attempt-" + now + "-" + payload.questionId,
     questionId: payload.questionId,
     exam: payload.exam,
@@ -229,7 +229,15 @@ function addQuizAttempt(payload) {
     correctAnswer: payload.correctAnswer,
     isCorrect: !!payload.isCorrect,
     answeredAt: now
-  });
+  };
+  // R2.6: optional verified topic practice context. Same storage key, no new key.
+  // Only ever written for a registry-verified topic session; never for normal /
+  // yearId / wrong_only attempts. Purely descriptive — never a resume checkpoint.
+  if (payload.topicId) {
+    attempt.topicId = payload.topicId;
+    if (payload.topicTitleSnapshot) attempt.topicTitleSnapshot = payload.topicTitleSnapshot;
+  }
+  list.push(attempt);
   saveQuizAttempts(list);
   return list;
 }

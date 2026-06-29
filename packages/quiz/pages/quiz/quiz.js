@@ -167,7 +167,10 @@ Page({
     __themeDark: false,
     // R2.0: verified topic practice scope (only set when topicId present)
     topicScopeActive: false,
-    topicLabel: ''
+    topicLabel: '',
+    // R2.6: verified topic context for attempt metadata (only set for a valid scope)
+    topicId: '',
+    topicTitle: ''
   },
 
   onLoad: function (options) {
@@ -312,7 +315,9 @@ Page({
         showFeedbackTip: false,
         yearId: yearId,
         topicScopeActive: topicScopeActive,
-        topicLabel: topicLabel
+        topicLabel: topicLabel,
+        topicId: (topicScope && topicScope.valid) ? topicScope.topicId : '',
+        topicTitle: (topicScope && topicScope.valid) ? topicScope.title : ''
       });
     } else {
       this.setData({
@@ -332,7 +337,9 @@ Page({
         showFeedbackTip: false,
         yearId: yearId,
         topicScopeActive: topicScopeActive,
-        topicLabel: topicLabel
+        topicLabel: topicLabel,
+        topicId: (topicScope && topicScope.valid) ? topicScope.topicId : '',
+        topicTitle: (topicScope && topicScope.valid) ? topicScope.title : ''
       });
     }
   },
@@ -371,14 +378,22 @@ Page({
       );
     }
 
-    storage.addQuizAttempt({
+    var attemptPayload = {
       questionId: this.data.currentQuestion.id,
       exam: attemptExam,
       sourceType: this.data.sourceType,
       selectedAnswer: key,
       correctAnswer: correctAnswer,
       isCorrect: isCorrect
-    });
+    };
+    // R2.6: attach verified topic context ONLY for a real topic session. topicId
+    // is non-empty only when the scope resolved valid via the registry; normal /
+    // yearId / wrong_only attempts never carry it.
+    if (this.data.topicScopeActive && this.data.topicId) {
+      attemptPayload.topicId = this.data.topicId;
+      attemptPayload.topicTitleSnapshot = this.data.topicTitle;
+    }
+    storage.addQuizAttempt(attemptPayload);
 
     var sessionTotal = this.data.sessionTotal + 1;
     var sessionCorrect = this.data.sessionCorrect + (isCorrect ? 1 : 0);

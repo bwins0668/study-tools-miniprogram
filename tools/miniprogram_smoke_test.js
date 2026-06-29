@@ -8567,18 +8567,19 @@ checkR22(/result-topic[\s\S]{0,80}wx:if="\{\{topicScopeActive && topicLabel\}\}"
 checkR22(quizResultWxml.indexOf('掌握度') < 0 && quizResultWxml.indexOf('总进度') < 0,
   'R2.2: topic result must not show fake mastery/overall progress');
 
-// TOPIC_HISTORY_METADATA_DEFERRED: attempt schema is unchanged.
-// quiz must NOT push a topicId into the stored attempt payload, and storage's
-// addQuizAttempt object shape must remain the known required field set.
-checkR22(/addQuizAttempt\(\{[\s\S]*?\}\)/.test(quizWxmlR22) &&
-  /addQuizAttempt\(\{[^}]*topicId/.test(quizWxmlR22) === false,
-  'R2.2: quiz must not write topicId into the stored attempt (schema unchanged)');
+// R2.6 supersedes the earlier DEFERRED stance: topicId is now an OPTIONAL,
+// gated attempt field (no new storage key). The attempt must keep all original
+// required fields; topicId must only be written when present on the payload, and
+// the quiz must only attach it for an active verified topic session.
 var storageJsR22 = readFile('utils/storage.js');
 var addAttemptBody = (storageJsR22.match(/function addQuizAttempt[\s\S]*?saveQuizAttempts\(list\)/) || [''])[0];
-checkR22(addAttemptBody.indexOf('topicId') < 0 &&
-  ['questionId', 'exam', 'sourceType', 'selectedAnswer', 'correctAnswer', 'isCorrect', 'answeredAt'].every(function (f) {
-    return addAttemptBody.indexOf(f) >= 0;
-  }), 'R2.2: stored attempt schema must remain unchanged (no new fields/keys)');
+checkR22(['questionId', 'exam', 'sourceType', 'selectedAnswer', 'correctAnswer', 'isCorrect', 'answeredAt'].every(function (f) {
+  return addAttemptBody.indexOf(f) >= 0;
+}), 'R2.2: stored attempt keeps all original required fields');
+checkR22(/if \(payload\.topicId\)/.test(addAttemptBody),
+  'R2.2: topicId is written only when present on the payload (optional, gated)');
+checkR22(quizWxmlR22.indexOf('this.data.topicScopeActive && this.data.topicId') >= 0,
+  'R2.2: quiz attaches topicId only for an active verified topic session (never normal attempts)');
 
 if (r22Ok) pass('R2.2: topic session result semantics contract');
 
@@ -8605,6 +8606,29 @@ checkR24(['python', 'java', 'algorithm', 'mos365'].every(function (c) {
   return !(s && s.valid);
 }), 'R2.4: learning/unresolved courses must never resolve a valid topic scope');
 if (r24Ok) pass('R2.4: normal quiz route integrity contract');
+
+// R2.6: optional verified topic attempt context (no new key, backward compatible)
+console.log('\n--- R2.6 topic attempt context ---');
+var r26Ok = true;
+function checkR26(cond, msg) { if (!cond) { fail(msg); r26Ok = false; } }
+
+checkR26(fileExists('tools/check_attempt_context_compatibility.js'),
+  'R2.6: attempt context compatibility validator must exist');
+var storageR26 = readFile('utils/storage.js');
+// addQuizAttempt writes topicId only when present on the payload (optional)
+checkR26(/if \(payload\.topicId\)/.test(storageR26) &&
+  storageR26.indexOf('attempt.topicId = payload.topicId') >= 0,
+  'R2.6: addQuizAttempt must attach topicId only when present on payload');
+// no dedicated new storage key for topic context
+checkR26(/topicAttempts.*KEY|TOPIC[_A-Z]*_KEY/i.test(storageR26) === false,
+  'R2.6: storage must not declare a dedicated topic-context key');
+// quiz writes topic context only for a verified topic session
+var quizJsR26 = readFile('packages/quiz/pages/quiz/quiz.js');
+checkR26(/this\.data\.topicScopeActive && this\.data\.topicId/.test(quizJsR26) &&
+  quizJsR26.indexOf('attemptPayload.topicId') >= 0 &&
+  quizJsR26.indexOf('topicTitleSnapshot') >= 0,
+  'R2.6: quiz must attach topic context only for an active verified topic session');
+if (r26Ok) pass('R2.6: topic attempt context contract');
 
 // G4-specific Quiet Paper contracts (exam-menu, mistakes, flashcard-deck-select)
 // are deferred until the G4 page batch is independently frozen.
