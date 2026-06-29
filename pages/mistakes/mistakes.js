@@ -1,5 +1,6 @@
 // pages/mistakes/mistakes.js - 错题 tab 轻入口
 var storage = require("../../utils/storage");
+var nav = require("../../utils/navigation");
 
 /**
  * 格式化时间戳为简单日期（用于"最近错误时间"）
@@ -41,21 +42,15 @@ Page({
   },
 
   goToMistakesList: function () {
-    wx.navigateTo({
-      url: '/packages/quiz/pages/mistakes/mistakes'
-    });
+    nav.goMistakes();
   },
 
   goToAnkiMistakes: function () {
-    wx.navigateTo({
-      url: '/packages/glossary/pages/anki-player/anki-player?source=mistakes&from=mistakes'
-    });
+    nav.goMistakesAnkiReview();
   },
 
   goStudy: function () {
-    wx.navigateTo({
-      url: '/packages/quiz/pages/exam-menu/exam-menu?exam=itpass'
-    });
+    nav.goItPassport();
   }
 ,
 

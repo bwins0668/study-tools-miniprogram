@@ -119,6 +119,39 @@ if (r32Start >= 0 && r32End > r32Start) {
   }
 }
 
+// ---- Page migration checks ----
+
+console.log('\n--- Page Migration Checks ---');
+
+// mistakes.js: must NOT contain the old inline wx.navigateTo URLs
+var mistakesSrc;
+try { mistakesSrc = fs.readFileSync(path.join(ROOT, 'pages/mistakes/mistakes.js'), 'utf8'); } catch (e) { mistakesSrc = ''; }
+
+var oldMistakesUrls = [
+  '/packages/quiz/pages/mistakes/mistakes',
+  'source=mistakes&from=mistakes',
+  'exam=itpass'
+];
+
+if (mistakesSrc) {
+  for (var mu = 0; mu < oldMistakesUrls.length; mu++) {
+    if (mistakesSrc.indexOf(oldMistakesUrls[mu]) >= 0) {
+      fail('mistakes_migration', 'old inline URL still present: ' + oldMistakesUrls[mu]);
+    } else {
+      console.log('  PASS: old mistakes URL removed: ' + oldMistakesUrls[mu]);
+    }
+  }
+  // Must use nav.
+  if (mistakesSrc.indexOf('nav.goMistakes()') === -1) fail('mistakes_migration', 'missing nav.goMistakes()');
+  else console.log('  PASS: mistakes uses nav.goMistakes()');
+  if (mistakesSrc.indexOf('nav.goMistakesAnkiReview()') === -1) fail('mistakes_migration', 'missing nav.goMistakesAnkiReview()');
+  else console.log('  PASS: mistakes uses nav.goMistakesAnkiReview()');
+  if (mistakesSrc.indexOf('nav.goItPassport()') === -1) fail('mistakes_migration', 'missing nav.goItPassport()');
+  else console.log('  PASS: mistakes uses nav.goItPassport()');
+} else {
+  console.log('  SKIP: mistakes.js not readable');
+}
+
 // ---- Results ----
 console.log('\n--- Results ---');
 if (failures.length === 0) {

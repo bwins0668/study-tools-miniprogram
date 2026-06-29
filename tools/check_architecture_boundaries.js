@@ -12,8 +12,8 @@
 //   8. No new storage keys must be introduced
 //
 // Scope: pages/course/**, pages/course-organize/**, pages/practice/**,
-//        utils/course-question-state.js, utils/navigation.js.
-//        Other pages (home, mistakes, glossary, flashcards, profile)
+//        pages/mistakes/**, utils/course-question-state.js, utils/navigation.js.
+//        Other pages (home, glossary, flashcards, profile)
 //        are legacy and NOT evaluated by this checker.
 //
 // Never reads question bank text, never writes storage, never does broad repo grep.
@@ -178,7 +178,21 @@ function checkRule8() {
   }
 }
 
-// Rule 9: Practice page must use practice-state read-model, not direct storage
+// Rule 10: Mistakes page must use navigation intents, not inline wx.navigateTo
+function checkRule10() {
+  var src = readFileSafe('pages/mistakes/mistakes.js');
+  if (!src) { fail(10, 'pages/mistakes/mistakes.js', 'file not readable'); return; }
+  // Must NOT contain raw wx.navigateTo with inline mistake URLs
+  if (/wx\.navigateTo\s*\(\s*\{[^}]*\/packages\/quiz\/pages\/mistakes\/mistakes/.test(src)) {
+    fail(10, 'pages/mistakes/mistakes.js', 'inline navigateTo to mistakes (use nav.goMistakes)');
+  }
+  if (/wx\.navigateTo\s*\(\s*\{[^}]*anki-player.*source=mistakes/.test(src)) {
+    fail(10, 'pages/mistakes/mistakes.js', 'inline navigateTo to anki-player?source=mistakes (use nav.goMistakesAnkiReview)');
+  }
+  if (/wx\.navigateTo\s*\(\s*\{[^}]*exam-menu.*exam=itpass/.test(src)) {
+    fail(10, 'pages/mistakes/mistakes.js', 'inline navigateTo to exam-menu?exam=itpass (use nav.goItPassport)');
+  }
+}
 function checkRule9() {
   var src = readFileSafe('pages/practice/practice.js');
   if (!src) { fail(9, 'pages/practice/practice.js', 'file not readable'); return; }
@@ -206,6 +220,7 @@ function run() {
   checkRule7_info();
   checkRule8();
   checkRule9();
+  checkRule10();
 
   console.log('\n--- Results ---');
   if (failures.length === 0) {
