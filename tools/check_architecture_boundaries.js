@@ -1,0 +1,213 @@
+// tools/check_architecture_boundaries.js
+// M3 Architecture Boundary Guardrails — read-only, PASS=0 / FAIL=1.
+//
+// Protects the Course Shell architecture boundary (R3.0):
+//   1. Course / Organizer pages must NOT directly require utils/storage.js
+//   2. Course / Organizer pages must NOT directly require canonical question data
+//   3. Course / Organizer pages must NOT directly call setStorageSync / removeStorageSync
+//   4. Organizer must get wrong/favorite state ONLY through course-question-state
+//   5. Course page must NOT re-implement exact exam filtering
+//   6. Complex Course / Organizer navigation must go through utils/navigation.js
+//   7. Forbidden files must not appear in the current diff
+//   8. No new storage keys must be introduced
+//
+// Scope: pages/course/**, pages/course-organize/**, utils/course-question-state.js,
+//        utils/navigation.js. Other pages (home, practice, mistakes, glossary,
+//        flashcards, profile) are legacy and NOT evaluated by this checker.
+//
+// Never reads question bank text, never writes storage, never does broad repo grep.
+
+var fs = require('fs');
+var path = require('path');
+
+var ROOT = path.resolve(__dirname, '..');
+var FAIL = 0;
+var failures = [];
+
+// ---- Helpers ----
+
+function readFileSafe(relPath) {
+  var full = path.join(ROOT, relPath);
+  try { return fs.readFileSync(full, 'utf8'); } catch (e) { return null; }
+}
+
+function fail(rule, file, detail) {
+  failures.push({ rule: rule, file: file, detail: detail });
+}
+
+// ---- Boundary Rules ----
+
+// Rule 1: Course / Organizer pages must NOT directly require utils/storage.js
+function checkRule1() {
+  var pages = ['pages/course/course.js', 'pages/course-organize/course-organize.js'];
+  for (var i = 0; i < pages.length; i++) {
+    var src = readFileSafe(pages[i]);
+    if (!src) { fail(1, pages[i], 'file not readable'); continue; }
+    if (/require\s*\(\s*["']\.\.\/\.\.\/utils\/storage(\.js)?["']\s*\)/.test(src)) {
+      fail(1, pages[i], 'directly requires utils/storage.js');
+    }
+  }
+}
+
+// Rule 2: Course / Organizer pages must NOT directly require canonical questions/decks
+function checkRule2() {
+  var pages = ['pages/course/course.js', 'pages/course-organize/course-organize.js'];
+  var banned = [
+    'questions', 'course_questions', 'flashcard-export', 'flashcard-manifest',
+    'deck-manifest', 'past_exam_bank', 'flashcard_adapter', 'flashcard-enrichment'
+  ];
+  for (var i = 0; i < pages.length; i++) {
+    var src = readFileSafe(pages[i]);
+    if (!src) continue;
+    for (var j = 0; j < banned.length; j++) {
+      var re = new RegExp('require\\s*\\(\\s*["\'][^"\')]*' + banned[j] + '[^"\')]*["\']\\s*\\)');
+      if (re.test(src)) {
+        fail(2, pages[i], 'directly requires canonical data: ' + banned[j]);
+      }
+    }
+  }
+}
+
+// Rule 3: Course / Organizer pages must NOT directly call setStorageSync / removeStorageSync
+function checkRule3() {
+  var pages = ['pages/course/course.js', 'pages/course-organize/course-organize.js'];
+  for (var i = 0; i < pages.length; i++) {
+    var src = readFileSafe(pages[i]);
+    if (!src) continue;
+    if (/\bsetStorageSync\s*\(/.test(src)) {
+      fail(3, pages[i], 'directly calls setStorageSync');
+    }
+    if (/\bremoveStorageSync\s*\(/.test(src)) {
+      fail(3, pages[i], 'directly calls removeStorageSync');
+    }
+  }
+}
+
+// Rule 4: Organizer must get wrong/favorite state ONLY through course-question-state
+function checkRule4() {
+  var src = readFileSafe('pages/course-organize/course-organize.js');
+  if (!src) { fail(4, 'pages/course-organize/course-organize.js', 'file not readable'); return; }
+  if (!/require\s*\(\s*["']\.\.\/\.\.\/utils\/course-question-state["']\s*\)/.test(src)) {
+    fail(4, 'pages/course-organize/course-organize.js', 'does NOT require course-question-state');
+  }
+  if (/\bgetWrongQuestions\b/.test(src)) {
+    fail(4, 'pages/course-organize/course-organize.js', 'directly calls getWrongQuestions');
+  }
+  if (/\bgetFavoriteQuestions\b/.test(src)) {
+    fail(4, 'pages/course-organize/course-organize.js', 'directly calls getFavoriteQuestions');
+  }
+}
+
+// Rule 5: Course page must NOT re-implement exact exam filtering
+function checkRule5() {
+  var src = readFileSafe('pages/course/course.js');
+  if (!src) { fail(5, 'pages/course/course.js', 'file not readable'); return; }
+  var reBlock = /if\s*\(\s*\w+\s*===\s*["']itpass["']\s*\)[\s\S]*?["']sg["']/;
+  if (reBlock.test(src)) {
+    fail(5, 'pages/course/course.js', 're-implements exam branching (use navigation.js)');
+  }
+}
+
+// Rule 6: Complex Course / Organizer navigation must go through utils/navigation.js
+function checkRule6() {
+  var pages = ['pages/course/course.js', 'pages/course-organize/course-organize.js'];
+  for (var i = 0; i < pages.length; i++) {
+    var src = readFileSafe(pages[i]);
+    if (!src) continue;
+    var reRawNavigate = /wx\.navigateTo\s*\(\s*\{[^}]*url\s*:\s*["']\/pages\/course/;
+    if (reRawNavigate.test(src)) {
+      fail(6, pages[i], 'raw wx.navigateTo to course path (use navigation.js)');
+    }
+    var reRawSwitch = /wx\.switchTab\s*\(\s*\{[^}]*url\s*:\s*["']\/pages\//;
+    if (reRawSwitch.test(src)) {
+      fail(6, pages[i], 'raw wx.switchTab (use navigation.js)');
+    }
+  }
+}
+
+// Rule 7: Forbidden files — informational, actual check in git diff flow
+function checkRule7_info() {
+  var forbiddenPatterns = [
+    'utils/storage.js',
+    'packages/quiz/data/questions.js',
+    'packages/quiz/data/course_questions.js'
+  ];
+  console.log('  Rule 7 (forbidden files): checked via git diff --name-only in commit flow.');
+  console.log('  Forbidden patterns: ' + forbiddenPatterns.join(', '));
+}
+
+// Rule 8: No new storage keys in scope files
+function checkRule8() {
+  var scopeFiles = [
+    'pages/course/course.js',
+    'pages/course-organize/course-organize.js',
+    'utils/course-question-state.js',
+    'utils/navigation.js'
+  ];
+  var knownKeys = [
+    '"study-tools-mini-favorite-terms-v1"', "'study-tools-mini-favorite-terms-v1'",
+    '"study-tools-mini-wrong-questions-v1"', "'study-tools-mini-wrong-questions-v1'",
+    '"study-tools-mini-quiz-attempts-v1"', "'study-tools-mini-quiz-attempts-v1'",
+    '"study-tools-mini-favorite-questions-v1"', "'study-tools-mini-favorite-questions-v1'"
+  ];
+  for (var i = 0; i < scopeFiles.length; i++) {
+    var src = readFileSafe(scopeFiles[i]);
+    if (!src) continue;
+    if (/\bsetStorageSync\s*\(/.test(src)) {
+      fail(8, scopeFiles[i], 'introduces setStorageSync (potential new storage key)');
+    }
+    var keyRe = /["'][\w-]+-v\d+["']/g;
+    var match;
+    while ((match = keyRe.exec(src)) !== null) {
+      var key = match[0];
+      var lineStart = src.lastIndexOf('\n', match.index) + 1;
+      var lineEnd = src.indexOf('\n', match.index);
+      if (lineEnd === -1) lineEnd = src.length;
+      var line = src.substring(lineStart, lineEnd);
+      if (/storage|setStorage|getStorage|FAVORITE|WRONG|QUIZ|ANKI/i.test(line)) {
+        var isKnown = false;
+        for (var k = 0; k < knownKeys.length; k++) {
+          if (line.indexOf(knownKeys[k]) >= 0) { isKnown = true; break; }
+        }
+        if (!isKnown) {
+          fail(8, scopeFiles[i], 'potential new storage key: ' + key);
+        }
+      }
+    }
+  }
+}
+
+// ---- Run All Checks ----
+
+function run() {
+  console.log('=== Architecture Boundary Guardrails (M3) ===\n');
+  console.log('Scope: pages/course/**, pages/course-organize/**,');
+  console.log('       utils/course-question-state.js, utils/navigation.js\n');
+
+  checkRule1();
+  checkRule2();
+  checkRule3();
+  checkRule4();
+  checkRule5();
+  checkRule6();
+  checkRule7_info();
+  checkRule8();
+
+  console.log('\n--- Results ---');
+  if (failures.length === 0) {
+    console.log('ALL BOUNDARIES INTACT');
+    console.log('PASS');
+    return 0;
+  }
+
+  console.log('BOUNDARY VIOLATIONS DETECTED (' + failures.length + '):\n');
+  for (var i = 0; i < failures.length; i++) {
+    var f = failures[i];
+    console.log('  [' + f.rule + '] ' + f.file + ': ' + f.detail);
+  }
+  console.log('\nFAIL');
+  return 1;
+}
+
+var exitCode = run();
+process.exit(exitCode);
