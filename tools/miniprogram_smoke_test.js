@@ -8120,8 +8120,8 @@ checkUiFreeze(homeWxmlR12.indexOf('examCourses') >= 0,
   'R1.2: home.wxml exam section must iterate registry exam courses');
 checkUiFreeze(homeJsR12.indexOf('onPlannedCourse') >= 0,
   'R1.2: planned courses must use onPlannedCourse (toast, not navigation)');
-checkUiFreeze(homeWxmlR12.indexOf('onPlannedCourse') >= 0,
-  'R1.2: planned course cards must bind onPlannedCourse');
+checkUiFreeze(homeWxmlR12.indexOf('onPlannedCourse') >= 0 || homeWxmlR12.indexOf('goToCourse') >= 0,
+  'R1.2: planned course cards must bind onPlannedCourse or goToCourse');
 checkUiFreeze(homeJsR12.indexOf('nav.goItPassport') >= 0 &&
   homeJsR12.indexOf('nav.goSG') >= 0,
   'R1.2: IT Passport/SG must use navigation adapter, not raw routes');
@@ -8136,6 +8136,33 @@ checkUiFreeze(homeWxmlR12.indexOf('上次练习') >= 0 &&
   homeWxmlR12.indexOf('再练一次') >= 0 &&
   homeWxmlR12.indexOf('继续学习') < 0,
   'R1.2.1: home must not mislabel new-quiz as continue/resume');
+
+// R1.3: unified course shell
+var courseRegJs = readFile('utils/course-registry.js');
+checkUiFreeze(courseRegJs.indexOf('courseKind') >= 0 && courseRegJs.indexOf('capabilities') >= 0,
+  'R1.3: course registry must define courseKind and capabilities');
+checkUiFreeze(courseRegJs.indexOf('getCourseShellCourses') >= 0 && courseRegJs.indexOf('isCourseShellAvailable') >= 0,
+  'R1.3: course registry must export getCourseShellCourses and isCourseShellAvailable');
+checkUiFreeze(courseRegJs.indexOf("capabilities: {") >= 0,
+  'R1.3: all 6 courses must have capabilities block');
+checkUiFreeze(fileExists('pages/course/course.js') && fileExists('pages/course/course.wxml') &&
+  fileExists('pages/course/course.wxss') && fileExists('pages/course/course.json'),
+  'R1.3: course shell page files must exist');
+checkUiFreeze((appJson.pages || []).indexOf('pages/course/course') >= 0,
+  'R1.3: pages/course/course must be registered');
+var navJsR13 = readFile('utils/navigation.js');
+checkUiFreeze(navJsR13.indexOf('goCourseHome') >= 0 && navJsR13.indexOf('goCoursePractice') >= 0,
+  'R1.3: navigation must expose goCourseHome and goCoursePractice');
+checkUiFreeze(homeJsR12.indexOf('goToCourse') >= 0 && homeJsR12.indexOf('goToPractice') >= 0,
+  'R1.3: home.js must have goToCourse and goToPractice handlers');
+checkUiFreeze(homeWxmlR12.indexOf('goToCourse') >= 0 && homeWxmlR12.indexOf('goToPractice') >= 0,
+  'R1.3: home.wxml must route exam cards via goToCourse/goToPractice');
+checkUiFreeze(homeWxmlR12.indexOf('catchtap') >= 0,
+  'R1.3: practice button must use catchtap to prevent card body navigation');
+checkUiFreeze(homeWxmlR12.indexOf('bindtap="goToCourse"') >= 0,
+  'R1.3: planned cards must enter course shell via goToCourse');
+checkUiFreeze(homeWxmlR12.indexOf('onPlannedCourse') < 0,
+  'R1.3: home must not use onPlannedCourse toast (superseded by course shell)');
 
 // G4-specific Quiet Paper contracts (exam-menu, mistakes, flashcard-deck-select)
 // are deferred until the G4 page batch is independently frozen.

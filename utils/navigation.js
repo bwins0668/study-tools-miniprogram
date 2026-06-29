@@ -2,6 +2,8 @@
 // Lightweight stateless navigation adapter for the 5-tab course center.
 // No storage reads/writes. No business logic. No G4 WIP dependencies.
 
+var registry = require('./course-registry');
+
 var TAB = {
   COURSE:   '/pages/home/home',
   PRACTICE: '/pages/practice/practice',
@@ -10,7 +12,6 @@ var TAB = {
   PROFILE:  '/pages/profile/profile'
 };
 
-// Legacy non-tab pages (still registered, navigated via navigateTo)
 var LEGACY = {
   FLASHCARDS:       '/pages/flashcards/flashcards',
   MISTAKES:         '/pages/mistakes/mistakes',
@@ -24,31 +25,17 @@ var LEGACY = {
   ANALYSIS_DETAIL:  '/packages/quiz/pages/analysis-detail/analysis-detail'
 };
 
-/**
- * Navigate to a tab page via switchTab.
- * @param {string} url - absolute page path (e.g. '/pages/home/home')
- */
 function switchTabSafe(url) {
-  wx.switchTab({
-    url: url,
-    fail: function (err) {
-      console.error('[nav] switchTab failed:', url, err);
-      wx.showToast({ title: '页面切换失败，请重试', icon: 'none' });
-    }
+  wx.switchTab({ url: url,
+    fail: function (err) { console.error('[nav] switchTab failed:', url, err);
+      wx.showToast({ title: '页面切换失败，请重试', icon: 'none' }); }
   });
 }
 
-/**
- * Navigate to a non-tab page via navigateTo.
- * @param {string} url - absolute page path with optional query
- */
 function navigateToSafe(url) {
-  wx.navigateTo({
-    url: url,
-    fail: function (err) {
-      console.error('[nav] navigateTo failed:', url, err);
-      wx.showToast({ title: '页面暂时无法打开', icon: 'none' });
-    }
+  wx.navigateTo({ url: url,
+    fail: function (err) { console.error('[nav] navigateTo failed:', url, err);
+      wx.showToast({ title: '页面暂时无法打开', icon: 'none' }); }
   });
 }
 
@@ -61,8 +48,6 @@ function goGlossaryTab()   { switchTabSafe(TAB.GLOSSARY); }
 function goProfileTab()    { switchTabSafe(TAB.PROFILE); }
 function goFlashcards()    { navigateToSafe(LEGACY.FLASHCARDS); }
 function goMistakes()      { navigateToSafe(LEGACY.MISTAKES_FULL); }
-function goItPassport()    { navigateToSafe(LEGACY.EXAM_MENU_ITPASS); }
-function goSG()            { navigateToSafe(LEGACY.EXAM_MENU_SG); }
 function goQuickPractice() { navigateToSafe(LEGACY.QUIZ_ITPASS); }
 function goTermSearch()    { navigateToSafe(LEGACY.TERM_SEARCH); }
 function goFavoriteReview(){ navigateToSafe(LEGACY.FAVORITE_REVIEW); }
@@ -74,24 +59,37 @@ function continueLastQuiz(exam, sourceType) {
   navigateToSafe(url);
 }
 
+// ---- R1.3: Course shell navigation ----
+
+/** Navigate to the unified course shell page. Only courseShell:true courses allowed. */
+function goCourseHome(courseId) {
+  if (!registry.isCourseShellAvailable(courseId)) {
+    wx.showToast({ title: '课程暂不可用', icon: 'none' });
+    return;
+  }
+  navigateToSafe('/pages/course/course?courseId=' + courseId);
+}
+
+/** Navigate to real practice entry for itpass/sg. */
+function goCoursePractice(courseId) {
+  if (courseId === 'itpass') { navigateToSafe(LEGACY.EXAM_MENU_ITPASS); return; }
+  if (courseId === 'sg')     { navigateToSafe(LEGACY.EXAM_MENU_SG); return; }
+  wx.showToast({ title: '暂无练习入口', icon: 'none' });
+}
+
+// Legacy aliases — delegate to goCoursePractice for backward compat
+function goItPassport() { goCoursePractice('itpass'); }
+function goSG()         { goCoursePractice('sg'); }
+
 module.exports = {
-  TAB: TAB,
-  LEGACY: LEGACY,
-  switchTabSafe: switchTabSafe,
-  navigateToSafe: navigateToSafe,
-  goCourseTab: goCourseTab,
-  goPracticeTab: goPracticeTab,
-  goReviewTab: goReviewTab,
-  goGlossaryTab: goGlossaryTab,
-  goProfileTab: goProfileTab,
-  goFlashcards: goFlashcards,
-  goMistakes: goMistakes,
-  goItPassport: goItPassport,
-  goSG: goSG,
-  goQuickPractice: goQuickPractice,
-  goTermSearch: goTermSearch,
-  goFavoriteReview: goFavoriteReview,
-  goAnkiPlayer: goAnkiPlayer,
-  goAnalysisDetail: goAnalysisDetail,
-  continueLastQuiz: continueLastQuiz
+  TAB: TAB, LEGACY: LEGACY,
+  switchTabSafe: switchTabSafe, navigateToSafe: navigateToSafe,
+  goCourseTab: goCourseTab, goPracticeTab: goPracticeTab, goReviewTab: goReviewTab,
+  goGlossaryTab: goGlossaryTab, goProfileTab: goProfileTab,
+  goFlashcards: goFlashcards, goMistakes: goMistakes,
+  goItPassport: goItPassport, goSG: goSG,
+  goQuickPractice: goQuickPractice, goTermSearch: goTermSearch,
+  goFavoriteReview: goFavoriteReview, goAnkiPlayer: goAnkiPlayer,
+  goAnalysisDetail: goAnalysisDetail, continueLastQuiz: continueLastQuiz,
+  goCourseHome: goCourseHome, goCoursePractice: goCoursePractice
 };

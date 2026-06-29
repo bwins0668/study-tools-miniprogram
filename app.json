@@ -3,6 +3,7 @@
     "pages/home/home",
     "pages/practice/practice",
     "pages/review/review",
+    "pages/course/course",
     "pages/flashcards/flashcards",
     "pages/glossary/glossary",
     "pages/mistakes/mistakes",

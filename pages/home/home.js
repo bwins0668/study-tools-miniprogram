@@ -139,6 +139,16 @@ Page({
   goSG:        function () { nav.goSG(); },
   goProfile:   function () { nav.goProfileTab(); },
 
+  // R1.3: unified course navigation via data-course-id
+  goToCourse: function (e) {
+    var courseId = e.currentTarget.dataset.courseId;
+    if (courseId) nav.goCourseHome(courseId);
+  },
+  goToPractice: function (e) {
+    var courseId = e.currentTarget.dataset.courseId;
+    if (courseId) nav.goCoursePractice(courseId);
+  },
+
   goToCourseArea: function () {
     wx.pageScrollTo({ selector: '.cc-section--courses', duration: 300 });
   },
