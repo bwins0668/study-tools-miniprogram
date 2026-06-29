@@ -4,11 +4,11 @@
   <!-- A. 学习状态 -->
   <view class="cc-hero">
     <block wx:if="{{hasLastAttempt}}">
-      <text class="cc-hero__kicker">继续学习</text>
+      <text class="cc-hero__kicker">上次练习</text>
       <text class="cc-hero__title">{{lastExamLabel}}</text>
       <text class="cc-hero__sub" wx:if="{{lastMetaText}}">{{lastMetaText}}</text>
       <view class="cc-hero__actions">
-        <view class="cc-btn cc-btn--primary" bindtap="continueLearning">继续学习</view>
+        <view class="cc-btn cc-btn--primary" bindtap="continueLearning">再练一次</view>
         <view class="cc-btn cc-btn--outline" bindtap="goReview">今日复习</view>
       </view>
       <text class="cc-hero__streak" wx:if="{{streakCount > 0}}">连续学习 {{streakCount}} 天</text>

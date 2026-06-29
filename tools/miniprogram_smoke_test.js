@@ -8131,6 +8131,11 @@ checkUiFreeze(homeJsR12.indexOf("'待复习'") < 0 &&
 checkUiFreeze(homeJsR12.indexOf('courseProgressState') < 0 &&
   homeJsR12.indexOf('course-chapter') < 0,
   'R1.2: home must not create fake course progress or chapter data');
+// R1.2.1: honesty — "继续学习" is misleading when continueLastQuiz starts a new quiz
+checkUiFreeze(homeWxmlR12.indexOf('上次练习') >= 0 &&
+  homeWxmlR12.indexOf('再练一次') >= 0 &&
+  homeWxmlR12.indexOf('继续学习') < 0,
+  'R1.2.1: home must not mislabel new-quiz as continue/resume');
 
 // G4-specific Quiet Paper contracts (exam-menu, mistakes, flashcard-deck-select)
 // are deferred until the G4 page batch is independently frozen.
