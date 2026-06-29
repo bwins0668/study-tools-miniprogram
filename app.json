@@ -1,6 +1,8 @@
 {
   "pages": [
     "pages/home/home",
+    "pages/practice/practice",
+    "pages/review/review",
     "pages/flashcards/flashcards",
     "pages/glossary/glossary",
     "pages/mistakes/mistakes",
@@ -107,21 +109,23 @@
     "list": [
       {
         "pagePath": "pages/home/home",
-        "text": "首页",
+        "text": "课程",
         "iconPath": "images/tab/home.png",
         "selectedIconPath": "images/tab/home_active.png"
       },
       {
-        "pagePath": "pages/flashcards/flashcards",
-        "text": "闪卡",
-        "iconPath": "images/tab/flashcards.png",
-        "selectedIconPath": "images/tab/flashcards_active.png"
+        "pagePath": "pages/practice/practice",
+        "text": "刷题"
       },
       {
-        "pagePath": "pages/mistakes/mistakes",
-        "text": "错题",
-        "iconPath": "images/tab/mistakes.png",
-        "selectedIconPath": "images/tab/mistakes_active.png"
+        "pagePath": "pages/review/review",
+        "text": "复习"
+      },
+      {
+        "pagePath": "pages/glossary/glossary",
+        "text": "术语",
+        "iconPath": "images/tab/glossary.png",
+        "selectedIconPath": "images/tab/glossary_active.png"
       },
       {
         "pagePath": "pages/profile/profile",

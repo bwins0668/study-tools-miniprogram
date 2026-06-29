@@ -8104,8 +8104,46 @@ checkUiFreeze(homeWxssFreeze.indexOf('@import "../../styles/tokens.wxss";') >= 0
   'UI Freeze: home must import tokens and avoid 700/800 font weights');
 
 var tabRoutesFreeze = (appJson.tabBar && appJson.tabBar.list || []).map(function (item) { return item.pagePath; }).join('|');
-checkUiFreeze(tabRoutesFreeze === 'pages/home/home|pages/flashcards/flashcards|pages/mistakes/mistakes|pages/profile/profile',
-  'UI Freeze: tab order and routes must remain unchanged');
+checkUiFreeze(tabRoutesFreeze === 'pages/home/home|pages/practice/practice|pages/review/review|pages/glossary/glossary|pages/profile/profile',
+  'R1.1: tabBar must be 课程|刷题|复习|术语|我的 in order');
+checkUiFreeze((appJson.tabBar && appJson.tabBar.list || []).length === 5,
+  'R1.1: tabBar must have exactly 5 items');
+checkUiFreeze((appJson.tabBar && appJson.tabBar.list || [])[0].text === '课程' &&
+  (appJson.tabBar && appJson.tabBar.list || [])[1].text === '刷题' &&
+  (appJson.tabBar && appJson.tabBar.list || [])[2].text === '复习' &&
+  (appJson.tabBar && appJson.tabBar.list || [])[3].text === '术语' &&
+  (appJson.tabBar && appJson.tabBar.list || [])[4].text === '我的',
+  'R1.1: tabBar text must be 课程, 刷题, 复习, 术语, 我的');
+// R1.1: practice and review pages registered and complete
+checkUiFreeze(fileExists('pages/practice/practice.js') &&
+  fileExists('pages/practice/practice.json') &&
+  fileExists('pages/practice/practice.wxml') &&
+  fileExists('pages/practice/practice.wxss'),
+  'R1.1: practice page files must exist');
+checkUiFreeze(fileExists('pages/review/review.js') &&
+  fileExists('pages/review/review.json') &&
+  fileExists('pages/review/review.wxml') &&
+  fileExists('pages/review/review.wxss'),
+  'R1.1: review page files must exist');
+// R1.1: old flashcard/mistakes pages still registered (not in tabBar)
+var allPagesFreeze = appJson.pages || [];
+checkUiFreeze(allPagesFreeze.indexOf('pages/flashcards/flashcards') >= 0,
+  'R1.1: old flashcards route must remain registered');
+checkUiFreeze(allPagesFreeze.indexOf('pages/mistakes/mistakes') >= 0,
+  'R1.1: old mistakes route must remain registered');
+// R1.1: no switchTab to old flashcard/mistakes tab routes
+var allJsFreeze = readFile('pages/home/home.js') +
+  readFile('pages/flashcards/flashcards.js') +
+  readFile('pages/mistakes/mistakes.js');
+checkUiFreeze(allJsFreeze.indexOf("switchTab({ url: '/pages/flashcards/flashcards'") < 0,
+  'R1.1: no switchTab to old flashcards tab');
+checkUiFreeze(allJsFreeze.indexOf("switchTab({ url: '/pages/mistakes/mistakes'") < 0,
+  'R1.1: no switchTab to old mistakes tab');
+// R1.1: navigation utility exists
+checkUiFreeze(fileExists('utils/navigation.js'),
+  'R1.1: utils/navigation.js must exist');
+checkUiFreeze(fileExists('utils/course-registry.js'),
+  'R1.1: utils/course-registry.js must exist');
 
 // G4-specific Quiet Paper contracts (exam-menu, mistakes, flashcard-deck-select)
 // are deferred until the G4 page batch is independently frozen.

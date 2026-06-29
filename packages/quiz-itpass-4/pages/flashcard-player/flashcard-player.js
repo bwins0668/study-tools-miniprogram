@@ -518,7 +518,7 @@ Page({
     wx.navigateBack({
       delta: 1,
       fail: function () {
-        wx.switchTab({ url: '/pages/flashcards/flashcards' });
+        wx.navigateTo({ url: '/pages/flashcards/flashcards' });
       }
     });
   },
