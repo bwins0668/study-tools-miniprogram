@@ -205,6 +205,7 @@ function assertAllowedDiffScope() {
     'packages/course-content/pages/chapter-list/chapter-list.json': true,
     'packages/course-content/pages/chapter-list/chapter-list-model.js': true,
     'packages/course-content/data/loader.js': true,
+    'packages/course-content/data/textbook-course.js': true,
     'tools/check_textbook_chapter_navigation.js': true
   };
   currentDiffNames().forEach(function (name) {
