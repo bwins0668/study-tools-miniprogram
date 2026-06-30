@@ -129,7 +129,7 @@ var terms = [
     "zh": "防火墙",
     "termType": "security-concept",
     "definitionJa": "ネットワークの境界に設置し、不正アクセスを防ぐセキュリティ機構。パケットフィルタリング、アプリケーションゲートウェイなどの方式がある。",
-    "definitionZh": "设置在网络边界、防止非法访问的安全机制。有包过滤、应用网关等方式。",
+    "definitionZh": "设置在网络边界、防止非法访问的安全机制。有报文过滤、应用网关等方式。",
     "contextJa": "ファイアウォールの種類、DMZの概念、IDS/IPSとの違いが試験で問われる。",
     "contextZh": "考试会考察防火墙类型、DMZ概念、与IDS/IPS的区别。",
     "compareWith": [
