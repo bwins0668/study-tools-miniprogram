@@ -148,6 +148,20 @@ function assertNavigationRoutes() {
   if (nav.indexOf('courseId=') < 0 || nav.indexOf('chapter-list') < 0) fail('navigation.js textbook route incomplete');
 }
 
+function assertTermRegistries() {
+  ['course-itpass', 'course-sg'].forEach(function(pkg) {
+    var regPath = path.join(ROOT, 'packages', pkg, 'terms', 'registry.js');
+    if (!fs.existsSync(regPath)) {
+      fail(pkg + ': missing terms/registry.js');
+      return;
+    }
+    var reg = require(regPath);
+    if (typeof reg.getTerm !== 'function') fail(pkg + ': registry missing getTerm');
+    if (typeof reg.getTerms !== 'function') fail(pkg + ': registry missing getTerms');
+    if (typeof reg.register !== 'function') fail(pkg + ': registry missing register');
+  });
+}
+
 function main() {
   parseArgs(process.argv);
   assertAppJsonSubpackages();
@@ -158,6 +172,7 @@ function main() {
   assertPackageSizes();
   assertNoForbiddenPatterns();
   assertNavigationRoutes();
+  assertTermRegistries();
 
   if (failures.length) {
     console.error('TEXTBOOK PRODUCTIZATION FAIL (' + failures.length + ')');
