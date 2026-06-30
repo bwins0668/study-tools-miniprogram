@@ -128,7 +128,8 @@ function goCourseTextbook(courseId) {
     wx.showToast({ title: '该课程暂未开放教材章节', icon: 'none' });
     return;
   }
-  navigateToSafe('/packages/course-content/pages/chapter-list/chapter-list?courseId=' + courseId);
+  var pkg = courseId === 'itpass' ? 'course-itpass' : 'course-sg';
+  navigateToSafe('/packages/' + pkg + '/pages/chapter-list/chapter-list?courseId=' + courseId);
 }
 
 // ---- R3.2: Legacy tab navigation compatibility intents ----

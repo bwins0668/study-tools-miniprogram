@@ -104,6 +104,22 @@
         "pages/chapter-list/chapter-list",
         "pages/unit-detail/unit-detail"
       ]
+    },
+    {
+      "root": "packages/course-itpass",
+      "name": "course-itpass",
+      "pages": [
+        "pages/chapter-list/chapter-list",
+        "pages/unit-detail/unit-detail"
+      ]
+    },
+    {
+      "root": "packages/course-sg",
+      "name": "course-sg",
+      "pages": [
+        "pages/chapter-list/chapter-list",
+        "pages/unit-detail/unit-detail"
+      ]
     }
   ],
   "window": {
