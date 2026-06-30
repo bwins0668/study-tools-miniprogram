@@ -1,0 +1,159 @@
+@import "../../styles/tokens.wxss";
+
+.r6-tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+}
+
+.r6-tabbar__inner {
+  display: flex;
+  height: calc(100rpx + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--qp-color-surface);
+  border-top: 1rpx solid var(--qp-color-line);
+}
+
+.r6-tabbar__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rpx;
+  padding: 6rpx 0;
+}
+
+.r6-tabbar__icon {
+  width: 44rpx;
+  height: 44rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--qp-color-text-ghost);
+  transition: color 0.15s ease;
+}
+
+.r6-tabbar__item--active .r6-tabbar__icon {
+  color: var(--qp-color-primary);
+}
+
+.r6-tabbar__text {
+  font-size: var(--qp-font-size-label);
+  color: var(--qp-color-text-ghost);
+  font-weight: var(--qp-font-weight-regular);
+  transition: color 0.15s ease;
+}
+
+.r6-tabbar__item--active .r6-tabbar__text {
+  color: var(--qp-color-primary);
+  font-weight: var(--qp-font-weight-semibold);
+}
+
+/* ---- Geometric tab icons (stroke-line style, matching Claude Design) ---- */
+.r6-tabbar__shape {
+  width: 30rpx;
+  height: 30rpx;
+  position: relative;
+}
+
+/* home: house */
+.r6-tabbar__icon--home .r6-tabbar__shape {
+  width: 28rpx;
+  height: 22rpx;
+  border-left: 2rpx solid currentColor;
+  border-right: 2rpx solid currentColor;
+  border-bottom: 2rpx solid currentColor;
+  margin-top: 6rpx;
+}
+.r6-tabbar__icon--home .r6-tabbar__shape::before {
+  content: '';
+  position: absolute;
+  top: -8rpx;
+  left: -5rpx;
+  width: 0;
+  height: 0;
+  border-left: 19rpx solid transparent;
+  border-right: 19rpx solid transparent;
+  border-bottom: 8rpx solid currentColor;
+}
+
+/* drill: document with lines */
+.r6-tabbar__icon--drill .r6-tabbar__shape {
+  width: 22rpx;
+  height: 28rpx;
+  border: 2rpx solid currentColor;
+  border-radius: 3rpx;
+}
+.r6-tabbar__icon--drill .r6-tabbar__shape::before {
+  content: '';
+  position: absolute;
+  top: 8rpx;
+  left: 4rpx;
+  right: 4rpx;
+  height: 2rpx;
+  background: currentColor;
+  box-shadow: 0 7rpx 0 currentColor, 0 14rpx 0 currentColor;
+}
+
+/* review: circular arrow */
+.r6-tabbar__icon--review .r6-tabbar__shape {
+  width: 24rpx;
+  height: 24rpx;
+  border: 2rpx solid currentColor;
+  border-radius: 50%;
+  border-right-color: transparent;
+  transform: rotate(-45deg);
+}
+.r6-tabbar__icon--review .r6-tabbar__shape::before {
+  content: '';
+  position: absolute;
+  top: -5rpx;
+  right: -3rpx;
+  width: 0;
+  height: 0;
+  border-left: 7rpx solid currentColor;
+  border-top: 4rpx solid transparent;
+  border-bottom: 4rpx solid transparent;
+  transform: rotate(-45deg);
+}
+
+/* glossary: document with two lines */
+.r6-tabbar__icon--glossary .r6-tabbar__shape {
+  width: 22rpx;
+  height: 28rpx;
+  border: 2rpx solid currentColor;
+  border-radius: 3rpx;
+}
+.r6-tabbar__icon--glossary .r6-tabbar__shape::before {
+  content: '';
+  position: absolute;
+  top: 8rpx;
+  left: 4rpx;
+  right: 8rpx;
+  height: 2rpx;
+  background: currentColor;
+  box-shadow: 0 9rpx 0 currentColor;
+}
+
+/* profile: person */
+.r6-tabbar__icon--profile .r6-tabbar__shape {
+  width: 18rpx;
+  height: 18rpx;
+  border: 2rpx solid currentColor;
+  border-radius: 50%;
+  margin-top: 0;
+}
+.r6-tabbar__icon--profile .r6-tabbar__shape::before {
+  content: '';
+  position: absolute;
+  bottom: -14rpx;
+  left: -8rpx;
+  width: 34rpx;
+  height: 16rpx;
+  border: 2rpx solid currentColor;
+  border-radius: 16rpx 16rpx 0 0;
+  border-bottom: none;
+}

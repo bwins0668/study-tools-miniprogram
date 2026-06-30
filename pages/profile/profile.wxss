@@ -7,7 +7,7 @@
 }
 
 /* === 头部 === */
-.profile-header {
+.r6-profile-head {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -19,8 +19,8 @@
   box-shadow: var(--shadow-sm);
 }
 
-.profile-header::before,
-.profile-header::after {
+.r6-profile-head::before,
+.r6-profile-head::after {
   display: none;
 }
 
@@ -112,7 +112,7 @@
 }
 
 .copy-version-btn:active,
-.info-card:active,
+.r6-profile-card:active,
 .backup-btn:active,
 .clear-btn:active,
 .help-btn:active,
@@ -173,7 +173,7 @@
 }
 
 /* 信息卡片 */
-.info-card,
+.r6-profile-card,
 .stat-box,
 .timeline-content,
 .review-hint-item,
@@ -184,7 +184,7 @@
   box-shadow: var(--shadow-sm);
 }
 
-.info-card {
+.r6-profile-card {
   margin: 8rpx 30rpx;
   padding: 24rpx 32rpx;
 }
@@ -690,3 +690,8 @@
 .feedback-btn-text {
   font-size: 28rpx;
 }
+
+/* ===== R6.1 profile markers ===== */
+.r6-profile-stat-strip { /* R6.1 binding */ }
+.r6-profile-row-list { /* R6.1 binding */ }
+.r6-profile-row { /* R6.1 binding */ }

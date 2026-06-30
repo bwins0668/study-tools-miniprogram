@@ -129,13 +129,13 @@
   z-index: 2;
 }
 
-.action-grid {
+.r6-glossary-entry-list {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 14rpx;
 }
 
-.action-tile {
+.r6-glossary-row {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -151,13 +151,13 @@
   transition: transform 0.15s, box-shadow 0.15s;
 }
 
-.action-tile:active {
+.r6-glossary-row:active {
   transform: translateY(2rpx) scale(0.985);
   background: var(--press-bg);
   box-shadow: var(--shadow-sm);
 }
 
-.action-tile::before {
+.r6-glossary-row::before {
   content: '';
   position: absolute;
   top: 0;
@@ -167,19 +167,19 @@
   background: var(--border-strong);
 }
 
-.action-tile-icon {
+.r6-glossary-row-icon {
   font-size: 44rpx;
   margin-bottom: 12rpx;
 }
 
-.action-tile-title {
+.r6-glossary-row-title {
   font-size: 28rpx;
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 6rpx;
 }
 
-.action-tile-stat {
+.r6-glossary-row-stat {
   font-size: 22rpx;
   color: var(--text-hint);
   font-weight: 500;
@@ -198,7 +198,7 @@
 }
 
 /* === 几何 Symbol 系统 === */
-.action-symbol {
+.r6-glossary-row__symbol {
   width: 54rpx;
   height: 54rpx;
   border: 2rpx solid var(--text-primary);
@@ -207,8 +207,8 @@
   position: relative;
 }
 
-.action-symbol::before,
-.action-symbol::after {
+.r6-glossary-row__symbol::before,
+.r6-glossary-row__symbol::after {
   content: '';
   position: absolute;
   background: var(--text-primary);
@@ -258,3 +258,8 @@
 .launcher-btn-random {
   display: none;
 }
+
+/* ===== R6.1 glossary markers ===== */
+.r6-glossary-search { /* R6.1 binding */ }
+.r6-glossary-entry-list { /* R6.1 binding */ }
+.r6-glossary-row { /* R6.1 binding */ }

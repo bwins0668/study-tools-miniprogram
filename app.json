@@ -129,6 +129,7 @@
     "backgroundColor": "@bgColor"
   },
   "tabBar": {
+    "custom": true,
     "color": "@tabColor",
     "selectedColor": "@tabSelectedColor",
     "backgroundColor": "@tabBgColor",

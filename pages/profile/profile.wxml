@@ -1,7 +1,7 @@
 <!--pages/profile/profile.wxml-->
-<view class="container {{__themeDark ? 'dark-theme' : ''}}">
+<view data-r6-active-tab="profile" class="container {{__themeDark ? 'dark-theme' : ''}}">
   <!-- 头部 -->
-  <view class="profile-header">
+  <view class="r6-profile-head">
     <view class="avatar-placeholder">
       <view class="avatar-symbol"></view>
     </view>
@@ -17,15 +17,15 @@
   </view>
 
   <!-- 基础统计 -->
-  <view class="stats-section">
+  <view class="stats-section r6-profile-row-list">
     <text class="section-title">基础信息</text>
-    <view class="info-card">
+    <view class="r6-profile-card r6-profile-row">
       <view class="info-row">
         <text class="info-label">已收藏术语</text>
         <text class="info-value info-highlight">{{favoriteCount}}</text>
       </view>
     </view>
-    <view class="info-card">
+    <view class="r6-profile-card r6-profile-row">
       <view class="info-row">
         <text class="info-label">错题数量</text>
         <text class="info-value info-highlight">{{wrongQuestionCount}}</text>
@@ -37,17 +37,17 @@
   <view class="section-divider"></view>
 
   <!-- 学习状态 -->
-  <view class="stats-section" wx:if="{{learningStatus}}">
+  <view class="stats-section r6-profile-row-list" wx:if="{{learningStatus}}">
     <text class="section-title">学习状态</text>
-    <view class="info-card status-card">
+    <view class="r6-profile-card r6-profile-row status-card">
       <text class="status-text">{{learningStatus}}</text>
     </view>
   </view>
 
   <!-- 新用户欢迎引导 (Round 3.21) -->
-  <view class="stats-section" wx:if="{{isNewUser}}">
+  <view class="stats-section r6-profile-row-list" wx:if="{{isNewUser}}">
     <text class="section-title">开始学习</text>
-    <view class="info-card welcome-card">
+    <view class="r6-profile-card r6-profile-row welcome-card">
       <view class="welcome-symbol"></view>
       <text class="welcome-title">还没有练习记录</text>
       <text class="welcome-desc">从首页选择 IT Passport 或 SG 方向开始练习，也可以先浏览术语表了解考试词汇。遇到重要术语可以先收藏，答错的题目会自动收录到错题本。</text>
@@ -55,9 +55,9 @@
   </view>
 
   <!-- 做题统计 -->
-  <view class="stats-section">
+  <view class="stats-section r6-profile-row-list">
     <text class="section-title">做题统计</text>
-    <view class="stats-grid">
+    <view class="stats-grid r6-profile-stat-strip">
       <view class="stat-box">
         <text class="stat-value">{{totalAttempts}}</text>
         <text class="stat-label">总答题</text>
@@ -75,7 +75,7 @@
         <text class="stat-label">正确率</text>
       </view>
     </view>
-    <view class="info-card">
+    <view class="r6-profile-card r6-profile-row">
       <view class="info-row">
         <text class="info-label">今日答题</text>
         <text class="info-value">{{todayTotal}}</text>
@@ -88,7 +88,7 @@
   </view>
 
   <!-- 复习建议 (Round 3.21) -->
-  <view class="stats-section">
+  <view class="stats-section r6-profile-row-list">
     <text class="section-title">复习建议</text>
     <view class="review-hint-list">
       <view class="review-hint-item review-hint-{{item.type}}" wx:for="{{reviewHints}}" wx:key="*this">
@@ -99,9 +99,9 @@
   </view>
 
   <!-- 最近练习摘要 -->
-  <view class="stats-section" wx:if="{{lastPracticeTime}}">
+  <view class="stats-section r6-profile-row-list" wx:if="{{lastPracticeTime}}">
     <text class="section-title">最近练习</text>
-    <view class="info-card">
+    <view class="r6-profile-card r6-profile-row">
       <view class="info-row">
         <text class="info-label">练习时间</text>
         <text class="info-value">{{lastPracticeTime}}</text>
@@ -122,10 +122,10 @@
   </view>
 
   <!-- 最近练习时间线 -->
-  <view class="stats-section">
+  <view class="stats-section r6-profile-row-list">
     <text class="section-title">练习时间线</text>
     <view wx:if="{{!hasRecentAttempts}}">
-      <view class="info-card empty-card">
+      <view class="r6-profile-card r6-profile-row empty-card">
         <text class="empty-hint">暂无练习记录，完成一次练习后会显示在这里</text>
       </view>
     </view>
@@ -144,40 +144,40 @@
   </view>
 
   <!-- 分类正确率 -->
-  <view class="stats-section">
+  <view class="stats-section r6-profile-row-list">
     <text class="section-title">分类正确率</text>
-    <view class="info-card">
+    <view class="r6-profile-card r6-profile-row">
       <view class="info-row">
         <text class="info-label">IT Passport</text>
         <text class="info-value">{{itpassAccuracy}}%</text>
       </view>
     </view>
-    <view class="info-card">
+    <view class="r6-profile-card r6-profile-row">
       <view class="info-row">
         <text class="info-label">SG</text>
         <text class="info-value">{{sgAccuracy}}%</text>
       </view>
     </view>
     <!-- 科目对比洞察 (Round 3.21) -->
-    <view class="info-card subject-compare-card" wx:if="{{subjectComparison.hasData}}">
+    <view class="r6-profile-card r6-profile-row subject-compare-card" wx:if="{{subjectComparison.hasData}}">
       <view class="subject-compare-row">
         <view class="subject-compare-symbol"></view>
         <text class="subject-compare-text">{{subjectComparison.text}}</text>
       </view>
     </view>
-    <view class="info-card subject-compare-card subject-compare-empty" wx:if="{{!subjectComparison.hasData}}">
+    <view class="r6-profile-card r6-profile-row subject-compare-card subject-compare-empty" wx:if="{{!subjectComparison.hasData}}">
       <view class="subject-compare-row">
         <view class="subject-compare-symbol"></view>
         <text class="subject-compare-text">{{subjectComparison.text}}</text>
       </view>
     </view>
-    <view class="info-card">
+    <view class="r6-profile-card r6-profile-row">
       <view class="info-row">
         <text class="info-label">课程练习</text>
         <text class="info-value">{{lessonAccuracy}}%</text>
       </view>
     </view>
-    <view class="info-card">
+    <view class="r6-profile-card r6-profile-row">
       <view class="info-row">
         <text class="info-label">日文真题</text>
         <text class="info-value">{{pastExamAccuracy}}%</text>
@@ -186,15 +186,15 @@
   </view>
 
   <!-- 系统信息 -->
-  <view class="stats-section">
+  <view class="stats-section r6-profile-row-list">
     <text class="section-title">系统信息</text>
-    <view class="info-card">
+    <view class="r6-profile-card r6-profile-row">
       <view class="info-row">
         <text class="info-label">数据模式</text>
         <text class="info-value">本地静态数据</text>
       </view>
     </view>
-    <view class="info-card">
+    <view class="r6-profile-card r6-profile-row">
       <view class="info-row">
         <text class="info-label">Glossary</text>
         <text class="info-value">1500 条已导入</text>
@@ -203,9 +203,9 @@
   </view>
 
   <!-- 备份数据摘要 -->
-  <view class="stats-section">
+  <view class="stats-section r6-profile-row-list">
     <text class="section-title">备份数据摘要</text>
-    <view class="info-card backup-summary-card">
+    <view class="r6-profile-card r6-profile-row backup-summary-card">
       <view class="backup-summary-row">
         <text class="backup-summary-label">收藏术语</text>
         <text class="backup-summary-value">{{backupSummary.favoriteCount}} 条</text>
@@ -228,14 +228,14 @@
         <text class="backup-summary-value">{{backupTime}}</text>
       </view>
     </view>
-    <view wx:if="{{!backupSummary.hasData}}" class="info-card empty-card">
+    <view wx:if="{{!backupSummary.hasData}}" class="r6-profile-card r6-profile-row empty-card">
       <text class="empty-hint">暂无本地学习数据，开始练习后会自动在此显示</text>
     </view>
     <text class="backup-local-notice">数据仅保存在本机，需用户主动复制备份。请定期使用下方"复制备份数据"保存学习进度，建议粘贴保存到安全位置。</text>
   </view>
 
   <!-- 本地数据管理 -->
-  <view class="stats-section">
+  <view class="stats-section r6-profile-row-list">
     <text class="section-title">本地数据管理</text>
     <view class="backup-btn-group">
       <view class="backup-btn backup-btn-primary" bindtap="copyBackup">
@@ -255,9 +255,9 @@
   </view>
 
   <!-- R3.73 使用帮助 -->
-  <view class="stats-section">
+  <view class="stats-section r6-profile-row-list">
     <text class="section-title">使用帮助</text>
-    <view class="info-card">
+    <view class="r6-profile-card r6-profile-row">
       <view class="help-btn" bindtap="showHelp">
         <view class="help-btn-symbol"></view>
         <text class="help-btn-text">查看使用帮助</text>
@@ -266,9 +266,9 @@
   </view>
 
   <!-- R3.78 页面浏览次数 -->
-  <view class="stats-section">
+  <view class="stats-section r6-profile-row-list">
     <text class="section-title">页面统计</text>
-    <view class="info-card">
+    <view class="r6-profile-card r6-profile-row">
       <view class="info-row">
         <text class="info-label">本页访问次数</text>
         <text class="info-value">{{viewCount}}</text>
@@ -277,9 +277,9 @@
   </view>
 
   <!-- R3.74 联系反馈 -->
-  <view class="stats-section">
+  <view class="stats-section r6-profile-row-list">
     <text class="section-title">联系反馈</text>
-    <view class="info-card">
+    <view class="r6-profile-card r6-profile-row">
       <view class="feedback-btn" bindtap="showFeedback">
         <view class="feedback-btn-symbol"></view>
         <text class="feedback-btn-text">意见反馈</text>
@@ -288,9 +288,9 @@
   </view>
 
   <!-- 本地版说明 -->
-  <view class="stats-section">
+  <view class="stats-section r6-profile-row-list">
     <text class="section-title">关于本应用</text>
-    <view class="info-card">
+    <view class="r6-profile-card r6-profile-row">
       <text class="local-notice-text">当前版本为本地学习版，不含登录和云同步。收藏、错题和学习记录仅保存在本机。请定期使用"复制备份数据"保存学习进度，剪贴板仅用于用户主动备份/恢复本地数据。</text>
       <!-- R3.68 版本更新说明 -->
       <text class="update-notice">功能持续更新中，可通过 Git 仓库查看最新版本和更新日志。</text>
