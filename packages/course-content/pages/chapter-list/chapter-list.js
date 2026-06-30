@@ -1,6 +1,5 @@
-// packages/course-content/pages/chapter-list/chapter-list.js
-// Lazy textbook chapter directory. Detailed unit data stays in this subpackage.
 var manifest = require('../../data/manifest');
+var model = require('./chapter-list-model');
 
 Page({
   data: {
@@ -8,6 +7,8 @@ Page({
     courseName: '',
     sourceTitle: '',
     chapters: [],
+    expandedGroupIds: [],
+    showBulkControls: false,
     notFound: false,
     __themeDark: false
   },
@@ -20,11 +21,15 @@ Page({
       this.setData({ courseId: courseId, notFound: true });
       return;
     }
+    var expandedGroupIds = model.resolveInitialExpandedState(options, course.chapters);
+    var chapters = model.decorateChapters(course.chapters, expandedGroupIds);
     this.setData({
       courseId: courseId,
       courseName: course.courseName,
       sourceTitle: course.sourceTitle,
-      chapters: course.chapters,
+      chapters: chapters,
+      expandedGroupIds: expandedGroupIds,
+      showBulkControls: (course.chapters || []).length >= 1,
       notFound: false
     });
   },
@@ -33,23 +38,33 @@ Page({
     this._applyTheme();
   },
 
+  toggleGroup: function (e) {
+    var groupId = e.currentTarget && e.currentTarget.dataset && e.currentTarget.dataset.groupId;
+    if (!groupId) return;
+    var next = model.toggleGroup(this.data.expandedGroupIds, groupId, this.data.chapters);
+    this.setData({
+      expandedGroupIds: next,
+      chapters: model.decorateChapters(this.data.chapters, next)
+    });
+  },
+
+  expandAllGroups: function () {
+    var next = model.expandAll(this.data.chapters);
+    this.setData({ expandedGroupIds: next, chapters: model.decorateChapters(this.data.chapters, next) });
+  },
+
+  collapseAllGroups: function () {
+    var next = model.collapseAll();
+    this.setData({ expandedGroupIds: next, chapters: model.decorateChapters(this.data.chapters, next) });
+  },
+
   openUnit: function (e) {
     var unitId = e.currentTarget && e.currentTarget.dataset && e.currentTarget.dataset.unitId;
     if (!unitId) return;
     wx.navigateTo({
-      url: '/packages/course-content/pages/unit-detail/unit-detail?courseId=' +
-        this.data.courseId + '&unitId=' + unitId,
+      url: '/packages/course-content/pages/unit-detail/unit-detail?courseId=' + this.data.courseId + '&unitId=' + unitId,
       fail: function () { wx.showToast({ title: '教材章节暂时无法打开', icon: 'none' }); }
     });
-  },
-
-  goBack: function () {
-    var pages = getCurrentPages();
-    if (pages && pages.length > 1) {
-      wx.navigateBack({ fail: function () { wx.switchTab({ url: '/pages/home/home' }); } });
-    } else {
-      wx.switchTab({ url: '/pages/home/home' });
-    }
   },
 
   _applyTheme: function () {
