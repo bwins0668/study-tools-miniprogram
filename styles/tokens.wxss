@@ -18,31 +18,38 @@
 /* ---- 组件上下文：令牌落在组件根节点，向组件内全部子节点继承 ---- */
 :host {
   /* colors */
-  --qp-color-canvas: #FAF9F6;
-  --qp-color-surface: #FFFFFF;
-  --qp-color-surface-muted: #F3F2EE;
+  --qp-color-canvas: #F2EDE0;
+  --qp-color-surface: #FFFDF5;
+  --qp-color-surface-muted: #F4F3EF;
+  --qp-color-fill-warm: #E8DFC8;
 
-  --qp-color-ink: #252525;
-  --qp-color-text-secondary: #74736F;
-  --qp-color-text-tertiary: #A3A19B;
+  --qp-color-ink: #1A1410;
+  --qp-color-text-secondary: #6F6B65;
+  --qp-color-text-tertiary: #8A7060;
+  --qp-color-text-quaternary: #8A8680;
+  --qp-color-text-ghost: #C9C4BD;
+  --qp-color-text-phantom: #D8CEB8;
 
-  --qp-color-line: #E7E5DF;
-  --qp-color-line-strong: #D6D3CC;
+  --qp-color-line: rgba(33,31,28,.08);
+  --qp-color-line-strong: rgba(33,31,28,.14);
 
   --qp-color-primary: #37418A;
-  --qp-color-primary-pressed: #2E376F;
-  --qp-color-primary-soft: #EEF0FA;
+  --qp-color-primary-pressed: #2C3676;
+  --qp-color-primary-soft: #ECEEF6;
+  --qp-color-editorial: #C5123A;
 
   --qp-color-success: #4E8A5E;
-  --qp-color-success-soft: #EDF5EF;
+  --qp-color-success-soft: #EAF1EC;
 
   --qp-color-danger: #BE5750;
-  --qp-color-danger-soft: #FBEFEE;
+  --qp-color-danger-soft: #F7ECEB;
+  --qp-color-warning-soft: #FBF1E9;
 
-  --qp-color-disabled-bg: #EEEDE8;
-  --qp-color-disabled-text: #AAA8A1;
+  --qp-color-disabled-bg: rgba(33,31,28,.10);
+  --qp-color-disabled-text: #C9C4BD;
 
   /* typography */
+  --qp-font-size-masthead: 68rpx;      /* 34px */
   --qp-font-size-display: 80rpx;       /* 40px */
   --qp-font-size-page-title: 56rpx;    /* 28px */
   --qp-font-size-section-title: 34rpx; /* 17px */
@@ -67,9 +74,10 @@
   --qp-space-8: 64rpx;
 
   /* shape and control */
-  --qp-radius-sm: 8rpx;
-  --qp-radius-md: 16rpx;
-  --qp-radius-lg: 20rpx;
+  --qp-radius-tag: 10rpx;
+  --qp-radius-sm: 20rpx;
+  --qp-radius-md: 24rpx;
+  --qp-radius-lg: 32rpx;
   --qp-border-width: 2rpx;
   --qp-control-height: 88rpx;
 
@@ -80,31 +88,38 @@
 /* ---- 页面上下文：供 P1+ 页面级采纳；本轮无页面引用 ---- */
 page {
   /* colors */
-  --qp-color-canvas: #FAF9F6;
-  --qp-color-surface: #FFFFFF;
-  --qp-color-surface-muted: #F3F2EE;
+  --qp-color-canvas: #F2EDE0;
+  --qp-color-surface: #FFFDF5;
+  --qp-color-surface-muted: #F4F3EF;
+  --qp-color-fill-warm: #E8DFC8;
 
-  --qp-color-ink: #252525;
-  --qp-color-text-secondary: #74736F;
-  --qp-color-text-tertiary: #A3A19B;
+  --qp-color-ink: #1A1410;
+  --qp-color-text-secondary: #6F6B65;
+  --qp-color-text-tertiary: #8A7060;
+  --qp-color-text-quaternary: #8A8680;
+  --qp-color-text-ghost: #C9C4BD;
+  --qp-color-text-phantom: #D8CEB8;
 
-  --qp-color-line: #E7E5DF;
-  --qp-color-line-strong: #D6D3CC;
+  --qp-color-line: rgba(33,31,28,.08);
+  --qp-color-line-strong: rgba(33,31,28,.14);
 
   --qp-color-primary: #37418A;
-  --qp-color-primary-pressed: #2E376F;
-  --qp-color-primary-soft: #EEF0FA;
+  --qp-color-primary-pressed: #2C3676;
+  --qp-color-primary-soft: #ECEEF6;
+  --qp-color-editorial: #C5123A;
 
   --qp-color-success: #4E8A5E;
-  --qp-color-success-soft: #EDF5EF;
+  --qp-color-success-soft: #EAF1EC;
 
   --qp-color-danger: #BE5750;
-  --qp-color-danger-soft: #FBEFEE;
+  --qp-color-danger-soft: #F7ECEB;
+  --qp-color-warning-soft: #FBF1E9;
 
-  --qp-color-disabled-bg: #EEEDE8;
-  --qp-color-disabled-text: #AAA8A1;
+  --qp-color-disabled-bg: rgba(33,31,28,.10);
+  --qp-color-disabled-text: #C9C4BD;
 
   /* typography */
+  --qp-font-size-masthead: 68rpx;      /* 34px */
   --qp-font-size-display: 80rpx;       /* 40px */
   --qp-font-size-page-title: 56rpx;    /* 28px */
   --qp-font-size-section-title: 34rpx; /* 17px */
@@ -129,9 +144,10 @@ page {
   --qp-space-8: 64rpx;
 
   /* shape and control */
-  --qp-radius-sm: 8rpx;
-  --qp-radius-md: 16rpx;
-  --qp-radius-lg: 20rpx;
+  --qp-radius-tag: 10rpx;
+  --qp-radius-sm: 20rpx;
+  --qp-radius-md: 24rpx;
+  --qp-radius-lg: 32rpx;
   --qp-border-width: 2rpx;
   --qp-control-height: 88rpx;
 

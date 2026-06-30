@@ -1,5 +1,16 @@
 <!--pages/home/home.wxml · Course Center landing page-->
 <view class="cc-home {{__themeDark ? 'dark-theme' : ''}}" style="padding-top: {{navSafeTop}}px;">
+  <view class="cc-mast">
+    <view>
+      <text class="cc-mast__kicker">コース · 学習</text>
+      <text class="cc-mast__title">课程</text>
+    </view>
+    <text class="cc-mast__meta" wx:if="{{streakCount > 0}}">连续 {{streakCount}} 天</text>
+  </view>
+  <view class="cc-rule">
+    <view class="cc-rule__accent"></view>
+    <view class="cc-rule__line"></view>
+  </view>
 
   <!-- A. 学习状态 -->
   <view class="cc-hero">
@@ -29,7 +40,8 @@
     <view class="cc-course-list">
       <block wx:for="{{languageCourses}}" wx:key="id">
         <view class="cc-course-card {{item.availability === 'planned' ? 'cc-course-card--planned' : ''}}"
-          bindtap="goToCourse" data-course-id="{{item.id}}">
+          bindtap="goToCourse" data-course-id="{{item.id}}"
+          hover-class="home-card-pressed" hover-start-time="20" hover-stay-time="120">
           <text class="cc-course-card__name">{{item.displayName}}</text>
           <text class="cc-course-card__desc">{{item.description}}</text>
           <view class="cc-course-card__badge" wx:if="{{item.availability === 'planned'}}">
@@ -45,12 +57,14 @@
     <text class="cc-section__title">资格考试</text>
     <view class="cc-exam-list">
       <block wx:for="{{examCourses}}" wx:key="id">
-        <view wx:if="{{item.availability === 'available'}}" class="cc-exam-card" bindtap="goToCourse" data-course-id="{{item.id}}">
+        <view wx:if="{{item.availability === 'available'}}" class="cc-exam-card" bindtap="goToCourse" data-course-id="{{item.id}}"
+          hover-class="home-card-pressed" hover-start-time="20" hover-stay-time="120">
           <view class="cc-exam-card__body">
             <text class="cc-exam-card__name">{{item.displayName}}</text>
             <text class="cc-exam-card__desc">{{item.description}}</text>
           </view>
-          <view class="cc-exam-card__action" catchtap="goToPractice" data-course-id="{{item.id}}">开始刷题</view>
+          <view class="cc-exam-card__action" catchtap="goToPractice" data-course-id="{{item.id}}"
+            hover-class="home-card-pressed" hover-start-time="20" hover-stay-time="120">开始刷题</view>
         </view>
         <view wx:else class="cc-exam-card cc-exam-card--muted">
           <view class="cc-exam-card__body">

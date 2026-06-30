@@ -9,36 +9,36 @@
 /* ---- 1. Design tokens ---- */
 page {
   /* Color tokens */
-  --bg-color: #f4f6f8;
-  --bg-surface: #f9fafb;
-  --card-bg: #ffffff;
-  --card-bg-elevated: #ffffff;
-  --text-primary: #111827;
-  --text-secondary: #4b5563;
-  --text-hint: #8a94a3;
-  --text-inverse: #ffffff;
-  --border-color: #d9dee6;
-  --border-strong: #b8c0cc;
-  --divider-color: #e7ebf0;
-  --press-bg: #eef2f6;
-  --active-bg: #e8eef5;
-  --disabled-bg: #eef1f4;
-  --disabled-text: #a6afbb;
+  --bg-color: #F2EDE0;
+  --bg-surface: #F4F3EF;
+  --card-bg: #FFFDF5;
+  --card-bg-elevated: #FFFDF5;
+  --text-primary: #1A1410;
+  --text-secondary: #6F6B65;
+  --text-hint: #8A7060;
+  --text-inverse: #FFFDF5;
+  --border-color: rgba(33,31,28,.08);
+  --border-strong: rgba(33,31,28,.14);
+  --divider-color: rgba(33,31,28,.08);
+  --press-bg: #E8DFC8;
+  --active-bg: rgba(55,65,138,.05);
+  --disabled-bg: rgba(33,31,28,.10);
+  --disabled-text: #C9C4BD;
 
   /* Accent tokens: cold, quiet, low saturation */
-  --primary-color: #3b82f6;
-  --primary-light: #e8f1ff;
-  --primary-dark: #1f2937;
-  --accent-ice: #8fb7e8;
-  --accent-ink: #0f172a;
-  --color-success: #5f7f6a;
-  --color-success-light: #edf3ef;
-  --color-warning: #8b7b5d;
-  --color-warning-light: #f2eee5;
-  --color-error: #8a5f64;
-  --color-error-light: #f3ecee;
-  --color-info: #5e748f;
-  --color-info-light: #edf2f7;
+  --primary-color: #37418A;
+  --primary-light: #ECEEF6;
+  --primary-dark: #2C3676;
+  --accent-ice: #ECEEF6;
+  --accent-ink: #1A1410;
+  --color-success: #4E8A5E;
+  --color-success-light: #EAF1EC;
+  --color-warning: #8A7060;
+  --color-warning-light: #FBF1E9;
+  --color-error: #BE5750;
+  --color-error-light: #F7ECEB;
+  --color-info: #37418A;
+  --color-info-light: #ECEEF6;
 
   /* Legacy semantic hooks kept monochrome for existing pages */
   --color-itpass: #516376;

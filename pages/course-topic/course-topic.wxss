@@ -19,7 +19,7 @@
 }
 .ct-head__title {
   display: block; margin-top: 6rpx; font-size: 40rpx; font-weight: var(--qp-font-weight-semibold);
-  letter-spacing: -0.5rpx; color: var(--qp-color-ink);
+  letter-spacing: 0; color: var(--qp-color-ink);
 }
 .ct-head__ja {
   display: block; margin-top: 4rpx; font-size: var(--qp-font-size-body);
@@ -37,7 +37,7 @@
   text-align: center; padding: 18rpx 0; border-radius: var(--qp-radius-md);
   font-size: 28rpx; font-weight: var(--qp-font-weight-semibold); line-height: 1.4;
 }
-.ct-btn--primary { background-color: var(--qp-color-primary); color: #fff; }
+.ct-btn--primary { background-color: var(--qp-color-primary); color: var(--qp-color-surface); }
 .ct-btn--outline { background-color: transparent; border: var(--qp-border-width) solid var(--qp-color-line-strong); color: var(--qp-color-ink); }
 
 .ct-pending {

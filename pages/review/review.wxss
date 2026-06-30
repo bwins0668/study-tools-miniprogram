@@ -10,21 +10,51 @@
 }
 
 .review-head {
-  margin-bottom: 32rpx;
+  margin-bottom: 20rpx;
+}
+
+.review-head__kicker {
+  display: block;
+  margin-bottom: 8rpx;
+  font-family: var(--qp-font-family-data);
+  font-size: 20rpx;
+  font-weight: 700;
+  color: var(--qp-color-editorial);
+  letter-spacing: 0;
 }
 
 .review-head__title {
   display: block;
-  font-size: 38rpx;
-  font-weight: var(--qp-font-weight-semibold);
+  font-size: var(--qp-font-size-masthead);
+  font-weight: 800;
   color: var(--qp-color-ink);
-  letter-spacing: -0.5rpx;
+  letter-spacing: 0;
   margin-bottom: 8rpx;
+  line-height: 1;
 }
 
 .review-head__sub {
   font-size: var(--qp-font-size-body);
   color: var(--qp-color-text-secondary);
+}
+
+.review-rule {
+  display: flex;
+  align-items: center;
+  margin-bottom: 28rpx;
+}
+
+.review-rule view {
+  width: 60rpx;
+  height: 4rpx;
+  background: var(--qp-color-primary);
+}
+
+.review-rule text {
+  flex: 1;
+  height: 2rpx;
+  background: var(--qp-color-ink);
+  opacity: 0.72;
 }
 
 .review-section {

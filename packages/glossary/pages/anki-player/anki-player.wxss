@@ -1,3 +1,5 @@
+@import "../../../../styles/tokens.wxss";
+
 /* anki-player.wxss — monochrome flashcard review */
 
 page { overflow: hidden; }
@@ -386,4 +388,89 @@ page { overflow: hidden; }
   top: 22rpx; bottom: 22rpx; left: 39rpx;
   width: 3rpx;
   background: var(--text-hint);
+}
+
+/* ===== R6 Quiet Paper shell ===== */
+.anki-page {
+  background: var(--qp-color-canvas);
+  color: var(--qp-color-ink);
+  letter-spacing: 0;
+}
+
+.anki-page .anki-info-value,
+.anki-page .card-term,
+.anki-page .card-zh,
+.anki-page .summary-title,
+.anki-page .summary-value,
+.anki-page .empty-text {
+  color: var(--qp-color-ink);
+}
+
+.anki-page .anki-info-label,
+.anki-page .card-ja-reading,
+.anki-page .card-hint,
+.anki-page .card-ja,
+.anki-page .summary-label,
+.anki-page .empty-hint,
+.anki-page .loading-text,
+.anki-page .error-text {
+  color: var(--qp-color-text-secondary);
+}
+
+.anki-page .card-front,
+.anki-page .card-back,
+.anki-page .summary-card,
+.anki-page .empty-section,
+.anki-page .loading-section,
+.anki-page .error-section,
+.anki-page .action-bar {
+  background: var(--qp-color-surface);
+  border: var(--qp-border-width) solid var(--qp-color-line);
+  box-shadow: none;
+}
+
+.anki-page .card-front::before,
+.anki-page .card-back::before {
+  background: var(--qp-color-editorial);
+}
+
+.anki-page .card-category-tag,
+.anki-page .card-index-badge,
+.anki-page .card-loop-badge,
+.anki-page .card-hint,
+.anki-page .card-ja,
+.anki-page .summary-item,
+.anki-page .anki-filter-tag {
+  background: var(--qp-color-surface-muted);
+  border-color: var(--qp-color-line);
+}
+
+.anki-page .anki-progress-fill,
+.anki-page .summary-btn-primary,
+.anki-page .empty-btn,
+.anki-page .error-btn {
+  background: var(--qp-color-primary);
+  border-color: var(--qp-color-primary);
+  box-shadow: none;
+}
+
+.anki-page .action-btn-forgot {
+  background: var(--qp-color-danger-soft);
+  border-color: var(--qp-color-line-strong);
+}
+
+.anki-page .action-btn-mastered {
+  background: var(--qp-color-success-soft);
+  border-color: var(--qp-color-line-strong);
+}
+
+.anki-page .action-btn-forgot .action-btn-icon,
+.anki-page .action-btn-forgot .action-btn-label {
+  color: var(--qp-color-danger);
+}
+
+.anki-page .action-btn-mastered .action-btn-icon,
+.anki-page .action-btn-mastered .action-btn-label,
+.anki-page .summary-value-green {
+  color: var(--qp-color-success);
 }

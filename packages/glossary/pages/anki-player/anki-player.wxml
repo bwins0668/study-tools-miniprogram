@@ -1,4 +1,4 @@
-<view class="container">
+<view class="container anki-page {{__themeDark ? 'dark-theme' : ''}}">
   <!-- 加载状态 -->
   <view class="loading-section" wx:if="{{isLoading}}">
     <view class="loading-symbol"></view>

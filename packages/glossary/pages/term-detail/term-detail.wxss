@@ -1,3 +1,5 @@
+@import "../../../../styles/tokens.wxss";
+
 /* packages/glossary/pages/term-detail/term-detail.wxss — monochrome term detail */
 
 .page {
@@ -299,4 +301,69 @@
 .note-save-text {
   font-size: 26rpx;
   color: var(--text-inverse);
+}
+
+/* ===== R6 Quiet Paper shell ===== */
+.term-detail {
+  background: var(--qp-color-canvas);
+  color: var(--qp-color-ink);
+  letter-spacing: 0;
+}
+
+.term-detail .back-nav {
+  margin-top: var(--qp-space-3);
+}
+
+.term-detail .card,
+.term-detail .favorite-btn {
+  background: var(--qp-color-surface);
+  border: var(--qp-border-width) solid var(--qp-color-line);
+  border-radius: var(--qp-radius-lg);
+  box-shadow: none;
+}
+
+.term-detail .card:first-of-type {
+  border-top: 4rpx solid var(--qp-color-editorial);
+}
+
+.term-detail .term-main {
+  font-size: var(--qp-font-size-page-title);
+  font-weight: var(--qp-font-weight-semibold);
+  color: var(--qp-color-ink);
+}
+
+.term-detail .section-title,
+.term-detail .favorite-text,
+.term-detail .related-term {
+  color: var(--qp-color-ink) !important;
+}
+
+.term-detail .back-arrow,
+.term-detail .back-text,
+.term-detail .term-line,
+.term-detail .paragraph,
+.term-detail .favorite-hint,
+.term-detail .related-trans {
+  color: var(--qp-color-text-secondary);
+}
+
+.term-detail .level,
+.term-detail .category-badge,
+.term-detail .tag,
+.term-detail .copy-term-btn,
+.term-detail .copy-example-btn,
+.term-detail .note-input {
+  background: var(--qp-color-surface-muted);
+  border-color: var(--qp-color-line);
+  border-radius: var(--qp-radius-tag);
+}
+
+.term-detail .favorite-btn-active {
+  background: var(--qp-color-primary-soft);
+  border-color: var(--qp-color-line-strong);
+}
+
+.term-detail .note-save-btn {
+  background: var(--qp-color-primary);
+  border-color: var(--qp-color-primary);
 }

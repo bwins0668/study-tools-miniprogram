@@ -1,9 +1,11 @@
 <!--pages/review/review.wxml-->
 <view class="review-page">
   <view class="review-head">
+    <text class="review-head__kicker">REVIEW · 復習</text>
     <text class="review-head__title">复习</text>
     <text class="review-head__sub">巩固薄弱点，温故知新</text>
   </view>
+  <view class="review-rule"><view></view><text></text></view>
 
   <view class="review-section">
     <text class="review-section__title">今日复习</text>

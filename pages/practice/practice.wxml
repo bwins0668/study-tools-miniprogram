@@ -1,9 +1,11 @@
 <!--pages/practice/practice.wxml-->
 <view class="practice-page">
   <view class="practice-head">
+    <text class="practice-head__kicker">DRILL · 刷题</text>
     <text class="practice-head__title">刷题</text>
     <text class="practice-head__sub">选择考试方向，快速开始练习</text>
   </view>
+  <view class="practice-rule"><view></view><text></text></view>
 
   <view class="practice-continue" wx:if="{{hasLastAttempt}}">
     <view class="practice-card practice-card--continue" bindtap="continueLast">

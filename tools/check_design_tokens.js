@@ -3,7 +3,7 @@
 
 /*
  * tools/check_design_tokens.js
- * Quiet Paper · UI Freeze v1.0 · P0 设计令牌与基础组件静态契约检查。
+ * Quiet Paper · R6 · P0 设计令牌与基础组件静态契约检查。
  *
  * 不执行小程序代码、不做真机/渲染验收，只做以下静态校验：
  *   1. styles/tokens.wxss 内权威 --qp-* 令牌全部存在且取值精确匹配；
@@ -27,29 +27,36 @@ var ROOT = path.resolve(__dirname, '..');
 var TOKENS_REL = 'styles/tokens.wxss';
 
 /* -------------------------------------------------------------------------
- * 权威令牌清单（UI Freeze v1.0 唯一真源；取值由用户明确确认，非从 PDF 推测）。
+ * 权威令牌清单（R6 Claude Design 交接包真源；取值来自本轮设计交接）。
  * 顺序无关；校验按"名 → 值"精确匹配。
  * ------------------------------------------------------------------------- */
 var AUTHORITATIVE_TOKENS = {
   // colors
-  '--qp-color-canvas': '#FAF9F6',
-  '--qp-color-surface': '#FFFFFF',
-  '--qp-color-surface-muted': '#F3F2EE',
-  '--qp-color-ink': '#252525',
-  '--qp-color-text-secondary': '#74736F',
-  '--qp-color-text-tertiary': '#A3A19B',
-  '--qp-color-line': '#E7E5DF',
-  '--qp-color-line-strong': '#D6D3CC',
+  '--qp-color-canvas': '#F2EDE0',
+  '--qp-color-surface': '#FFFDF5',
+  '--qp-color-surface-muted': '#F4F3EF',
+  '--qp-color-fill-warm': '#E8DFC8',
+  '--qp-color-ink': '#1A1410',
+  '--qp-color-text-secondary': '#6F6B65',
+  '--qp-color-text-tertiary': '#8A7060',
+  '--qp-color-text-quaternary': '#8A8680',
+  '--qp-color-text-ghost': '#C9C4BD',
+  '--qp-color-text-phantom': '#D8CEB8',
+  '--qp-color-line': 'rgba(33,31,28,.08)',
+  '--qp-color-line-strong': 'rgba(33,31,28,.14)',
   '--qp-color-primary': '#37418A',
-  '--qp-color-primary-pressed': '#2E376F',
-  '--qp-color-primary-soft': '#EEF0FA',
+  '--qp-color-primary-pressed': '#2C3676',
+  '--qp-color-primary-soft': '#ECEEF6',
+  '--qp-color-editorial': '#C5123A',
   '--qp-color-success': '#4E8A5E',
-  '--qp-color-success-soft': '#EDF5EF',
+  '--qp-color-success-soft': '#EAF1EC',
   '--qp-color-danger': '#BE5750',
-  '--qp-color-danger-soft': '#FBEFEE',
-  '--qp-color-disabled-bg': '#EEEDE8',
-  '--qp-color-disabled-text': '#AAA8A1',
+  '--qp-color-danger-soft': '#F7ECEB',
+  '--qp-color-warning-soft': '#FBF1E9',
+  '--qp-color-disabled-bg': 'rgba(33,31,28,.10)',
+  '--qp-color-disabled-text': '#C9C4BD',
   // typography
+  '--qp-font-size-masthead': '68rpx',
   '--qp-font-size-display': '80rpx',
   '--qp-font-size-page-title': '56rpx',
   '--qp-font-size-section-title': '34rpx',
@@ -70,9 +77,10 @@ var AUTHORITATIVE_TOKENS = {
   '--qp-space-6': '48rpx',
   '--qp-space-8': '64rpx',
   // shape and control
-  '--qp-radius-sm': '8rpx',
-  '--qp-radius-md': '16rpx',
-  '--qp-radius-lg': '20rpx',
+  '--qp-radius-tag': '10rpx',
+  '--qp-radius-sm': '20rpx',
+  '--qp-radius-md': '24rpx',
+  '--qp-radius-lg': '32rpx',
   '--qp-border-width': '2rpx',
   '--qp-control-height': '88rpx',
   // data
@@ -361,7 +369,7 @@ if (whitespaceHit.length > 0) {
 }
 
 /* ============================== 输出 ============================== */
-console.log('=== Quiet Paper · P0 Design Tokens Contract Check ===');
+console.log('=== Quiet Paper · R6 Design Tokens Contract Check ===');
 console.log('Root: ' + ROOT + '\n');
 passes.forEach(function (p) { console.log('  PASS  ' + p); });
 if (failures.length > 0) {

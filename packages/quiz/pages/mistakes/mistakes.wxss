@@ -1,3 +1,5 @@
+@import "../../../../styles/tokens.wxss";
+
 /* pages/mistakes/mistakes.wxss — monochrome quiz mistakes */
 
 /* ===== Container ===== */
@@ -783,4 +785,93 @@
   font-size: 32rpx;
   font-weight: 600;
   color: var(--text-inverse);
+}
+
+/* ===== R6 Quiet Paper shell ===== */
+.mistakes-page {
+  background: var(--qp-color-canvas);
+  color: var(--qp-color-ink);
+  letter-spacing: 0;
+}
+
+.mistakes-page .page-header,
+.mistakes-page .stats-card,
+.mistakes-page .wrong-card,
+.mistakes-page .review-card,
+.mistakes-page .empty-state {
+  background: var(--qp-color-surface);
+  border: var(--qp-border-width) solid var(--qp-color-line);
+  border-radius: var(--qp-radius-lg);
+  box-shadow: none;
+}
+
+.mistakes-page .page-header,
+.mistakes-page .mistake-card {
+  border-top: 4rpx solid var(--qp-color-editorial);
+}
+
+.mistakes-page .page-title {
+  font-size: var(--qp-font-size-page-title);
+  font-weight: var(--qp-font-weight-semibold);
+  color: var(--qp-color-ink);
+}
+
+.mistakes-page .page-desc,
+.mistakes-page .stats-label,
+.mistakes-page .group-label,
+.mistakes-page .priority-hint-text,
+.mistakes-page .wrong-question-ja,
+.mistakes-page .wrong-time,
+.mistakes-page .empty-hint {
+  color: var(--qp-color-text-secondary);
+}
+
+.mistakes-page .stats-value,
+.mistakes-page .group-count,
+.mistakes-page .wrong-question-zh,
+.mistakes-page .flashcard-question,
+.mistakes-page .empty-text {
+  color: var(--qp-color-ink);
+}
+
+.mistakes-page .priority-hint,
+.mistakes-page .search-bar,
+.mistakes-page .filter-tag,
+.mistakes-page .mode-switch,
+.mistakes-page .flashcard-hint,
+.mistakes-page .wrong-exam,
+.mistakes-page .wrong-source,
+.mistakes-page .wrong-explanation {
+  background: var(--qp-color-surface-muted);
+  border-color: var(--qp-color-line);
+  box-shadow: none;
+}
+
+.mistakes-page .filter-tag-active,
+.mistakes-page .mode-tab-active {
+  background: var(--qp-color-primary-soft);
+  border-color: var(--qp-color-line-strong);
+}
+
+.mistakes-page .practice-wrong-btn,
+.mistakes-page .go-study-btn {
+  background: var(--qp-color-primary);
+  border-color: var(--qp-color-primary);
+  box-shadow: none;
+}
+
+.mistakes-page .practice-wrong-btn:active,
+.mistakes-page .go-study-btn:active {
+  background: var(--qp-color-primary-pressed);
+}
+
+.mistakes-page .wrong-correct,
+.mistakes-page .flashcard-correct {
+  color: var(--qp-color-success);
+}
+
+.mistakes-page .wrong-incorrect,
+.mistakes-page .flashcard-wrong,
+.mistakes-page .action-remove .action-btn-text {
+  color: var(--qp-color-danger);
 }

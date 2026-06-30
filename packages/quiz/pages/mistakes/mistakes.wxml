@@ -1,5 +1,5 @@
 <!--pages/mistakes/mistakes.wxml-->
-<view class="container">
+<view class="container mistakes-page {{__themeDark ? 'dark-theme' : ''}}">
   <!-- 标题 -->
   <view class="page-header">
     <text class="page-title">错题本</text>
@@ -99,7 +99,7 @@
 
   <!-- ========== 列表模式 ========== -->
   <view class="wrong-list" wx:if="{{filteredList.length > 0 && viewMode === 'list'}}">
-    <view class="card wrong-card" wx:for="{{filteredList}}" wx:key="id">
+    <view class="card wrong-card mistake-card" wx:for="{{filteredList}}" wx:key="id">
       <view class="wrong-header">
         <view class="wrong-tags">
           <text class="wrong-exam">{{item.examLabel}}</text>
