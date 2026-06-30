@@ -10,7 +10,6 @@ Page({
     notFound: false, loadError: false,
     __themeDark: false
   },
-
   onLoad: function (options) {
     this._applyTheme();
     var courseId = (options && options.courseId) || '';
@@ -20,56 +19,37 @@ Page({
       this.setData({ courseId: courseId, unitId: unitId, notFound: true, loadError: true });
       return;
     }
-    var displayTerms = termResolver.resolveDisplayTerms(unit);
+    var resolved = termResolver.resolveDisplayTerms(unit);
     this.setData({
       courseId: courseId, unitId: unitId, unit: unit,
       sourceText: loader.formatPrimarySource(unit),
       sourceInfo: this._buildSourceInfo(unit),
       practiceAvailable: !!(unit.topicId && unit.relatedQuestionIds && unit.relatedQuestionIds.length),
-      displayTerms: displayTerms, notFound: false, loadError: false
+      displayTerms: resolved.terms || [], notFound: false, loadError: false
     });
   },
-
   onShow: function () { this._applyTheme(); },
-
   startPractice: function () {
     var unit = this.data.unit;
     if (!unit || !unit.topicId || !unit.relatedQuestionIds || !unit.relatedQuestionIds.length) {
       wx.showToast({ title: '本节暂无可用主题练习', icon: 'none' }); return;
     }
-    wx.navigateTo({
-      url: '/packages/quiz/pages/quiz/quiz?exam=' + unit.exam + '&sourceType=lesson_quiz&topicId=' + unit.topicId,
-      fail: function () { wx.showToast({ title: '练习暂时无法打开', icon: 'none' }); }
-    });
+    wx.navigateTo({ url: '/packages/quiz/pages/quiz/quiz?exam=' + unit.exam + '&sourceType=lesson_quiz&topicId=' + unit.topicId, fail: function () { wx.showToast({ title: '练习暂时无法打开', icon: 'none' }); } });
   },
-
   openTermDetail: function (event) {
     var termId = event && event.currentTarget && event.currentTarget.dataset ? event.currentTarget.dataset.termId : '';
-    var term = termId ? termResolver.getTermById(termId) : null;
-    if (term) {
-      // Try to find the canonical term in the display terms for full data
-      for (var i = 0; i < this.data.displayTerms.length; i++) {
-        if (this.data.displayTerms[i].id === termId || this.data.displayTerms[i].ja === termId) {
-          term = this.data.displayTerms[i]; break;
-        }
-      }
-      this.setData({ selectedTerm: term, termSheetVisible: true });
+    for (var i = 0; i < this.data.displayTerms.length; i++) {
+      if (this.data.displayTerms[i].id === termId) { this.setData({ selectedTerm: this.data.displayTerms[i], termSheetVisible: true }); return; }
     }
   },
-
   closeTermDetail: function () { this.setData({ selectedTerm: null, termSheetVisible: false }); },
   noop: function () {},
-
-  goBack: function () {
-    wx.navigateBack({ fail: function () { wx.switchTab({ url: '/pages/home/home' }); } });
-  },
-
+  goBack: function () { wx.navigateBack({ fail: function () { wx.switchTab({ url: '/pages/home/home' }); } }); },
   _applyTheme: function () {
     var app = getApp();
     var themeDark = !!(app && app.globalData && app.globalData.themeDark);
     if (this.data.__themeDark !== themeDark) this.setData({ __themeDark: themeDark });
   },
-
   _buildSourceInfo: function (unit) {
     var refs = (unit && unit.sourceRefs) || [];
     var ref = refs[0] || null;
