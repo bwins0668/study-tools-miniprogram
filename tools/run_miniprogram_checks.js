@@ -38,8 +38,8 @@ var LEAF_CHECKS = [
   { title: 'Textbook course fidelity', command: 'node tools/check_textbook_course_fidelity.js --all', cmd: 'node', args: ['tools/check_textbook_course_fidelity.js', '--all'] },
   { title: 'Textbook productization', command: 'node tools/check_textbook_productization.js --all', cmd: 'node', args: ['tools/check_textbook_productization.js', '--all'] },
 ];
-// Sixteen external leaf checks plus the inline JavaScript syntax leaf.
-var LEAF_TOTAL_CHECKS = 17;
+// Seventeen external leaf checks plus the inline JavaScript syntax leaf.
+var LEAF_TOTAL_CHECKS = 18;
 var TOTAL_CHECKS = 18;
 if (JSON_MODE) TOTAL_CHECKS = LEAF_TOTAL_CHECKS;
 
