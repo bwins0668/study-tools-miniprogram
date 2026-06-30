@@ -26,6 +26,31 @@ function formatLastPracticeTime(timestamp) {
   return y + '-' + (m < 10 ? '0' + m : m) + '-' + (d < 10 ? '0' + d : d);
 }
 
+// R6.3: JST Japanese era date (display only, no storage change)
+function getJSTDateString() {
+  var now = new Date();
+  var utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+  var jst = new Date(utc + (9 * 3600000));
+  var y = jst.getFullYear();
+  var m = jst.getMonth() + 1;
+  var d = jst.getDate();
+  if (y >= 2019) {
+    var reiwa = y - 2018;
+    if (y === 2019 && m < 5) return '平成31年' + m + '月' + d + '日';
+    return '令和' + reiwa + '年' + m + '月' + d + '日';
+  }
+  if (y >= 1989) { var heisei = y - 1988; return '平成' + heisei + '年' + m + '月' + d + '日'; }
+  return y + '年' + m + '月' + d + '日';
+}
+
+// R6.3: Course abbreviation map (display only)
+var COURSE_ABBR = {python:'Py', java:'Ja', algorithm:'Alg'};
+function addCourseAbbrs(courses) {
+  courses.forEach(function(c) { c.abbr = COURSE_ABBR[c.id] || (c.displayName || '').slice(0,2); });
+  return courses;
+}
+
+
 Page({
   data: {
     // Learning state
@@ -97,11 +122,16 @@ Page({
     var languageCourses = registry.getCoursesByKind('language').concat(registry.getCoursesByKind('fundamentals'));
     var examCourses = registry.getCoursesByKind('exam').concat(registry.getCoursesByKind('certification'));
 
+    // R6.3: add JST era date + course abbreviations (display only)
+    var jstDateStr = getJSTDateString();
+    var languageCoursesWithAbbr = addCourseAbbrs(languageCourses);
+
     this.setData({
       hasLastAttempt: hasLastAttempt, lastExamLabel: lastExamLabel,
       lastSourceLabel: lastSourceLabel, lastExam: lastExam, lastSourceType: lastSourceType,
       lastMetaText: lastMetaText, streakCount: streakCount,
-      languageCourses: languageCourses, examCourses: examCourses
+      languageCourses: languageCoursesWithAbbr, examCourses: examCourses,
+      jstDateStr: jstDateStr
     });
   },
 

@@ -211,3 +211,19 @@ page { background-color: var(--qp-color-canvas); }
   font-weight: var(--qp-font-weight-semibold);
   font-size: var(--qp-font-size-caption);
 }
+
+/* ===== R6.3 masthead date ===== */
+.cc-mast__right {
+  text-align: right;
+  padding-bottom: 4rpx;
+}
+.cc-mast__date {
+  display: block;
+  font-family: var(--qp-font-family-data);
+  font-size: 18rpx;
+  color: var(--qp-color-editorial);
+  font-weight: var(--qp-font-weight-semibold);
+  letter-spacing: .1em;
+  margin-bottom: 6rpx;
+}
+

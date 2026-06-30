@@ -5,7 +5,10 @@
       <text class="cc-mast__kicker">コース · 学習</text>
       <text class="cc-mast__title">课程</text>
     </view>
-    <text class="cc-mast__meta" wx:if="{{streakCount > 0}}">连续 {{streakCount}} 天</text>
+    <view class="cc-mast__right">
+      <text class="cc-mast__date" wx:if="{{jstDateStr}}">{{jstDateStr}}</text>
+      <text class="cc-mast__meta" wx:if="{{streakCount > 0}}">连续 {{streakCount}} 天</text>
+    </view>
   </view>
   <view class="cc-rule">
     <view class="cc-rule__accent"></view>
@@ -42,8 +45,8 @@
         <view class="r6-course-strip__item {{item.availability === 'planned' ? 'r6-course-strip__item--planned' : ''}}"
           bindtap="goToCourse" data-course-id="{{item.id}}"
           hover-class="r6-course-strip__item--pressed">
-          <text class="r6-course-strip__abbr">{{item.displayName[0]}}{{item.displayName[1] || ''}}</text>
-          <text class="r6-course-strip__name">{{item.displayName}}</text>
+          <view class="r6-course-strip__abbr">{{item.abbr || '--'}}</view>
+          <view class="r6-course-strip__name">{{item.displayName}}</view>
         </view>
       </block>
       <view class="r6-course-strip__badge">敬请期待</view>
