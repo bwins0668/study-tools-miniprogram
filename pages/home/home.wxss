@@ -259,7 +259,7 @@ page { background-color: var(--qp-color-canvas); }
   color: var(--qp-color-editorial);
   font-weight: var(--qp-font-weight-semibold);
   letter-spacing: .1em;
-  margin-bottom: 12rpx;
+  margin-bottom: 40rpx;
 }
 .cc-mast__streak {
   display: block;
