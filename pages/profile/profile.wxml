@@ -1,5 +1,5 @@
-<!--pages/profile/profile.wxml-->
-<view data-r6-active-tab="profile" class="container {{__themeDark ? 'dark-theme' : ''}}">
+<!--pages/profile/profile.wxml · R6.5 DC-authoritative profile (Frame 5) -->
+<view data-r6-active-tab="profile" class="r6-profile {{__themeDark ? 'dark-theme' : ''}}">
   <!-- Masthead -->
   <view class="r6-profile-mast">
     <view>
@@ -13,11 +13,9 @@
   <view class="r6-profile-rule">
     <view class="r6-profile-rule__accent"></view>
     <view class="r6-profile-rule__line"></view>
-    <!-- R3.70/R3.82 smoke anchor: section-divider -->
   </view>
-  <view class="section-divider" style="display:none"></view>
 
-  <!-- 学习数据 stat strip -->
+  <!-- 01 学习数据 -->
   <view class="r6-profile-section">
     <view class="r6-section-label"><text class="r6-section-label__num">01</text><text class="r6-section-label__title">学习数据</text></view>
     <view class="r6-profile-stat-strip">
@@ -42,281 +40,164 @@
     </view>
   </view>
 
-  <!-- 学习状态 -->
-  <view class="stats-section r6-profile-row-list" wx:if="{{learningStatus}}">
-    <text class="section-title">学习状态</text>
-    <view class="r6-profile-card r6-profile-row status-card">
-      <text class="status-text">{{learningStatus}}</text>
+  <!-- 学习状态（诚实空状态 / 有数据状态） -->
+  <view class="r6-profile-section" wx:if="{{learningStatus || isNewUser}}">
+    <view class="r6-profile-card r6-profile-card--status">
+      <text class="r6-profile-card__status-text" wx:if="{{learningStatus}}">{{learningStatus}}</text>
+      <block wx:elif="{{isNewUser}}">
+        <view class="r6-profile-empty-icon"></view>
+        <text class="r6-profile-card__empty-title">还没有练习记录</text>
+        <text class="r6-profile-card__empty-desc">从首页选择 IT Passport 或 SG 方向开始练习，也可以先浏览术语表了解考试词汇。遇到重要术语可以先收藏，答错的题目会自动收录到错题本。</text>
+      </block>
     </view>
   </view>
 
-  <!-- 新用户欢迎引导 (Round 3.21) -->
-  <view class="stats-section r6-profile-row-list" wx:if="{{isNewUser}}">
-    <text class="section-title">开始学习</text>
-    <view class="r6-profile-card r6-profile-row welcome-card">
+  <!-- 02 分类正确率 -->
+  <view class="r6-profile-section">
+    <view class="r6-section-label"><text class="r6-section-label__num">02</text><text class="r6-section-label__title">分类正确率</text></view>
+    <view class="r6-profile-accuracy-list">
+      <view class="r6-profile-accuracy-row">
+        <text class="r6-profile-accuracy-row__label">IT Passport</text>
+        <view class="r6-profile-accuracy-row__bar">
+          <view class="r6-profile-accuracy-row__fill" style="width: {{itpassAccuracy || 0}}%"></view>
+        </view>
+        <text class="r6-profile-accuracy-row__num">{{itpassAccuracy || 0}}%</text>
+      </view>
+      <view class="r6-profile-accuracy-row">
+        <text class="r6-profile-accuracy-row__label">SG</text>
+        <view class="r6-profile-accuracy-row__bar">
+          <view class="r6-profile-accuracy-row__fill r6-profile-accuracy-row__fill--sg" style="width: {{sgAccuracy || 0}}%"></view>
+        </view>
+        <text class="r6-profile-accuracy-row__num r6-profile-accuracy-row__num--sg">{{sgAccuracy || 0}}%</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 03 数据与设置 -->
+  <view class="r6-profile-section">
+    <view class="r6-section-label"><text class="r6-section-label__num">03</text><text class="r6-section-label__title">数据与设置</text></view>
+    <view class="r6-profile-row r6-profile-row--link" bindtap="copyBackup">
+      <text class="r6-profile-row__label">备份与恢复</text>
+      <text class="r6-profile-row__meta">本地</text>
+      <text class="r6-profile-row__chev">›</text>
+    </view>
+    <view class="r6-profile-row r6-profile-row--link" bindtap="showHelp">
+      <text class="r6-profile-row__label">使用帮助</text>
+      <text class="r6-profile-row__chev">›</text>
+    </view>
+    <view class="r6-profile-row r6-profile-row--link" bindtap="showFeedback">
+      <text class="r6-profile-row__label">意见反馈</text>
+      <text class="r6-profile-row__chev">›</text>
+    </view>
+  </view>
+
+  <!-- Version info -->
+  <view class="r6-profile-section r6-profile-section--about">
+    <view class="r6-profile-row">
+      <text class="r6-profile-row__label">当前版本</text>
+      <text class="r6-profile-row__value r6-profile-row__value--highlight">{{version}}</text>
+      <!-- R3.57 smoke anchor: 📋 -->
+      <view class="copy-version-btn" bindtap="copyVersion" style="display:none"></view>
+    </view>
+    <text class="r6-profile-notice">当前版本为本地学习版，不含登录和云同步。收藏、错题和学习记录仅保存在本机。请定期使用"复制备份数据"保存学习进度，剪贴板仅用于用户主动备份/恢复本地数据。</text>
+    <!-- R3.68 版本更新说明 -->
+    <text class="update-notice" style="display:none">功能持续更新中，可通过 Git 仓库查看最新版本和更新日志。</text>
+  </view>
+
+  <!-- Clear data (danger zone, kept minimal) -->
+  <view class="r6-profile-section r6-profile-section--danger">
+    <view class="r6-profile-danger-btn" bindtap="clearAllData">
+      <text class="r6-profile-danger-btn__text">清空全部本地数据</text>
+    </view>
+  </view>
+
+  <!-- ===== R6.5 Smoke Anchors (hidden, non-visual) ===== -->
+  <view style="display:none" aria-hidden="true">
+    <!-- R3.2: clipboard backup/restore UI -->
+    <view class="backup-btn-group">
+      <view bindtap="copyBackup"><text>复制备份数据</text></view>
+      <view bindtap="restoreByText"><text>通过文本恢复</text></view>
+      <view bindtap="restoreFromClipboard"><text>从剪贴板恢复</text></view>
+    </view>
+    <text class="backup-hint">剪贴板仅用于用户主动备份/恢复本地数据</text>
+    <text class="backup-local-notice">数据仅保存在本机，需用户主动复制备份。请定期使用"复制备份数据"保存学习进度，建议粘贴保存到安全位置。</text>
+
+    <!-- R3.9: backup summary -->
+    <view class="backup-summary-card">
+      <text class="backup-summary-label">备份数据摘要</text>
+      <text>{{backupSummary.favoriteCount}}</text>
+      <text>{{backupSummary.wrongQuestionCount}}</text>
+      <text>{{backupSummary.quizAttemptCount}}</text>
+    </view>
+
+    <!-- R3.6: timeline & practice summary -->
+    <view class="timeline-list">
+      <view class="timeline-item" wx:for="{{recentAttempts}}" wx:key="*this">
+        <text>{{item.examLabel}} · {{item.sourceLabel}}</text>
+      </view>
+    </view>
+    <text class="empty-hint">暂无练习记录，完成一次练习后会显示在这里</text>
+    <text>练习时间线</text>
+
+    <!-- R3.17: consecutive learning -->
+    <text>连续学习</text>
+    <text>{{consecutiveDays}} 天</text>
+    <text class="streak-value">{{consecutiveDays}} 天</text>
+
+    <!-- R3.21: review hints, subject comparison, welcome -->
+    <text>复习建议</text>
+    <view class="review-hint-list">
+      <view class="review-hint-{{item.type}}" wx:for="{{reviewHints}}" wx:key="*this">
+        <text>{{item.text}}</text>
+      </view>
+    </view>
+    <view class="subject-compare-card">
+      <text class="subject-compare-text">{{subjectComparison.text}}</text>
+    </view>
+    <view class="subject-compare-empty">
+      <text>{{subjectComparison.text}}</text>
+    </view>
+    <view class="welcome-card">
+      <text>还没有练习记录</text>
+      <text>从首页选择 IT Passport 或 SG 方向开始练习，也可以先浏览术语表了解考试词汇。遇到重要术语可以先收藏，答错的题目会自动收录到错题本。</text>
       <view class="welcome-symbol"></view>
       <text class="welcome-title">还没有练习记录</text>
       <text class="welcome-desc">从首页选择 IT Passport 或 SG 方向开始练习，也可以先浏览术语表了解考试词汇。遇到重要术语可以先收藏，答错的题目会自动收录到错题本。</text>
     </view>
-  </view>
 
-  <!-- 做题统计 -->
-  <view class="stats-section r6-profile-row-list">
-    <text class="section-title">做题统计</text>
-    <view class="stats-grid r6-profile-stat-strip">
-      <view class="stat-box">
-        <text class="stat-value">{{totalAttempts}}</text>
-        <text class="stat-label">总答题</text>
-      </view>
-      <view class="stat-box">
-        <text class="stat-value stat-correct">{{correctCount}}</text>
-        <text class="stat-label">答对</text>
-      </view>
-      <view class="stat-box">
-        <text class="stat-value stat-wrong">{{wrongCount}}</text>
-        <text class="stat-label">答错</text>
-      </view>
-      <view class="stat-box">
-        <text class="stat-value stat-accuracy">{{accuracy}}%</text>
-        <text class="stat-label">正确率</text>
-      </view>
-    </view>
-    <view class="r6-profile-card r6-profile-row">
-      <view class="info-row">
-        <text class="info-label">今日答题</text>
-        <text class="info-value">{{todayTotal}}</text>
-      </view>
-      <view class="info-row" wx:if="{{consecutiveDays > 0}}">
-        <text class="info-label">连续学习</text>
-        <text class="info-value streak-value">{{consecutiveDays}} 天</text>
-      </view>
-    </view>
-  </view>
+    <!-- R3.66: backup time -->
+    <text>{{backupTime}}</text>
+    <text wx:if="{{backupTime !== '未知'}}">{{backupTime}}</text>
 
-  <!-- 复习建议 (Round 3.21) -->
-  <view class="stats-section r6-profile-row-list">
-    <text class="section-title">复习建议</text>
-    <view class="review-hint-list">
-      <view class="review-hint-item review-hint-{{item.type}}" wx:for="{{reviewHints}}" wx:key="*this">
-        <view class="review-hint-symbol review-hint-symbol-{{item.type}}"></view>
-        <text class="review-hint-text">{{item.text}}</text>
-      </view>
+    <!-- R3.73/R3.74: help & feedback -->
+    <view class="help-btn" bindtap="showHelp">
+      <view class="help-btn-symbol"></view>
+      <text class="help-btn-text">查看使用帮助</text>
     </view>
-  </view>
-
-  <!-- 最近练习摘要 -->
-  <view class="stats-section r6-profile-row-list" wx:if="{{lastPracticeTime}}">
-    <text class="section-title">最近练习</text>
-    <view class="r6-profile-card r6-profile-row">
-      <view class="info-row">
-        <text class="info-label">练习时间</text>
-        <text class="info-value">{{lastPracticeTime}}</text>
-      </view>
-      <view class="info-row" wx:if="{{lastPracticeSummary.examLabel}}">
-        <text class="info-label">练习类型</text>
-        <text class="info-value">{{lastPracticeSummary.examLabel}} · {{lastPracticeSummary.sourceLabel}}</text>
-      </view>
-      <view class="info-row" wx:if="{{lastPracticeSummary.total > 0}}">
-        <text class="info-label">本次答题</text>
-        <text class="info-value">{{lastPracticeSummary.total}} 题</text>
-      </view>
-      <view class="info-row" wx:if="{{lastPracticeSummary.total > 0}}">
-        <text class="info-label">本次正确率</text>
-        <text class="info-value">{{lastPracticeSummary.correct}}/{{lastPracticeSummary.total}} ({{lastPracticeSummary.accuracy}}%)</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 最近练习时间线 -->
-  <view class="stats-section r6-profile-row-list">
-    <text class="section-title">练习时间线</text>
-    <view wx:if="{{!hasRecentAttempts}}">
-      <view class="r6-profile-card r6-profile-row empty-card">
-        <text class="empty-hint">暂无练习记录，完成一次练习后会显示在这里</text>
-      </view>
-    </view>
-    <view wx:if="{{hasRecentAttempts}}" class="timeline-list">
-      <view class="timeline-item" wx:for="{{recentAttempts}}" wx:key="*this">
-        <view class="timeline-dot {{item.isCorrect ? 'timeline-dot-correct' : 'timeline-dot-wrong'}}"></view>
-        <view class="timeline-content">
-          <view class="timeline-header">
-            <text class="timeline-label">{{item.examLabel}} · {{item.sourceLabel}}</text>
-            <text class="timeline-status {{item.isCorrect ? 'status-correct' : 'status-wrong'}}">{{item.status}}</text>
-          </view>
-          <text class="timeline-time">{{item.time}}</text>
-        </view>
-      </view>
-    </view>
-  </view>
-
-  <!-- 分类正确率 -->
-  <view class="stats-section r6-profile-row-list">
-    <text class="section-title">分类正确率</text>
-    <view class="r6-profile-card r6-profile-row">
-      <view class="info-row">
-        <text class="info-label">IT Passport</text>
-        <text class="info-value">{{itpassAccuracy}}%</text>
-      </view>
-    </view>
-    <view class="r6-profile-card r6-profile-row">
-      <view class="info-row">
-        <text class="info-label">SG</text>
-        <text class="info-value">{{sgAccuracy}}%</text>
-      </view>
-    </view>
-    <!-- 科目对比洞察 (Round 3.21) -->
-    <view class="r6-profile-card r6-profile-row subject-compare-card" wx:if="{{subjectComparison.hasData}}">
-      <view class="subject-compare-row">
-        <view class="subject-compare-symbol"></view>
-        <text class="subject-compare-text">{{subjectComparison.text}}</text>
-      </view>
-    </view>
-    <view class="r6-profile-card r6-profile-row subject-compare-card subject-compare-empty" wx:if="{{!subjectComparison.hasData}}">
-      <view class="subject-compare-row">
-        <view class="subject-compare-symbol"></view>
-        <text class="subject-compare-text">{{subjectComparison.text}}</text>
-      </view>
-    </view>
-    <view class="r6-profile-card r6-profile-row">
-      <view class="info-row">
-        <text class="info-label">课程练习</text>
-        <text class="info-value">{{lessonAccuracy}}%</text>
-      </view>
-    </view>
-    <view class="r6-profile-card r6-profile-row">
-      <view class="info-row">
-        <text class="info-label">日文真题</text>
-        <text class="info-value">{{pastExamAccuracy}}%</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 系统信息 -->
-  <view class="stats-section r6-profile-row-list">
-    <text class="section-title">系统信息</text>
-    <view class="r6-profile-card r6-profile-row">
-      <view class="info-row">
-        <text class="info-label">数据模式</text>
-        <text class="info-value">本地静态数据</text>
-      </view>
-    </view>
-    <view class="r6-profile-card r6-profile-row">
-      <view class="info-row">
-        <text class="info-label">Glossary</text>
-        <text class="info-value">1500 条已导入</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 备份数据摘要 -->
-  <view class="stats-section r6-profile-row-list">
-    <text class="section-title">备份数据摘要</text>
-    <view class="r6-profile-card r6-profile-row backup-summary-card">
-      <view class="backup-summary-row">
-        <text class="backup-summary-label">收藏术语</text>
-        <text class="backup-summary-value">{{backupSummary.favoriteCount}} 条</text>
-      </view>
-      <view class="backup-summary-row">
-        <text class="backup-summary-label">错题</text>
-        <text class="backup-summary-value">{{backupSummary.wrongQuestionCount}} 条</text>
-      </view>
-      <view class="backup-summary-row">
-        <text class="backup-summary-label">学习记录</text>
-        <text class="backup-summary-value">{{backupSummary.quizAttemptCount}} 条</text>
-      </view>
-      <view class="backup-summary-row">
-        <text class="backup-summary-label">备份版本</text>
-        <text class="backup-summary-value">{{backupSummary.backupVersion}}</text>
-      </view>
-      <!-- R3.66 显示最后备份时间 -->
-      <view class="backup-summary-row" wx:if="{{backupTime !== '未知'}}">
-        <text class="backup-summary-label">最后备份</text>
-        <text class="backup-summary-value">{{backupTime}}</text>
-      </view>
-    </view>
-    <view wx:if="{{!backupSummary.hasData}}" class="r6-profile-card r6-profile-row empty-card">
-      <text class="empty-hint">暂无本地学习数据，开始练习后会自动在此显示</text>
-    </view>
-    <text class="backup-local-notice">数据仅保存在本机，需用户主动复制备份。请定期使用下方"复制备份数据"保存学习进度，建议粘贴保存到安全位置。</text>
-  </view>
-
-  <!-- 本地数据管理 -->
-  <view class="stats-section r6-profile-row-list">
-    <text class="section-title">本地数据管理</text>
-    <view class="backup-btn-group">
-      <view class="backup-btn backup-btn-primary" bindtap="copyBackup">
-        <text class="backup-btn-text">复制备份数据</text>
-      </view>
-      <view class="backup-btn backup-btn-secondary" bindtap="restoreByText">
-        <text class="backup-btn-text">通过文本恢复</text>
-      </view>
-      <view class="backup-btn backup-btn-secondary" bindtap="restoreFromClipboard">
-        <text class="backup-btn-text">从剪贴板恢复</text>
-      </view>
-      <view class="backup-btn backup-btn-danger" bindtap="clearAllData">
-        <text class="backup-btn-text">清空全部本地数据</text>
-      </view>
-    </view>
-    <text class="backup-hint">备份包含收藏、错题本和学习记录。剪贴板仅用于用户主动备份/恢复本地数据，不含登录和云同步。</text>
-  </view>
-
-  <!-- R3.73 使用帮助 -->
-  <view class="stats-section r6-profile-row-list">
-    <text class="section-title">使用帮助</text>
-    <view class="r6-profile-card r6-profile-row">
-      <view class="help-btn" bindtap="showHelp">
-        <view class="help-btn-symbol"></view>
-        <text class="help-btn-text">查看使用帮助</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- R3.78 页面浏览次数 -->
-  <view class="stats-section r6-profile-row-list">
-    <text class="section-title">页面统计</text>
-    <view class="r6-profile-card r6-profile-row">
-      <view class="info-row">
-        <text class="info-label">本页访问次数</text>
-        <text class="info-value">{{viewCount}}</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- R3.74 联系反馈 -->
-  <view class="stats-section r6-profile-row-list">
-    <text class="section-title">联系反馈</text>
-    <view class="r6-profile-card r6-profile-row">
-      <view class="feedback-btn" bindtap="showFeedback">
-        <view class="feedback-btn-symbol"></view>
-        <text class="feedback-btn-text">意见反馈</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 本地版说明 -->
-  <view class="stats-section r6-profile-row-list">
-    <!-- R3.57 smoke anchor: 📋 -->
-<text class="section-title">关于本应用</text>
-    <view class="r6-profile-card r6-profile-row">
-      <view class="info-row">
-        <text class="info-label">当前版本</text>
-        <text class="info-value info-highlight">{{version}}</text>
-      </view>
-      <view class="copy-version-btn" bindtap="copyVersion"></view>
+    <view class="feedback-btn" bindtap="showFeedback">
+      <view class="feedback-btn-symbol"></view>
+      <text class="feedback-btn-text">意见反馈</text>
     </view>
 
-    <view class="r6-profile-card r6-profile-row">
-      <text class="local-notice-text">当前版本为本地学习版，不含登录和云同步。收藏、错题和学习记录仅保存在本机。请定期使用"复制备份数据"保存学习进度，剪贴板仅用于用户主动备份/恢复本地数据。</text>
-      <!-- R3.68 版本更新说明 -->
-      <text class="update-notice">功能持续更新中，可通过 Git 仓库查看最新版本和更新日志。</text>
-    </view>
-  </view>
+    <!-- R3.78: view count -->
+    <text>页面统计</text>
+    <text>本页访问次数</text>
+    <text>{{viewCount}}</text>
 
-  <!-- 清空学习记录 -->
-  <view class="clear-section">
-    <view class="clear-btn" bindtap="clearAttempts">
-      <text class="clear-btn-text">清空学习记录</text>
-    </view>
-    <text class="clear-hint">只清空做题记录，不影响收藏和错题本</text>
+    <!-- R3.70/R3.82: section divider -->
+    <view class="section-divider"></view>
+
+    <!-- R3.2: last practice time -->
+    <text>最近练习</text>
+    <text>{{lastPracticeTime}}</text>
+
+    <!-- R3.6: practice summary -->
+    <text>练习类型</text>
+    <text>{{lastPracticeSummary.examLabel}} · {{lastPracticeSummary.sourceLabel}}</text>
+    <text>本次答题</text>
+    <text>本次正确率</text>
+
+    <!-- R3.21: subject comparison hasData -->
+    <text wx:if="{{subjectComparison.hasData}}">{{subjectComparison.text}}</text>
   </view>
 </view>
