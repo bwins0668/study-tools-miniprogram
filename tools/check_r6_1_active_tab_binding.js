@@ -131,15 +131,13 @@ checkPage('Course tab', '课程', {
   wxmlRequired: [
     'data-r6-active-tab="course"',
     'r6-section-label',
-    'r6-exam-row',
+    'cc-exam-row',
     'r6-course-strip',
-    'cc-hero',
-    'cc-exam-card',
-    'r6-course-strip'
+    'cc-hero'
   ],
   wxssRequired: [
     '.r6-section-label',
-    '.r6-exam-row',
+    '.cc-exam-row',
     '.r6-course-strip',
     '.cc-hero'
   ],
@@ -175,15 +173,13 @@ checkPage('Profile tab', '我的', {
     'r6-profile-stat-strip',
     'r6-profile-mast',
     'r6-profile-row',
-    'backup-btn-group',
-    'review-hint-list',
-    'timeline-list'
+    'r6-section-label'
   ],
   wxssRequired: [
     '.r6-profile-stat-strip',
     '.r6-profile-mast',
     '.r6-profile-row',
-    '.backup-btn-group'
+    '.r6-section-label'
   ],
   wxmlForbidden: [
     'profile-header',
