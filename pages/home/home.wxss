@@ -6,7 +6,7 @@ page { background-color: var(--qp-color-canvas); }
 
 .cc-home {
   min-height: 100vh; box-sizing: border-box;
-  padding: 0 var(--qp-space-5) calc(128rpx + env(safe-area-inset-bottom));
+  padding: 0 var(--qp-space-5) calc(100rpx + env(safe-area-inset-bottom));
   background-color: var(--qp-color-canvas); color: var(--qp-color-ink);
   font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
   font-size: var(--qp-font-size-body); line-height: var(--qp-line-height-normal);
