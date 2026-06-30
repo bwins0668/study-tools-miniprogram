@@ -169,6 +169,18 @@ page { background-color: var(--qp-color-canvas); }
   gap: 10rpx;
   margin-bottom: 6rpx;
 }
+.r6-section-label__num {
+  font-family: var(--qp-font-family-data);
+  font-size: 48rpx;
+  font-weight: var(--qp-font-weight-semibold);
+  color: var(--qp-color-text-phantom);
+  line-height: .8;
+}
+.r6-section-label__meta {
+  font-family: var(--qp-font-family-data);
+  font-size: var(--qp-font-size-label);
+  color: var(--qp-color-text-ghost);
+}
 .r6-section-label .cc-section__title {
   font-size: var(--qp-font-size-section-title);
   font-weight: var(--qp-font-weight-semibold);

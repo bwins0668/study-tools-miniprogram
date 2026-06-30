@@ -36,25 +36,23 @@
 
   <!-- B. 课程学习 -->
   <view class="cc-section cc-section--courses">
-    <view class="r6-section-label"><text class="cc-section__title">课程学习</text></view>
+    <view class="r6-section-label"><text class="r6-section-label__num">02</text><text class="cc-section__title">课程学习</text><text class="r6-section-label__meta">即将开放</text></view>
     <view class="r6-course-strip">
       <block wx:for="{{languageCourses}}" wx:key="id">
-        <view class="cc-course-card {{item.availability === 'planned' ? 'cc-course-card--planned' : ''}}"
+        <view class="r6-course-strip__item {{item.availability === 'planned' ? 'r6-course-strip__item--planned' : ''}}"
           bindtap="goToCourse" data-course-id="{{item.id}}"
-          hover-class="home-card-pressed" hover-start-time="20" hover-stay-time="120">
-          <text class="cc-course-card__name">{{item.displayName}}</text>
-          <text class="r6-course-strip__desc">{{item.description}}</text>
-          <view class="cc-course-card__badge" wx:if="{{item.availability === 'planned'}}">
-            <text class="cc-course-card__badge-text">即将开放</text>
-          </view>
+          hover-class="r6-course-strip__item--pressed">
+          <text class="r6-course-strip__abbr">{{item.displayName[0]}}{{item.displayName[1] || ''}}</text>
+          <text class="r6-course-strip__name">{{item.displayName}}</text>
         </view>
       </block>
+      <view class="r6-course-strip__badge">敬请期待</view>
     </view>
   </view>
 
   <!-- C. 资格考试 -->
   <view class="cc-section">
-    <view class="r6-section-label"><text class="cc-section__title">资格考试</text></view>
+    <view class="r6-section-label"><text class="r6-section-label__num">01</text><text class="cc-section__title">资格考试</text></view>
     <view class="cc-exam-list">
       <block wx:for="{{examCourses}}" wx:key="id">
         <view wx:if="{{item.availability === 'available'}}" class="cc-exam-card r6-exam-row" bindtap="goToCourse" data-course-id="{{item.id}}"
