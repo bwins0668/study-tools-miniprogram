@@ -107,14 +107,18 @@ jobs:
       #   - 设置严格文件权限（chmod 600）
       #   - 通过环境变量传递路径（不出现在日志中）
       #   - 使用 ::add-mask:: 保护敏感值
+      #   - 通过 env 传密钥（避免 echo 内联破坏换行）
       - name: 注入微信上传私钥
+        env:
+          PRIVATE_KEY: ${{ secrets.WECHAT_MINIPROGRAM_PRIVATE_KEY }}
         run: |
-          echo "::add-mask::${{ secrets.WECHAT_MINIPROGRAM_PRIVATE_KEY }}"
+          echo "::add-mask::$(echo "$PRIVATE_KEY" | head -c 40)..."
           PRIVATE_KEY_FILE="${{ runner.temp }}/wechat-private-key.pem"
-          echo "${{ secrets.WECHAT_MINIPROGRAM_PRIVATE_KEY }}" > "$PRIVATE_KEY_FILE"
+          printf '%s\n' "$PRIVATE_KEY" > "$PRIVATE_KEY_FILE"
           chmod 600 "$PRIVATE_KEY_FILE"
           echo "WECHAT_PRIVATE_KEY_PATH=$PRIVATE_KEY_FILE" >> $GITHUB_ENV
-          echo "私钥已写入临时文件（路径已屏蔽日志）"
+          echo "私钥已写入临时文件"
+          wc -c "$PRIVATE_KEY_FILE"
 
       # ── Step 6: 执行上传 ──────────────────────────────
       - name: 上传微信体验版
