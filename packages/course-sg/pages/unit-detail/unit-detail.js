@@ -1,10 +1,21 @@
 var loader = require('../../data/loader');
 
+function normalizeTerm(t) {
+  return {
+    id: t.id || (t.termJa || t.en || 'term'),
+    en: t.en || t.english || '',
+    ja: t.ja || t.termJa || '',
+    zh: t.zh || t.termZh || '',
+    termType: t.termType || ''
+  };
+}
+
 Page({
   data: {
     courseId: '', unitId: '', unit: null,
     sourceText: '', sourceInfo: null,
     practiceAvailable: false,
+    displayTerms: [],
     selectedTerm: null, termSheetVisible: false,
     notFound: false, loadError: false,
     __themeDark: false
@@ -19,11 +30,13 @@ Page({
       this.setData({ courseId: courseId, unitId: unitId, notFound: true, loadError: true });
       return;
     }
+    var displayTerms = (unit.keyTerms || []).map(normalizeTerm);
     this.setData({
       courseId: courseId, unitId: unitId, unit: unit,
       sourceText: loader.formatPrimarySource(unit),
       sourceInfo: this._buildSourceInfo(unit),
       practiceAvailable: !!(unit.topicId && unit.relatedQuestionIds && unit.relatedQuestionIds.length),
+      displayTerms: displayTerms,
       notFound: false, loadError: false
     });
   },
@@ -43,7 +56,7 @@ Page({
 
   openTermDetail: function (event) {
     var termId = event && event.currentTarget && event.currentTarget.dataset ? event.currentTarget.dataset.termId : '';
-    var terms = (this.data.unit && this.data.unit.keyTerms) || [];
+    var terms = this.data.displayTerms || [];
     for (var i = 0; i < terms.length; i++) {
       if (terms[i].id === termId) { this.setData({ selectedTerm: terms[i], termSheetVisible: true }); return; }
     }
@@ -65,15 +78,8 @@ Page({
   _buildSourceInfo: function (unit) {
     var refs = (unit && unit.sourceRefs) || [];
     var ref = refs[0] || null;
-    if (!ref) {
-      return { sourceText: '', headingJa: '', anchorTermsText: '', pageLabel: '',
-        accessLabel: '原书定位已验证 / 原书阅读尚未绑定' };
-    }
-    var pageLabel = ref.pdfPageEnd > ref.pdfPageStart
-      ? ('PDF 第 ' + ref.pdfPageStart + ' - ' + ref.pdfPageEnd + ' 页')
-      : ('PDF 第 ' + ref.pdfPageStart + ' 页');
-    return { sourceText: loader.formatPrimarySource(unit), headingJa: ref.headingJa || '',
-      anchorTermsText: (ref.anchorTermsJa || []).join(' / '), pageLabel: pageLabel,
-      accessLabel: unit && unit.sourceAccess ? unit.sourceAccess.displayLabel : '原书定位已验证 / 原书阅读尚未绑定' };
+    if (!ref) return { sourceText: '', headingJa: '', anchorTermsText: '', pageLabel: '', accessLabel: '原书定位已验证 / 原书阅读尚未绑定' };
+    var pageLabel = ref.pdfPageEnd > ref.pdfPageStart ? ('PDF 第 ' + ref.pdfPageStart + ' - ' + ref.pdfPageEnd + ' 页') : ('PDF 第 ' + ref.pdfPageStart + ' 页');
+    return { sourceText: loader.formatPrimarySource(unit), headingJa: ref.headingJa || '', anchorTermsText: (ref.anchorTermsJa || []).join(' / '), pageLabel: pageLabel, accessLabel: unit && unit.sourceAccess ? unit.sourceAccess.displayLabel : '原书定位已验证 / 原书阅读尚未绑定' };
   }
 });

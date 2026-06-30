@@ -57,9 +57,9 @@
       </view>
     </view>
 
-    <view class="td-section" wx:if="{{unit.keyTerms && unit.keyTerms.length}}">
+    <view class="td-section" wx:if="{{displayTerms && displayTerms.length}}">
       <text class="td-kicker">关键术语</text>
-      <view class="td-term td-term--tap" wx:for="{{unit.keyTerms}}" wx:key="id" data-term-id="{{item.id}}" bindtap="openTermDetail">
+      <view class="td-term td-term--tap" wx:for="{{displayTerms}}" wx:key="id" data-term-id="{{item.id}}" bindtap="openTermDetail">
         <text class="td-term__en">{{item.en}}</text>
         <text class="td-term__sep">｜</text>
         <text class="td-term__ja">{{item.ja}}</text>
