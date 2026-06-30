@@ -3,7 +3,16 @@
 
 # Local dependency/install output
 node_modules/
-package-lock.json
+
+# WeChat private keys and secrets (MUST NOT be committed)
+*.key
+*.pem
+*_private_key*
+private_key*
+wechat_private_key*
+
+# CI artifacts (local only)
+tools/test-artifacts/
 
 # OS/editor and log noise
 .DS_Store

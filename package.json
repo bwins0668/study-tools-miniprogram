@@ -2,6 +2,14 @@
   "name": "study-tools-miniprogram",
   "private": true,
   "scripts": {
-    "prepare": "node scripts/setup-git-hooks.js"
+    "prepare": "node scripts/setup-git-hooks.js",
+    "test": "node tools/run_miniprogram_checks.js",
+    "test:json": "node tools/run_miniprogram_checks.js --json",
+    "test:smoke": "node tools/miniprogram_smoke_test.js",
+    "test:content-compliance": "node tools/check_content_compliance.js",
+    "ci:trial-upload": "node scripts/wechat-ci-upload.cjs"
+  },
+  "devDependencies": {
+    "miniprogram-ci": "^2.1.0"
   }
 }

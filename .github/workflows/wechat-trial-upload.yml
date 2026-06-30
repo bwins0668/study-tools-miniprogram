@@ -1,0 +1,154 @@
+name: WeChat Trial Upload
+
+# ═══════════════════════════════════════════════════════════
+# 微信小程序体验版自动上传
+#
+# 触发条件（严格限制）：
+#   - push 到 ai-preview 分支（自动）
+#   - workflow_dispatch（手动，支持参数）
+#
+# 安全约束：
+#   - main/master/release/* 分支绝不触发
+#   - 最小权限（contents: read）
+#   - 私钥仅存于临时文件，用完即弃
+#   - 绝不自动提交审核或发布正式版
+# ═══════════════════════════════════════════════════════════
+
+on:
+  push:
+    branches:
+      - ai-preview
+      # ⚠️ 严禁添加其他分支！main/master/release/*/feature/* 不得触发上传
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+      - '.gitignore'
+      - 'LICENSE'
+
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '版本号（留空则自动生成）'
+        required: false
+        type: string
+        default: ''
+      desc:
+        description: '上传描述（留空则自动生成）'
+        required: false
+        type: string
+        default: ''
+      dry_run:
+        description: 'DRY RUN 模式（仅检查，不上传）'
+        required: false
+        type: boolean
+        default: false
+
+# ═══════════════════════════════════════════════════════════
+# 并发保护：同一时刻只允许一个上传任务运行
+# 新 push 自动取消正在进行的旧上传
+# ═══════════════════════════════════════════════════════════
+concurrency:
+  group: wechat-trial-upload
+  cancel-in-progress: true
+
+# ═══════════════════════════════════════════════════════════
+# 最小权限原则
+# ═══════════════════════════════════════════════════════════
+permissions:
+  contents: read
+
+jobs:
+  trial-upload:
+    name: 微信体验版上传
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    # 仅允许在 ai-preview 分支运行
+    # 手动触发 (workflow_dispatch) 不受此限制
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      github.ref == 'refs/heads/ai-preview'
+
+    steps:
+      # ── Step 1: Checkout ──────────────────────────────
+      - name: Checkout 代码
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+
+      # ── Step 2: Setup Node.js ─────────────────────────
+      # 版本从项目 package-lock.json 推断（lockfileVersion 3 = npm 7+, Node 16+）
+      # 使用 Node 18 LTS 以保证稳定性
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+
+      # ── Step 3: 安装依赖 ──────────────────────────────
+      - name: 安装依赖 (npm ci)
+        run: npm ci --ignore-scripts
+
+      # ── Step 4: 运行现有检查 ──────────────────────────
+      - name: 运行小程序代码检查
+        run: node tools/run_miniprogram_checks.js --json
+
+      - name: 运行 Smoke 测试
+        run: node tools/miniprogram_smoke_test.js
+
+      - name: 运行内容合规检查
+        run: node tools/check_content_compliance.js
+
+      # ── Step 5: 注入私钥 ──────────────────────────────
+      # 安全规则：
+      #   - 私钥写入 runner 临时目录（${{ runner.temp }}）
+      #   - 设置严格文件权限（chmod 600）
+      #   - 通过环境变量传递路径（不出现在日志中）
+      #   - 使用 ::add-mask:: 保护敏感值
+      - name: 注入微信上传私钥
+        run: |
+          echo "::add-mask::${{ secrets.WECHAT_MINIPROGRAM_PRIVATE_KEY }}"
+          PRIVATE_KEY_FILE="${{ runner.temp }}/wechat-private-key.pem"
+          echo "${{ secrets.WECHAT_MINIPROGRAM_PRIVATE_KEY }}" > "$PRIVATE_KEY_FILE"
+          chmod 600 "$PRIVATE_KEY_FILE"
+          echo "WECHAT_PRIVATE_KEY_PATH=$PRIVATE_KEY_FILE" >> $GITHUB_ENV
+          echo "私钥已写入临时文件（路径已屏蔽日志）"
+
+      # ── Step 6: 执行上传 ──────────────────────────────
+      - name: 上传微信体验版
+        id: upload
+        env:
+          WECHAT_MINIPROGRAM_APPID: ${{ secrets.WECHAT_MINIPROGRAM_APPID }}
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+          VERSION: ${{ github.event.inputs.version || '' }}
+          DESC: ${{ github.event.inputs.desc || '' }}
+        run: node scripts/wechat-ci-upload.cjs
+
+      # ── Step 7: 清理私钥 ──────────────────────────────
+      - name: 清理私钥文件
+        if: always()
+        run: |
+          if [ -n "$WECHAT_PRIVATE_KEY_PATH" ] && [ -f "$WECHAT_PRIVATE_KEY_PATH" ]; then
+            shred -u "$WECHAT_PRIVATE_KEY_PATH" 2>/dev/null || rm -f "$WECHAT_PRIVATE_KEY_PATH"
+            echo "私钥文件已安全删除"
+          fi
+
+      # ── Step 8: 输出 Summary ──────────────────────────
+      - name: 输出上传摘要
+        if: always()
+        run: |
+          echo "## 📱 微信体验版上传" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| 项目 | 值 |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|-----|" >> $GITHUB_STEP_SUMMARY
+          echo "| AppID | \`wx289d****7ffe\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| 分支 | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Run URL | [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) |" >> $GITHUB_STEP_SUMMARY
+          echo "| 触发方式 | ${{ github.event_name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Dry Run | ${{ github.event.inputs.dry_run || 'false' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 时间 | $(date -u '+%Y-%m-%d %H:%M:%S UTC') |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "> ⚠️ 此 workflow **仅**上传体验版，绝不提交审核或发布正式版。" >> $GITHUB_STEP_SUMMARY
