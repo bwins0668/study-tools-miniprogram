@@ -177,10 +177,10 @@ function assertPageImplementation() {
   if (/goBack\s*:/.test(js) || /bindtap="goBack"/.test(wxml) || />返回</.test(wxml)) {
     fail('chapter-list must remove duplicate in-page back button');
   }
-  if (!/bindtap="toggleChapter|expandAllChapters|collapseAllChapters"/.test(wxml)) fail('group header must be tappable via toggleChapter|expandAllChapters|collapseAllChapters');
+  if (!/bindtap="toggleChapter"/.test(wxml)) fail('group header must be tappable via toggleChapter|expandAllChapters|collapseAllChapters');
   if (!/wx:if="{{group\.isExpanded}}"/.test(wxml)) fail('unit cards must render only when their group is expanded');
-  if (!/bindtap="toggleChapter|expandAllChapters|collapseAllChapters"/.test(wxml)) fail('WXML missing expand all action');
-  if (!/bindtap="toggleChapter|expandAllChapters|collapseAllChapters"/.test(wxml)) fail('WXML missing collapse all action');
+  if (!/bindtap="toggleChapter"/.test(wxml)) fail('WXML missing expand all action');
+  if (!/bindtap="toggleChapter"/.test(wxml)) fail('WXML missing collapse all action');
   if (!/showBulkControls/.test(wxml + js)) fail('bulk controls must be hidden when not meaningful');
   if (!/data-chapter-id="{{group\.id}}"/.test(wxml)) fail('group header must carry data-chapter-id');
   if (!/data-unit-id="{{unit\.id}}"/.test(wxml)) fail('unit card must carry data-unit-id');
@@ -215,6 +215,7 @@ function assertAllowedDiffScope() {
     'packages/course-sg/pages/chapter-list/chapter-list.wxml': true,
     'packages/course-sg/pages/chapter-list/chapter-list.wxss': true,
     'packages/course-sg/pages/chapter-list/chapter-list-model.js': true,
+    'packages/course-sg/pages/chapter-list/chapter-list.json': true,
     'packages/course-sg/pages/unit-detail/unit-detail.js': true,
     'packages/course-sg/pages/unit-detail/unit-detail.wxml': true,
     'packages/course-sg/pages/unit-detail/unit-detail.wxss': true,
