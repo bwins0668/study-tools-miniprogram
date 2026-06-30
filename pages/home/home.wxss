@@ -246,7 +246,10 @@ page { background-color: var(--qp-color-canvas); }
 
 /* ===== R6.3 masthead date ===== */
 .cc-mast__right {
-  text-align: right;
+  /* R6.5.4C: column flex with center alignment — date on top, streak centered below */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding-bottom: 4rpx;
 }
 .cc-mast__date {
