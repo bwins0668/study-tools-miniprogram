@@ -5,7 +5,6 @@ Page({
     courseId: '', unitId: '', unit: null,
     sourceText: '', sourceInfo: null,
     practiceAvailable: false,
-    hasContent: false, hasLearningExperience: false,
     selectedTerm: null, termSheetVisible: false,
     notFound: false, loadError: false,
     __themeDark: false
@@ -20,16 +19,11 @@ Page({
       this.setData({ courseId: courseId, unitId: unitId, notFound: true, loadError: true });
       return;
     }
-    var hasContent = !!(unit.overviewJa || unit.learningGoalJa ||
-      (unit.sections && unit.sections.length) || (unit.keyTerms && unit.keyTerms.length));
-    var hasLearningExp = !!unit.learningExperience;
     this.setData({
       courseId: courseId, unitId: unitId, unit: unit,
       sourceText: loader.formatPrimarySource(unit),
       sourceInfo: this._buildSourceInfo(unit),
       practiceAvailable: !!(unit.topicId && unit.relatedQuestionIds && unit.relatedQuestionIds.length),
-      hasContent: hasContent, hasLearningExperience: hasLearningExp || hasContent,
-      selectedTerm: null, termSheetVisible: false,
       notFound: false, loadError: false
     });
   },
@@ -48,8 +42,7 @@ Page({
   },
 
   openTermDetail: function (event) {
-    var termId = event && event.currentTarget && event.currentTarget.dataset
-      ? event.currentTarget.dataset.termId : '';
+    var termId = event && event.currentTarget && event.currentTarget.dataset ? event.currentTarget.dataset.termId : '';
     var terms = (this.data.unit && this.data.unit.keyTerms) || [];
     for (var i = 0; i < terms.length; i++) {
       if (terms[i].id === termId) { this.setData({ selectedTerm: terms[i], termSheetVisible: true }); return; }
@@ -60,10 +53,7 @@ Page({
   noop: function () {},
 
   goBack: function () {
-    var pages = getCurrentPages();
-    if (pages && pages.length > 1) {
-      wx.navigateBack({ fail: function () { wx.switchTab({ url: '/pages/home/home' }); } });
-    } else { wx.switchTab({ url: '/pages/home/home' }); }
+    wx.navigateBack({ fail: function () { wx.switchTab({ url: '/pages/home/home' }); } });
   },
 
   _applyTheme: function () {
@@ -77,7 +67,7 @@ Page({
     var ref = refs[0] || null;
     if (!ref) {
       return { sourceText: '', headingJa: '', anchorTermsText: '', pageLabel: '',
-        accessLabel: unit && unit.sourceAccess ? unit.sourceAccess.displayLabel : '' };
+        accessLabel: '原书定位已验证 / 原书阅读尚未绑定' };
     }
     var pageLabel = ref.pdfPageEnd > ref.pdfPageStart
       ? ('PDF 第 ' + ref.pdfPageStart + ' - ' + ref.pdfPageEnd + ' 页')
