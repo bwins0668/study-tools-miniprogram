@@ -1,18 +1,13 @@
-// packages/course-content/pages/unit-detail/unit-detail.js
 var loader = require('../../data/loader');
 
 Page({
   data: {
-    courseId: '',
-    unitId: '',
-    unit: null,
-    sourceText: '',
-    sourceInfo: null,
+    courseId: '', unitId: '', unit: null,
+    sourceText: '', sourceInfo: null,
     practiceAvailable: false,
-    hasLearningExperience: false,
-    selectedTerm: null,
-    termSheetVisible: false,
-    notFound: false,
+    hasContent: false, hasLearningExperience: false,
+    selectedTerm: null, termSheetVisible: false,
+    notFound: false, loadError: false,
     __themeDark: false
   },
 
@@ -22,66 +17,53 @@ Page({
     var unitId = (options && options.unitId) || '';
     var unit = loader.getUnitById(courseId, unitId);
     if (!unit) {
-      this.setData({ courseId: courseId, unitId: unitId, notFound: true });
+      this.setData({ courseId: courseId, unitId: unitId, notFound: true, loadError: true });
       return;
     }
+    var hasContent = !!(unit.overviewJa || unit.learningGoalJa ||
+      (unit.sections && unit.sections.length) || (unit.keyTerms && unit.keyTerms.length));
+    var hasLearningExp = !!unit.learningExperience;
     this.setData({
-      courseId: courseId,
-      unitId: unitId,
-      unit: unit,
+      courseId: courseId, unitId: unitId, unit: unit,
       sourceText: loader.formatPrimarySource(unit),
       sourceInfo: this._buildSourceInfo(unit),
       practiceAvailable: !!(unit.topicId && unit.relatedQuestionIds && unit.relatedQuestionIds.length),
-      hasLearningExperience: !!unit.learningExperience,
-      selectedTerm: null,
-      termSheetVisible: false,
-      notFound: false
+      hasContent: hasContent, hasLearningExperience: hasLearningExp || hasContent,
+      selectedTerm: null, termSheetVisible: false,
+      notFound: false, loadError: false
     });
   },
 
-  onShow: function () {
-    this._applyTheme();
-  },
+  onShow: function () { this._applyTheme(); },
 
   startPractice: function () {
     var unit = this.data.unit;
     if (!unit || !unit.topicId || !unit.relatedQuestionIds || !unit.relatedQuestionIds.length) {
-      wx.showToast({ title: '本节暂无可用主题练习', icon: 'none' });
-      return;
+      wx.showToast({ title: '本节暂无可用主题练习', icon: 'none' }); return;
     }
     wx.navigateTo({
-      url: '/packages/quiz/pages/quiz/quiz?exam=' + unit.exam +
-        '&sourceType=lesson_quiz&topicId=' + unit.topicId,
+      url: '/packages/quiz/pages/quiz/quiz?exam=' + unit.exam + '&sourceType=lesson_quiz&topicId=' + unit.topicId,
       fail: function () { wx.showToast({ title: '练习暂时无法打开', icon: 'none' }); }
     });
   },
 
   openTermDetail: function (event) {
     var termId = event && event.currentTarget && event.currentTarget.dataset
-      ? event.currentTarget.dataset.termId
-      : '';
+      ? event.currentTarget.dataset.termId : '';
     var terms = (this.data.unit && this.data.unit.keyTerms) || [];
     for (var i = 0; i < terms.length; i++) {
-      if (terms[i].id === termId) {
-        this.setData({ selectedTerm: terms[i], termSheetVisible: true });
-        return;
-      }
+      if (terms[i].id === termId) { this.setData({ selectedTerm: terms[i], termSheetVisible: true }); return; }
     }
   },
 
-  closeTermDetail: function () {
-    this.setData({ selectedTerm: null, termSheetVisible: false });
-  },
-
+  closeTermDetail: function () { this.setData({ selectedTerm: null, termSheetVisible: false }); },
   noop: function () {},
 
   goBack: function () {
     var pages = getCurrentPages();
     if (pages && pages.length > 1) {
       wx.navigateBack({ fail: function () { wx.switchTab({ url: '/pages/home/home' }); } });
-    } else {
-      wx.switchTab({ url: '/pages/home/home' });
-    }
+    } else { wx.switchTab({ url: '/pages/home/home' }); }
   },
 
   _applyTheme: function () {
@@ -94,23 +76,14 @@ Page({
     var refs = (unit && unit.sourceRefs) || [];
     var ref = refs[0] || null;
     if (!ref) {
-      return {
-        sourceText: '',
-        headingJa: '',
-        anchorTermsText: '',
-        pageLabel: '',
-        accessLabel: unit && unit.sourceAccess ? unit.sourceAccess.displayLabel : ''
-      };
+      return { sourceText: '', headingJa: '', anchorTermsText: '', pageLabel: '',
+        accessLabel: unit && unit.sourceAccess ? unit.sourceAccess.displayLabel : '' };
     }
     var pageLabel = ref.pdfPageEnd > ref.pdfPageStart
       ? ('PDF 第 ' + ref.pdfPageStart + ' - ' + ref.pdfPageEnd + ' 页')
       : ('PDF 第 ' + ref.pdfPageStart + ' 页');
-    return {
-      sourceText: loader.formatPrimarySource(unit),
-      headingJa: ref.headingJa || '',
-      anchorTermsText: (ref.anchorTermsJa || []).join(' / '),
-      pageLabel: pageLabel,
-      accessLabel: unit && unit.sourceAccess ? unit.sourceAccess.displayLabel : '原书定位已验证 / 原书阅读尚未绑定'
-    };
+    return { sourceText: loader.formatPrimarySource(unit), headingJa: ref.headingJa || '',
+      anchorTermsText: (ref.anchorTermsJa || []).join(' / '), pageLabel: pageLabel,
+      accessLabel: unit && unit.sourceAccess ? unit.sourceAccess.displayLabel : '原书定位已验证 / 原书阅读尚未绑定' };
   }
 });

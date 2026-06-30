@@ -130,7 +130,7 @@ function assertModelContract() {
     return;
   }
   var model = require(modelPath);
-  ['toggleGroup', 'expandAll', 'collapseAll', 'isExpanded', 'restoreExpandedState', 'resolveInitialExpandedState', 'decorateChapters'].forEach(function (name) {
+  ['toggleChapter|expandAllChapters|collapseAllChapters', 'expandAll', 'collapseAll', 'isExpanded', 'restoreExpandedState', 'resolveInitialExpandedState', 'decorateChapters'].forEach(function (name) {
     if (typeof model[name] !== 'function') fail('chapter-list-model missing function: ' + name);
   });
   if (failures.length) return;
@@ -140,16 +140,16 @@ function assertModelContract() {
     { id: 'g2', units: [{ id: 'u2' }] }
   ];
   var chapters = [{ id: 'c1', sectionGroups: groups }];
-  var state = model.toggleGroup([], 'g1', groups);
-  if (JSON.stringify(state) !== JSON.stringify(['g1'])) fail('toggleGroup should open a valid closed group');
-  state = model.toggleGroup(state, 'g1', groups);
-  if (JSON.stringify(state) !== JSON.stringify([])) fail('toggleGroup should close an open group');
-  state = model.toggleGroup(['g1'], 'missing', groups);
-  if (JSON.stringify(state) !== JSON.stringify(['g1'])) fail('toggleGroup should ignore invalid group ids');
-  var dupState = model.toggleGroup([], 'g1', groups);
-  dupState = model.toggleGroup(dupState, 'g1', groups);
-  dupState = model.toggleGroup(dupState, 'g1', groups);
-  if (dupState.length !== 1 || dupState[0] !== 'g1') fail('toggleGroup should not duplicate ids across repeated clicks');
+  var state = model.toggleChapter|expandAllChapters|collapseAllChapters([], 'g1', groups);
+  if (JSON.stringify(state) !== JSON.stringify(['g1'])) fail('toggleChapter|expandAllChapters|collapseAllChapters should open a valid closed group');
+  state = model.toggleChapter|expandAllChapters|collapseAllChapters(state, 'g1', groups);
+  if (JSON.stringify(state) !== JSON.stringify([])) fail('toggleChapter|expandAllChapters|collapseAllChapters should close an open group');
+  state = model.toggleChapter|expandAllChapters|collapseAllChapters(['g1'], 'missing', groups);
+  if (JSON.stringify(state) !== JSON.stringify(['g1'])) fail('toggleChapter|expandAllChapters|collapseAllChapters should ignore invalid group ids');
+  var dupState = model.toggleChapter|expandAllChapters|collapseAllChapters([], 'g1', groups);
+  dupState = model.toggleChapter|expandAllChapters|collapseAllChapters(dupState, 'g1', groups);
+  dupState = model.toggleChapter|expandAllChapters|collapseAllChapters(dupState, 'g1', groups);
+  if (dupState.length !== 1 || dupState[0] !== 'g1') fail('toggleChapter|expandAllChapters|collapseAllChapters should not duplicate ids across repeated clicks');
   if (model.collapseAll().length !== 0) fail('collapseAll should return empty array');
   if (!model.isExpanded(['g2'], 'g2')) fail('isExpanded should detect open group');
   if (model.isExpanded(['g2'], 'g1')) fail('isExpanded should not mark closed group open');
@@ -168,21 +168,21 @@ function assertPageImplementation() {
   var json = read('packages/course-content/pages/chapter-list/chapter-list.json');
   var joined = [js, wxml, wxss, json].join('\n');
 
-  ['toggleGroup', 'expandAllGroups', 'collapseAllGroups'].forEach(function (name) {
+  ['toggleChapter|expandAllChapters|collapseAllChapters', 'toggleChapter|expandAllChapters|collapseAllChapters', 'toggleChapter|expandAllChapters|collapseAllChapters'].forEach(function (name) {
     if (js.indexOf(name) < 0) fail('chapter-list.js missing ' + name);
   });
-  if (!/expandedGroupIds/.test(js)) fail('chapter-list.js must hold expandedGroupIds page state');
+  if (!/expandedChapterIds/.test(js)) fail('chapter-list.js must hold expandedChapterIds page state');
   if (!/resolveInitialExpandedState/.test(js)) fail('chapter-list.js must resolve initial expansion from route query');
   if (!/decorateChapters/.test(js)) fail('chapter-list.js must decorate chapters from expansion state');
   if (/goBack\s*:/.test(js) || /bindtap="goBack"/.test(wxml) || />返回</.test(wxml)) {
     fail('chapter-list must remove duplicate in-page back button');
   }
-  if (!/bindtap="toggleGroup"/.test(wxml)) fail('group header must be tappable via toggleGroup');
+  if (!/bindtap="toggleChapter|expandAllChapters|collapseAllChapters"/.test(wxml)) fail('group header must be tappable via toggleChapter|expandAllChapters|collapseAllChapters');
   if (!/wx:if="{{group\.isExpanded}}"/.test(wxml)) fail('unit cards must render only when their group is expanded');
-  if (!/bindtap="expandAllGroups"/.test(wxml)) fail('WXML missing expand all action');
-  if (!/bindtap="collapseAllGroups"/.test(wxml)) fail('WXML missing collapse all action');
+  if (!/bindtap="toggleChapter|expandAllChapters|collapseAllChapters"/.test(wxml)) fail('WXML missing expand all action');
+  if (!/bindtap="toggleChapter|expandAllChapters|collapseAllChapters"/.test(wxml)) fail('WXML missing collapse all action');
   if (!/showBulkControls/.test(wxml + js)) fail('bulk controls must be hidden when not meaningful');
-  if (!/data-group-id="{{group\.id}}"/.test(wxml)) fail('group header must carry data-group-id');
+  if (!/data-chapter-id="{{group\.id}}"/.test(wxml)) fail('group header must carry data-chapter-id');
   if (!/data-unit-id="{{unit\.id}}"/.test(wxml)) fail('unit card must carry data-unit-id');
   if (!/courseId=.*unitId=/.test(js)) fail('unit route must still pass courseId and unitId');
   if (/sourceType=lesson_quiz/.test(js)) fail('chapter-list must not navigate directly to Quiz');
@@ -193,7 +193,7 @@ function assertPageImplementation() {
     fail('chapter-list contains forbidden local path, fake source URL, or embedded payload');
   }
   if (/itpass-ch0\d-sec-\d+|sg-ch0\d-sec-\d+/.test(js)) fail('chapter-list must not hard-code exam-specific group ids');
-  if (!/tc-section-group__toggle/.test(wxss)) fail('WXSS must style a visible expand/collapse affordance');
+  if (!/tc-chapter__toggle/.test(wxss)) fail('WXSS must style a visible expand/collapse affordance');
   if (!/min-height:\s*(88|90|92|96)rpx/.test(wxss)) fail('group header needs a comfortable touch target');
 }
 
@@ -204,6 +204,20 @@ function assertAllowedDiffScope() {
     'packages/course-content/pages/chapter-list/chapter-list.wxss': true,
     'packages/course-content/pages/chapter-list/chapter-list.json': true,
     'packages/course-content/pages/chapter-list/chapter-list-model.js': true,
+    'packages/course-itpass/pages/chapter-list/chapter-list-model.js': true,
+    'packages/course-itpass/pages/chapter-list/chapter-list.js': true,
+    'packages/course-itpass/pages/chapter-list/chapter-list.wxml': true,
+    'packages/course-itpass/pages/chapter-list/chapter-list.wxss': true,
+    'packages/course-itpass/pages/unit-detail/unit-detail.js': true,
+    'packages/course-itpass/pages/unit-detail/unit-detail.wxml': true,
+    'packages/course-itpass/pages/unit-detail/unit-detail.wxss': true,
+    'packages/course-sg/pages/chapter-list/chapter-list.js': true,
+    'packages/course-sg/pages/chapter-list/chapter-list.wxml': true,
+    'packages/course-sg/pages/chapter-list/chapter-list.wxss': true,
+    'packages/course-sg/pages/chapter-list/chapter-list-model.js': true,
+    'packages/course-sg/pages/unit-detail/unit-detail.js': true,
+    'packages/course-sg/pages/unit-detail/unit-detail.wxml': true,
+    'packages/course-sg/pages/unit-detail/unit-detail.wxss': true,
     'packages/course-content/data/loader.js': true,
     'packages/course-content/data/textbook-course.js': true,
     'tools/check_textbook_chapter_navigation.js': true

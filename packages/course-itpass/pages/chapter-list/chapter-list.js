@@ -7,7 +7,7 @@ Page({
     courseName: '',
     sourceTitle: '',
     chapters: [],
-    expandedGroupIds: [],
+    expandedChapterIds: [],
     showBulkControls: false,
     notFound: false,
     __themeDark: false
@@ -21,14 +21,14 @@ Page({
       this.setData({ courseId: courseId, notFound: true });
       return;
     }
-    var expandedGroupIds = model.resolveInitialExpandedState(options, course.chapters);
-    var chapters = model.decorateChapters(course.chapters, expandedGroupIds);
+    var expandedChapterIds = model.resolveInitialExpandedState(options, course.chapters);
+    var chapters = model.decorateChapters(course.chapters, expandedChapterIds);
     this.setData({
       courseId: courseId,
       courseName: course.courseName,
       sourceTitle: course.sourceTitle,
       chapters: chapters,
-      expandedGroupIds: expandedGroupIds,
+      expandedChapterIds: expandedChapterIds,
       showBulkControls: (course.chapters || []).length >= 1,
       notFound: false
     });
@@ -38,31 +38,32 @@ Page({
     this._applyTheme();
   },
 
-  toggleGroup: function (e) {
-    var groupId = e.currentTarget && e.currentTarget.dataset && e.currentTarget.dataset.groupId;
-    if (!groupId) return;
-    var next = model.toggleGroup(this.data.expandedGroupIds, groupId, this.data.chapters);
+  toggleChapter: function (e) {
+    var chapterId = e.currentTarget && e.currentTarget.dataset && e.currentTarget.dataset.chapterId;
+    if (!chapterId) return;
+    var next = model.toggleChapter(this.data.expandedChapterIds, chapterId, this.data.chapters);
     this.setData({
-      expandedGroupIds: next,
+      expandedChapterIds: next,
       chapters: model.decorateChapters(this.data.chapters, next)
     });
   },
 
-  expandAllGroups: function () {
-    var next = model.expandAll(this.data.chapters);
-    this.setData({ expandedGroupIds: next, chapters: model.decorateChapters(this.data.chapters, next) });
+  expandAllChapters: function () {
+    var next = model.expandAllChapters(this.data.chapters);
+    this.setData({ expandedChapterIds: next, chapters: model.decorateChapters(this.data.chapters, next) });
   },
 
-  collapseAllGroups: function () {
-    var next = model.collapseAll();
-    this.setData({ expandedGroupIds: next, chapters: model.decorateChapters(this.data.chapters, next) });
+  collapseAllChapters: function () {
+    var next = model.collapseAllChapters();
+    this.setData({ expandedChapterIds: next, chapters: model.decorateChapters(this.data.chapters, next) });
   },
 
   openUnit: function (e) {
     var unitId = e.currentTarget && e.currentTarget.dataset && e.currentTarget.dataset.unitId;
     if (!unitId) return;
     wx.navigateTo({
-      url: '/packages/course-content/pages/unit-detail/unit-detail?courseId=' + this.data.courseId + '&unitId=' + unitId,
+      url: '/packages/' + (this.data.courseId === 'itpass' ? 'course-itpass' : 'course-sg') +
+        '/pages/unit-detail/unit-detail?courseId=' + this.data.courseId + '&unitId=' + unitId,
       fail: function () { wx.showToast({ title: '教材章节暂时无法打开', icon: 'none' }); }
     });
   },
