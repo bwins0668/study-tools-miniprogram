@@ -28,14 +28,27 @@ Page({
     lastSourceLabel: '',
     lastExam: '',
     lastSourceType: '',
-    jstDateStr: ''
+    jstDateStr: '',
+    navSafeTop: 64
   },
 
   onLoad: function () {
+    this._syncNavLayout();
     this.setData({ jstDateStr: getJSTDateString() });
   },
 
+  _syncNavLayout: function () {
+    var navSafeTop = 64;
+    try {
+      var menu = wx.getMenuButtonBoundingClientRect ? wx.getMenuButtonBoundingClientRect() : null;
+      var sysInfo = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync();
+      navSafeTop = (menu && menu.bottom) ? menu.bottom + 14 : ((sysInfo.statusBarHeight || 20) + 52);
+    } catch (e) { navSafeTop = 64; }
+    if (this.data.navSafeTop !== navSafeTop) this.setData({ navSafeTop: navSafeTop });
+  },
+
   onShow: function () {
+    this._syncNavLayout();
     this._loadState();
   },
 

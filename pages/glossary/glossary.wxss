@@ -2,8 +2,10 @@
 
 .container {
   min-height: 100vh;
-  background: var(--bg-color);
-  padding-bottom: calc(100rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  padding: 0 var(--qp-space-5) calc(100rpx + env(safe-area-inset-bottom));
+  background-color: var(--qp-color-canvas);
+  color: var(--qp-color-ink);
 }
 
 /* === Hero 区域 === */

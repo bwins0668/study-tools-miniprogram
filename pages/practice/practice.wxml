@@ -1,5 +1,5 @@
 <!--pages/practice/practice.wxml · R6.5 DC-aligned (Frame 2) -->
-<view data-r6-active-tab="practice" class="r6-practice-page">
+<view data-r6-active-tab="practice" class="r6-practice-page" style="padding-top: {{navSafeTop}}px;">
   <!-- Masthead -->
   <view class="r6-practice-mast">
     <view>

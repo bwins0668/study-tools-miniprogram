@@ -1,5 +1,5 @@
 <!--pages/profile/profile.wxml · R6.5 DC-authoritative profile (Frame 5) -->
-<view data-r6-active-tab="profile" class="r6-profile {{__themeDark ? 'dark-theme' : ''}}">
+<view data-r6-active-tab="profile" class="r6-profile {{__themeDark ? 'dark-theme' : ''}}" style="padding-top: {{navSafeTop}}px;">
   <!-- Masthead -->
   <view class="r6-profile-mast">
     <view>

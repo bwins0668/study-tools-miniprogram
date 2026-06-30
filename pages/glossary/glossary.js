@@ -6,16 +6,28 @@ Page({
   onLoad: function (options) {
     this._applyTheme();
     this._applyTheme();
+    this._syncNavLayout();
   },
   data: {
     __themeDark: false,
-    __themeDark: false,
+    navSafeTop: 64,
     favoriteCount: 0
+  },
+
+  _syncNavLayout: function () {
+    var navSafeTop = 64;
+    try {
+      var menu = wx.getMenuButtonBoundingClientRect ? wx.getMenuButtonBoundingClientRect() : null;
+      var sysInfo = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync();
+      navSafeTop = (menu && menu.bottom) ? menu.bottom + 14 : ((sysInfo.statusBarHeight || 20) + 52);
+    } catch (e) { navSafeTop = 64; }
+    if (this.data.navSafeTop !== navSafeTop) this.setData({ navSafeTop: navSafeTop });
   },
 
   onShow: function () {
     this._applyTheme();
     this._applyTheme();
+    this._syncNavLayout();
     var state = glossaryState.getGlossaryLandingState();
     this.setData(state);
   },

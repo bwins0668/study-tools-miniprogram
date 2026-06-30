@@ -4,7 +4,7 @@
 .review-page {
   min-height: 100vh;
   box-sizing: border-box;
-  padding: 32rpx var(--qp-space-5) calc(100rpx + env(safe-area-inset-bottom));
+  padding: 0 var(--qp-space-5) calc(100rpx + env(safe-area-inset-bottom));
   background-color: var(--qp-color-canvas);
   color: var(--qp-color-ink);
 }

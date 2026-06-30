@@ -1,5 +1,5 @@
 <!--pages/glossary/glossary.wxml - 术语学习中心-->
-<view data-r6-active-tab="glossary" class="container {{__themeDark ? 'dark-theme' : ''}}">
+<view data-r6-active-tab="glossary" class="container {{__themeDark ? 'dark-theme' : ''}}" style="padding-top: {{navSafeTop}}px;">
   <!-- 顶部 Hero -->
   <view class="glossary-hero">
     <view class="glossary-hero-row">

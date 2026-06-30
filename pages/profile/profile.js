@@ -216,21 +216,34 @@ Page({
     // Round 3.21: 是否为新用户（零练习记录）
     isNewUser: true,
     // R3.78 页面浏览次数
-    viewCount: 0
+    viewCount: 0,
+    navSafeTop: 64
   },
 
   onLoad: function () {
     this._applyTheme();
     this._applyTheme();
+    this._syncNavLayout();
     this.setData({
       version: app.globalData.version,
       jstDateStr: getJSTDateString()
     });
   },
 
+  _syncNavLayout: function () {
+    var navSafeTop = 64;
+    try {
+      var menu = wx.getMenuButtonBoundingClientRect ? wx.getMenuButtonBoundingClientRect() : null;
+      var sysInfo = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync();
+      navSafeTop = (menu && menu.bottom) ? menu.bottom + 14 : ((sysInfo.statusBarHeight || 20) + 52);
+    } catch (e) { navSafeTop = 64; }
+    if (this.data.navSafeTop !== navSafeTop) this.setData({ navSafeTop: navSafeTop });
+  },
+
   onShow: function () {
     this._applyTheme();
     this._applyTheme();
+    this._syncNavLayout();
     // R3.78 页面浏览次数统计
     profileSessionViewCount += 1;
     var viewCount = profileSessionViewCount;

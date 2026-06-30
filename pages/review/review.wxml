@@ -1,5 +1,5 @@
 <!--pages/review/review.wxml-->
-<view data-r6-active-tab="review" class="review-page">
+<view data-r6-active-tab="review" class="review-page" style="padding-top: {{navSafeTop}}px;">
   <view class="review-head">
     <text class="review-head__kicker">REVIEW · 復習</text>
     <text class="review-head__title">复习</text>
