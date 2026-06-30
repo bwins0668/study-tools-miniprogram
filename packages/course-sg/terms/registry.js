@@ -1,16 +1,13 @@
-// packages/course-sg/terms/registry.js — SG term registry
+var terms = require("./terms-data");
 var registry = {};
 
-function register(term) {
+terms.forEach(function(term) {
   if (term && term.id) registry[term.id] = term;
-}
+});
 
-function getTerm(id) {
-  return registry[id] || null;
-}
+function register(term) { if (term && term.id) registry[term.id] = term; }
+function getTerm(id) { return registry[id] || null; }
+function getTerms(ids) { return (ids || []).map(function(id) { return registry[id]; }).filter(Boolean); }
+function getAllTerms() { return Object.values(registry); }
 
-function getTerms(ids) {
-  return (ids || []).map(function(id) { return registry[id]; }).filter(Boolean);
-}
-
-module.exports = { register: register, getTerm: getTerm, getTerms: getTerms, registry: registry };
+module.exports = { register: register, getTerm: getTerm, getTerms: getTerms, getAllTerms: getAllTerms, registry: registry };
