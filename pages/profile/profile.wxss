@@ -11,10 +11,11 @@
 
 /* ===== Masthead ===== */
 .r6-profile-mast {
+  /* R6.5.4: flex-start aligns kicker top with date top on same baseline */
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   justify-content: space-between;
-  padding: 16rpx 0 0;
+  padding: 4rpx 0 0;
   margin-bottom: 22rpx;
 }
 .r6-profile-mast__kicker {
