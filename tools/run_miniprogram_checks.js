@@ -34,7 +34,7 @@ var LEAF_CHECKS = [
   { title: 'Profile commands', command: 'node tools/check_profile_command_boundaries.js', cmd: 'node', args: ['tools/check_profile_command_boundaries.js'] },
   { title: 'Home streak contract', command: 'node tools/check_home_streak_contract.js', cmd: 'node', args: ['tools/check_home_streak_contract.js'] },
   { title: 'Release packaging', command: 'node tools/check_release_packaging.js', cmd: 'node', args: ['tools/check_release_packaging.js'] },
- { title: 'Textbook course content', command: 'node tools/check_textbook_course_content.js', cmd: 'node', args: ['tools/check_textbook_course_content.js'] }
+ { title: 'Textbook course content', command: 'node tools/check_textbook_course_content.js', cmd: 'node', args: ['tools/check_textbook_course_content.js'] },
   { title: 'Textbook course fidelity', command: 'node tools/check_textbook_course_fidelity.js --all', cmd: 'node', args: ['tools/check_textbook_course_fidelity.js', '--all'] }
 ];
 // Sixteen external leaf checks plus the inline JavaScript syntax leaf.
