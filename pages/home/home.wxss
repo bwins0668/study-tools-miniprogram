@@ -13,8 +13,9 @@ page { background-color: var(--qp-color-canvas); }
 }
 
 .cc-mast {
-  display: flex; align-items: flex-end; justify-content: space-between;
-  padding: 16rpx 0 0; margin-bottom: 22rpx;
+  /* R6.5.4: flex-start aligns kicker top with date top on same baseline */
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding: 4rpx 0 0; margin-bottom: 22rpx;
 }
 .cc-mast__kicker {
   display: block; margin-bottom: 8rpx;
