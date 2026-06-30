@@ -1,21 +1,11 @@
 var loader = require('../../data/loader');
-
-function normalizeTerm(t) {
-  return {
-    id: t.id || (t.termJa || t.en || 'term'),
-    en: t.en || t.english || '',
-    ja: t.ja || t.termJa || '',
-    zh: t.zh || t.termZh || '',
-    termType: t.termType || ''
-  };
-}
+var termResolver = require('../../data/term-resolver');
 
 Page({
   data: {
     courseId: '', unitId: '', unit: null,
     sourceText: '', sourceInfo: null,
-    practiceAvailable: false,
-    displayTerms: [],
+    practiceAvailable: false, displayTerms: [],
     selectedTerm: null, termSheetVisible: false,
     notFound: false, loadError: false,
     __themeDark: false
@@ -30,14 +20,13 @@ Page({
       this.setData({ courseId: courseId, unitId: unitId, notFound: true, loadError: true });
       return;
     }
-    var displayTerms = (unit.keyTerms || []).map(normalizeTerm);
+    var displayTerms = termResolver.resolveDisplayTerms(unit);
     this.setData({
       courseId: courseId, unitId: unitId, unit: unit,
       sourceText: loader.formatPrimarySource(unit),
       sourceInfo: this._buildSourceInfo(unit),
       practiceAvailable: !!(unit.topicId && unit.relatedQuestionIds && unit.relatedQuestionIds.length),
-      displayTerms: displayTerms,
-      notFound: false, loadError: false
+      displayTerms: displayTerms, notFound: false, loadError: false
     });
   },
 
@@ -56,9 +45,15 @@ Page({
 
   openTermDetail: function (event) {
     var termId = event && event.currentTarget && event.currentTarget.dataset ? event.currentTarget.dataset.termId : '';
-    var terms = this.data.displayTerms || [];
-    for (var i = 0; i < terms.length; i++) {
-      if (terms[i].id === termId) { this.setData({ selectedTerm: terms[i], termSheetVisible: true }); return; }
+    var term = termId ? termResolver.getTermById(termId) : null;
+    if (term) {
+      // Try to find the canonical term in the display terms for full data
+      for (var i = 0; i < this.data.displayTerms.length; i++) {
+        if (this.data.displayTerms[i].id === termId || this.data.displayTerms[i].ja === termId) {
+          term = this.data.displayTerms[i]; break;
+        }
+      }
+      this.setData({ selectedTerm: term, termSheetVisible: true });
     }
   },
 
