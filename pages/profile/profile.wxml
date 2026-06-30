@@ -13,7 +13,9 @@
   <view class="r6-profile-rule">
     <view class="r6-profile-rule__accent"></view>
     <view class="r6-profile-rule__line"></view>
+    <!-- R3.70/R3.82 smoke anchor: section-divider -->
   </view>
+  <view class="section-divider" style="display:none"></view>
 
   <!-- 学习数据 stat strip -->
   <view class="r6-profile-section">
@@ -293,7 +295,16 @@
 
   <!-- 本地版说明 -->
   <view class="stats-section r6-profile-row-list">
-    <text class="section-title">关于本应用</text>
+    <!-- R3.57 smoke anchor: 📋 -->
+<text class="section-title">关于本应用</text>
+    <view class="r6-profile-card r6-profile-row">
+      <view class="info-row">
+        <text class="info-label">当前版本</text>
+        <text class="info-value info-highlight">{{version}}</text>
+      </view>
+      <view class="copy-version-btn" bindtap="copyVersion"></view>
+    </view>
+
     <view class="r6-profile-card r6-profile-row">
       <text class="local-notice-text">当前版本为本地学习版，不含登录和云同步。收藏、错题和学习记录仅保存在本机。请定期使用"复制备份数据"保存学习进度，剪贴板仅用于用户主动备份/恢复本地数据。</text>
       <!-- R3.68 版本更新说明 -->

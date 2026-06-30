@@ -33,9 +33,9 @@ var flashcardsJs = read('pages/flashcards/flashcards.js');
 var flashcardsState = read('utils/flashcards-state.js');
 
 requireMatch(homeWxml, /cc-exam-card[\s\S]*?hover-class="home-card-pressed"/, 'home exam cards have no pressed-state contract');
-requireMatch(homeWxml, /cc-course-card[\s\S]*?hover-class="home-card-pressed"/, 'home course cards have no pressed-state contract');
+requireMatch(homeWxml, /r6-course-strip__item[\s\S]*?hover-class="r6-course-strip__item--pressed"/, 'course strip items have no pressed-state contract');
 requireMatch(homeWxml, /cc-exam-card__action[\s\S]*?catchtap="goToPractice"/, 'home exam card action must keep direct practice entry');
-requireMatch(homeWxss, /\.cc-course-card:active[\s\S]*?scale\(0\.98\)/, 'home course cards need 0.98 active feedback');
+requireMatch(homeWxss, /r6-course-strip__item--pressed[\s\S]*?opacity/, 'course strip items need pressed-state feedback');
 requireMatch(homeWxss, /\.cc-exam-card:active[\s\S]*?scale\(0\.98\)/, 'home exam cards need 0.98 active feedback');
 requireMatch(homeWxss, /\.home-card-pressed[\s\S]*?scale\(0\.98\)/, 'home pressed state is missing 0.98 scale feedback');
 requireMatch(read('pages/home/home.js'), /_releaseNavSoon[\s\S]*?600/, 'home navigation debounce is missing');

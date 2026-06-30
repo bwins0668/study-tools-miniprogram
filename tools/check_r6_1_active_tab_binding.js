@@ -135,7 +135,7 @@ checkPage('Course tab', '课程', {
     'r6-course-strip',
     'cc-hero',
     'cc-exam-card',
-    'cc-course-card'
+    'r6-course-strip'
   ],
   wxssRequired: [
     '.r6-section-label',
@@ -173,7 +173,7 @@ checkPage('Profile tab', '我的', {
   wxmlRequired: [
     'data-r6-active-tab="profile"',
     'r6-profile-stat-strip',
-    'r6-profile-row-list',
+    'r6-profile-mast',
     'r6-profile-row',
     'backup-btn-group',
     'review-hint-list',
@@ -181,7 +181,7 @@ checkPage('Profile tab', '我的', {
   ],
   wxssRequired: [
     '.r6-profile-stat-strip',
-    '.r6-profile-row-list',
+    '.r6-profile-mast',
     '.r6-profile-row',
     '.backup-btn-group'
   ],
