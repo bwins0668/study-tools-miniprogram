@@ -81,3 +81,22 @@
 .qp-option.is-disabled {
   color: var(--qp-color-disabled-text);
 }
+
+/* ===== R6.2 option feedback states ===== */
+.option-item--selected .option-label {
+  background: var(--qp-color-primary-soft);
+  color: var(--qp-color-primary);
+}
+.option-item--correct .option-label {
+  background: var(--qp-color-success-soft);
+  color: var(--qp-color-success);
+}
+.option-item--incorrect .option-label {
+  background: var(--qp-color-danger-soft);
+  color: var(--qp-color-danger);
+}
+.option-item--default .option-label {
+  background: var(--qp-color-surface-muted);
+  color: var(--qp-color-text-secondary);
+}
+
