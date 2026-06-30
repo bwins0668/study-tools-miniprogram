@@ -257,4 +257,129 @@ page { background-color: var(--qp-color-canvas); }
   letter-spacing: .1em;
   margin-bottom: 6rpx;
 }
+.cc-mast__streak {
+  display: block;
+  font-family: var(--qp-font-family-data);
+  font-size: 24rpx;
+  color: var(--qp-color-text-secondary);
+}
+.cc-mast__streak__num {
+  color: var(--qp-color-primary);
+  font-weight: var(--qp-font-weight-semibold);
+  font-size: 30rpx;
+}
+
+/* ===== R6.5: DC-accurate hero variants ===== */
+.cc-hero__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+.cc-hero__time {
+  font-family: var(--qp-font-family-data);
+  font-size: 22rpx;
+  color: var(--qp-color-text-ghost);
+}
+.cc-btn__arrow {
+  font-family: var(--qp-font-family-data);
+  font-size: 30rpx;
+}
+
+/* Start state hero */
+.cc-hero--start {
+  border-top-color: var(--qp-color-editorial);
+}
+.cc-hero__exam-pick {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 20rpx;
+}
+.cc-hero__exam-opt {
+  flex: 1;
+  border: 2rpx solid rgba(33,31,28,0.14);
+  border-radius: var(--qp-radius-md);
+  padding: 20rpx 24rpx;
+  font-size: 26rpx;
+  font-weight: var(--qp-font-weight-semibold);
+  color: var(--qp-color-text-secondary);
+  text-align: center;
+}
+.cc-hero__exam-opt--primary {
+  border-color: var(--qp-color-primary);
+  color: var(--qp-color-ink);
+}
+
+/* ===== R6.5: DC-accurate exam rows ===== */
+.cc-exam-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 26rpx 28rpx;
+  border-radius: var(--qp-radius-md);
+  margin-bottom: 8rpx;
+  border-left: 3rpx solid transparent;
+  background: var(--qp-color-surface);
+  border: var(--qp-border-width) solid var(--qp-color-line);
+}
+.cc-exam-row--primary {
+  background: var(--qp-color-primary-soft);
+  border-left: 3rpx solid var(--qp-color-primary);
+}
+.cc-exam-row--muted {
+  opacity: 0.55;
+  border-left: 3rpx solid var(--qp-color-line);
+}
+.cc-exam-row--pressed {
+  opacity: 0.85;
+  transform: scale(0.985);
+}
+.cc-exam-row__body {
+  flex: 1;
+  min-width: 0;
+}
+.cc-exam-row__name {
+  display: block;
+  font-size: 31rpx;
+  font-weight: var(--qp-font-weight-semibold);
+  color: var(--qp-color-ink);
+}
+.cc-exam-row__desc {
+  display: block;
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: var(--qp-color-text-secondary);
+}
+.cc-exam-row__action {
+  flex: none;
+  margin-left: 16rpx;
+  padding: 10rpx 24rpx;
+  border-radius: var(--qp-radius-md);
+  background: var(--qp-color-primary);
+  color: var(--qp-color-surface);
+  font-size: 24rpx;
+  font-weight: var(--qp-font-weight-semibold);
+}
+.cc-exam-row__chev {
+  flex: none;
+  font-size: 32rpx;
+  color: var(--qp-color-text-ghost);
+  margin-left: 8rpx;
+}
+.cc-exam-row__badge {
+  flex: none;
+  margin-left: 16rpx;
+  font-size: 22rpx;
+  color: var(--qp-color-text-tertiary);
+}
+
+/* R6.5: course strip badge */
+.r6-course-strip__badge {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 8rpx 0;
+  font-size: 22rpx;
+  color: var(--qp-color-text-ghost);
+}
 
