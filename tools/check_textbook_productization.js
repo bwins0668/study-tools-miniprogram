@@ -174,6 +174,14 @@ function main() {
   assertNavigationRoutes();
   assertTermRegistries();
 
+  // R5.4.1: Runtime closure verification
+  var closureResult = require('child_process').spawnSync('node',
+    [path.join(ROOT, 'tools', 'check_textbook_subpackage_runtime_closure.js'), '--all'],
+    { cwd: ROOT, encoding: 'utf8', timeout: 15000 });
+  if (closureResult.status !== 0) {
+    fail('runtime closure check failed: ' + (closureResult.stderr || closureResult.stdout || '').trim());
+  }
+
   if (failures.length) {
     console.error('TEXTBOOK PRODUCTIZATION FAIL (' + failures.length + ')');
     failures.forEach(function(m) { console.error('  - ' + m); });
