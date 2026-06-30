@@ -96,12 +96,8 @@
     <view class="r6-profile-row">
       <text class="r6-profile-row__label">当前版本</text>
       <text class="r6-profile-row__value r6-profile-row__value--highlight">{{version}}</text>
-      <!-- R3.57 smoke anchor: 📋 -->
-      <view class="copy-version-btn" bindtap="copyVersion" style="display:none"></view>
     </view>
     <text class="r6-profile-notice">当前版本为本地学习版，不含登录和云同步。收藏、错题和学习记录仅保存在本机。请定期使用"复制备份数据"保存学习进度，剪贴板仅用于用户主动备份/恢复本地数据。</text>
-    <!-- R3.68 版本更新说明 -->
-    <text class="update-notice" style="display:none">功能持续更新中，可通过 Git 仓库查看最新版本和更新日志。</text>
   </view>
 
   <!-- Clear data (danger zone, kept minimal) -->
@@ -109,95 +105,5 @@
     <view class="r6-profile-danger-btn" bindtap="clearAllData">
       <text class="r6-profile-danger-btn__text">清空全部本地数据</text>
     </view>
-  </view>
-
-  <!-- ===== R6.5 Smoke Anchors (hidden, non-visual) ===== -->
-  <view style="display:none" aria-hidden="true">
-    <!-- R3.2: clipboard backup/restore UI -->
-    <view class="backup-btn-group">
-      <view bindtap="copyBackup"><text>复制备份数据</text></view>
-      <view bindtap="restoreByText"><text>通过文本恢复</text></view>
-      <view bindtap="restoreFromClipboard"><text>从剪贴板恢复</text></view>
-    </view>
-    <text class="backup-hint">剪贴板仅用于用户主动备份/恢复本地数据</text>
-    <text class="backup-local-notice">数据仅保存在本机，需用户主动复制备份。请定期使用"复制备份数据"保存学习进度，建议粘贴保存到安全位置。</text>
-
-    <!-- R3.9: backup summary -->
-    <view class="backup-summary-card">
-      <text class="backup-summary-label">备份数据摘要</text>
-      <text>{{backupSummary.favoriteCount}}</text>
-      <text>{{backupSummary.wrongQuestionCount}}</text>
-      <text>{{backupSummary.quizAttemptCount}}</text>
-    </view>
-
-    <!-- R3.6: timeline & practice summary -->
-    <view class="timeline-list">
-      <view class="timeline-item" wx:for="{{recentAttempts}}" wx:key="*this">
-        <text>{{item.examLabel}} · {{item.sourceLabel}}</text>
-      </view>
-    </view>
-    <text class="empty-hint">暂无练习记录，完成一次练习后会显示在这里</text>
-    <text>练习时间线</text>
-
-    <!-- R3.17: consecutive learning -->
-    <text>连续学习</text>
-    <text>{{consecutiveDays}} 天</text>
-    <text class="streak-value">{{consecutiveDays}} 天</text>
-
-    <!-- R3.21: review hints, subject comparison, welcome -->
-    <text>复习建议</text>
-    <view class="review-hint-list">
-      <view class="review-hint-{{item.type}}" wx:for="{{reviewHints}}" wx:key="*this">
-        <text>{{item.text}}</text>
-      </view>
-    </view>
-    <view class="subject-compare-card">
-      <text class="subject-compare-text">{{subjectComparison.text}}</text>
-    </view>
-    <view class="subject-compare-empty">
-      <text>{{subjectComparison.text}}</text>
-    </view>
-    <view class="welcome-card">
-      <text>还没有练习记录</text>
-      <text>从首页选择 IT Passport 或 SG 方向开始练习，也可以先浏览术语表了解考试词汇。遇到重要术语可以先收藏，答错的题目会自动收录到错题本。</text>
-      <view class="welcome-symbol"></view>
-      <text class="welcome-title">还没有练习记录</text>
-      <text class="welcome-desc">从首页选择 IT Passport 或 SG 方向开始练习，也可以先浏览术语表了解考试词汇。遇到重要术语可以先收藏，答错的题目会自动收录到错题本。</text>
-    </view>
-
-    <!-- R3.66: backup time -->
-    <text>{{backupTime}}</text>
-    <text wx:if="{{backupTime !== '未知'}}">{{backupTime}}</text>
-
-    <!-- R3.73/R3.74: help & feedback -->
-    <view class="help-btn" bindtap="showHelp">
-      <view class="help-btn-symbol"></view>
-      <text class="help-btn-text">查看使用帮助</text>
-    </view>
-    <view class="feedback-btn" bindtap="showFeedback">
-      <view class="feedback-btn-symbol"></view>
-      <text class="feedback-btn-text">意见反馈</text>
-    </view>
-
-    <!-- R3.78: view count -->
-    <text>页面统计</text>
-    <text>本页访问次数</text>
-    <text>{{viewCount}}</text>
-
-    <!-- R3.70/R3.82: section divider -->
-    <view class="section-divider"></view>
-
-    <!-- R3.2: last practice time -->
-    <text>最近练习</text>
-    <text>{{lastPracticeTime}}</text>
-
-    <!-- R3.6: practice summary -->
-    <text>练习类型</text>
-    <text>{{lastPracticeSummary.examLabel}} · {{lastPracticeSummary.sourceLabel}}</text>
-    <text>本次答题</text>
-    <text>本次正确率</text>
-
-    <!-- R3.21: subject comparison hasData -->
-    <text wx:if="{{subjectComparison.hasData}}">{{subjectComparison.text}}</text>
   </view>
 </view>

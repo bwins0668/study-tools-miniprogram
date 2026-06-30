@@ -88,13 +88,4 @@
   <view class="cc-backtop" wx:if="{{showBackToTop}}" bindtap="scrollToTop">
     <text class="cc-backtop__icon">↑</text>
   </view>
-
-  <!-- ===== R6.5 Smoke Anchors (hidden) ===== -->
-  <view style="display:none" aria-hidden="true">
-    <view class="cc-exam-card"><text class="cc-exam-card__name">IT Passport</text></view>
-    <view class="cc-course-card"><text class="cc-course-card__name">Python</text></view>
-    <view class="cc-section--courses"><text>学习记录</text></view>
-    <text>再练一次</text>
-    <view class="cc-record-link"></view>
-  </view>
 </view>

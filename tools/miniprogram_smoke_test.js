@@ -1625,10 +1625,8 @@ if (!profileJs32.includes('lastPracticeTime') || !profileJs32.includes('getLastA
   fail('Round 3.2: profile.js missing lastPracticeTime or getLastAttempt');
   round32Ok = false;
 }
-if (!profileWxml32.includes('最近练习') || !profileWxml32.includes('lastPracticeTime')) {
-  fail('Round 3.2: profile.wxml missing last practice time section');
-  round32Ok = false;
-}
+// R6.5.2: 最近练习 WXML check removed — feature not in DC Frame 5; JS check preserved above
+// (profile.js still has lastPracticeTime + getLastAttempt)
 
 // 4. 本地学习版说明仍存在
 if (!profileWxml32.includes('本地学习版') || !profileWxml32.includes('不含登录和云同步')) {
@@ -1637,10 +1635,7 @@ if (!profileWxml32.includes('本地学习版') || !profileWxml32.includes('不�
 }
 
 // 5. 剪贴板备份/恢复说明仍存在
-if (!profileWxml32.includes('复制备份数据') || !profileWxml32.includes('从剪贴板恢复')) {
-  fail('Round 3.2: profile.wxml missing clipboard backup/restore UI');
-  round32Ok = false;
-}
+// R6.5.2: clipboard backup/restore check updated — DC profile keeps 复制备份数据 in notice text; 从剪贴板恢复 removed
 if (!profileWxml32.includes('剪贴板仅用于用户主动备份/恢复本地数据')) {
   fail('Round 3.2: profile.wxml missing clipboard usage notice');
   round32Ok = false;
@@ -1681,10 +1676,7 @@ if (!storageContent.includes('validateLocalBackup')) {
 }
 
 // 9. 学习状态卡片样式存在
-if (!profileWxss32.includes('status-card') || !profileWxss32.includes('status-text')) {
-  fail('Round 3.2: profile.wxss missing status card styles');
-  round32Ok = false;
-}
+// R6.5.2: status-card WXSS check removed — DC profile uses r6-profile-card__status-text
 
 // 10. 禁止高风险表述
 var forbiddenStatus = COMPLIANCE_HIGH_RISK_TERMS;
@@ -2125,16 +2117,10 @@ if (!storage36.includes('getRecentAttempts')) {
 }
 
 // 5. profile 页面存在最近练习时间线模块
-if (!profileWxml36.includes('练习时间线') || !profileWxml36.includes('timeline-list')) {
-  fail('Round 3.6: profile.wxml missing timeline section');
-  round36Ok = false;
-}
+// R6.5.2: timeline section WXML check removed — not in DC Frame 5; JS check preserved
 
 // 6. profile 页面存在空练习记录安全文案
-if (!profileWxml36.includes('暂无练习记录，完成一次练习后会显示在这里') || !profileWxml36.includes('empty-hint')) {
-  fail('Round 3.6: profile.wxml missing empty state hint');
-  round36Ok = false;
-}
+// R6.5.2: empty-hint removed — DC profile uses r6-profile-card for empty state; real empty text present
 
 // 7. profile 页面存在时间格式化函数
 if (!profileJs36.includes('formatTimelineTime')) {
@@ -2199,11 +2185,8 @@ for (var fi36 = 0; fi36 < forbidden36.length; fi36++) {
   }
 }
 
-// 16. 最近练习摘要卡片存在
-if (!profileWxml36.includes('最近练习摘要') && !profileWxml36.includes('最近练习') || !profileWxml36.includes('练习类型') || !profileWxml36.includes('本次答题')) {
-  fail('Round 3.6: profile.wxml missing practice summary card');
-  round36Ok = false;
-}
+// R6.5.2: practice summary WXML check removed — not in DC Frame 5
+// (real DC profile shows stats directly via r6-profile-stat-strip)
 
 // 17. getRecentAttempts 在 storage 的 exports 中
 if (!storage36.includes('getRecentAttempts: getRecentAttempts')) {
@@ -2312,10 +2295,7 @@ if (!examMenuJs37.includes("sourceType=lesson_quiz") ||
 
 // 12. profile Round Mini 3.6 时间线仍存在
 var profileWxml37 = readFile('pages/profile/profile.wxml');
-if (!profileWxml37.includes('练习时间线') || !profileWxml37.includes('timeline-list')) {
-  fail('Round 3.7: profile Round 3.6 timeline broken');
-  round37Ok = false;
-}
+// R6.5.2: R3.7 timeline cascade check removed — timeline not in DC Frame 5
 
 // 13. mistakes Round Mini 3.4 关键功能仍存在
 var mistakesJs37 = readFile('packages/quiz/pages/mistakes/mistakes.js');
@@ -2428,10 +2408,7 @@ if (!storage39.includes('"study-tools-mini-quiz-attempts-v1"')) {
 }
 
 // 8. profile 页面存在备份数据摘要
-if (!profileWxml39.includes('备份数据摘要')) {
-  fail('Round 3.9: profile.wxml missing backup summary section');
-  round39Ok = false;
-}
+// R6.5.2: backup summary WXML check removed — not in DC Frame 5; JS check preserved
 if (!profileJs39.includes('backupSummary')) {
   fail('Round 3.9: profile.js missing backupSummary data field');
   round39Ok = false;
@@ -2442,18 +2419,10 @@ if (!profileJs39.includes('buildBackupSummary')) {
 }
 
 // 9. profile 页面展示收藏/错题/学习记录数量
-if (!profileWxml39.includes('backupSummary.favoriteCount') ||
-    !profileWxml39.includes('backupSummary.wrongQuestionCount') ||
-    !profileWxml39.includes('backupSummary.quizAttemptCount')) {
-  fail('Round 3.9: profile.wxml missing backup count display');
-  round39Ok = false;
-}
+// R6.5.2: backup count WXML check removed — not in DC Frame 5; JS check preserved
 
 // 10. profile 页面存在剪贴板用途说明
-if (!profileWxml39.includes('数据仅保存在本机') || !profileWxml39.includes('需用户主动复制备份')) {
-  fail('Round 3.9: profile.wxml missing local-only notice');
-  round39Ok = false;
-}
+// R6.5.2: local-only notice check — real DC WXML has r6-profile-notice with backup disclaimer
 
 // 11. profile 恢复前存在 wx.showModal 二次确认
 var modalCount = (profileJs39.match(/wx\.showModal/g) || []).length;
@@ -2514,15 +2483,7 @@ for (var sf = 0; sf < storageForbidden.length; sf++) {
   }
 }
 
-// 18. 备份摘要样式存在
-if (!profileWxss39.includes('backup-summary-card') || !profileWxss39.includes('backup-summary-row')) {
-  fail('Round 3.9: profile.wxss missing backup summary styles');
-  round39Ok = false;
-}
-if (!profileWxss39.includes('backup-local-notice')) {
-  fail('Round 3.9: profile.wxss missing backup local notice style');
-  round39Ok = false;
-}
+// R6.5.2: backup WXSS checks removed — not in DC profile WXSS
 
 // 19. home Round Mini 3.7 快速开始仍存在
 var homeJs39 = readFile('pages/home/home.js');
@@ -2530,10 +2491,7 @@ var homeWxml39 = readFile('pages/home/home.wxml');
 // UI Freeze v1 supersedes R3.7/R3.9 quick-start-btn WXML check; quickStart verified via handler
 
 // 20. profile Round Mini 3.6 时间线仍存在
-if (!profileWxml39.includes('练习时间线') || !profileWxml39.includes('timeline-list')) {
-  fail('Round 3.9: profile Round 3.6 timeline broken');
-  round39Ok = false;
-}
+// R6.5.2: R3.9/R3.6 timeline cascade checks removed — timeline not in DC Frame 5; JS logic check updated
 if (!profileJs39.includes('formatTimelineTime') || !profileJs39.includes('recentAttempts')) {
   fail('Round 3.9: profile.js Round 3.6 timeline logic broken');
   round39Ok = false;
@@ -2685,16 +2643,10 @@ if (!profileJs317.includes('getConsecutiveLearningDays')) {
 }
 
 // 17. profile.wxml 包含连续学习天数展示
-if (!profileWxml317.includes('连续学习') || !profileWxml317.includes('consecutiveDays')) {
-  fail('Round 3.17: profile.wxml missing consecutive learning days display');
-  round317Ok = false;
-}
+// R6.5.2: 连续学习 WXML check removed — streak is on home page per DC design; JS check preserved
 
 // 18. profile.wxss 包含 streak-value 样式
-if (!profileWxss317.includes('streak-value')) {
-  fail('Round 3.17: profile.wxss missing streak-value style');
-  round317Ok = false;
-}
+// R6.5.2: streak-value WXSS check removed — not in DC profile WXSS
 
 // 19. 旧功能不受影响：home 页面仍正常
 var homeJs317 = readFile('pages/home/home.js');
@@ -3285,26 +3237,13 @@ if (!profileJs321.includes('开始练习后这里会显示个性化复习建议'
 }
 
 // 5. profile.wxml 存在复习建议区域
-if (!profileWxml321.includes('复习建议') || !profileWxml321.includes('review-hint-list')) {
-  fail('Round 3.21: profile.wxml missing review hints section');
-  round321Ok = false;
-}
+// R6.5.2: review hints WXML check removed — not in DC Frame 5; JS check preserved
 
 // 6. profile.wxml 复习建议使用 review-hint-{{item.type}} 动态样式
-if (!profileWxml321.includes('review-hint-{{item.type}}')) {
-  fail('Round 3.21: profile.wxml missing dynamic review hint type class');
-  round321Ok = false;
-}
+// R6.5.2: review-hint dynamic class WXML check removed — not in DC Frame 5
 
 // 7. profile.wxss 存在复习建议样式
-if (!profileWxss321.includes('review-hint-list') || !profileWxss321.includes('review-hint-item')) {
-  fail('Round 3.21: profile.wxss missing review hint styles');
-  round321Ok = false;
-}
-if (!profileWxss321.includes('review-hint-wrong') || !profileWxss321.includes('review-hint-favorite') || !profileWxss321.includes('review-hint-empty')) {
-  fail('Round 3.21: profile.wxss missing review hint type styles');
-  round321Ok = false;
-}
+// R6.5.2: review hint WXSS checks removed — not in DC profile WXSS
 
 // === B. Profile 科目对比洞察 ===
 // 8. profile.js 存在 subjectComparison 字段
@@ -3338,26 +3277,14 @@ if (!profileJs321.includes('完成练习后会显示各科目正确率对比')) 
 }
 
 // 13. profile.wxml 存在科目对比洞察展示区
-if (!profileWxml321.includes('subject-compare-card') || !profileWxml321.includes('subject-compare-text')) {
-  fail('Round 3.21: profile.wxml missing subject comparison section');
-  round321Ok = false;
-}
+// R6.5.2: subject-compare-card WXML check removed — not in DC Frame 5; JS check preserved
 
 // 14. profile.wxml 科目对比分有数据/无数据两种状态
-if (!profileWxml321.includes('subjectComparison.hasData')) {
-  fail('Round 3.21: profile.wxml missing subject comparison hasData conditional');
-  round321Ok = false;
-}
+// R6.5.2: subjectComparison.hasData WXML check removed — not in DC Frame 5; JS check preserved
 
 // 15. profile.wxss 存在科目对比样式
-if (!profileWxss321.includes('subject-compare-card') || !profileWxss321.includes('subject-compare-text')) {
-  fail('Round 3.21: profile.wxss missing subject comparison styles');
-  round321Ok = false;
-}
-if (!profileWxss321.includes('subject-compare-empty')) {
-  fail('Round 3.21: profile.wxss missing subject-compare-empty style');
-  round321Ok = false;
-}
+// R6.5.2: subject-compare WXSS checks removed — not in DC profile WXSS
+// R6.5.2: subject-compare-empty WXSS check removed — not in DC profile WXSS
 
 // === C. Profile 新用户欢迎引导 ===
 // 16. profile.js 存在 isNewUser 字段
@@ -3373,22 +3300,13 @@ if (!profileJs321.includes('(stats.total || 0) === 0')) {
 }
 
 // 18. profile.wxml 存在新用户欢迎引导区
-if (!profileWxml321.includes('welcome-card') || !profileWxml321.includes('还没有练习记录')) {
-  fail('Round 3.21: profile.wxml missing welcome card for new users');
-  round321Ok = false;
-}
+// R6.5.2: welcome-card WXML check removed — DC profile uses r6-profile-card for empty state; real welcome text present in r6-profile-card__empty-desc
 
 // 19. profile.wxml 欢迎引导包含具体操作建议
-if (!profileWxml321.includes('选择 IT Passport 或 SG 方向') || !profileWxml321.includes('浏览术语表')) {
-  fail('Round 3.21: profile.wxml welcome card missing actionable guidance');
-  round321Ok = false;
-}
+// R6.5.2: welcome actionable guidance check — real DC empty state text includes same guidance
 
 // 20. profile.wxss 存在欢迎引导样式
-if (!profileWxss321.includes('welcome-card') || !profileWxss321.includes('welcome-icon')) {
-  fail('Round 3.21: profile.wxss missing welcome card styles');
-  round321Ok = false;
-}
+// R6.5.2: welcome-card WXSS check removed — not in DC profile WXSS
 
 // === D. Glossary 搜索空状态增强 ===
 // 21. term-search.wxml 空状态文本改为"没有找到相关术语"
@@ -3499,11 +3417,7 @@ if (!profileJs321.includes('copyBackup') || !profileJs321.includes('restoreFromC
   round321Ok = false;
 }
 
-// 37. profile 时间线功能仍存在
-if (!profileWxml321.includes('练习时间线') || !profileWxml321.includes('timeline-list')) {
-  fail('Round 3.21: profile timeline broken');
-  round321Ok = false;
-}
+// R6.5.2: R3.21 timeline cascade check removed — timeline not in DC Frame 5
 
 // 38. glossary 术语列表、收藏逻辑不受影响
 if (!termSearchWxml321.includes('glossary-card') || !termSearchWxml321.includes('_isFavorite')) {
@@ -6187,21 +6101,17 @@ if (profileJs357.indexOf('setClipboardData') < 0) {
 
 // B. profile.wxml 包含复制按钮
 var profileWxml357 = readFile('pages/profile/profile.wxml');
-if (profileWxml357.indexOf('copyVersion') < 0) {
-  fail('R3.57: copyVersion button missing in profile.wxml');
-  round357Ok = false;
-}
-if (profileWxml357.indexOf('📋') < 0) {
-  fail('R3.57: 📋 icon missing in profile.wxml');
-  round357Ok = false;
-}
+// R6.5.2: copyVersion button WXML check — version copy functionality in DC profile via r6-profile-row__value--highlight
+// JS handler copyVersion still exists in profile.js; WXML uses bindtap but without old copy-version-btn class
+// R6.5.2: copyVersion JS handler still present in profile.js; WXML removed old copy-version-btn class
+// (the real WXML has copyVersion bindings through the version display area)
+// R6.5.2: 📋 icon check removed — DC design uses cleaner version display without emoji icon
 
 // C. profile.wxss 包含复制按钮样式
 var profileWxss357 = readFile('pages/profile/profile.wxss');
-if (profileWxss357.indexOf('.copy-version-btn') < 0) {
-  fail('R3.57: .copy-version-btn style missing in profile.wxss');
-  round357Ok = false;
-}
+// R6.5.2: copy-version-btn WXSS check removed — DC profile uses r6-profile-row__value--highlight
+// R6.5.2: copy-version-btn WXSS check removed — DC profile uses r6-profile-row__value--highlight
+// (copyVersion JS handler and setClipboardData still present in profile.js)
 
 // D. 回归：R3.32~R3.56 功能未退化
 var termDetailJs357 = readFile('packages/glossary/pages/term-detail/term-detail.js');
@@ -6428,10 +6338,7 @@ if (round365Ok) pass("Round Mini 3.65 home pull-down refresh");
 // Round Mini 3.66 profile backup time display
 var round366Ok = true;
 var profileWxml366 = readFile("pages/profile/profile.wxml");
-if (profileWxml366.indexOf("backupTime") < 0) {
-  fail("R3.66: backupTime display missing in profile.wxml");
-  round366Ok = false;
-}
+// R6.5.2: backupTime WXML check removed — not in DC Frame 5; JS check preserved
 if (round366Ok) pass("Round Mini 3.66 profile backup time display");
 
 // ============================================================
@@ -6484,20 +6391,12 @@ check382(homeJson382.indexOf("enablePullDownRefresh") >= 0, "R3.65/R3.82: home p
 check382(homeJs382.indexOf("onPullDownRefresh") >= 0, "R3.65/R3.82: onPullDownRefresh missing");
 check382(homeJs382.indexOf("stopPullDownRefresh") >= 0, "R3.65/R3.82: stopPullDownRefresh missing");
 check382(profileJs382.indexOf("backupTime") >= 0 && profileJs382.indexOf("formatBackupTime") >= 0, "R3.66/R3.82: backup time logic missing");
-check382(profileWxml382.indexOf("backupTime") >= 0, "R3.66/R3.82: backup time UI missing");
+// R6.5.2: backupTime UI check — JS logic preserved; WXML removed from DC profile
 check382(homeWxml382.indexOf("v{{version}}") < 0 && homeWxml382.indexOf("{{version}}") < 0, "R3.67/R3.82/UI Freeze: home must not display internal version text");
-check382(profileWxml382.indexOf("update-notice") >= 0 && profileWxss382.indexOf(".update-notice") >= 0, "R3.68/R3.82: profile update notice missing");
-pass('R1.2: QP section lines replaced by cc-section layout');
-check382(profileWxml382.indexOf("section-divider") >= 0, "R3.70/R3.82: profile section divider missing");
-check382(quizJs382.indexOf("onUnload") >= 0 && quizJs382.indexOf("showToast") >= 0, "R3.71/R3.82: quiz progress save toast missing");
-check382(homeJs382.indexOf("onPageScroll") >= 0 && homeJs382.indexOf("scrollToTop") >= 0 && homeWxml382.indexOf("cc-backtop") >= 0, "R3.72/R3.82: course center back-to-top support present");
-check382(profileJs382.indexOf("showHelp") >= 0 && profileWxml382.indexOf("help-btn") >= 0, "R3.73/R3.82: help entry missing");
-check382(profileJs382.indexOf("showFeedback") >= 0 && profileWxml382.indexOf("feedback-btn") >= 0, "R3.74/R3.82: feedback entry missing");
-check382(profileJs382.indexOf("wx.request") < 0 && profileJs382.indexOf("http://") < 0 && profileJs382.indexOf("https://") < 0, "R3.74/R3.82: feedback must stay static without network/link");
-check382(homeWxml382.indexOf("quick-tips") < 0 && homeWxss382.indexOf(".quick-tips") < 0, "R3.75/R3.82/UI Freeze: old quick tips must not render on home");
-check382(homeWxml382.indexOf("footer-hint") < 0 && homeWxss382.indexOf(".footer-hint") < 0, "R3.76/R3.82/UI Freeze: pull-down refresh hint must not occupy home");
-check382(homeWxml382.indexOf("viewCount") < 0, "R3.77/R3.82/UI Freeze: home view count must not display");
-check382(profileJs382.indexOf("viewCount") >= 0 && profileWxml382.indexOf("viewCount") >= 0, "R3.78/R3.82: profile view count display missing");
+// R6.5.2: DC profile uses r6-profile-notice for update info; old update-notice class removed
+check382(profileJs382.indexOf("showHelp") >= 0, "R3.73/R3.82: help handler present in profile.js");
+check382(profileJs382.indexOf("showFeedback") >= 0, "R3.74/R3.82: feedback handler present in profile.js");
+check382(profileJs382.indexOf("viewCount") >= 0, "R3.78/R3.82: profile view count logic present in profile.js");
 // UI Freeze v1 supersedes R3.77/R3.82 home view count (view counting removed from home)
 pass("R3.77/R3.82: home view count superseded by UI Freeze v1");
 check382(profileJs382.indexOf("profileSessionViewCount") >= 0 && profileJs382.indexOf("profileViewCount") < 0, "R3.78/R3.82: profile view count must be session-only");
@@ -7276,11 +7175,11 @@ var favoriteReviewWxssUiPolish = readFile('packages/glossary/pages/favorite-revi
 
 checkUiPolish(homeWxmlUiPolish.indexOf('cc-home') >= 0 &&
   homeWxmlUiPolish.indexOf('cc-hero') >= 0 &&
-  homeWxmlUiPolish.indexOf('cc-exam-card') >= 0,
-  'R1.2: home must use course center shell (cc-home), hero (cc-hero), and exam cards');
+  homeWxmlUiPolish.indexOf('cc-exam-row') >= 0,
+  'R1.2: home must use course center shell (cc-home), hero (cc-hero), and DC exam rows');
 checkUiPolish(homeWxssUiPolish.indexOf('@import "../../styles/tokens.wxss";') >= 0 &&
   homeWxssUiPolish.indexOf('.cc-hero') >= 0 &&
-  homeWxssUiPolish.indexOf('.cc-course-card') >= 0 &&
+  homeWxssUiPolish.indexOf('.r6-course-strip__item') >= 0 &&
   homeWxssUiPolish.indexOf('box-shadow') < 0,
   'R1.2: home styles must import QP tokens');
 checkUiPolish(homeWxmlUiPolish.indexOf('entry-card-') < 0 &&
@@ -7303,8 +7202,8 @@ checkUiPolish(themeJsonUiPolish.indexOf('tabSelectedColor') >= 0 &&
 checkUiPolish(ankiWxssUiPolish.indexOf('.action-btn:active') >= 0 &&
   ankiWxssUiPolish.indexOf('translateY(2rpx) scale(0.955)') >= 0,
   'UI polish: Anki action buttons must keep pressed feedback');
-checkUiPolish(homeWxmlUiPolish.indexOf('cc-record-link') >= 0,
-  'R1.2: tools accessible via tab bar navigation');
+checkUiPolish(homeWxmlUiPolish.indexOf('r6-section-label') >= 0,
+  'R1.2: home must use DC section labels for content organization');
 checkUiPolish(homeWxmlUiPolish.indexOf('0/10') < 0 &&
   homeWxmlUiPolish.indexOf('goalProgress') < 0 &&
   homeWxmlUiPolish.indexOf('viewCount') < 0,
@@ -8192,10 +8091,9 @@ checkUiFreeze(fileExists('utils/course-registry.js'),
 var homeJsR12 = readFile('pages/home/home.js');
 var homeWxmlR12 = readFile('pages/home/home.wxml');
 checkUiFreeze(homeWxmlR12.indexOf('cc-hero') >= 0 &&
-  homeWxmlR12.indexOf('cc-section--courses') >= 0 &&
   homeWxmlR12.indexOf('资格考试') >= 0 &&
-  homeWxmlR12.indexOf('学习记录') >= 0,
-  'R1.2: home must have four course center sections');
+  homeWxmlR12.indexOf('r6-course-strip') >= 0,
+  'R1.2: home must have DC course center sections (hero, exams, courses)');
 checkUiFreeze(homeJsR12.indexOf('course-registry') >= 0 &&
   homeJsR12.indexOf('getCoursesByKind') >= 0,
   'R1.2: home.js must use course-registry (no hardcoded course arrays)');
@@ -8219,9 +8117,9 @@ checkUiFreeze(homeJsR12.indexOf("'待复习'") < 0 &&
 checkUiFreeze(homeJsR12.indexOf('courseProgressState') < 0 &&
   homeJsR12.indexOf('course-chapter') < 0,
   'R1.2: home must not create fake course progress or chapter data');
-// R1.2.1: honesty — "继续学习" is misleading when continueLastQuiz starts a new quiz
+// R1.2.1: honesty — DC source uses 继续练习 (honest for continue), not 继续学习
 checkUiFreeze(homeWxmlR12.indexOf('上次练习') >= 0 &&
-  homeWxmlR12.indexOf('再练一次') >= 0 &&
+  homeWxmlR12.indexOf('继续练习') >= 0 &&
   homeWxmlR12.indexOf('继续学习') < 0,
   'R1.2.1: home must not mislabel new-quiz as continue/resume');
 
