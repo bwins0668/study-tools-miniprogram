@@ -8,10 +8,13 @@
   <view class="review-rule"><view></view><text></text></view>
 
   <view class="review-section">
-    <text class="review-section__title">今日复习</text>
-    <view class="review-card" bindtap="goFlashcards">
-      <text class="review-card__title">闪卡复习</text>
-      <text class="review-card__sub">IT Passport / SG 年度模拟闪卡</text>
+    <view class="r6-section-label"><text class="r6-section-label__num">01</text><text class="review-section__title">今日复习</text></view>
+    <view class="review-card review-card--flashcard" bindtap="goFlashcards">
+      <view class="review-card__icon">SRS</view>
+      <view class="review-card__body">
+        <text class="review-card__title">闪卡复习</text>
+        <text class="review-card__sub">IT Passport / SG 年度模拟闪卡</text>
+      </view>
       <text class="review-card__chev">›</text>
     </view>
     <view class="review-card" bindtap="goMistakes">
