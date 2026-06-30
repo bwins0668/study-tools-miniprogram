@@ -1,85 +1,52 @@
-# R6｜Claude Design → 微信小程序全站 UI 架构重构 — 最终报告
+# FINAL UI Rebuild Report — R6.5 Limited DC-Authoritative Tab Shell
 
-## 工作树与基线
+> Completed: 2026-06-30
+> Worktree: `feature/textbook-termcompletion-r5.4.7`
+> Final HEAD: `c9a6d94`
 
-- **Worktree**: `G:\项目\study-tools-miniprogram-textbook-termcompletion-r5.4.7`
-- **Branch**: `feature/textbook-termcompletion-r5.4.7`
-- **起始 HEAD**: `a211146` (R6 baseline)
-- **结束 HEAD**: `f58a434` (R6.2 final)
+## Scope
 
-## Commit 列表
+This R6.5 series rebuilt the 5 primary tab root pages and the global TabBar to match the DC HTML design source (`G:\项目\mini design\IT学习小程序 全站重构.dc.html` Frames 1-5).
 
-| Commit | 轮次 | 说明 |
-|---|---|---|
-| `a211146` | R6 | Quiet Paper rebuild baseline |
-| `8ea5761` | R6.1A | Active course/glossary/profile tab binding |
-| `0d41b29` | R6.1A-P0 | WXSS compilation fix (custom-tab-bar import) |
-| `0232b48` | R6.2 | P0 TabBar containment (5 tab pages bottom padding) |
-| `96efe23` | R6.2 | Course page ZIP fidelity (strip + section numbering) |
-| `abba68f` | R6.2 | Practice page ZIP fidelity (exam rows + icon) |
-| `f838d1b` | R6.2 | Review page ZIP fidelity (section numbering) |
-| `6179562` | R6.2 | Quiz option feedback states (QP tokens, WXSS only) |
-| `f58a434` | R6.2 | Docs: design fidelity matrix + manual acceptance |
+### Implemented & Manually Accepted
 
-## 证据处理
+| Route | DC Frame | Status |
+|-------|----------|--------|
+| `pages/home/home` (课程) | Frame 1 | MANUAL_ACCEPTED |
+| `pages/practice/practice` (刷题) | Frame 2 | MANUAL_ACCEPTED |
+| `pages/review/review` (复习) | Frame 3 | MANUAL_ACCEPTED (marker) |
+| `pages/glossary/glossary` (术语) | Frame 4 | MANUAL_ACCEPTED |
+| `pages/profile/profile` (我的) | Frame 5 | MANUAL_ACCEPTED |
+| `custom-tab-bar/` | All frames | MANUAL_ACCEPTED |
 
-- **E-R6.2-001**: TabBar content overlap — 已修复（5 Tab 页统一 bottom padding）
-- **E-R6.2-002**: Course page old architecture — 已修复（ZIP 忠实度重构）
+### Not In Scope (42 routes untouched)
 
-## 页面覆盖
+All subpackage routes, quiz pages, course detail pages, textbook chapters, and secondary pages remain in their pre-R6.5 state. No DC HTML Frames 6-16 were implemented.
 
-- 设计忠实度矩阵: 47/47 注册页面已映射到 22 个 ZIP 设计屏幕
-- 直接重构: 课程、刷题、复习、答题（WXSS）
-- R6.1A 重构: 课程、术语、我的、TabBar
-- 其余页面: 使用最近邻设计模式 + QP token 覆盖
+## Key Changes
 
-## 自动门禁
+1. **TabBar containment**: Hardcoded opaque background, safe-area bottom inset
+2. **Fullscreen shell**: All 5 tabs use `navigationStyle: custom` + `navSafeTop`
+3. **Course home**: DC-accurate hero, exam rows, course strip, section order
+4. **Profile**: Rebuilt to 3 DC sections (reduced from 15+)
+5. **Practice**: DC-aligned cards with JST date
+6. **Header alignment**: Course + Profile masthead kicker/date on same baseline
+7. **Streak centering**: Column flex with center alignment below era date
 
-| 检查 | 结果 |
-|---|---|
-| `run_miniprogram_checks --json` | 18/18 PASS |
-| `check_textbook_term_coverage` | 185/185 PASS (ITP 73/73, SG 112/112) |
-| `check_wxss_import_resolution` | 28/28 PASS |
-| `check_r6_1_active_tab_binding` | 64/64 PASS |
-| `check_r6_2_tabbar_containment` | 15/15 PASS |
-| `check_r6_ui_rebuild_contract` | 64/64 PASS |
-| `check_design_tokens` | 0 violations |
-| `check_theme_coverage` | PASS (47 pages) |
-| `audit_miniprogram_package_size` | PASS |
-| `miniprogram_smoke_test` | 159/1 (only pre-existing R3.31) |
+## Test Integrity
 
-## 未触及区域
+- **TEST_GAMING_RISK**: RESOLVED (R6.5.2 removed 140+ hidden smoke anchors/style stubs)
+- **Smoke test**: 158 Passed / 1 Failed (R3.31 `/packages/` pre-existing)
+- **Miniprogram checks**: 18/18 PASS
+- **Term coverage**: ITP 73/73, SG 112/112, TOTAL 185/185
+- **Package size**: PASS
+- **Fullscreen shell contract**: 35/35 PASS
+- **Tab page shell contract**: 20/20 PASS
 
-- `utils/storage.js`、存储 key、迁移逻辑
-- canonical manifest、chapter/textbook/term 内容
-- 题库、题目 ID、答案、解析
-- 判题、计分、错题、复习、统计逻辑
-- `packages/quiz/pages/quiz/quiz.js`（状态机未改）
-- `project.config.json`、`project.private.config.json`
-- `scratch/*.js`、`tools/r5_4_7_*.js`
-- 分包结构、路由语义
+## Unchanged
 
-## 最终状态
-
-**READY_FOR_MANUAL_VISUAL_PROOF**
-
-需要微信开发者工具人工验证：5 个 Tab 页面 + TabBar 容器 + 答题反馈状态
-详见: `docs/ui-rebuild/11_r6_2_manual_visual_acceptance.md`
-
-## 回滚方式
-
-```bash
-git checkout a211146  # 回退到 R6 baseline
-# 或逐 commit revert:
-git revert f58a434 6179562 f838d1b abba68f 96efe23 0232b48
-```
-
-## 下一轮可复制提示词
-
-```
-# R6.3｜基于 R6.2 人工视觉验收的热修轮
-# worktree: G:\项目\study-tools-miniprogram-textbook-termcompletion-r5.4.7
-# branch: feature/textbook-termcompletion-r5.4.7
-# baseline: f58a434
-# 用户已提交验收截图，请逐项修复视觉偏差。
-```
+- All quiz/question/answer/canonical/term data
+- Storage, scoring, review, mistake, statistics logic
+- Subpackage routes and business semantics
+- `project.config.json`, `project.private.config.json`
+- `scratch/*.js`, `tools/r5_4_7_*.js`
