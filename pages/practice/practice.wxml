@@ -1,15 +1,23 @@
 <!--pages/practice/practice.wxml-->
 <view class="practice-page">
   <view class="practice-head">
-    <text class="practice-head__kicker">DRILL · 刷题</text>
-    <text class="practice-head__title">刷题</text>
-    <text class="practice-head__sub">选择考试方向，快速开始练习</text>
+    <view>
+      <text class="practice-head__kicker">DRILL · 刷题</text>
+      <text class="practice-head__title">刷题</text>
+    </view>
+    <text class="practice-head__meta">选择考试方向，进入年度 / 分野模拟练习</text>
   </view>
-  <view class="practice-rule"><view></view><text></text></view>
+  <view class="practice-rule">
+    <view class="practice-rule__accent"></view>
+    <view class="practice-rule__line"></view>
+  </view>
 
   <view class="practice-continue" wx:if="{{hasLastAttempt}}">
     <view class="practice-card practice-card--continue" bindtap="continueLast">
-      <text class="practice-card__kicker">CONTINUE</text>
+      <view class="practice-card__header">
+        <text class="practice-card__kicker">CONTINUE · 继续上次</text>
+        <text class="practice-card__meta" wx:if="{{lastMetaText}}">{{lastMetaText}}</text>
+      </view>
       <text class="practice-card__title">{{lastExamLabel}}</text>
       <text class="practice-card__sub" wx:if="{{lastSourceLabel}}">{{lastSourceLabel}}</text>
       <text class="practice-card__action">继续上次刷题 →</text>
@@ -17,20 +25,29 @@
   </view>
 
   <view class="practice-section">
-    <text class="practice-section__title">选择考试</text>
+    <view class="r6-section-label"><text class="r6-section-label__num">01</text><text class="practice-section__title">选择考试</text></view>
     <view class="practice-card" bindtap="goITPassport">
-      <text class="practice-card__title">IT Passport</text>
-      <text class="practice-card__sub">ITパスポート試験 · 按年度模拟</text>
+      <view class="practice-card__icon practice-card__icon--itpass">IT</view>
+      <view class="practice-card__body">
+        <text class="practice-card__title">IT Passport</text>
+        <text class="practice-card__sub">ITパスポート試験 · 按年度模拟</text>
+      </view>
       <text class="practice-card__chev">›</text>
     </view>
     <view class="practice-card" bindtap="goSG">
-      <text class="practice-card__title">SG 信息安全</text>
-      <text class="practice-card__sub">情報セキュリティ · 专项强化</text>
+      <view class="practice-card__icon practice-card__icon--sg">SG</view>
+      <view class="practice-card__body">
+        <text class="practice-card__title">SG 信息安全</text>
+        <text class="practice-card__sub">情報セキュリティ · 专项强化</text>
+      </view>
       <text class="practice-card__chev">›</text>
     </view>
     <view class="practice-card practice-card--muted">
-      <text class="practice-card__title">MOS 365</text>
-      <text class="practice-card__sub">认证考试 — 准备中</text>
+      <view class="practice-card__icon practice-card__icon--muted">MO</view>
+      <view class="practice-card__body">
+        <text class="practice-card__title">MOS 365</text>
+        <text class="practice-card__sub">认证考试 — 准备中</text>
+      </view>
     </view>
   </view>
 </view>
