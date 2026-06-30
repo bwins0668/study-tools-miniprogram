@@ -298,6 +298,93 @@ module.exports = {
       "overviewZh": "案例二：勒索软件与备份用于理解勒索软件加密数据后的影响，以及离线备份和恢复计划的重要性。本单元依据 PDF 43-46 页的「【事例2】ランサムウェアとバックアップ」定位，重点理解：勒索软件会加密数据并阻碍业务继续。备份不是只复制一份文件，还要考虑版本、离线或隔离保存、恢复测试和业务继续计划。考试常用勒索软件、加密、备份、恢复、网络隔离、业务连续性是判断线索来换说法；同时要和普通恶意软件处理或单纯复制文件区分。",
       "learningGoalJa": "問題文の条件を読み取り、「【事例2】ランサムウェアとバックアップ」に関する選択肢を根拠を持って判定できるようにする。",
       "learningGoalZh": "能根据题干条件判断“1-1-3 案例二：勒索软件与网络隔离备份”相关选项，并说清楚判断依据。",
+      "sourceAccess": {
+        "mode": "locator_only",
+        "status": "unbound",
+        "displayLabel": "原书定位已验证 / 原书阅读尚未绑定",
+        "documentId": null,
+        "url": null
+      },
+      "learningExperience": {
+        "goalJa": "ランサムウェアの事例を、攻撃の仕組み、バックアップの保存条件、復旧手順、業務継続の判断に分けて読めるようにする。",
+        "goalZh": "先理解勒索软件、备份、恢复、离线隔离和 BCP 的关系，再用这些条件判断案例题的正确对策。",
+        "coreConcept": {
+          "headingJa": "ランサムウェア対策は復旧可能性まで含めて考える",
+          "headingZh": "勒索软件对策要看到“能否恢复业务”",
+          "bodyJa": "ランサムウェアは、利用者や組織のデータを暗号化し、復号や再利用のために金銭を要求する攻撃です。被害を受けた後は、感染端末を止めるだけでは業務は戻りません。重要なのは、暗号化されていないバックアップが残っているか、バックアップから復旧できる手順を確認しているか、業務を止めないための優先順位を決めているかです。同じネットワーク上のバックアップは攻撃の影響を受ける可能性があるため、世代管理、オフライン保管、復旧訓練、BCPを組み合わせて考えます。",
+          "bodyZh": "勒索软件不是“普通病毒感染”四个字就能解释完的知识点。它会把数据加密，让企业即使有设备也无法使用业务数据。备份也不是复制一份就结束：如果备份一直连在同一网络里，也可能一起被加密。考试要你判断的是恢复能力，所以要同时看备份介质是否隔离、是否有多代版本、是否做过 Restore 测试，以及 BCP 是否规定了业务优先级。"
+        },
+        "prerequisiteConcepts": [
+          {
+            "labelJa": "暗号化されたデータ",
+            "labelZh": "被加密的数据",
+            "bodyJa": "攻撃後にファイルが存在していても、正しく読めなければ業務では使えません。",
+            "bodyZh": "文件还在不代表业务可继续，关键是是否能恢复可读、可用的数据。"
+          },
+          {
+            "labelJa": "バックアップと復旧",
+            "labelZh": "备份与恢复",
+            "bodyJa": "バックアップは取得、保管、復旧確認までそろって初めて対策になります。",
+            "bodyZh": "备份要能真的恢复，只有“有一份副本”不足以说明安全。"
+          },
+          {
+            "labelJa": "業務継続",
+            "labelZh": "业务连续性",
+            "bodyJa": "復旧順序、代替手段、再開基準をBCPとして決めておくと被害時の判断がぶれません。",
+            "bodyZh": "BCP 负责告诉组织先恢复什么、怎么临时维持业务、何时恢复正常。"
+          }
+        ],
+        "caseBreakdown": [
+          {
+            "labelJa": "何が起きたか",
+            "labelZh": "发生了什么",
+            "bodyJa": "攻撃者はランサムウェアで業務データを暗号化し、通常の利用や共有をできない状態にします。",
+            "bodyZh": "攻击者通过勒索软件加密业务数据，使企业无法正常读取或使用这些数据。"
+          },
+          {
+            "labelJa": "なぜ同一ネットワークのバックアップが弱いか",
+            "labelZh": "为什么同网备份脆弱",
+            "bodyJa": "バックアップ媒体が常時接続されていると、攻撃の影響範囲に含まれ、バックアップ自体も暗号化されるおそれがあります。",
+            "bodyZh": "如果备份介质一直在线并在同一网络里，攻击扩散时备份也可能被加密，恢复路径会一起失效。"
+          },
+          {
+            "labelJa": "どう判断するか",
+            "labelZh": "题目如何判断",
+            "bodyJa": "設問でネットワーク分離、オフライン保管、復旧手順の確認、世代管理が出たら、復旧可能性を高める対策として読む。",
+            "bodyZh": "题干出现网络隔离、离线保存、恢复演练、多代备份时，通常是在问如何提高可恢复性。"
+          },
+          {
+            "labelJa": "正しい対策は何か",
+            "labelZh": "正确对策是什么",
+            "bodyJa": "感染端末の隔離に加え、暗号化されていないバックアップから復旧し、BCPに従って優先業務を再開します。",
+            "bodyZh": "不仅要隔离感染终端，还要用未被加密的备份恢复，并按 BCP 先恢复关键业务。"
+          }
+        ],
+        "examCues": [
+          {
+            "cueJa": "「バックアップがある」だけではなく、「オフライン」「世代管理」「復旧確認」があるかを確認する。",
+            "cueZh": "看到“有备份”还不够，要继续看是否离线、是否多代保存、是否验证过恢复。"
+          },
+          {
+            "cueJa": "「業務を継続する」「優先順位を決める」という条件があれば、BCPや復旧計画の観点で読む。",
+            "cueZh": "题干强调业务继续、恢复优先级时，要从 BCP 和恢复计划判断。"
+          }
+        ],
+        "mistakeComparisons": [
+          {
+            "aJa": "バックアップ",
+            "bJa": "復旧",
+            "bodyJa": "バックアップはデータを残す行為で、復旧はそのデータを使って業務に戻す行為です。保存だけで復旧できるとは限りません。",
+            "bodyZh": "Backup 是保留数据副本，Restore 是用副本让系统或业务恢复。考试会用“有备份但未测试恢复”来设陷阱。"
+          },
+          {
+            "aJa": "同一ネットワーク上の保存",
+            "bJa": "オフライン保管",
+            "bodyJa": "同一ネットワーク上の保存は運用しやすい一方で攻撃の影響を受けやすく、オフライン保管は復旧用の最後の退避先になります。",
+            "bodyZh": "同网保存方便但可能一起被加密；离线备份牺牲一些便利性，用来保住恢复来源。"
+          }
+        ]
+      },
       "sections": [
         {
           "headingJa": "仕組みと役割",
@@ -364,29 +451,180 @@ module.exports = {
       ],
       "keyTerms": [
         {
-          "termJa": "Ransomware",
-          "termZh": "Ransomware",
-          "english": "Ransomware"
+          "id": "ransomware",
+          "en": "Ransomware",
+          "ja": "ランサムウェア",
+          "zh": "勒索软件",
+          "termJa": "ランサムウェア",
+          "termZh": "勒索软件",
+          "english": "Ransomware",
+          "termType": "security-threat",
+          "definitionJa": "データやシステムを暗号化し、利用できない状態にして復旧の対価を要求するマルウェアです。",
+          "definitionZh": "勒索软件会加密数据或系统，使业务无法正常使用，再要求支付赎金换取恢复条件。",
+          "contextJa": "この単元では、バックアップが同時に暗号化されないように保管方法と復旧手順を考える起点になります。",
+          "contextZh": "本节用它说明：真正的安全不是感染后才杀毒，而是提前准备不会一起被加密的恢复路径。",
+          "compareWith": [
+            "malware",
+            "backup",
+            "restore"
+          ],
+          "examCueJa": "「暗号化」「身代金」「復旧不能」が出たらランサムウェア被害として読む。",
+          "examCueZh": "题干出现加密、赎金、无法恢复时，优先判断为勒索软件场景。",
+          "sourceRefs": [
+            {
+              "sourceId": "sg_security_textbook",
+              "pdfPageStart": 43,
+              "pdfPageEnd": 46,
+              "printedPageStart": null,
+              "printedPageEnd": null,
+              "headingJa": "1-1-3 【事例2】ランサムウェアとバックアップ",
+              "anchorTermsJa": [
+                "【事例2】ランサムウェアとバックアップ"
+              ],
+              "verificationStatus": "verified"
+            }
+          ]
         },
         {
-          "termJa": "Backup",
-          "termZh": "Backup",
-          "english": "Backup"
+          "id": "backup",
+          "en": "Backup",
+          "ja": "バックアップ",
+          "zh": "备份",
+          "termJa": "バックアップ",
+          "termZh": "备份",
+          "english": "Backup",
+          "termType": "recovery-control",
+          "definitionJa": "障害や攻撃に備えて、重要なデータを別媒体や別場所に保存しておく対策です。",
+          "definitionZh": "备份是在故障或攻击前，把重要数据保存到其他介质或位置，以便之后恢复。",
+          "contextJa": "ランサムウェア対策では、バックアップが攻撃の影響を受けない場所にあるかが判断点になります。",
+          "contextZh": "在勒索软件场景中，备份的价值取决于它是否不会和原数据一起被加密。",
+          "compareWith": [
+            "restore",
+            "offline-backup",
+            "bcp"
+          ],
+          "examCueJa": "「取得済み」だけでなく、世代管理、隔離、復旧確認があるかを見る。",
+          "examCueZh": "考试不会只看是否备份，还会看是否隔离、多代保存、能否恢复。",
+          "sourceRefs": [
+            {
+              "sourceId": "sg_security_textbook",
+              "pdfPageStart": 43,
+              "pdfPageEnd": 46,
+              "printedPageStart": null,
+              "printedPageEnd": null,
+              "headingJa": "1-1-3 【事例2】ランサムウェアとバックアップ",
+              "anchorTermsJa": [
+                "【事例2】ランサムウェアとバックアップ"
+              ],
+              "verificationStatus": "verified"
+            }
+          ]
         },
         {
-          "termJa": "Restore",
-          "termZh": "Restore",
-          "english": "Restore"
+          "id": "restore",
+          "en": "Restore",
+          "ja": "復旧",
+          "zh": "恢复",
+          "termJa": "復旧",
+          "termZh": "恢复",
+          "english": "Restore",
+          "termType": "recovery-process",
+          "definitionJa": "バックアップなどを利用して、データやシステムを業務で使える状態に戻すことです。",
+          "definitionZh": "恢复是利用备份等手段，让数据或系统重新回到业务可使用状态。",
+          "contextJa": "事例では、バックアップを持っているだけでなく、復旧手順を確認しているかが問われます。",
+          "contextZh": "本节强调备份必须能恢复；没有演练或流程，备份可能只是心理安慰。",
+          "compareWith": [
+            "backup",
+            "bcp",
+            "incident-response"
+          ],
+          "examCueJa": "「復元手順」「復旧訓練」「業務再開」が出たらRestoreの観点で読む。",
+          "examCueZh": "题干出现恢复步骤、恢复演练、业务重启时，要从 Restore 角度判断。",
+          "sourceRefs": [
+            {
+              "sourceId": "sg_security_textbook",
+              "pdfPageStart": 43,
+              "pdfPageEnd": 46,
+              "printedPageStart": null,
+              "printedPageEnd": null,
+              "headingJa": "1-1-3 【事例2】ランサムウェアとバックアップ",
+              "anchorTermsJa": [
+                "【事例2】ランサムウェアとバックアップ"
+              ],
+              "verificationStatus": "verified"
+            }
+          ]
         },
         {
-          "termJa": "Offline Backup",
-          "termZh": "Offline Backup",
-          "english": "Offline Backup"
+          "id": "offline-backup",
+          "en": "Offline Backup",
+          "ja": "オフラインバックアップ",
+          "zh": "离线备份",
+          "termJa": "オフラインバックアップ",
+          "termZh": "离线备份",
+          "english": "Offline Backup",
+          "termType": "recovery-control",
+          "definitionJa": "通常時はネットワークから切り離した媒体や環境にバックアップを保管する考え方です。",
+          "definitionZh": "离线备份是把备份保存在平时不连接网络的介质或环境中，降低一起被攻击的风险。",
+          "contextJa": "ランサムウェアでは同一ネットワークの保存先も暗号化される可能性があるため、分離が重要になります。",
+          "contextZh": "本案例用它区分“有备份”和“有不会一起被加密的备份”。",
+          "compareWith": [
+            "backup",
+            "network-share",
+            "restore"
+          ],
+          "examCueJa": "「同一ネットワーク」「常時接続」と対比して、分離保管の効果を判断する。",
+          "examCueZh": "题干把同网、常时连接与离线隔离对比时，要选能避免备份一起受害的做法。",
+          "sourceRefs": [
+            {
+              "sourceId": "sg_security_textbook",
+              "pdfPageStart": 43,
+              "pdfPageEnd": 46,
+              "printedPageStart": null,
+              "printedPageEnd": null,
+              "headingJa": "1-1-3 【事例2】ランサムウェアとバックアップ",
+              "anchorTermsJa": [
+                "【事例2】ランサムウェアとバックアップ"
+              ],
+              "verificationStatus": "verified"
+            }
+          ]
         },
         {
-          "termJa": "BCP",
-          "termZh": "BCP",
-          "english": "BCP"
+          "id": "bcp",
+          "en": "BCP",
+          "ja": "事業継続計画（BCP）",
+          "zh": "业务连续性计划（BCP）",
+          "termJa": "事業継続計画（BCP）",
+          "termZh": "业务连续性计划（BCP）",
+          "english": "BCP",
+          "expansionEn": "Business Continuity Plan",
+          "termType": "continuity-plan",
+          "definitionJa": "災害、障害、攻撃が起きても重要業務を継続又は早期再開するための計画です。",
+          "definitionZh": "BCP 是在灾害、故障或攻击发生时，让关键业务继续或尽快恢复的计划。",
+          "contextJa": "復旧対象の優先順位や代替手段を決めるため、バックアップ対策を業務継続の判断につなげます。",
+          "contextZh": "本节里 BCP 用来把技术恢复和业务优先级连接起来，不只是 IT 部门的备份清单。",
+          "compareWith": [
+            "restore",
+            "backup",
+            "incident-response"
+          ],
+          "examCueJa": "「重要業務」「優先順位」「早期再開」が出たらBCPの観点を確認する。",
+          "examCueZh": "出现关键业务、优先级、尽快恢复时，要从 BCP 判断。",
+          "sourceRefs": [
+            {
+              "sourceId": "sg_security_textbook",
+              "pdfPageStart": 43,
+              "pdfPageEnd": 46,
+              "printedPageStart": null,
+              "printedPageEnd": null,
+              "headingJa": "1-1-3 【事例2】ランサムウェアとバックアップ",
+              "anchorTermsJa": [
+                "【事例2】ランサムウェアとバックアップ"
+              ],
+              "verificationStatus": "verified"
+            }
+          ]
         }
       ],
       "commonTraps": [
