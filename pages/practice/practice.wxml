@@ -26,24 +26,21 @@
 
   <view class="practice-section">
     <view class="r6-section-label"><text class="r6-section-label__num">01</text><text class="practice-section__title">选择考试</text></view>
-    <view class="practice-card" bindtap="goITPassport">
-      <view class="practice-card__icon practice-card__icon--itpass">IT</view>
+    <view class="practice-card practice-card--exam" bindtap="goITPassport">
       <view class="practice-card__body">
         <text class="practice-card__title">IT Passport</text>
         <text class="practice-card__sub">ITパスポート試験 · 按年度模拟</text>
       </view>
       <text class="practice-card__chev">›</text>
     </view>
-    <view class="practice-card" bindtap="goSG">
-      <view class="practice-card__icon practice-card__icon--sg">SG</view>
+    <view class="practice-card practice-card--exam" bindtap="goSG">
       <view class="practice-card__body">
         <text class="practice-card__title">SG 信息安全</text>
         <text class="practice-card__sub">情報セキュリティ · 专项强化</text>
       </view>
       <text class="practice-card__chev">›</text>
     </view>
-    <view class="practice-card practice-card--muted">
-      <view class="practice-card__icon practice-card__icon--muted">MO</view>
+    <view class="practice-card practice-card--exam practice-card--muted">
       <view class="practice-card__body">
         <text class="practice-card__title">MOS 365</text>
         <text class="practice-card__sub">认证考试 — 准备中</text>

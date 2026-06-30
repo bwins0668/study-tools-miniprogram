@@ -1,40 +1,44 @@
 <!--pages/profile/profile.wxml-->
 <view data-r6-active-tab="profile" class="container {{__themeDark ? 'dark-theme' : ''}}">
-  <!-- 头部 -->
-  <view class="r6-profile-head">
-    <view class="avatar-placeholder">
-      <view class="avatar-symbol"></view>
+  <!-- Masthead -->
+  <view class="r6-profile-mast">
+    <view>
+      <text class="r6-profile-mast__kicker">PROFILE · 我的</text>
+      <text class="r6-profile-mast__title">我的</text>
     </view>
-    <text class="profile-name">Study Tools Mini</text>
-    <view class="version-row">
-      <text class="profile-version">当前版本：{{version}}</text>
-      <!-- R3.57 复制版本号按钮 -->
-      <!-- R3.57 smoke anchor: 📋 -->
-      <view class="copy-version-btn" bindtap="copyVersion">
-        <view class="copy-version-symbol"></view>
-      </view>
+    <view class="r6-profile-mast__right">
+      <text class="r6-profile-mast__date" wx:if="{{jstDateStr}}">{{jstDateStr}}</text>
     </view>
   </view>
-
-  <!-- 基础统计 -->
-  <view class="stats-section r6-profile-row-list">
-    <text class="section-title">基础信息</text>
-    <view class="r6-profile-card r6-profile-row">
-      <view class="info-row">
-        <text class="info-label">已收藏术语</text>
-        <text class="info-value info-highlight">{{favoriteCount}}</text>
-      </view>
-    </view>
-    <view class="r6-profile-card r6-profile-row">
-      <view class="info-row">
-        <text class="info-label">错题数量</text>
-        <text class="info-value info-highlight">{{wrongQuestionCount}}</text>
-      </view>
-    </view>
+  <view class="r6-profile-rule">
+    <view class="r6-profile-rule__accent"></view>
+    <view class="r6-profile-rule__line"></view>
   </view>
 
-  <!-- R3.70 分区分隔线 -->
-  <view class="section-divider"></view>
+  <!-- 学习数据 stat strip -->
+  <view class="r6-profile-section">
+    <view class="r6-section-label"><text class="r6-section-label__num">01</text><text class="r6-section-label__title">学习数据</text></view>
+    <view class="r6-profile-stat-strip">
+      <view class="r6-profile-stat-strip__box">
+        <text class="r6-profile-stat-strip__num">{{totalAttempts}}</text>
+        <text class="r6-profile-stat-strip__label">总答题</text>
+      </view>
+      <view class="r6-profile-stat-strip__div"></view>
+      <view class="r6-profile-stat-strip__box">
+        <text class="r6-profile-stat-strip__num r6-profile-stat-strip__num--success">{{accuracy}}%</text>
+        <text class="r6-profile-stat-strip__label">正确率</text>
+      </view>
+      <view class="r6-profile-stat-strip__div"></view>
+      <view class="r6-profile-stat-strip__box">
+        <text class="r6-profile-stat-strip__num r6-profile-stat-strip__num--danger">{{wrongQuestionCount}}</text>
+        <text class="r6-profile-stat-strip__label">错题</text>
+      </view>
+    </view>
+    <view class="r6-profile-row">
+      <text class="r6-profile-row__label">已收藏术语</text>
+      <text class="r6-profile-row__value">{{favoriteCount}}</text>
+    </view>
+  </view>
 
   <!-- 学习状态 -->
   <view class="stats-section r6-profile-row-list" wx:if="{{learningStatus}}">

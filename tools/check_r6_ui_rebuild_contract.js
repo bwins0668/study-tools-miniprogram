@@ -84,7 +84,7 @@ var requiredPageMarkers = {
   'pages/practice/practice.wxml': ['practice-page', 'practice-head', 'practice-card--continue'],
   'pages/review/review.wxml': ['review-page', 'review-section', 'review-card'],
   'pages/glossary/glossary.wxml': ['glossary-hero', 'search-entry-card', 'r6-glossary-entry-list'],
-  'pages/profile/profile.wxml': ['r6-profile-head', 'stats-grid', 'backup-btn-group'],
+ 'pages/profile/profile.wxml': ['r6-profile-mast', 'stats-grid', 'backup-btn-group'],
   'pages/course/course.wxml': ['cs-page', 'cs-actions', 'cs-section'],
   'packages/quiz/pages/quiz/quiz.wxml': ['question-card', 'option-item'],
   'packages/quiz/pages/mistakes/mistakes.wxml': ['mistakes-page', 'mistake-card'],

@@ -29,6 +29,11 @@ page { background-color: var(--qp-color-canvas); }
   padding-bottom: 6rpx; font-family: var(--qp-font-family-data);
   font-size: 24rpx; color: var(--qp-color-text-secondary);
 }
+.cc-mast__meta__num {
+  color: var(--qp-color-primary);
+  font-weight: var(--qp-font-weight-semibold);
+  font-size: 30rpx;
+}
 .cc-rule {
   display: flex; align-items: center; margin-bottom: 28rpx;
 }
@@ -79,6 +84,32 @@ page { background-color: var(--qp-color-canvas); }
 
 /* Course cards (single-column large) */
 .r6-course-strip { display: flex; flex-direction: column; gap: 16rpx; }
+.r6-course-strip__item {
+  display: flex;
+  flex-direction: column;
+  padding: 20rpx 24rpx;
+  background: var(--qp-color-surface);
+  border-radius: var(--qp-radius-md);
+  border: var(--qp-border-width) solid var(--qp-color-line);
+  gap: 4rpx;
+}
+.r6-course-strip__abbr {
+  font-family: var(--qp-font-family-data);
+  font-size: 20rpx;
+  font-weight: var(--qp-font-weight-semibold);
+  color: var(--qp-color-primary);
+}
+.r6-course-strip__name {
+  font-size: 26rpx;
+  font-weight: var(--qp-font-weight-semibold);
+  color: var(--qp-color-ink);
+}
+.r6-course-strip__item--pressed {
+  opacity: 0.7;
+}
+.r6-course-strip__item--planned {
+  opacity: 0.5;
+}
 .cc-course-card {
   padding: 28rpx; background-color: var(--qp-color-surface);
   border: var(--qp-border-width) solid var(--qp-color-line); border-radius: var(--qp-radius-lg);

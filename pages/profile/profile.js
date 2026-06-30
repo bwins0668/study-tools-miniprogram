@@ -18,6 +18,21 @@ function formatTime(timestamp) {
   if (minute < 10) minute = '0' + minute;
   return year + '年' + month + '月' + day + '日 ' + hour + ':' + minute;
 }
+function getJSTDateString() {
+  var now = new Date();
+  var utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+  var jst = new Date(utc + (9 * 3600000));
+  var y = jst.getFullYear();
+  var m = jst.getMonth() + 1;
+  var d = jst.getDate();
+  if (y >= 2019) {
+    var reiwa = y - 2018;
+    if (y === 2019 && m < 5) return '平成31年' + m + '月' + d + '日';
+    return '令和' + reiwa + '年' + m + '月' + d + '日';
+  }
+  if (y >= 1989) { var heisei = y - 1988; return '平成' + heisei + '年' + m + '月' + d + '日'; }
+  return y + '年' + m + '月' + d + '日';
+}
 
 /**
  * 格式化时间戳为相对时间或简短日期（用于时间线条目）
@@ -208,7 +223,8 @@ Page({
     this._applyTheme();
     this._applyTheme();
     this.setData({
-      version: app.globalData.version
+      version: app.globalData.version,
+      jstDateStr: getJSTDateString()
     });
   },
 

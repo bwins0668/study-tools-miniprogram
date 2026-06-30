@@ -7,7 +7,7 @@
     </view>
     <view class="cc-mast__right">
       <text class="cc-mast__date" wx:if="{{jstDateStr}}">{{jstDateStr}}</text>
-      <text class="cc-mast__meta" wx:if="{{streakCount > 0}}">连续 {{streakCount}} 天</text>
+      <text class="cc-mast__meta" wx:if="{{streakCount > 0}}">连续 <text class="cc-mast__meta__num">{{streakCount}}</text> 天</text>
     </view>
   </view>
   <view class="cc-rule">

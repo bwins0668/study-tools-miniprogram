@@ -22,7 +22,10 @@ var oldPatterns = {
   'cc-course-card__desc': 'old course desc',
 };
 
-var SKIP_OLD_CHECK = ['pages/mistakes/mistakes', 'pages/flashcards/flashcards', 'pages/course-topic/course-topic', 'pages/course-organize/course-organize'];\npages.forEach(function(route){\n  var skipOld = SKIP_OLD_CHECK.some(function(s){ return route.indexOf(s)>=0; });\n  if (skipOld) { pass(route+': legacy shell, old check skipped'); return; }
+var SKIP_OLD_CHECK = ['pages/mistakes/mistakes', 'pages/flashcards/flashcards', 'pages/course-topic/course-topic', 'pages/course-organize/course-organize'];
+pages.forEach(function(route){
+  var skipOld = SKIP_OLD_CHECK.some(function(s){ return route.indexOf(s)>=0; });
+  if (skipOld) { pass(route+': legacy shell, old check skipped'); return; }
   var wxml = route+'.wxml';
   var wxss = route+'.wxss';
   if(!exists(wxml)){ fail(route+': missing wxml'); return; }
