@@ -8,8 +8,96 @@
         "value": "tools"
       },
       {
+        "type": "folder",
+        "value": ".workbuddy"
+      },
+      {
+        "type": "folder",
+        "value": "docs"
+      },
+      {
+        "type": "folder",
+        "value": "scripts"
+      },
+      {
+        "type": "folder",
+        "value": ".git"
+      },
+      {
+        "type": "folder",
+        "value": ".github"
+      },
+      {
+        "type": "folder",
+        "value": "node_modules"
+      },
+      {
+        "type": "suffix",
+        "value": ".md"
+      },
+      {
         "type": "file",
-        "value": "data/questions_backup_v05.js"
+        "value": "package.json"
+      },
+      {
+        "type": "file",
+        "value": "package-lock.json"
+      },
+      {
+        "type": "file",
+        "value": "temp_insert_test.js"
+      },
+      {
+        "type": "file",
+        "value": "insert_test_362.js"
+      },
+      {
+        "type": "folder",
+        "value": "packages/exam"
+      },
+      {
+        "type": "folder",
+        "value": "data"
+      },
+      {
+        "type": "folder",
+        "value": "miniapp"
+      },
+      {
+        "type": "folder",
+        "value": "i18n"
+      },
+      {
+        "type": "file",
+        "value": ".gitignore"
+      },
+      {
+        "type": "file",
+        "value": "PR_BODY.md"
+      },
+      {
+        "type": "file",
+        "value": "overview-stage1.md"
+      },
+      {
+        "type": "file",
+        "value": "project.private.config.json"
+      },
+      {
+        "type": "file",
+        "value": "project.miniapp.json"
+      },
+      {
+        "type": "file",
+        "value": "app.miniapp.json"
+      },
+      {
+        "type": "folder",
+        "value": ".playwright-cli"
+      },
+      {
+        "type": "folder",
+        "value": "scratch"
       }
     ],
     "include": []
@@ -17,9 +105,9 @@
   "setting": {
     "coverView": true,
     "es6": true,
-    "postcss": true,
+    "postcss": false,
     "minified": true,
-    "enhance": true,
+    "enhance": false,
     "showShadowRootInWxmlPanel": true,
     "packNpmRelationList": [],
     "babelSetting": {
@@ -27,9 +115,9 @@
       "disablePlugins": [],
       "outputPath": ""
     },
-    "compileWorklet": true,
+    "compileWorklet": false,
     "uglifyFileName": false,
-    "uploadWithSourceMap": true,
+    "uploadWithSourceMap": false,
     "packNpmManually": false,
     "minifyWXSS": true,
     "minifyWXML": true,

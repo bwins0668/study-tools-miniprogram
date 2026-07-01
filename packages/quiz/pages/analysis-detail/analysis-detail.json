@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "解析详情",
+  "usingComponents": {
+    "ui-button": "../../../../components/ui-button/ui-button",
+    "status-badge": "../../../../components/status-badge/status-badge"
+  }
+}

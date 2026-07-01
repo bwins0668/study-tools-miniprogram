@@ -1,4 +1,7 @@
 {
-  "navigationBarTitleText": "Study Tools",
-  "usingComponents": {}
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "ui-button": "../../components/ui-button/ui-button"
+  },
+  "enablePullDownRefresh": true
 }

@@ -9,7 +9,7 @@ const vm = require('vm');
 const ITPASS_SOURCE = path.resolve('E:/项目/sql-learning-hub/data/it_passport_lessons.js');
 const SG_SOURCE = path.resolve('E:/项目/sql-learning-hub/data/sg_lessons.js');
 const OUTPUT_PATH = path.join(__dirname, '..', 'data', 'questions.js');
-const BACKUP_PATH = path.join(__dirname, '..', 'data', 'questions_backup_v05.js');
+const BACKUP_PATH = path.join(__dirname, 'generated-backup', 'questions_backup_v05.js');
 
 console.log('=== Lesson Quiz Import Script ===');
 console.log('IT Passport source: ' + ITPASS_SOURCE);

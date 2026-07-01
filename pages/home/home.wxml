@@ -1,110 +1,91 @@
-<!--pages/home/home.wxml-->
-<view class="container">
-  <!-- 头部标题 -->
-  <view class="header">
-    <text class="title">Study Tools</text>
-    <text class="subtitle">中日双语 IT 学习工具</text>
-  </view>
-
-  <!-- 学习概览 -->
-  <view class="overview-section">
-    <text class="section-title">学习概览</text>
-    <view class="overview-row">
-      <view class="overview-item">
-        <text class="overview-value">{{todayTotal}}</text>
-        <text class="overview-label">今日答题</text>
-      </view>
-      <view class="overview-item">
-        <text class="overview-value">{{favoriteCount}}</text>
-        <text class="overview-label">已收藏术语</text>
-      </view>
-      <view class="overview-item">
-        <text class="overview-value">{{wrongQuestionCount}}</text>
-        <text class="overview-label">错题数量</text>
-      </view>
+<!--pages/home/home.wxml · R6.5 DC-authoritative course home (Frame 1 Continue) -->
+<view data-r6-active-tab="course" class="cc-home {{__themeDark ? 'dark-theme' : ''}}" style="padding-top: {{navSafeTop}}px;">
+  <!-- Masthead: JST era date + streak -->
+  <view class="cc-mast">
+    <view>
+      <text class="cc-mast__kicker">コース · 学習</text>
+      <text class="cc-mast__title">课程</text>
     </view>
-    <view class="overview-row overview-row-extra">
-      <view class="overview-item">
-        <text class="overview-value overview-accuracy">{{accuracy}}%</text>
-        <text class="overview-label">总正确率</text>
-      </view>
+    <view class="cc-mast__right">
+      <text class="cc-mast__date" wx:if="{{jstDateStr}}">{{jstDateStr}}</text>
+      <text class="cc-mast__streak" wx:if="{{streakCount > 0}}">连续 <text class="cc-mast__streak__num cc-mast__meta__num">{{streakCount}}</text> 天</text>
     </view>
   </view>
+  <view class="cc-rule">
+    <view class="cc-rule__accent"></view>
+    <view class="cc-rule__line"></view>
+  </view>
 
-  <!-- 继续学习 -->
-  <view class="continue-section" wx:if="{{hasLastAttempt}}">
-    <text class="section-title">继续学习</text>
-    <view class="continue-card" bindtap="continueLearning">
-      <view class="continue-icon">📚</view>
-      <view class="continue-info">
-        <text class="continue-exam">{{lastExamLabel}} · {{lastSourceLabel}}</text>
-        <text class="continue-hint">继续上次的练习</text>
-      </view>
-      <view class="continue-btn">继续练习</view>
+  <!-- Continue hero (shown when hasLastAttempt) -->
+  <view class="cc-hero" wx:if="{{hasLastAttempt}}">
+    <view class="cc-hero__top">
+      <text class="cc-hero__kicker">上次练习</text>
+      <text class="cc-hero__time" wx:if="{{lastMetaText}}">{{lastMetaText}}</text>
+    </view>
+    <text class="cc-hero__title">{{lastExamLabel}}</text>
+    <text class="cc-hero__sub" wx:if="{{lastSourceLabel}}">{{lastSourceLabel}} · ITパスポート試験</text>
+    <view class="cc-hero__actions">
+      <view class="cc-btn cc-btn--primary" bindtap="continueLearning">继续练习 <text class="cc-btn__arrow">→</text></view>
+      <view class="cc-btn cc-btn--outline" bindtap="goReview">今日复习</view>
     </view>
   </view>
 
-  <!-- 无学习记录 -->
-  <view class="continue-section" wx:if="{{!hasLastAttempt}}">
-    <text class="section-title">继续学习</text>
-    <view class="continue-empty">
-      <text class="continue-empty-text">还没有学习记录</text>
-      <text class="continue-empty-hint">可以从 IT Passport 或 SG 开始练习</text>
+  <!-- Start state (no practice yet) — DC GROUP 4 Frame -->
+  <view class="cc-hero cc-hero--start" wx:else>
+    <text class="cc-hero__kicker">START · 开始学习</text>
+    <text class="cc-hero__title">选择考试，开始训练</text>
+    <text class="cc-hero__sub">受験する試験を選んでください</text>
+    <view class="cc-hero__exam-pick">
+      <view class="cc-hero__exam-opt cc-hero__exam-opt--primary" bindtap="goItPassport">IT Passport</view>
+      <view class="cc-hero__exam-opt" bindtap="goSG">SG 信息安全</view>
+    </view>
+    <view class="cc-hero__actions">
+      <view class="cc-btn cc-btn--primary" bindtap="goPractice">开始第一组练习 <text class="cc-btn__arrow">→</text></view>
     </view>
   </view>
 
-  <!-- 功能入口 -->
-  <view class="section-label">功能入口</view>
-
-  <view class="card-list">
-    <!-- Glossary 术语表 -->
-    <view class="card card-entry" bindtap="goToGlossary">
-      <view class="card-icon">📖</view>
-      <view class="card-info">
-        <text class="card-title">Glossary 术语表</text>
-        <text class="card-desc">IT 术语中日英对照查询</text>
-      </view>
-      <view class="card-arrow">›</view>
+  <!-- 01 资格考试 (primary path, per DC frame) -->
+  <view class="cc-section">
+    <view class="r6-section-label"><text class="r6-section-label__num">01</text><text class="cc-section__title">资格考试</text><text class="r6-section-label__meta" wx:if="{{examCourses.length > 0}}">{{examCourses.length}} 試験</text></view>
+    <view class="cc-exam-list">
+      <block wx:for="{{examCourses}}" wx:key="id">
+        <view wx:if="{{item.availability === 'available'}}" class="cc-exam-row r6-exam-row {{index === 0 ? 'cc-exam-row--primary' : ''}}" bindtap="goToCourse" data-course-id="{{item.id}}" hover-class="cc-exam-row--pressed">
+          <view class="cc-exam-row__body">
+            <text class="cc-exam-row__name">{{item.displayName}}</text>
+            <text class="cc-exam-row__desc">{{item.description}}</text>
+          </view>
+          <view class="cc-exam-row__action" wx:if="{{index === 0}}" catchtap="goToPractice" data-course-id="{{item.id}}">→</view>
+          <view class="cc-exam-row__chev" wx:else>›</view>
+        </view>
+        <view wx:else class="cc-exam-row cc-exam-row--muted">
+          <view class="cc-exam-row__body">
+            <text class="cc-exam-row__name">{{item.displayName}}</text>
+            <text class="cc-exam-row__desc">{{item.description}}</text>
+          </view>
+          <text class="cc-exam-row__badge">准备中</text>
+        </view>
+      </block>
     </view>
+  </view>
 
-    <!-- 收藏术语复习 -->
-    <view class="card card-entry" bindtap="goToFavoriteReview">
-      <view class="card-icon">⭐</view>
-      <view class="card-info">
-        <text class="card-title">收藏术语复习</text>
-        <text class="card-desc">逐张复习已收藏的术语卡片</text>
-      </view>
-      <view class="card-arrow">›</view>
+  <!-- 02 课程学习 (即将开放, honest) -->
+  <view class="cc-section">
+    <view class="r6-section-label"><text class="r6-section-label__num">02</text><text class="cc-section__title">课程学习</text><text class="r6-section-label__meta">即将开放</text></view>
+    <view class="r6-course-strip">
+      <block wx:for="{{languageCourses}}" wx:key="id">
+        <view class="r6-course-strip__item {{item.availability === 'planned' ? 'r6-course-strip__item--planned' : ''}}"
+          bindtap="goToCourse" data-course-id="{{item.id}}"
+          hover-class="r6-course-strip__item--pressed">
+          <text class="r6-course-strip__abbr">{{item.abbr || '--'}}</text>
+          <text class="r6-course-strip__name">{{item.displayName}}</text>
+        </view>
+      </block>
+      <view class="r6-course-strip__badge">敬请期待</view>
     </view>
+  </view>
 
-    <!-- IT Passport -->
-    <view class="card card-entry" bindtap="goToItPassport">
-      <view class="card-icon">📝</view>
-      <view class="card-info">
-        <text class="card-title">IT Passport</text>
-        <text class="card-desc">IT パスポート試験</text>
-      </view>
-      <view class="card-arrow">›</view>
-    </view>
-
-    <!-- SG 考试 -->
-    <view class="card card-entry" bindtap="goToSG">
-      <view class="card-icon">🎯</view>
-      <view class="card-info">
-        <text class="card-title">SG 考试</text>
-        <text class="card-desc">システム監査技術者</text>
-      </view>
-      <view class="card-arrow">›</view>
-    </view>
-
-    <!-- 错题本 -->
-    <view class="card card-entry" bindtap="goToMistakes">
-      <view class="card-icon">📋</view>
-      <view class="card-info">
-        <text class="card-title">错题本</text>
-        <text class="card-desc">查看做错的题目和复习记录</text>
-      </view>
-      <view class="card-arrow">›</view>
-    </view>
+  <!-- Back to top -->
+  <view class="cc-backtop" wx:if="{{showBackToTop}}" bindtap="scrollToTop">
+    <text class="cc-backtop__icon">↑</text>
   </view>
 </view>

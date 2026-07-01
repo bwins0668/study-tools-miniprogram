@@ -1,0 +1,17 @@
+<view class="r6-tabbar">
+  <view class="r6-tabbar__inner">
+    <view
+      wx:for="{{list}}"
+      wx:key="pagePath"
+      class="r6-tabbar__item {{selected === index ? 'r6-tabbar__item--active' : ''}}"
+      data-index="{{index}}"
+      data-path="{{item.pagePath}}"
+      bindtap="switchTab"
+    >
+      <view class="r6-tabbar__icon r6-tabbar__icon--{{item.icon}}">
+        <view class="r6-tabbar__shape"></view>
+      </view>
+      <text class="r6-tabbar__text">{{item.text}}</text>
+    </view>
+  </view>
+</view>

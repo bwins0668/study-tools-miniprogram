@@ -1,6 +1,12 @@
 {
   "pages": [
     "pages/home/home",
+    "pages/practice/practice",
+    "pages/review/review",
+    "pages/course/course",
+    "pages/course-topic/course-topic",
+    "pages/course-organize/course-organize",
+    "pages/flashcards/flashcards",
     "pages/glossary/glossary",
     "pages/mistakes/mistakes",
     "pages/profile/profile"
@@ -12,7 +18,8 @@
       "pages": [
         "pages/term-search/term-search",
         "pages/term-detail/term-detail",
-        "pages/favorite-review/favorite-review"
+        "pages/favorite-review/favorite-review",
+        "pages/anki-player/anki-player"
       ]
     },
     {
@@ -21,50 +28,156 @@
       "pages": [
         "pages/exam-menu/exam-menu",
         "pages/quiz/quiz",
-        "pages/mistakes/mistakes"
+        "pages/mistakes/mistakes",
+        "pages/analysis-detail/analysis-detail",
+        "pages/flashcard-quiz/flashcard-quiz",
+        "pages/flashcard-deck-select/flashcard-deck-select"
+      ]
+    },
+    {
+      "root": "packages/quiz-itpass-1",
+      "name": "quiz-itpass-1",
+      "pages": [
+        "pages/quiz/quiz",
+        "pages/flashcard-bridge/flashcard-bridge",
+        "pages/flashcard-player/flashcard-player"
+      ]
+    },
+    {
+      "root": "packages/quiz-itpass-2",
+      "name": "quiz-itpass-2",
+      "pages": [
+        "pages/quiz/quiz",
+        "pages/flashcard-bridge/flashcard-bridge",
+        "pages/flashcard-player/flashcard-player"
+      ]
+    },
+    {
+      "root": "packages/quiz-itpass-3",
+      "name": "quiz-itpass-3",
+      "pages": [
+        "pages/quiz/quiz",
+        "pages/flashcard-bridge/flashcard-bridge",
+        "pages/flashcard-player/flashcard-player"
+      ]
+    },
+    {
+      "root": "packages/quiz-itpass-4",
+      "name": "quiz-itpass-4",
+      "pages": [
+        "pages/quiz/quiz",
+        "pages/flashcard-bridge/flashcard-bridge",
+        "pages/flashcard-player/flashcard-player"
+      ]
+    },
+    {
+      "root": "packages/quiz-itpass-5",
+      "name": "quiz-itpass-5",
+      "pages": [
+        "pages/quiz/quiz",
+        "pages/flashcard-bridge/flashcard-bridge",
+        "pages/flashcard-player/flashcard-player"
+      ]
+    },
+    {
+      "root": "packages/quiz-sg-1",
+      "name": "quiz-sg-1",
+      "pages": [
+        "pages/quiz/quiz",
+        "pages/flashcard-bridge/flashcard-bridge",
+        "pages/flashcard-player/flashcard-player"
+      ]
+    },
+    {
+      "root": "packages/quiz-sg-2",
+      "name": "quiz-sg-2",
+      "pages": [
+        "pages/quiz/quiz",
+        "pages/flashcard-bridge/flashcard-bridge",
+        "pages/flashcard-player/flashcard-player"
+      ]
+    },
+    {
+      "root": "packages/course-content",
+      "name": "course-content",
+      "pages": [
+        "pages/chapter-list/chapter-list",
+        "pages/unit-detail/unit-detail"
+      ]
+    },
+    {
+      "root": "packages/course-itpass",
+      "name": "course-itpass",
+      "pages": [
+        "pages/chapter-list/chapter-list",
+        "pages/unit-detail/unit-detail"
+      ]
+    },
+    {
+      "root": "packages/course-sg",
+      "name": "course-sg",
+      "pages": [
+        "pages/chapter-list/chapter-list",
+        "pages/unit-detail/unit-detail"
       ]
     }
   ],
   "window": {
-    "navigationBarTextStyle": "black",
+    "navigationBarTextStyle": "@navTxtStyle",
     "navigationBarTitleText": "Study Tools",
-    "navigationBarBackgroundColor": "#ffffff",
-    "backgroundColor": "#f5f5f5"
+    "navigationBarBackgroundColor": "@navBgColor",
+    "backgroundColor": "@bgColor"
   },
   "tabBar": {
-    "color": "#999999",
-    "selectedColor": "#4a90d9",
-    "backgroundColor": "#ffffff",
-    "borderStyle": "black",
+    "custom": true,
+    "color": "@tabColor",
+    "selectedColor": "@tabSelectedColor",
+    "backgroundColor": "@tabBgColor",
+    "borderStyle": "@tabBorderStyle",
     "list": [
       {
         "pagePath": "pages/home/home",
-        "text": "首页"
+        "text": "课程",
+        "iconPath": "images/tab/home.png",
+        "selectedIconPath": "images/tab/home_active.png"
+      },
+      {
+        "pagePath": "pages/practice/practice",
+        "text": "刷题"
+      },
+      {
+        "pagePath": "pages/review/review",
+        "text": "复习"
       },
       {
         "pagePath": "pages/glossary/glossary",
-        "text": "术语"
-      },
-      {
-        "pagePath": "pages/mistakes/mistakes",
-        "text": "错题"
+        "text": "术语",
+        "iconPath": "images/tab/glossary.png",
+        "selectedIconPath": "images/tab/glossary_active.png"
       },
       {
         "pagePath": "pages/profile/profile",
-        "text": "我的"
+        "text": "我的",
+        "iconPath": "images/tab/profile.png",
+        "selectedIconPath": "images/tab/profile_active.png"
       }
     ]
   },
   "style": "v2",
-  "componentFramework": "glass-easel",
   "preloadRule": {
     "pages/home/home": {
-      "packages": ["glossary"]
+      "packages": [
+        "glossary"
+      ]
     },
     "pages/glossary/glossary": {
-      "packages": ["glossary"]
+      "packages": [
+        "glossary"
+      ]
     }
   },
   "sitemapLocation": "sitemap.json",
-  "lazyCodeLoading": "requiredComponents"
+  "lazyCodeLoading": "requiredComponents",
+  "darkmode": true,
+  "themeLocation": "theme.json"
 }

@@ -1,110 +1,196 @@
-// pages/home/home.js
-const {
-  getFavoriteTermCount,
-  getWrongQuestionCount,
-  getQuizStats,
-  getLastAttempt
-} = require("../../utils/storage");
+// pages/home/home.js · Course Center landing page
+var app = getApp();
+var nav = require('../../utils/navigation');
+var registry = require('../../utils/course-registry');
+var storage = require('../../utils/storage');
+var streakPersistence = require('../../utils/home-streak-persistence');
 
-var EXAM_LABELS = {
-  itpass: 'IT Passport',
-  sg: 'SG 考试'
-};
-var SOURCE_LABELS = {
-  lesson_quiz: '课程练习',
-  past_exam_japanese: '日文真题'
-};
+var EXAM_LABELS = { itpass: 'IT Passport', sg: 'SG 信息安全' };
+var SOURCE_LABELS = { lesson_quiz: '模拟练习', past_exam_japanese: '真题练习', wrong_only: '错题重练' };
+
+function formatLastPracticeTime(timestamp) {
+  if (!timestamp) return '';
+  var date = new Date(timestamp);
+  var now = new Date();
+  var diffMs = now.getTime() - date.getTime();
+  var diffMin = Math.floor(diffMs / 60000);
+  var diffHour = Math.floor(diffMs / 3600000);
+  var diffDay = Math.floor(diffMs / 86400000);
+  if (diffMin < 1) return '刚刚';
+  if (diffMin < 60) return diffMin + '分钟前';
+  if (diffHour < 24) return diffHour + '小时前';
+  if (diffDay < 7) return diffDay + '天前';
+  var y = date.getFullYear();
+  var m = date.getMonth() + 1;
+  var d = date.getDate();
+  return y + '-' + (m < 10 ? '0' + m : m) + '-' + (d < 10 ? '0' + d : d);
+}
+
+// R6.3: JST Japanese era date (display only, no storage change)
+function getJSTDateString() {
+  var now = new Date();
+  var utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+  var jst = new Date(utc + (9 * 3600000));
+  var y = jst.getFullYear();
+  var m = jst.getMonth() + 1;
+  var d = jst.getDate();
+  if (y >= 2019) {
+    var reiwa = y - 2018;
+    if (y === 2019 && m < 5) return '平成31年' + m + '月' + d + '日';
+    return '令和' + reiwa + '年' + m + '月' + d + '日';
+  }
+  if (y >= 1989) { var heisei = y - 1988; return '平成' + heisei + '年' + m + '月' + d + '日'; }
+  return y + '年' + m + '月' + d + '日';
+}
+
+// R6.3: Course abbreviation map (display only)
+var COURSE_ABBR = {python:'Py', java:'Ja', algorithm:'Alg'};
+function addCourseAbbrs(courses) {
+  courses.forEach(function(c) { c.abbr = COURSE_ABBR[c.id] || (c.displayName || '').slice(0,2); });
+  return courses;
+}
+
 
 Page({
   data: {
-    favoriteCount: 0,
-    wrongQuestionCount: 0,
-    todayTotal: 0,
-    accuracy: 0,
+    // Learning state
     hasLastAttempt: false,
     lastExamLabel: '',
     lastSourceLabel: '',
     lastExam: '',
-    lastSourceType: ''
+    lastSourceType: '',
+    lastMetaText: '',
+    streakCount: 0,
+    // Course & exam sections from registry
+    languageCourses: [],
+    examCourses: [],
+    // Layout
+    navSafeTop: 64,
+    showBackToTop: false,
+    isNavigating: false,
+    __themeDark: false
+  },
+
+  onLoad: function () { this._syncNavLayout(); },
+
+  _syncNavLayout: function () {
+    var navSafeTop = 64;
+    try {
+      var menu = wx.getMenuButtonBoundingClientRect ? wx.getMenuButtonBoundingClientRect() : null;
+      var sysInfo = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync();
+      navSafeTop = (menu && menu.bottom) ? menu.bottom + 14 : ((sysInfo.statusBarHeight || 20) + 52);
+    } catch (e) { navSafeTop = 64; }
+    if (this.data.navSafeTop !== navSafeTop) this.setData({ navSafeTop: navSafeTop });
+  },
+
+  _applyTheme: function () {
+    var app = getApp();
+    var dark = !!(app && app.globalData && app.globalData.themeDark);
+    if (this.data.__themeDark !== dark) this.setData({ __themeDark: dark });
   },
 
   onShow: function () {
-    const favoriteCount = getFavoriteTermCount ? getFavoriteTermCount() : 0;
-    const wrongQuestionCount = getWrongQuestionCount ? getWrongQuestionCount() : 0;
-    const stats = getQuizStats ? getQuizStats() : { todayTotal: 0, accuracy: 0 };
+    this._clearNavigationLock();
+    this._applyTheme();
+    this._syncNavLayout();
+    this._loadState();
+  },
 
-    // 最近练习
-    var lastAttempt = getLastAttempt ? getLastAttempt() : null;
+  _loadState: function () {
+    var lastAttempt = storage.getLastAttempt ? storage.getLastAttempt() : null;
     var hasLastAttempt = !!lastAttempt;
-    var lastExamLabel = '';
-    var lastSourceLabel = '';
-    var lastExam = '';
-    var lastSourceType = '';
+    var lastExamLabel = '', lastSourceLabel = '', lastExam = '', lastSourceType = '', lastPracticeTimeText = '';
+
     if (lastAttempt) {
-      // 错题重练模式特殊显示
       if (lastAttempt.sourceType === 'wrong_only') {
-        lastExamLabel = '错题练习';
-        lastSourceLabel = '错题重练';
-        lastExam = 'wrong_only';
-        lastSourceType = 'wrong_only';
+        lastExamLabel = '错题练习'; lastSourceLabel = '错题重练';
+        lastExam = 'wrong_only'; lastSourceType = 'wrong_only';
       } else {
-        lastExamLabel = EXAM_LABELS[lastAttempt.exam] || lastAttempt.exam;
-        lastSourceLabel = SOURCE_LABELS[lastAttempt.sourceType] || lastAttempt.sourceType;
-        lastExam = lastAttempt.exam || '';
-        lastSourceType = lastAttempt.sourceType || '';
+        lastExamLabel = EXAM_LABELS[lastAttempt.exam] || lastAttempt.exam || '';
+        lastSourceLabel = SOURCE_LABELS[lastAttempt.sourceType] || lastAttempt.sourceType || '';
+        lastExam = lastAttempt.exam || ''; lastSourceType = lastAttempt.sourceType || '';
       }
+      lastPracticeTimeText = formatLastPracticeTime(lastAttempt.answeredAt);
     }
+    var lastMetaText = lastSourceLabel;
+    if (lastPracticeTimeText) lastMetaText = lastMetaText ? lastMetaText + ' · ' + lastPracticeTimeText : lastPracticeTimeText;
+
+    // Streak (R3.7: extracted to home-streak-persistence)
+    var streakCount = streakPersistence.getStreakCount();
+
+    // Course sections from registry (no hardcoding)
+    var languageCourses = registry.getCoursesByKind('language').concat(registry.getCoursesByKind('fundamentals'));
+    var examCourses = registry.getCoursesByKind('exam').concat(registry.getCoursesByKind('certification'));
+
+    // R6.3: add JST era date + course abbreviations (display only)
+    var jstDateStr = getJSTDateString();
+    var languageCoursesWithAbbr = addCourseAbbrs(languageCourses);
 
     this.setData({
-      favoriteCount: favoriteCount,
-      wrongQuestionCount: wrongQuestionCount,
-      todayTotal: stats.todayTotal || 0,
-      accuracy: stats.accuracy || 0,
-      hasLastAttempt: hasLastAttempt,
-      lastExamLabel: lastExamLabel,
-      lastSourceLabel: lastSourceLabel,
-      lastExam: lastExam,
-      lastSourceType: lastSourceType
+      hasLastAttempt: hasLastAttempt, lastExamLabel: lastExamLabel,
+      lastSourceLabel: lastSourceLabel, lastExam: lastExam, lastSourceType: lastSourceType,
+      lastMetaText: lastMetaText, streakCount: streakCount,
+      languageCourses: languageCoursesWithAbbr, examCourses: examCourses,
+      jstDateStr: jstDateStr
     });
+  },
+
+  // --- Navigation ---
+  _clearNavigationLock: function () {
+    if (this._navTimer) { clearTimeout(this._navTimer); this._navTimer = null; }
+    if (this.data.isNavigating) this.setData({ isNavigating: false });
+  },
+  _releaseNavSoon: function () {
+    var s = this; if (s._navTimer) clearTimeout(s._navTimer);
+    s._navTimer = setTimeout(function () { s._clearNavigationLock(); }, 600);
   },
 
   continueLearning: function () {
-    var exam = this.data.lastExam;
-    var sourceType = this.data.lastSourceType;
-    if (exam && sourceType) {
-      wx.navigateTo({
-        url: '/packages/quiz/pages/quiz/quiz?exam=' + exam + '&sourceType=' + sourceType
-      });
-    }
+    var exam = this.data.lastExam, st = this.data.lastSourceType;
+    if (exam && st) nav.continueLastQuiz(exam, st);
   },
 
-  goToGlossary: function () {
-    wx.navigateTo({
-      url: '/packages/glossary/pages/term-search/term-search'
-    });
+  goPractice:  function () { nav.goPracticeTab(); },
+  goReview:    function () { nav.goReviewTab(); },
+  goItPassport: function () { nav.goItPassport(); },
+  goSG:        function () { nav.goSG(); },
+  goProfile:   function () { nav.goProfileTab(); },
+
+  // R1.3: unified course navigation via data-course-id
+  goToCourse: function (e) {
+    var courseId = e.currentTarget.dataset.courseId;
+    if (courseId) nav.goCourseHome(courseId);
+  },
+  goToPractice: function (e) {
+    var courseId = e.currentTarget.dataset.courseId;
+    if (courseId) nav.goCoursePractice(courseId);
   },
 
-  goToMistakes: function () {
-    wx.navigateTo({
-      url: '/packages/quiz/pages/mistakes/mistakes'
-    });
+  goToCourseArea: function () {
+    wx.pageScrollTo({ selector: '.cc-section--courses', duration: 300 });
   },
 
-  goToItPassport: function () {
-    wx.navigateTo({
-      url: '/packages/quiz/pages/exam-menu/exam-menu?exam=itpass'
-    });
+  onPlannedCourse: function () {
+    wx.showToast({ title: '课程正在建设中', icon: 'none' });
   },
 
-  goToSG: function () {
-    wx.navigateTo({
-      url: '/packages/quiz/pages/exam-menu/exam-menu?exam=sg'
-    });
+  // --- Retained from UI Freeze v1 ---
+  onHide: function () { this._clearNavigationLock(); },
+  onUnload: function () { this._clearNavigationLock(); },
+
+  onShareAppMessage: function () {
+    var sc = this.data.streakCount || 0;
+    return { title: sc > 0 ? '我已在 Study Tools 连续学习 ' + sc + ' 天，一起来学习吧！' : 'Study Tools 学习打卡', path: '/pages/home/home', imageUrl: '' };
   },
 
-  goToFavoriteReview: function () {
-    wx.navigateTo({
-      url: '/packages/glossary/pages/favorite-review/favorite-review'
-    });
-  }
+  onPullDownRefresh: function () { this.onShow(); wx.stopPullDownRefresh(); },
+
+  onPageScroll: function (e) {
+    var show = (e.scrollTop || 0) > 500;
+    if (show !== this.data.showBackToTop) this.setData({ showBackToTop: show });
+  },
+
+  scrollToTop: function () { wx.pageScrollTo({ scrollTop: 0, duration: 300 }); },
+
+  dismissUpdateBanner: function () { this.setData({ showUpdateBanner: false }); }
 });
