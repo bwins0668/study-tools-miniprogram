@@ -25,12 +25,13 @@ var LEAF_CHECKS = [
   { title: 'P0 content truthfulness', command: 'node tools/check_flashcard_p0_content_truthfulness.js', cmd: 'node', args: ['tools/check_flashcard_p0_content_truthfulness.js'] },
   { title: 'Content compliance', command: 'node tools/check_content_compliance.js', cmd: 'node', args: ['tools/check_content_compliance.js'] },
   { title: 'Quiz explanations', command: 'node tools/check_quiz_explanations.js', cmd: 'node', args: ['tools/check_quiz_explanations.js'] },
-  { title: 'Package size audit', command: 'node tools/audit_miniprogram_package_size.js', cmd: 'node', args: ['tools/audit_miniprogram_package_size.js'] }
+  { title: 'Package size audit', command: 'node tools/audit_miniprogram_package_size.js', cmd: 'node', args: ['tools/audit_miniprogram_package_size.js'] },
+  { title: 'Java originality and structure', command: 'node tools/check_java_originality.js', cmd: 'node', args: ['tools/check_java_originality.js'] }
 ];
-// Six external leaf checks plus the inline JavaScript syntax leaf.
-var LEAF_TOTAL_CHECKS = 7;
+// Seven external leaf checks plus the inline JavaScript syntax leaf.
+var LEAF_TOTAL_CHECKS = 8;
 // Normal mode additionally runs smoke, which verifies the JSON leaf contract.
-var TOTAL_CHECKS = 8;
+var TOTAL_CHECKS = 9;
 if (JSON_MODE) TOTAL_CHECKS = LEAF_TOTAL_CHECKS;
 
 // --- Helpers ---

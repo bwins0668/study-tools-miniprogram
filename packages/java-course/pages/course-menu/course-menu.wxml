@@ -1,0 +1,53 @@
+<!--packages/java-course/pages/course-menu/course-menu.wxml-->
+<view class="qp-menu-page {{__themeDark ? 'dark-theme' : ''}}">
+  <!-- 头部进度概要 -->
+  <view class="qp-menu-header">
+    <text class="qp-menu-header__title">Java 编程核心</text>
+    <text class="qp-menu-header__subtitle">面向零基础的中日双语入门课程</text>
+    
+    <view class="qp-progress-card">
+      <view class="qp-progress-info">
+        <text class="qp-progress-info__label">整体完成度</text>
+        <text class="qp-progress-info__val qp-num">{{completedCount}} / {{totalCount}} 小节</text>
+      </view>
+      <view class="qp-progress-bar">
+        <view class="qp-progress-bar__fill" style="width: {{progressPercent}}%"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 章节目录列表 -->
+  <view class="qp-menu-list">
+    <block wx:for="{{chapters}}" wx:key="id" wx:for-item="ch">
+      <view class="qp-chapter-group">
+        <!-- 章节标题 -->
+        <view class="qp-chapter-title">
+          <text class="qp-chapter-title__zh">{{ch.titleZh}}</text>
+          <text class="qp-chapter-title__ja">{{ch.titleJa}}</text>
+        </view>
+
+        <!-- 小节项 -->
+        <view class="qp-lessons-container">
+          <block wx:for="{{ch.lessons}}" wx:key="id" wx:for-item="les">
+            <view class="qp-lesson-row ui-pressable" bindtap="goToJavaLesson" data-id="{{les.id}}" hover-class="qp-lesson-row--pressed">
+              <view class="qp-lesson-row__body">
+                <text class="qp-lesson-row__title-zh">{{les.titleZh}}</text>
+                <text class="qp-lesson-row__title-ja">{{les.titleJa}}</text>
+              </view>
+              
+              <view class="qp-lesson-row__status">
+                <block wx:if="{{completedMap[les.id]}}">
+                  <text class="qp-status-badge qp-status-badge--completed">✓ 已学</text>
+                </block>
+                <block wx:else>
+                  <text class="qp-status-badge qp-status-badge--pending">未读</text>
+                </block>
+                <text class="qp-lesson-row__chev">›</text>
+              </view>
+            </view>
+          </block>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>

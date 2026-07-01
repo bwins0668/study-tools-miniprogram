@@ -1,0 +1,354 @@
+/* packages/java-course/pages/lesson-view/lesson-view.wxss */
+
+.qp-lesson-page {
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  padding-bottom: 240rpx; /* 为常驻底部栏留出空间 */
+  box-sizing: border-box;
+}
+
+/* 顶部阅读模式切换控制 */
+.qp-top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: var(--bg-color);
+  border-bottom: 1rpx solid var(--border-color);
+  padding: var(--space-sm) var(--space-lg);
+  display: flex;
+  justify-content: center;
+}
+
+.qp-readmode-tabs {
+  display: flex;
+  background-color: var(--press-bg);
+  padding: 4rpx;
+  border-radius: var(--radius-md);
+  border: 1rpx solid var(--border-color);
+}
+
+.qp-readmode-tab {
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+  padding: 10rpx 28rpx;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  text-align: center;
+}
+
+.qp-readmode-tab--active {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+/* 主体内容 */
+.qp-lesson-body {
+  padding: var(--space-md) var(--space-lg);
+}
+
+/* 小节标题区 */
+.qp-lesson-title-area {
+  padding: var(--space-sm) 0 var(--space-md);
+  margin-bottom: var(--space-md);
+  border-bottom: 1rpx solid var(--divider-color);
+}
+
+.qp-chapter-badge {
+  display: inline-block;
+  font-size: var(--font-xs);
+  color: var(--primary-color);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1rpx;
+  margin-bottom: var(--space-xs);
+}
+
+.qp-lesson-title {
+  display: block;
+  font-size: var(--font-xl);
+  font-weight: 760;
+  color: var(--text-primary);
+  line-height: 1.25;
+}
+
+.qp-lesson-title--ja {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-top: 8rpx;
+}
+
+/* 板块卡片设计 - 极简，只留微小下边距与极淡的分隔线 */
+.qp-card-section {
+  padding: var(--space-md) 0;
+  border-bottom: 1rpx solid var(--divider-color);
+  margin-bottom: var(--space-xs);
+}
+
+.qp-section-kicker {
+  font-size: var(--font-xs);
+  font-weight: 700;
+  color: var(--text-hint);
+  letter-spacing: 1rpx;
+  margin-bottom: var(--space-sm);
+  text-transform: uppercase;
+}
+
+.qp-section-kicker--sub {
+  margin-top: var(--space-md);
+  color: var(--text-secondary);
+  border-bottom: 1px dashed var(--border-color);
+  padding-bottom: 6rpx;
+}
+
+/* 段落文本排版 */
+.qp-text-p {
+  font-size: var(--font-md);
+  color: var(--text-primary);
+  line-height: 1.7;
+  margin-bottom: var(--space-md);
+  text-align: justify;
+}
+
+.qp-text-p:last-child {
+  margin-bottom: 0;
+}
+
+.qp-text-p--ja {
+  color: var(--text-secondary);
+  font-size: 26rpx;
+}
+
+/* 类比部分特殊装饰，左侧带条纹装饰立柱 */
+.qp-card-section--analogy {
+  padding: var(--space-md);
+  background-color: var(--card-bg);
+  border: 1rpx solid var(--border-color);
+  border-left: 6rpx solid var(--primary-color);
+  border-radius: var(--radius-md);
+  margin-top: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.qp-section-kicker--analogy {
+  color: var(--primary-color);
+}
+
+.qp-text-p--analogy {
+  font-style: italic;
+}
+
+/* 术语表表格 */
+.qp-term-table {
+  width: 100%;
+  border: 1rpx solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-top: var(--space-sm);
+}
+
+.qp-term-row {
+  display: flex;
+  border-bottom: 1rpx solid var(--divider-color);
+  background-color: var(--card-bg);
+}
+
+.qp-term-row:last-child {
+  border-bottom: none;
+}
+
+.qp-term-row--header {
+  background-color: var(--disabled-bg);
+  font-weight: 700;
+}
+
+.qp-term-cell {
+  flex: 1;
+  padding: var(--space-sm);
+  font-size: var(--font-sm);
+  color: var(--text-primary);
+  border-right: 1rpx solid var(--divider-color);
+}
+
+.qp-term-cell:last-child {
+  border-right: none;
+}
+
+.qp-term-cell--en {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-weight: 600;
+}
+
+/* 代码演示渲染 */
+.qp-code-wrapper {
+  background-color: #1e293b; /* 常驻优雅暗底色 */
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin-top: var(--space-sm);
+  margin-bottom: var(--space-md);
+  overflow-x: auto;
+  border: 1rpx solid #334155;
+  box-shadow: var(--shadow-sm);
+}
+
+.qp-code-pre {
+  display: block;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-size: 24rpx;
+  color: #f8fafc;
+  line-height: 1.6;
+}
+
+/* 逐行讲解 */
+.qp-code-explanation {
+  margin-top: var(--space-md);
+}
+
+.qp-explanation-item {
+  position: relative;
+  padding-left: var(--space-md);
+  margin-bottom: var(--space-sm);
+}
+
+.qp-explanation-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14rpx;
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: 50%;
+  background-color: var(--text-hint);
+}
+
+.qp-explanation-text {
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* 常见误区警告气泡 */
+.qp-card-section--warning {
+  padding: var(--space-md);
+  background-color: var(--color-warning-light);
+  border: 1rpx solid var(--border-color);
+  border-left: 6rpx solid var(--color-warning);
+  border-radius: var(--radius-md);
+  margin-top: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.qp-section-kicker--warning {
+  color: var(--color-warning);
+}
+
+.qp-pitfall-item {
+  margin-bottom: var(--space-md);
+}
+
+.qp-pitfall-item:last-child {
+  margin-bottom: 0;
+}
+
+.qp-pitfall-title {
+  display: block;
+  font-size: var(--font-md);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.qp-pitfall-title--ja {
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.qp-pitfall-desc {
+  display: block;
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.qp-pitfall-desc--ja {
+  color: var(--text-hint);
+  margin-top: 4rpx;
+}
+
+/* 底部操作页脚 */
+.qp-footer-actions {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--bg-surface);
+  border-top: 1rpx solid var(--border-color);
+  padding: var(--space-md) var(--space-lg);
+  padding-bottom: calc(var(--space-md) + env(safe-area-inset-bottom));
+  box-shadow: 0 -8rpx 24rpx rgba(15, 23, 42, 0.04);
+}
+
+.qp-action-btn-row {
+  margin-bottom: var(--space-sm);
+}
+
+.qp-btn {
+  height: 80rpx;
+  line-height: 80rpx;
+  font-size: var(--font-md);
+  font-weight: 600;
+  text-align: center;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  border: none;
+}
+
+.qp-btn--full {
+  width: 100%;
+}
+
+.qp-btn--primary {
+  background-color: var(--primary-color);
+  color: #ffffff;
+}
+
+.qp-btn--completed {
+  background-color: var(--color-success-light);
+  color: var(--color-success);
+  border: 1rpx solid var(--color-success);
+}
+
+.qp-btn::after {
+  border: none;
+}
+
+/* 上一节/返回目录/下一节 导航链 */
+.qp-nav-chain {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10rpx;
+}
+
+.qp-nav-chain__btn {
+  font-size: var(--font-sm);
+  color: var(--primary-color);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  transition: opacity var(--transition-fast);
+}
+
+.qp-nav-chain__btn--center {
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+.qp-nav-chain__btn--disabled {
+  color: var(--text-hint);
+  opacity: 0.5;
+  pointer-events: none;
+}

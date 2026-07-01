@@ -1,0 +1,135 @@
+<!--packages/java-course/pages/lesson-view/lesson-view.wxml-->
+<view class="qp-lesson-page {{__themeDark ? 'dark-theme' : ''}}">
+  <!-- 顶部阅读模式切换器 (Segmented Control) -->
+  <view class="qp-top-bar">
+    <view class="qp-readmode-tabs">
+      <view class="qp-readmode-tab {{readMode === 'bilingual' ? 'qp-readmode-tab--active' : ''}}" bindtap="switchReadMode" data-mode="bilingual">中日双语</view>
+      <view class="qp-readmode-tab {{readMode === 'zh' ? 'qp-readmode-tab--active' : ''}}" bindtap="switchReadMode" data-mode="zh">仅中文</view>
+      <view class="qp-readmode-tab {{readMode === 'ja' ? 'qp-readmode-tab--active' : ''}}" bindtap="switchReadMode" data-mode="ja">日本語</view>
+    </view>
+  </view>
+
+  <!-- 课程主视区 -->
+  <view class="qp-lesson-body" wx:if="{{lesson}}">
+    <!-- 小节标题 -->
+    <view class="qp-lesson-title-area">
+      <text class="qp-chapter-badge">Chapter 1</text>
+      <text class="qp-lesson-title" wx:if="{{readMode === 'bilingual' || readMode === 'zh'}}">{{lesson.titleZh}}</text>
+      <text class="qp-lesson-title qp-lesson-title--ja" wx:if="{{readMode === 'bilingual' || readMode === 'ja'}}">{{lesson.titleJa}}</text>
+    </view>
+
+    <!-- 1. 本节目标 (Target) -->
+    <view class="qp-card-section">
+      <view class="qp-section-kicker">GOAL · 本节目标</view>
+      <view class="qp-text-p" wx:if="{{readMode === 'bilingual' || readMode === 'zh'}}">{{lesson.targetZh}}</view>
+      <view class="qp-text-p qp-text-p--ja" wx:if="{{readMode === 'bilingual' || readMode === 'ja'}}">{{lesson.targetJa}}</view>
+    </view>
+
+    <!-- 2. 为什么需要这个概念 (Motivation) -->
+    <view class="qp-card-section">
+      <view class="qp-section-kicker">MOTIVATION · 为什么需要</view>
+      <view class="qp-text-p" wx:if="{{readMode === 'bilingual' || readMode === 'zh'}}">{{lesson.motivationZh}}</view>
+      <view class="qp-text-p qp-text-p--ja" wx:if="{{readMode === 'bilingual' || readMode === 'ja'}}">{{lesson.motivationJa}}</view>
+    </view>
+
+    <!-- 3. 生活化类比 (Analogy) -->
+    <view class="qp-card-section qp-card-section--analogy">
+      <view class="qp-section-kicker qp-section-kicker--analogy">ANALOGY · 生活化比喻</view>
+      <view class="qp-text-p qp-text-p--analogy" wx:if="{{readMode === 'bilingual' || readMode === 'zh'}}">{{lesson.analogyZh}}</view>
+      <view class="qp-text-p qp-text-p--ja qp-text-p--analogy" wx:if="{{readMode === 'bilingual' || readMode === 'ja'}}">{{lesson.analogyJa}}</view>
+    </view>
+
+    <!-- 4. 双语详细解释 (Explanation) -->
+    <view class="qp-card-section">
+      <view class="qp-section-kicker">EXPLANATION · 详细解剖</view>
+      <view class="qp-text-p" wx:if="{{readMode === 'bilingual' || readMode === 'zh'}}">{{lesson.explanationZh}}</view>
+      <view class="qp-text-p qp-text-p--ja" wx:if="{{readMode === 'bilingual' || readMode === 'ja'}}">{{lesson.explanationJa}}</view>
+    </view>
+
+    <!-- 5. 关键术语表 (Terminology) -->
+    <view class="qp-card-section" wx:if="{{lesson.terminology && lesson.terminology.length > 0}}">
+      <view class="qp-section-kicker">TERMINOLOGY · 关键术语</view>
+      <view class="qp-term-table">
+        <view class="qp-term-row qp-term-row--header">
+          <text class="qp-term-cell">中文术语</text>
+          <text class="qp-term-cell">日本語</text>
+          <text class="qp-term-cell">English</text>
+        </view>
+        <view class="qp-term-row" wx:for="{{lesson.terminology}}" wx:key="zh">
+          <text class="qp-term-cell qp-term-cell--zh">{{item.zh}}</text>
+          <text class="qp-term-cell qp-term-cell--ja">{{item.ja}}</text>
+          <text class="qp-term-cell qp-term-cell--en qp-num">{{item.en}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 6. 最小可运行代码与逐行讲解 (Code Demo) -->
+    <view class="qp-card-section" wx:if="{{lesson.codeDemo}}">
+      <view class="qp-section-kicker">CODE DEMO · 最小演示代码</view>
+      
+      <!-- 代码块 -->
+      <view class="qp-code-wrapper">
+        <text class="qp-code-pre qp-num" space="preserve">{{lesson.codeDemo}}</text>
+      </view>
+
+      <!-- 逐行讲解 -->
+      <view class="qp-code-explanation" wx:if="{{lesson.codeExplanation && lesson.codeExplanation.length > 0}}">
+        <view class="qp-section-kicker qp-section-kicker--sub">LINE-BY-LINE · 逐行讲解</view>
+        <view class="qp-explanation-item" wx:for="{{lesson.codeExplanation}}" wx:key="*this">
+          <text class="qp-explanation-text">{{item}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 7. 常见误区 (Misunderstandings) -->
+    <view class="qp-card-section qp-card-section--warning" wx:if="{{lesson.commonMisunderstandings && lesson.commonMisunderstandings.length > 0}}">
+      <view class="qp-section-kicker qp-section-kicker--warning">COMMON PITFALLS · 常见误解</view>
+      <block wx:for="{{lesson.commonMisunderstandings}}" wx:key="titleZh">
+        <view class="qp-pitfall-item">
+          <text class="qp-pitfall-title" wx:if="{{readMode === 'bilingual' || readMode === 'zh'}}">{{item.titleZh}}</text>
+          <text class="qp-pitfall-title qp-pitfall-title--ja" wx:if="{{readMode === 'bilingual' || readMode === 'ja'}}">{{item.titleJa}}</text>
+          
+          <text class="qp-pitfall-desc" wx:if="{{readMode === 'bilingual' || readMode === 'zh'}}">{{item.descZh}}</text>
+          <text class="qp-pitfall-desc qp-pitfall-desc--ja" wx:if="{{readMode === 'bilingual' || readMode === 'ja'}}">{{item.descJa}}</text>
+        </view>
+      </block>
+    </view>
+
+    <!-- 8. 本节小结 (Summary) -->
+    <view class="qp-card-section">
+      <view class="qp-section-kicker">SUMMARY · 本节小结</view>
+      <view class="qp-text-p" wx:if="{{readMode === 'bilingual' || readMode === 'zh'}}">{{lesson.summaryZh}}</view>
+      <view class="qp-text-p qp-text-p--ja" wx:if="{{readMode === 'bilingual' || readMode === 'ja'}}">{{lesson.summaryJa}}</view>
+    </view>
+
+    <!-- 9. 下一节预告 (Connection) -->
+    <view class="qp-card-section">
+      <view class="qp-section-kicker">NEXT STEP · 下一步连接</view>
+      <view class="qp-text-p" wx:if="{{readMode === 'bilingual' || readMode === 'zh'}}">{{lesson.connectionZh}}</view>
+      <view class="qp-text-p qp-text-p--ja" wx:if="{{readMode === 'bilingual' || readMode === 'ja'}}">{{lesson.connectionJa}}</view>
+    </view>
+  </view>
+
+  <!-- 底部打卡及操作区 -->
+  <view class="qp-footer-actions">
+    <!-- 打卡掌握按钮 -->
+    <view class="qp-action-btn-row">
+      <button class="qp-btn qp-btn--full {{isCompleted ? 'qp-btn--completed' : 'qp-btn--primary'}}" bindtap="toggleCompleted">
+        {{isCompleted ? '✓ 已学过本节（点击取消）' : '标记本节已学 ✓'}}
+      </button>
+    </view>
+
+    <!-- 上一节/返回目录/下一节 导航链 -->
+    <view class="qp-nav-chain">
+      <view class="qp-nav-chain__btn {{prevLessonId ? '' : 'qp-nav-chain__btn--disabled'}}" bindtap="goToPrev">
+        ← 上一节
+      </view>
+      <view class="qp-nav-chain__btn qp-nav-chain__btn--center" bindtap="goBackToMenu">
+        返回目录
+      </view>
+      <view class="qp-nav-chain__btn {{nextLessonId ? '' : 'qp-nav-chain__btn--disabled'}}" bindtap="goToNext">
+        下一节 →
+      </view>
+    </view>
+  </view>
+</view>

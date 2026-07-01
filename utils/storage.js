@@ -461,7 +461,8 @@ function exportLocalBackup() {
     data: {
       favoriteTerms: getFavoriteTerms(),
       wrongQuestions: getWrongQuestions(),
-      quizAttempts: getQuizAttempts()
+      quizAttempts: getQuizAttempts(),
+      javaProgress: getJavaProgress()
     },
     ankiStatus: ankiStatus,
     flashcardProgress: flashcardProgress
@@ -473,6 +474,11 @@ function importLocalBackup(backup) {
   saveFavoriteTerms(backup.data.favoriteTerms);
   saveWrongQuestions(backup.data.wrongQuestions);
   saveQuizAttempts(backup.data.quizAttempts);
+  if (backup.data && backup.data.javaProgress) {
+    saveJavaProgress(backup.data.javaProgress);
+  } else {
+    saveJavaProgress([]);
+  }
   if (backup.ankiStatus) {
     try { wx.setStorageSync(ANKI_STATUS_KEY, backup.ankiStatus); } catch (e) {}
   }
@@ -486,6 +492,55 @@ function clearAllLocalUserData() {
   saveFavoriteTerms([]);
   saveWrongQuestions([]);
   saveQuizAttempts([]);
+  saveJavaProgress([]);
+}
+
+// ========== Java 课程进度 ==========
+
+const JAVA_PROGRESS_KEY = ["study", "tools", "mini", "java", "progress", "v1"].join("-");
+
+function getJavaProgress() {
+  try {
+    const list = wx.getStorageSync(JAVA_PROGRESS_KEY);
+    return Array.isArray(list) ? list : [];
+  } catch (error) {
+    console.warn("getJavaProgress failed", error);
+    return [];
+  }
+}
+
+function saveJavaProgress(list) {
+  try {
+    wx.setStorageSync(JAVA_PROGRESS_KEY, Array.isArray(list) ? list : []);
+  } catch (error) {
+    console.warn("saveJavaProgress failed", error);
+  }
+}
+
+function isJavaLessonCompleted(id) {
+  return getJavaProgress().indexOf(id) !== -1;
+}
+
+function markJavaLessonCompleted(id) {
+  const list = getJavaProgress();
+  if (list.indexOf(id) === -1) {
+    list.push(id);
+    saveJavaProgress(list);
+  }
+}
+
+function unmarkJavaLessonCompleted(id) {
+  const list = getJavaProgress().filter(x => x !== id);
+  saveJavaProgress(list);
+}
+
+function getJavaCompletedCount() {
+  return getJavaProgress().length;
+}
+
+function clearJavaProgress() {
+  saveJavaProgress([]);
+  return [];
 }
 
 var ANKI_STATUS_KEY = 'study-tools-mini-anki-status-v1';
@@ -527,5 +582,12 @@ module.exports = {
   validateLocalBackup: validateLocalBackup,
   exportLocalBackup: exportLocalBackup,
   importLocalBackup: importLocalBackup,
+  // Java 进度
+  getJavaProgress: getJavaProgress,
+  isJavaLessonCompleted: isJavaLessonCompleted,
+  markJavaLessonCompleted: markJavaLessonCompleted,
+  unmarkJavaLessonCompleted: unmarkJavaLessonCompleted,
+  getJavaCompletedCount: getJavaCompletedCount,
+  clearJavaProgress: clearJavaProgress,
   clearAllLocalUserData: clearAllLocalUserData
 };

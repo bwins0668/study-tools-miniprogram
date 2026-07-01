@@ -91,6 +91,14 @@
         "pages/flashcard-bridge/flashcard-bridge",
         "pages/flashcard-player/flashcard-player"
       ]
+    },
+    {
+      "root": "packages/java-course",
+      "name": "java-course",
+      "pages": [
+        "pages/course-menu/course-menu",
+        "pages/lesson-view/lesson-view"
+      ]
     }
   ],
   "window": {

@@ -75,6 +75,8 @@ Page({
       sgTitle: 'SG 信息安全',
       itpassEmpty: 'ITパスポート試験 · 按年度模拟',
       sgEmpty: '情報セキュリティ · 专项强化',
+      javaTitle: 'Java 编程核心',
+      javaEmpty: 'Javaプログラミング · 双语零基础',
       toolsSection: '更多工具',
       glossary: '术语表',
       anki: 'Anki 闪卡',
@@ -212,6 +214,13 @@ Page({
     var weekNames = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
     var headDateText = (nowD.getMonth() + 1) + '/' + nowD.getDate() + ' ' + weekNames[nowD.getDay()];
 
+    // Java 课程进度
+    var javaCompleted = 0;
+    try {
+      var javaProgress = wx.getStorageSync('study-tools-mini-java-progress-v1') || [];
+      javaCompleted = javaProgress.length;
+    } catch (e) {}
+
     this.setData({
       favoriteCount: favoriteCount,
       wrongQuestionCount: wrongQuestionCount,
@@ -231,7 +240,8 @@ Page({
       itpassWeak: itpassWeak,
       sgWeak: sgWeak,
       streakCount: streakCount,
-      headDateText: headDateText
+      headDateText: headDateText,
+      javaCompleted: javaCompleted
     });
   },
 
@@ -295,6 +305,10 @@ Page({
 
   goToMistakes: function () {
     this._navigateOnce('navigateTo', '/packages/quiz/pages/mistakes/mistakes', 'mistakes');
+  },
+
+  goToJavaCourse: function () {
+    this._navigateOnce('navigateTo', '/packages/java-course/pages/course-menu/course-menu', 'java');
   },
 
   goToItPassport: function () {
